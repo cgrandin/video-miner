@@ -81,6 +81,7 @@ Public Class frmConfigureButtonFormat
             ElseIf _fontfamily.IsStyleAvailable(FontStyle.Italic) Then
                 _font = New Font(_fontfamily, 14, FontStyle.Italic)
             End If
+
             e.Graphics.DrawString(_FontName, _font, objBrush, e.Bounds)
         Finally
             If objBrush IsNot Nothing Then
