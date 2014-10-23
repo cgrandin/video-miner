@@ -827,7 +827,6 @@ Public Class VideoMiner
     ' ==========================================================================================================
     Private Sub frmVideoMiner_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-
         myFormLibrary.frmVideoMiner = Me
 
         Windows.Forms.Control.CheckForIllegalCrossThreadCalls = False
@@ -852,7 +851,17 @@ Public Class VideoMiner
         If (filePath.StartsWith("file:\")) Then
             filePath = filePath.Substring(6)    ' Remove unnecessary substring
         End If
-        strConfigFilePath = Registry.GetValue("HKEY_CURRENT_USER\VideoMiner", "FilePath", Nothing) & "\Config"
+        Dim strRegFilePath As String = Registry.GetValue("HKEY_CURRENT_USER\VideoMiner", "FilePath", Nothing)
+        Dim strConfigFilePath As String
+        If strRegFilePath = "" Then
+            'Registry key not available
+            Dim strCurrDir As String = Directory.GetCurrentDirectory()
+            strConfigFilePath = Path.Combine(strCurrDir, "Config")
+        Else
+            'Use registry key if available, otherwise use the current working directory
+            strConfigFilePath = Path.Combine(strRegFilePath, "Config")
+
+        End If
 
         Dim regKey As RegistryKey
         regKey = Registry.CurrentUser.CreateSubKey("Software\VideoMiner")
@@ -872,14 +881,19 @@ Public Class VideoMiner
         Dim aPoint As System.Drawing.Point
         aPoint.X = intX
         aPoint.Y = intY / 2
-        
 
-        Dim strConfigFile As String = strconfigFilePath & "\VideoMinerConfigurationDetails.xml"
+        Dim strConfigFile As String = Path.Combine(strConfigFilePath, "VideoMinerConfigurationDetails.xml")
+        If File.Exists(strConfigFile) Then
+            Me.ButtonHeight = CInt(GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/ButtonFormat/ButtonSize/Height"))
+            Me.ButtonWidth = CInt(GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/ButtonFormat/ButtonSize/Width"))
+            Me.ButtonTextSize = CInt(GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/ButtonFormat/ButtonText/TextSize"))
+            Me.ButtonFont = GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/ButtonFormat/ButtonText/Font")
+        Else
+            Dim strWarning As String = "The configuration file " & strConfigFile & " does not exist. Closing VideoMiner."
+            MessageBox.Show(strWarning, "No configuration file", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Me.Close()
+        End If
 
-        Me.ButtonHeight = GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/ButtonFormat/ButtonSize/Height")
-        Me.ButtonWidth = GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/ButtonFormat/ButtonSize/Width")
-        Me.ButtonTextSize = GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/ButtonFormat/ButtonText/TextSize")
-        Me.ButtonFont = GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/ButtonFormat/ButtonText/Font")
         current_directory = Environment.SpecialFolder.Personal
         db_file_open = False
         video_file_open = False
@@ -915,7 +929,13 @@ Public Class VideoMiner
         Me.VideoTime = 0
 
         ' Get the device control settings from the configuration file
-        Call GetDeviceSettingsFromFile()
+        If File.Exists(strConfigFile) Then
+            Call GetDeviceSettingsFromFile(strConfigFile)
+        Else
+            Dim strWarning As String = "The configuration file " & strConfigFile & " does not exist. Closing VideoMiner."
+            MessageBox.Show(strWarning, "No configuration file", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Me.Close()
+        End If
 
         ' Enable the Device Control menu based on if the configuration has been set
         ' This makes sure that the devices are not accessed until the configuration has been set
@@ -946,16 +966,16 @@ Public Class VideoMiner
 
     End Sub
 
-    Public Sub GetDeviceSettingsFromFile()
-        Dim path As String
-        Dim strConfigFile As String
+    Public Sub GetDeviceSettingsFromFile(strConfigFile As String)
+        'Dim path As String
+        'Dim strConfigFile As String
 
-        path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly.GetName.CodeBase)
-        If (path.StartsWith("file:\")) Then
-            path = path.Substring(6)    ' Remove unnecessary substring
-        End If
+        'path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly.GetName.CodeBase)
+        'If (path.StartsWith("file:\")) Then
+        '    path = path.Substring(6)    ' Remove unnecessary substring
+        'End If
 
-        strConfigFile = strconfigFilePath & "\VideoMinerConfigurationDetails.xml"
+        'strConfigFile = strconfigFilePath & "\VideoMinerConfigurationDetails.xml"
 
         Me.ConfigurationSet = GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DeviceControl/ConfigurationSet")
         Me.RelaySetup = GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DeviceControl/Setup")
