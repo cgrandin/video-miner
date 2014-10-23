@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SaveSessionConfiguration version="1" revision="0">
+  <Video>
+  	<Open>False</Open>
+  	<FileName>NULL</FileName>
+  	<Position>NULL</Position>
+  </Video>
+  <Image>
+  	<Open>False</Open>
+  	<FileName>NULL</FileName>
+  </Image>
+  <Database>
+  	<Open>False</Open>
+  	<FileName>NULL</FileName>
+  	<NumberRecordsShown>NULL</NumberRecordsShown>
+  </Database>
+</SaveSessionConfiguration>

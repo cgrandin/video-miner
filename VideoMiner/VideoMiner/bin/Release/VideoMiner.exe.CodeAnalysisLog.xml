@@ -1,0 +1,469 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="c:\program files (x86)\microsoft visual studio 12.0\team tools\static analysis tools\fxcop\Xml\CodeAnalysisReport.xsl"?>
+<FxCopReport Version="12.0">
+ <Targets>
+  <Target Name="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner\bin\Release\VideoMiner.exe">
+   <Modules>
+    <Module Name="videominer.exe">
+     <Namespaces>
+      <Namespace Name="VideoMiner">
+       <Types>
+        <Type Name="frmAbundanceTableView" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#TableViewForm_Load(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmAbundanceTableView.vb" Line="45">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmAbundanceTableView.TableViewForm_Load(Object, EventArgs)' could contain the following variables 'Me.table_name'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="frmAddButton" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#addField()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmAddButton.vb" Line="437">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmAddButton.addField()' could contain the following variables 'Me.FieldName'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#cmdOK_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmAddButton.vb" Line="328">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmAddButton.cmdOK_Click(Object, EventArgs)' could contain the following variables 'New String(5)(1)', 'New String(5)(3)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmAddButton.vb" Line="418">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmAddButton.cmdOK_Click(Object, EventArgs)' could contain the following variables 'New String(8)(1)', 'New String(8)(3)', 'New String(8)(5)', 'New String(8)(7)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmAddButton.vb" Line="259">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmAddButton.cmdOK_Click(Object, EventArgs)' could contain the following variables 'modGlobals.strConfigureTable'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmAddButton.vb" Line="323">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmAddButton.cmdOK_Click(Object, EventArgs)' could contain the following variables 'modGlobals.strConfigureTable', 'New String(12)(2)', 'New String(12)(4)', 'modGlobals.SingleQuote(strTableName)', 'New String(12)(8)', 'New String(12)(10)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmAddButton.vb" Line="371">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmAddButton.cmdOK_Click(Object, EventArgs)' could contain the following variables 'modGlobals.strConfigureTable', 'New String(12)(3)', 'modGlobals.SingleQuote(strTableName)', 'New String(12)(7)', 'New String(12)(9)', 'New String(12)(11)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#frmAddButton_Load(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmAddButton.vb" Line="182">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmAddButton.frmAddButton_Load(Object, EventArgs)' could contain the following variables 'modGlobals.strConfigureTable', 'modGlobals.SingleQuote(Me.txtButtonName.Text)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="frmAddNewTable" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#cmdOK_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmAddNewTable.vb" Line="242">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmAddNewTable.cmdOK_Click(Object, EventArgs)' could contain the following variables 'strQuery &amp; Me.grdNewTable.Rows(i).Cells(j).Value', 'Me.TableName', 'modGlobals.SingleQuote(strValue)', 'strQuery &amp; clColumns(k)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmAddNewTable.vb" Line="190">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmAddNewTable.cmdOK_Click(Object, EventArgs)' could contain the following variables 'strQuery &amp; clColumns(i) &amp; " TEXT(255)"', 'Me.TableName', 'Me.DescriptionField', 'Me.IDField'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="frmConfigureButtons" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#cmdDeleteButton_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmConfigureButtons.vb" Line="378">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmConfigureButtons.cmdDeleteButton_Click(Object, EventArgs)' could contain the following variables 'Conversions.ToString(Me.DataCode)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmConfigureButtons.vb" Line="374">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmConfigureButtons.cmdDeleteButton_Click(Object, EventArgs)' could contain the following variables 'Me.FieldName'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmConfigureButtons.vb" Line="335">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmConfigureButtons.cmdDeleteButton_Click(Object, EventArgs)' could contain the following variables 'modGlobals.strConfigureTable'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmConfigureButtons.vb" Line="369">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmConfigureButtons.cmdDeleteButton_Click(Object, EventArgs)' could contain the following variables 'modGlobals.strConfigureTable', 'modGlobals.SingleQuote(Me.ButtonName)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#cmdMoveToPanel_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmConfigureButtons.vb" Line="481">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmConfigureButtons.cmdMoveToPanel_Click(Object, EventArgs)' could contain the following variables 'New String(12)(2)', 'New String(12)(4)', 'New String(12)(6)', 'New String(12)(8)', 'New String(12)(10)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmConfigureButtons.vb" Line="433">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmConfigureButtons.cmdMoveToPanel_Click(Object, EventArgs)' could contain the following variables 'modGlobals.strConfigureTable'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmConfigureButtons.vb" Line="487">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmConfigureButtons.cmdMoveToPanel_Click(Object, EventArgs)' could contain the following variables 'modGlobals.strConfigureTable', 'modGlobals.SingleQuote(Me.ButtonName)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#frmConfigureButtons_Activated(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmConfigureButtons.vb" Line="66">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmConfigureButtons.frmConfigureButtons_Activated(Object, EventArgs)' could contain the following variables 'modGlobals.strConfigureTable'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#UpdateDrawingOrder(System.String)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmConfigureButtons.vb" Line="242">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmConfigureButtons.UpdateDrawingOrder(String)' could contain the following variables 'strTable'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmConfigureButtons.vb" Line="263">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmConfigureButtons.UpdateDrawingOrder(String)' could contain the following variables 'strTable'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmConfigureButtons.vb" Line="255">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmConfigureButtons.UpdateDrawingOrder(String)' could contain the following variables 'strTable', 'Conversions.ToString((i + 1))', 'modGlobals.SingleQuote(strButtonName)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmConfigureButtons.vb" Line="280">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmConfigureButtons.UpdateDrawingOrder(String)' could contain the following variables 'strTable', 'Conversions.ToString((i + 1))', 'modGlobals.SingleQuote(strButtonName)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="frmCreateKeyboardShortcut" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#cmdOK_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmCreateKeyboardShortcut.vb" Line="100">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmCreateKeyboardShortcut.cmdOK_Click(Object, EventArgs)' could contain the following variables 'modGlobals.DoubleQuote(Me.txtCurrentShortcut.Text)', 'modGlobals.DoubleQuote(Me.ButtonText)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#cmdStart_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmCreateKeyboardShortcut.vb" Line="75">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmCreateKeyboardShortcut.cmdStart_Click(Object, EventArgs)' could contain the following variables 'modGlobals.DoubleQuote(Me.txtCurrentShortcut.Text)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="frmDeviceControl" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#frmDeviceControl_Load(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Do not dispose objects multiple times" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmDeviceControl.vb" Line="102">Object 'Me' can be disposed more than once in method 'frmDeviceControl.frmDeviceControl_Load(Object, EventArgs)'. To avoid generating a System.ObjectDisposedException you should not call Dispose more than one time on an object.: Lines: 102</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="frmEditLookupTable" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#cmdEdit_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmEditLookupTable.vb" Line="65">The query string passed to 'OleDbDataAdapter.New(String, OleDbConnection)' in 'frmEditLookupTable.cmdEdit_Click(Object, EventArgs)' could contain the following variables 'Me.TableName'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="frmEditSpecies" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#cmdCancel_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Do not dispose objects multiple times" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmEditSpecies.vb" Line="50">Object 'Me' can be disposed more than once in method 'frmEditSpecies.cmdCancel_Click(Object, EventArgs)'. To avoid generating a System.ObjectDisposedException you should not call Dispose more than one time on an object.: Lines: 50</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#cmdOk_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmEditSpecies.vb" Line="248">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmEditSpecies.cmdOk_Click(Object, EventArgs)' could contain the following variables 'Conversions.ToString(intNextId)', 'modGlobals.DoubleQuote(Me.txtSpeciesBtnTxt.Text)', 'modGlobals.DoubleQuote(Me.txtSpeciesCode.Text)', 'New String(13)(7)', 'New String(13)(9)', 'modGlobals.DoubleQuote(Me.txtKeyboardShortcut.Text)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmEditSpecies.vb" Line="261">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmEditSpecies.cmdOk_Click(Object, EventArgs)' could contain the following variables 'modGlobals.DoubleQuote(Me.txtSpeciesBtnTxt.Text)', 'modGlobals.DoubleQuote(Me.txtSpeciesCode.Text)', 'New String(12)(5)', 'modGlobals.DoubleQuote(Me.txtKeyboardShortcut.Text)', 'New String(12)(9)', 'New String(12)(11)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#frmEditSpecies_Load(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmEditSpecies.vb" Line="70">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmEditSpecies.frmEditSpecies_Load(Object, EventArgs)' could contain the following variables 'Conversions.ToString((Conversions.ToDouble(Me.selIdx) + 1))'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmEditSpecies.vb" Line="123">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmEditSpecies.frmEditSpecies_Load(Object, EventArgs)' could contain the following variables 'modGlobals.SingleQuote(Me.txtSpeciesCode.Text)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#GetSpeciesCode(System.String)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmEditSpecies.vb" Line="295">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmEditSpecies.GetSpeciesCode(String)' could contain the following variables 'strQuery'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#PopulateSpeciesLists(System.Windows.Forms.ComboBox&amp;,System.String)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmEditSpecies.vb" Line="168">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmEditSpecies.PopulateSpeciesLists(ByRef ComboBox, String)' could contain the following variables 'strQuery'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="frmSpeciesEvent" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#GetSpeciesVariables()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmSpeciesEvent.vb" Line="606">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmSpeciesEvent.GetSpeciesVariables()' could contain the following variables 'modGlobals.SingleQuote(ctlSpeciesControl.Text)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmSpeciesEvent.vb" Line="617">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmSpeciesEvent.GetSpeciesVariables()' could contain the following variables 'modGlobals.SingleQuote(ctlSpeciesControl.Text)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#ok_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Do not dispose objects multiple times" Category="Microsoft.Usage" CheckId="CA2202" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmSpeciesEvent.vb" Line="822">Object 'Me' can be disposed more than once in method 'frmSpeciesEvent.ok_Click(Object, EventArgs)'. To avoid generating a System.ObjectDisposedException you should not call Dispose more than one time on an object.: Lines: 822</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="frmSpeciesList" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#cmdDelete_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmSpeciesList.vb" Line="310">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmSpeciesList.cmdDelete_Click(Object, EventArgs)' could contain the following variables 'modGlobals.SingleQuote(strSpeciesName)', 'modGlobals.SingleQuote(strSpeciesCode)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#frmSpeciesList_Activated(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmSpeciesList.vb" Line="31">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmSpeciesList.frmSpeciesList_Activated(Object, EventArgs)' could contain the following variables 'modGlobals.SingleQuote(Conversions.ToString(r("ButtonCode")))'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#UpdateDrawingOrder()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmSpeciesList.vb" Line="270">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmSpeciesList.UpdateDrawingOrder()' could contain the following variables 'Conversions.ToString((i + 1))', 'modGlobals.DoubleQuote(strSpeciesName)', 'modGlobals.DoubleQuote(strSpeciesCode)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="frmTableView" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#TableViewForm_Load(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmTableView.vb" Line="83">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'frmTableView.TableViewForm_Load(Object, EventArgs)' could contain the following variables 'Me.table_name'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="modGlobals" Kind="Class" Accessibility="Assembly" ExternallyVisible="False">
+         <Members>
+          <Member Name="#BitBlt(System.IntPtr,System.Int32,System.Int32,System.Int32,System.Int32,System.IntPtr,System.Int32,System.Int32,System.Int32)" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="MovePInvokesToNativeMethodsClass" Category="Microsoft.Design" CheckId="CA1060" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="Breaking">
+             <Issue Certainty="95" Level="CriticalWarning">Because it is a P/Invoke method, 'modGlobals.BitBlt(IntPtr, Integer, Integer, Integer, Integer, IntPtr, Integer, Integer, Integer)' should be defined in a class named NativeMethods, SafeNativeMethods, or UnsafeNativeMethods.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+        <Type Name="VideoMiner" Kind="Class" Accessibility="Public" ExternallyVisible="True">
+         <Members>
+          <Member Name="#cmdAddComment_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="2873">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.cmdAddComment_Click(Object, EventArgs)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "666", "NULL", strX, strY, strZ, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", Me.strComment)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#cmdDefineAllSpatialVariables_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="2313">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.cmdDefineAllSpatialVariables_Click(Object, EventArgs)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "999", "NULL", strX, strY, strZ, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", Me.strComment)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#cmdDefineAllTransectVariables_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="2456">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.cmdDefineAllTransectVariables_Click(Object, EventArgs)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, Conversions.ToString(Me.intTransectButtonCodes(i)), "NULL", strX, strY, strZ, Me.strSpeciesCode, Me.strSpeciesCount, Me.strSide, Me.strRange, Me.strLength, Me.strHeight, Me.strWidth, Me.strAbundance, Me.strIdConfidence, Me.strComment)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#cmdDeleteLastRecord_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="7353">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.cmdDeleteLastRecord_Click(Object, EventArgs)' could contain the following variables 'Conversions.ToString(IDValue)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#cmdNothingInPhoto_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="2957">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.cmdNothingInPhoto_Click(Object, EventArgs)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, strPhotoTime, strPhotoTextTime, strPhotoDecimalTime, "777", "NULL", strX, strY, strZ, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", Me.strComment)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#fetch_data()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="5247">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.fetch_data()' could contain the following variables 'Me.select_string'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="5248">The query string passed to 'OleDbDataAdapter.New(String, OleDbConnection)' in 'VideoMiner.fetch_data()' could contain the following variables 'Me.select_string'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#fillDataCodesTable()" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="5129">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.fillDataCodesTable()' could contain the following variables '"INSERT INTO lu_data_codes (Code, Description) VALUES(" &amp; clDataCodes(i) &amp; ", " &amp; modGlobals.SingleQuote(Conversions.ToString(clDataCodeDescriptions(i))) &amp; ")"'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#Finalize()" Kind="Method" Static="False" Accessibility="Family" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="ImplementIDisposableCorrectly" Category="Microsoft.Design" CheckId="CA1063" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="Breaking">
+             <Issue Name="FinalizeImplementation" Certainty="95" Level="Error" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="808">Modify 'VideoMiner.Finalize()' so that it calls Dispose(false) and then returns.</Issue>
+             <Issue Name="FinalizeOverride" Certainty="95" Level="Error" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="808">Remove the finalizer from type 'VideoMiner', override Dispose(bool disposing), and put the finalization logic in the code path where 'disposing' is false.</Issue>
+            </Message>
+            <Message TypeName="RemoveEmptyFinalizers" Category="Microsoft.Performance" CheckId="CA1821" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="NonBreaking">
+             <Issue Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="808">'VideoMiner' implements a finalizer that only calls conditionally emitted methods or the base type finalizer. Remove the finalizer or ensure that it is only conditionally compiled into the assembly. If this violation occurs against a finalizer that is entirely wrapped in a conditionally-emitted block of code, suppress this message.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#mnuCapScr_Click(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="1916">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.mnuCapScr_Click(Object, EventArgs)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, "Screen Capture", strVideoTime, strVideoTextTime, strVideoDecimalTime, "555", "NULL", strX, strY, strZ, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "Screen Capture")'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#SpatialVariableButtonHandler(System.Object,System.Windows.Forms.MouseEventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="5899">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.SpatialVariableButtonHandler(Object, MouseEventArgs)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "888", "NULL", strX, strY, strZ, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", Me.strComment)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="5954">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.SpatialVariableButtonHandler(Object, MouseEventArgs)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "888", "NULL", strX, strY, strZ, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", Me.strComment)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="6031">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.SpatialVariableButtonHandler(Object, MouseEventArgs)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, Conversions.ToString(Me.intHabitatButtonCodes(i)), "NULL", strX, strY, strZ, Me.strSpeciesCode, Me.strSpeciesCount, Me.strSide, Me.strRange, Me.strLength, Me.strHeight, Me.strWidth, Me.strAbundance, Me.strIdConfidence, Me.strComment)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#SpeciesVariableButtonHandler(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="6833">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.SpeciesVariableButtonHandler(Object, EventArgs)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "4", Me.SpeciesName, strX, strY, strZ, Me.SpeciesCode, Me.strSpeciesCount, Me.strSide, Me.strRange, Me.strLength, Me.strHeight, strWidth, Me.strAbundance, Me.strIdConfidence, Me.strComment)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="6671">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.SpeciesVariableButtonHandler(Object, EventArgs)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, Conversions.ToString(Me.intSpeciesButtonUserCodeChoice(i)), strSpecies_Name, strX, strY, strZ, Me.strSpeciesCode, Me.strSpeciesCount, Me.strSide, Me.strRange, Me.strLength, Me.strHeight, strWidth, Me.strAbundance, Me.strIdConfidence, Me.strComment)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="6714">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.SpeciesVariableButtonHandler(Object, EventArgs)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, Conversions.ToString(Me.intSpeciesButtonUserCodeChoice(i)), strSpecies_Name, strX, strY, strZ, Me.strSpeciesCode, Me.strSpeciesCount, Me.strSide, Me.strRange, Me.strLength, Me.strHeight, strWidth, Me.strAbundance, Me.strIdConfidence, Me.strComment)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="6759">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.SpeciesVariableButtonHandler(Object, EventArgs)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, Conversions.ToString(Me.intSpeciesButtonUserCodeChoice(i)), strSpecies_Name, strX, strY, strZ, Me.strSpeciesCode, Me.strSpeciesCount, Me.strSide, Me.strRange, Me.strLength, Me.strHeight, strWidth, Me.strAbundance, Me.strIdConfidence, Me.strComment)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="6613">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.SpeciesVariableButtonHandler(Object, EventArgs)' could contain the following variables 'modGlobals.SingleQuote(Me.strSpeciesButtonCodes(i))'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#tmrPlayForSeconds_Tick(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="2659">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.tmrPlayForSeconds_Tick(Object, EventArgs)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, Me.strPlaySecondsVideoTime, strVideoTextTime, strVideoDecimalTime, "NULL", "NULL", strX, strY, strZ, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL")'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#tmrRecordPerSecond_Tick(System.Object,System.EventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="2541">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.tmrRecordPerSecond_Tick(Object, EventArgs)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "NULL", "NULL", strX, strY, strZ, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL")'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="2582">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.tmrRecordPerSecond_Tick(Object, EventArgs)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "NULL", "NULL", strX, strY, strZ, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL")'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#toggle_bottom(System.String,System.String,System.String,System.String,System.String,System.String)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="3821">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.toggle_bottom(String, String, String, String, String, String)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, tc, tcText, tcDecimal, "3", "NULL", strX, strY, strZ, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL")'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#transect_started(System.String,System.String,System.String,System.String,System.String,System.String)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="3696">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.transect_started(String, String, String, String, String, String)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, tc, tcText, tcDecimal, "1", "NULL", strX, strY, strZ, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL")'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#transect_stopped(System.String,System.String,System.String,System.String,System.String,System.String)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="3747">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.transect_stopped(String, String, String, String, String, String)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, tc, tcText, tcDecimal, "2", "NULL", strX, strY, strZ, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL")'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+          <Member Name="#TransectVariableButtonHandler(System.Object,System.Windows.Forms.MouseEventArgs)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
+           <Messages>
+            <Message TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100" Status="Active" Created="2014-10-23 19:32:19Z" FixCategory="DependsOnFix">
+             <Issue Name="WithNonLiterals" Certainty="75" Level="Warning" Path="C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner" File="frmVideoMiner.vb" Line="6367">The query string passed to 'OleDbCommand.New(String, OleDbConnection)' in 'VideoMiner.TransectVariableButtonHandler(Object, MouseEventArgs)' could contain the following variables 'Me.createInsertQuery(Me.transect_date, Me.transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, Conversions.ToString(Me.intTransectButtonCodes(i)), "NULL", strX, strY, strZ, Me.strSpeciesCode, Me.strSpeciesCount, Me.strSide, Me.strRange, Me.strLength, Me.strHeight, Me.strWidth, Me.strAbundance, Me.strIdConfidence, Me.strComment)'. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Issue>
+            </Message>
+           </Messages>
+          </Member>
+         </Members>
+        </Type>
+       </Types>
+      </Namespace>
+     </Namespaces>
+    </Module>
+   </Modules>
+  </Target>
+ </Targets>
+ <Rules>
+  <Rule TypeName="Do not dispose objects multiple times" Category="Microsoft.Usage" CheckId="CA2202">
+   <Name>Do not dispose objects multiple times</Name>
+   <Description>A correctly implemented Dispose method can be called multiple times without throwing an exception. However, this is not guaranteed and to avoid generating a System.ObjectDisposedException you should not call Dispose more than one time on an object.</Description>
+   <Resolution Name="Default">Object {0} can be disposed more than once in method {1}. To avoid generating a System.ObjectDisposedException you should not call Dispose more than one time on an object.: Lines: 822</Resolution>
+   <Owner>RuleOwner</Owner>
+   <Url>http://msdn.microsoft.com/library/ms182334.aspx</Url>
+   <Email />
+   <MessageLevel Certainty="75">Warning</MessageLevel>
+   <File Name="dataflowrules.dll" Version="12.0.0.0" />
+  </Rule>
+  <Rule TypeName="ImplementIDisposableCorrectly" Category="Microsoft.Design" CheckId="CA1063">
+   <Name>Implement IDisposable correctly</Name>
+   <Description>All IDisposable types should implement the Dispose pattern correctly.</Description>
+   <Resolution Name="FinalizeImplementation">Modify {0} so that it calls Dispose(false) and then returns.</Resolution>
+   <Resolution Name="FinalizeOverride">Remove the finalizer from type {0}, override Dispose(bool disposing), and put the finalization logic in the code path where 'disposing' is false.</Resolution>
+   <Owner />
+   <Url>http://msdn.microsoft.com/library/ms244737.aspx</Url>
+   <Email>[none]</Email>
+   <MessageLevel Certainty="95">Error</MessageLevel>
+   <File Name="designrules.dll" Version="12.0.0.0" />
+  </Rule>
+  <Rule TypeName="MovePInvokesToNativeMethodsClass" Category="Microsoft.Design" CheckId="CA1060">
+   <Name>Move P/Invokes to NativeMethods class</Name>
+   <Description>This type contains members with the DllImport attribute. Members with the DllImport attribute should be contained in classes named NativeMethods, SafeNativeMethods, or UnsafeNativeMethods.</Description>
+   <Resolution Name="Default">Because it is a P/Invoke method, {0} should be defined in a class named NativeMethods, SafeNativeMethods, or UnsafeNativeMethods.</Resolution>
+   <Owner />
+   <Url>http://msdn.microsoft.com/library/ms182161.aspx</Url>
+   <Email>[none]</Email>
+   <MessageLevel Certainty="95">CriticalWarning</MessageLevel>
+   <File Name="designrules.dll" Version="12.0.0.0" />
+  </Rule>
+  <Rule TypeName="RemoveEmptyFinalizers" Category="Microsoft.Performance" CheckId="CA1821">
+   <Name>Remove empty finalizers</Name>
+   <Description>Finalizers should be avoided where possible, to avoid the additional performance overhead involved in tracking object lifetime.</Description>
+   <Resolution Name="Default">{0} implements a finalizer that only calls conditionally emitted methods or the base type finalizer. Remove the finalizer or ensure that it is only conditionally compiled into the assembly. If this violation occurs against a finalizer that is entirely wrapped in a conditionally-emitted block of code, suppress this message.</Resolution>
+   <Owner />
+   <Url>http://msdn.microsoft.com/library/bb264476.aspx</Url>
+   <Email>[none]</Email>
+   <MessageLevel Certainty="75">Warning</MessageLevel>
+   <File Name="performancerules.dll" Version="12.0.0.0" />
+  </Rule>
+  <Rule TypeName="Review SQL queries for security vulnerabilities" Category="Microsoft.Security" CheckId="CA2100">
+   <Name>Review SQL queries for security vulnerabilities</Name>
+   <Description>A SQL command string built from user input is vulnerable to SQL injection attacks. Microsoft SQL Server and other database servers support stored procedures and parameterized SQL queries, which reduce the risk of injection attacks.</Description>
+   <Resolution Name="WithNonLiterals">The query string passed to {0} in {1} could contain the following variables {2}. If any of these variables could come from user input, consider using a stored procedure or a parameterized SQL query instead of building the query with string concatenations.</Resolution>
+   <Owner>RuleOwner</Owner>
+   <Url>http://msdn.microsoft.com/library/ms182310.aspx</Url>
+   <Email />
+   <MessageLevel Certainty="75">Warning</MessageLevel>
+   <File Name="dataflowrules.dll" Version="12.0.0.0" />
+  </Rule>
+ </Rules>
+ <Localized>
+  <String Key="Category">Category</String>
+  <String Key="Certainty">Certainty</String>
+  <String Key="CollapseAll">Collapse All</String>
+  <String Key="CheckId">Check Id</String>
+  <String Key="Error">Error</String>
+  <String Key="Errors">error(s)</String>
+  <String Key="ExpandAll">Expand All</String>
+  <String Key="Help">Help</String>
+  <String Key="Line">Line</String>
+  <String Key="Messages">message(s)</String>
+  <String Key="LocationNotStoredInPdb">[Location not stored in Pdb]</String>
+  <String Key="Project">Project</String>
+  <String Key="Resolution">Resolution</String>
+  <String Key="Rule">Rule</String>
+  <String Key="RuleFile">Rule File</String>
+  <String Key="RuleDescription">Rule Description</String>
+  <String Key="Source">Source</String>
+  <String Key="Status">Status</String>
+  <String Key="Target">Target</String>
+  <String Key="Warning">Warning</String>
+  <String Key="Warnings">warning(s)</String>
+  <String Key="ReportTitle">Code Analysis Report</String>
+ </Localized>
+</FxCopReport>

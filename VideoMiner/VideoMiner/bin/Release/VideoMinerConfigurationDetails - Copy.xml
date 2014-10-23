@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VideoMinerConfigurationDetails version="1" revision="0">
+  <DetailedSpeciesEventConfiguration>
+    <Range>
+      <Displayed>True</Displayed>
+      <DefaultValue>NULL</DefaultValue>
+    </Range>
+    <Side>
+      <DefaultValue>0</DefaultValue>
+    </Side>
+    <IDConfidence>
+      <Displayed>True</Displayed>
+      <DefaultValue>High</DefaultValue>
+    </IDConfidence>
+    <Abundance>
+      <Displayed>True</Displayed>
+      <DefaultValue>Abundant</DefaultValue>
+    </Abundance>
+    <Count>
+      <Displayed>True</Displayed>
+      <DefaultValue>1</DefaultValue>
+    </Count>
+    <Height>
+      <Displayed>True</Displayed>
+      <DefaultValue>NULL</DefaultValue>
+    </Height>
+    <Width>
+      <Displayed>True</Displayed>
+      <DefaultValue>NULL</DefaultValue>
+    </Width>
+    <Length>
+      <Displayed>True</Displayed>
+      <DefaultValue>NULL</DefaultValue>
+    </Length>
+    <Comments>
+      <Displayed>True</Displayed>
+      <DefaultValue>NULL</DefaultValue>
+    </Comments>
+  </DetailedSpeciesEventConfiguration>
+  <ButtonFormat>
+    <ButtonSize>
+      <Height>44</Height>
+      <Width>154</Width>
+    </ButtonSize>
+    <ButtonText>
+      <Font>Microsoft Sans Serif</Font>
+      <TextSize>8</TextSize>
+    </ButtonText>
+  </ButtonFormat>
+  <Database>
+    <Configuration>
+      <DatabaseName>VideoMiner_TemplateDatabase_Version_3_0_5.mdb</DatabaseName>
+      <Columns>ID:0:100,TransectDate:1:100,TimeCode:2:100,TextTime:3:100,TextTimeDecimal:4:100,TimeSource:5:100,ProjectName:6:100,TransectName:7:100,OnBottom:8:100,DominantSubstrate:9:100,DominantPercent:10:100,SubdominantSubstrate:11:100,SubdominantPercent:12:100,SurveyModeID:13:100,ReliefID:14:100,DisturbanceID:15:100,ProtocolID:16:100,ImageQualityID:17:100,ComplexityID:18:100,FieldOfView:19:100,SpeciesName:20:100,SpeciesID:21:100,SpeciesCount:22:100,Side:23:100,Range:24:100,Length:25:100,Height:26:100,Width:27:100,Abundance:28:100,IDConfidence:29:100,Comment:30:100,DataCode:31:100,X:32:100,Y:33:100,Z:34:100,FileName:35:100,ScreenCaptureName:36:100,ElapsedTime:37:100,ReviewDate:38:100,ReviewTime:39:100</Columns>
+    </Configuration>
+  </Database>
+  <PreviousProjects>
+    <ProjectName>test</ProjectName>
+  </PreviousProjects>
+  <DeviceControl>
+    <ConfigurationSet>False</ConfigurationSet>
+    <Setup>Parallel</Setup>
+    <Parallel>
+      <ComPort>COM1</ComPort>
+      <BaudRate>9600</BaudRate>
+    </Parallel>
+    <TwoPorts>
+      <Device1>
+        <ComPort>COM1</ComPort>
+        <BaudRate>9600</BaudRate>
+      </Device1>
+      <Device2>
+        <ComPort>COM1</ComPort>
+        <BaudRate>9600</BaudRate>
+      </Device2>
+    </TwoPorts>
+    <RelayNames>
+      <Device1>
+        <Relay1>Relay 1</Relay1>
+        <Relay2>Relay 2</Relay2>
+        <Relay3>Relay 3</Relay3>
+        <Relay4>Relay 4</Relay4>
+      </Device1>
+      <Device2>
+        <Relay1>Relay 1</Relay1>
+        <Relay2>Relay 2</Relay2>
+        <Relay3>Relay 3</Relay3>
+        <Relay4>Relay 4</Relay4>
+      </Device2>
+    </RelayNames>
+  </DeviceControl>
+</VideoMinerConfigurationDetails>

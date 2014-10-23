@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DetailedSpeciesEventConfiguration version="1" revision="0">
+  <Range>
+    <Displayed>True</Displayed>
+	<DefaultValueLeft></DefaultValueLeft>
+	<DefaultValueRight></DefaultValueRight>
+  </Range>
+  <IDConfidence>
+  	<Displayed>True</Displayed>
+	<DefaultValue></DefaultValue>
+  </IDConfidence>
+  <ACFORScale>
+  	<Displayed>True</Displayed>
+	<DefaultValue></DefaultValue>
+  </ACFORScale>
+  <Abundance>
+  	<Displayed>True</Displayed>
+	<DefaultValue></DefaultValue>
+  </Abundance>
+  <Count>
+  	<Displayed>True</Displayed>
+	<DefaultValue>1</DefaultValue>
+  </Count>
+  <Height>
+	<Displayed>True</Displayed>
+	<DefaultValue></DefaultValue>
+  </Height>
+  <Width>
+  	<Displayed>True</Displayed>
+	<DefaultValue></DefaultValue>
+  </Width>
+  <Length>
+	<Displayed>True</Displayed>
+	<DefaultValue></DefaultValue>
+  </Length>
+  <Comments>
+	<Displayed>True</Displayed>
+	<DefaultValue></DefaultValue>
+  </Comments>
+</DetailedSpeciesEventConfiguration>

@@ -1,0 +1,11 @@
+D:\F\I2S1335_Video_Miner\Source_Code\VideoMiner_Version_3_0_5\VideoMinerInstall\VideoMinerInstall\bin\Debug\VideoMinerInstall.exe
+D:\F\I2S1335_Video_Miner\Source_Code\VideoMiner_Version_3_0_5\VideoMinerInstall\VideoMinerInstall\bin\Debug\VideoMinerInstall.pdb
+D:\F\I2S1335_Video_Miner\Source_Code\VideoMiner_Version_3_0_5\VideoMinerInstall\VideoMinerInstall\bin\Debug\VideoMinerInstall.xml
+D:\F\I2S1335_Video_Miner\Source_Code\VideoMiner_Version_3_0_5\VideoMinerInstall\VideoMinerInstall\obj\Debug\ResolveAssemblyReference.cache
+D:\F\I2S1335_Video_Miner\Source_Code\VideoMiner_Version_3_0_5\VideoMinerInstall\VideoMinerInstall\obj\Debug\VideoMinerInstall.Resources.resources
+D:\F\I2S1335_Video_Miner\Source_Code\VideoMiner_Version_3_0_5\VideoMinerInstall\VideoMinerInstall\obj\Debug\VideoMinerInstall.vbproj.GenerateResource.Cache
+D:\F\I2S1335_Video_Miner\Source_Code\VideoMiner_Version_3_0_5\VideoMinerInstall\VideoMinerInstall\obj\Debug\VideoMinerInstall.exe
+D:\F\I2S1335_Video_Miner\Source_Code\VideoMiner_Version_3_0_5\VideoMinerInstall\VideoMinerInstall\obj\Debug\VideoMinerInstall.xml
+D:\F\I2S1335_Video_Miner\Source_Code\VideoMiner_Version_3_0_5\VideoMinerInstall\VideoMinerInstall\obj\Debug\VideoMinerInstall.pdb
+D:\F\I2S1335_Video_Miner\Source_Code\VideoMiner_Version_3_0_5\VideoMinerInstall\VideoMinerInstall\bin\Debug\Resources\VideoMiner_TemplateDatabase_Version_3_0_6.mdb
+D:\F\I2S1335_Video_Miner\Source_Code\VideoMiner_Version_3_0_5\VideoMinerInstall\VideoMinerInstall\bin\Debug\VideoMinerInstall.exe.config

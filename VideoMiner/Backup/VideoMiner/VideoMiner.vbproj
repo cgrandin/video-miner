@@ -1,0 +1,531 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7D7789B0-AFE9-4CC3-B0A2-1A2DF90EBAC7}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>VideoMiner.My.MyApplication</StartupObject>
+    <RootNamespace>VideoMiner</RootNamespace>
+    <AssemblyName>VideoMiner</AssemblyName>
+    <MyType>WindowsForms</MyType>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetZone>LocalIntranet</TargetZone>
+    <GenerateManifests>false</GenerateManifests>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.2.0.0</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>VideoMiner.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <RegisterForComInterop>true</RegisterForComInterop>
+    <CodeAnalysisRules>
+    </CodeAnalysisRules>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>Full</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>VideoMiner.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <RegisterForComInterop>true</RegisterForComInterop>
+    <CodeAnalysisRules>
+    </CodeAnalysisRules>
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DocumentationFile>VideoMiner.xml</DocumentationFile>
+    <RegisterForComInterop>true</RegisterForComInterop>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DocumentationFile>VideoMiner.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>true</RegisterForComInterop>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DocumentationFile>VideoMiner.xml</DocumentationFile>
+    <RegisterForComInterop>true</RegisterForComInterop>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DocumentationFile>VideoMiner.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>true</RegisterForComInterop>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NCDComponent, Version=2.0.4535.17976, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files\NCD Component v2.0\VBSamples2008\R8XSample1VB\bin\Debug\NCDComponent.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.IO.Ports" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Threading" />
+    <Import Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApplicationEvents.vb" />
+    <Compile Include="frmAddValue.Designer.vb">
+      <DependentUpon>frmAddValue.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmAddValue.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmConfigureButtonFormat.Designer.vb">
+      <DependentUpon>frmConfigureButtonFormat.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmConfigureButtonFormat.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAbundanceTableView.Designer.vb">
+      <DependentUpon>frmAbundanceTableView.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmAbundanceTableView.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAddButton.Designer.vb">
+      <DependentUpon>frmAddButton.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmAddButton.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAddNewTable.Designer.vb">
+      <DependentUpon>frmAddNewTable.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmAddNewTable.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAssignDevice.Designer.vb">
+      <DependentUpon>frmAssignDevice.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmAssignDevice.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmConfigureButtons.Designer.vb">
+      <DependentUpon>frmConfigureButtons.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmConfigureButtons.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCreateKeyboardShortcut.Designer.vb">
+      <DependentUpon>frmCreateKeyboardShortcut.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmCreateKeyboardShortcut.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmDataCodes.Designer.vb">
+      <DependentUpon>frmDataCodes.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmDataCodes.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmDeviceControl.Designer.vb">
+      <DependentUpon>frmDeviceControl.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmDeviceControl.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmEditLookupTable.Designer.vb">
+      <DependentUpon>frmEditLookupTable.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmEditLookupTable.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmKeyboardCommands.Designer.vb">
+      <DependentUpon>frmKeyboardCommands.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmKeyboardCommands.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmProjectNames.Designer.vb">
+      <DependentUpon>frmProjectNames.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmProjectNames.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmRareSpeciesLookup.Designer.vb">
+      <DependentUpon>frmRareSpeciesLookup.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmRareSpeciesLookup.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmConfigureSpecies.Designer.vb">
+      <DependentUpon>frmConfigureSpecies.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmConfigureSpecies.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmRelayConfiguration.Designer.vb">
+      <DependentUpon>frmRelayConfiguration.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmRelayConfiguration.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmRelayNames.Designer.vb">
+      <DependentUpon>frmRelayNames.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmRelayNames.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmVideoMiner.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmVideoMiner.Designer.vb">
+      <DependentUpon>frmVideoMiner.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmEditSpecies.Designer.vb">
+      <DependentUpon>frmEditSpecies.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmEditSpecies.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmGpsSettings.Designer.vb">
+      <DependentUpon>frmGpsSettings.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmGpsSettings.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmImage.designer.vb">
+      <DependentUpon>frmImage.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmImage.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSetTime.Designer.vb">
+      <DependentUpon>frmSetTime.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmSetTime.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSpeciesList.Designer.vb">
+      <DependentUpon>frmSpeciesList.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmSpeciesList.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmVideoPlayer.Designer.vb">
+      <DependentUpon>frmVideoPlayer.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmVideoPlayer.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="modGlobals.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Point.vb" />
+    <Compile Include="frmSpeciesEvent.Designer.vb">
+      <DependentUpon>frmSpeciesEvent.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmSpeciesEvent.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTableView.Designer.vb">
+      <DependentUpon>frmTableView.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmTableView.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ValueDescriptionPair.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="frmAbundanceTableView.resx">
+      <DependentUpon>frmAbundanceTableView.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAddButton.resx">
+      <DependentUpon>frmAddButton.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAddNewTable.resx">
+      <DependentUpon>frmAddNewTable.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAssignDevice.resx">
+      <DependentUpon>frmAssignDevice.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmConfigureButtons.resx">
+      <DependentUpon>frmConfigureButtons.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmDataCodes.resx">
+      <DependentUpon>frmDataCodes.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmDeviceControl.resx">
+      <DependentUpon>frmDeviceControl.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmKeyboardCommands.resx">
+      <DependentUpon>frmKeyboardCommands.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmProjectNames.resx">
+      <DependentUpon>frmProjectNames.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmRareSpeciesLookup.resx">
+      <DependentUpon>frmRareSpeciesLookup.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmConfigureSpecies.resx">
+      <DependentUpon>frmConfigureSpecies.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmRelayConfiguration.resx">
+      <DependentUpon>frmRelayConfiguration.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmRelayNames.resx">
+      <DependentUpon>frmRelayNames.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmVideoMiner.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmVideoMiner.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmEditSpecies.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmEditSpecies.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmGpsSettings.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmGpsSettings.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmImage.resx">
+      <DependentUpon>frmImage.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSetTime.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmSetTime.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSpeciesList.resx">
+      <DependentUpon>frmSpeciesList.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmVideoPlayer.resx">
+      <DependentUpon>frmVideoPlayer.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSpeciesEvent.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmSpeciesEvent.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTableView.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmTableView.vb</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+    <EmbeddedResource Include="frmAddValue.resx">
+      <DependentUpon>frmAddValue.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmConfigureButtonFormat.resx">
+      <DependentUpon>frmConfigureButtonFormat.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCreateKeyboardShortcut.resx">
+      <DependentUpon>frmCreateKeyboardShortcut.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmEditLookupTable.resx">
+      <DependentUpon>frmEditLookupTable.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\app.manifest" />
+    <None Include="ClassDiagram2.cd" />
+    <None Include="ClassDiagram3.cd" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="VideoMiner.exe.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="ADODB">
+      <Guid>{B691E011-1797-432E-907A-4D8C69339129}</Guid>
+      <VersionMajor>6</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="ADOX">
+      <Guid>{00000600-0000-0010-8000-00AA006D2EA4}</Guid>
+      <VersionMajor>6</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="AxMSCommLib">
+      <Guid>{648A5603-2C6E-101B-82B6-000000000014}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>1</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>aximp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="AxWMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>aximp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="MSCommLib">
+      <Guid>{648A5603-2C6E-101B-82B6-000000000014}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>1</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Release\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
