@@ -819,11 +819,12 @@ Public Class VideoMiner
     End Function
 
     ' ==========================================================================================================
-    ' Name: Form1_Load
-    ' Description: The following code is ran when the form loads. 
+    ' Name: frmVideoMiner_Load
+    ' Description: The following code is run when the form loads. 
     ' 1.) Disable buttons that are not be used until video and database are opened.
-    ' 2.) Change informative text to read no video and no db loaded.
-    ' 3.) Set variables to initial state.
+    ' 2.) Load configuration file
+    ' 3.) Change informative text to read no video and no db loaded.
+    ' 4.) Set variables to initial state.
     ' ==========================================================================================================
     Private Sub frmVideoMiner_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
@@ -3571,8 +3572,10 @@ Public Class VideoMiner
                 myFormLibrary.frmVideoPlayer.WindowState = FormWindowState.Normal
                 myFormLibrary.frmVideoPlayer.TopMost = True
             Else
-                aPoint.X = intX + priMon.Bounds.Width
-                aPoint.Y = intY / 2
+                'aPoint.X = intX + priMon.Bounds.Width
+                'aPoint.Y = intY / 2
+                aPoint.X = intX + priMon.Bounds.Width / 3
+                aPoint.Y = intY / 4
                 myFormLibrary.frmVideoPlayer.Location = aPoint
                 myFormLibrary.frmVideoPlayer.WindowState = FormWindowState.Maximized
                 myFormLibrary.frmVideoPlayer.TopMost = True
