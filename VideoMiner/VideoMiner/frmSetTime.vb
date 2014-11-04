@@ -11,7 +11,7 @@ Public Class frmSetTime
             myFormLibrary.frmVideoMiner.txtTime.ForeColor = Color.LimeGreen
             myFormLibrary.frmVideoMiner.txtTime.TextAlign = HorizontalAlignment.Center
             If Not booUseExternalVideo Then
-                dblVideoTimeUserSet = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition
+                'dblVideoTimeUserSet = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition
             End If
             Me.Close()
         Catch ex As Exception

@@ -929,3 +929,4 @@ C:\github\video-miner\VideoMiner\VideoMiner\obj\Release\VideoMiner.vbproj.Genera
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Release\VideoMiner.exe
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Release\VideoMiner.xml
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Release\VideoMiner.pdb
+C:\github\video-miner\VideoMiner\VideoMiner\obj\Release\VideoMiner.vbprojResolveAssemblyReference.cache

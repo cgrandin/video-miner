@@ -7,6 +7,7 @@
 Imports System.Data
 Imports System.Data.OleDb
 Imports System.Data.SqlClient
+Imports System.TimeSpan
 Imports Microsoft.VisualBasic
 Imports System.IO.Ports
 Imports System.Drawing.Imaging
@@ -55,7 +56,7 @@ Public Class VideoMiner
     Private m_FfwdCount As Integer
     Private m_RwndCount As Integer
 
-    Private m_VideoTime As Double
+    Private m_VideoTime As TimeSpan
     Private m_SessionName As String
     Private m_Version As String
 
@@ -311,11 +312,11 @@ Public Class VideoMiner
         End Set
     End Property
 
-    Public Property VideoTime() As Double
+    Public Property VideoTime() As TimeSpan
         Get
             Return m_VideoTime
         End Get
-        Set(ByVal value As Double)
+        Set(ByVal value As TimeSpan)
             m_VideoTime = value
         End Set
     End Property
@@ -577,9 +578,6 @@ Public Class VideoMiner
 #Region "Constants"
     ' Constants
     Public Const DB_NAME As String = "testVideoMiner.mdb"
-
-
-
     Public Const DB_ADO_CONN_STRING_1 As String = "Data Source="
     Public Const DB_ADO_CONN_STRING_2 As String = ";Initial Catalog=data"
     Public Const BAD_ID As Long = -1
@@ -623,25 +621,25 @@ Public Class VideoMiner
     Public strCurrentKey As String = ""
     Private value As Array = [Enum].GetValues(GetType(Keys))
 
+    Public image_open As Boolean = False
+    Public image_prefix As String
+    Public fileNames() As String
     Private relief_name As String
     Private relief_code As String
     Private is_on_bottom As Integer
     Private curr_code As String
     Private curr_name As String
-    Public image_open As Boolean = False
-    Public image_prefix As String
-    Public fileNames() As String
     Private blHandled As Boolean = False
 
     ' Variables to store form values
+    Public strWidth As String
+    Public strComment As String
     Private strSide As String
     Private strRange As String
     Private strLength As String
     Private strHeight As String
-    Public strWidth As String
     Private strAbundance As String
     Private strIdConfidence As String
-    Public strComment As String
     Private strSpeciesCount As String
     Private strSpeciesCode As String
 
@@ -670,8 +668,8 @@ Public Class VideoMiner
     Public intLastVideoMinute As Integer = 0
     Public intLastVideoHour As Integer = 0
     Public intVideoStopCounter As Integer = 0
-    Private blIsDuplicateTime As Boolean = False
     Public blSpeciesCancelled As Boolean = False
+    Private blIsDuplicateTime As Boolean = False
 
     ' Database variables
     Public db_filename As String
@@ -690,22 +688,22 @@ Public Class VideoMiner
     Dim button_width As Integer = 154
 
     ' For the habitat variables
-    Private buttons() As Button
     Public textboxes() As TextBox
+    Public strHabitatButtonCodeNames() As String ' name of the fields where the data came from when user clicks a user button
+    Private buttons() As Button
     Private intHabitatButtonCodes() As Integer
     Private strHabitatButtonTables() As String
-    Public strHabitatButtonCodeNames() As String ' name of the fields where the data came from when user clicks a user button
     Private strHabitatButtonUserCodeChoice() As String
     Private strHabitatButtonUserNameChoice() As String
     Private strHabitatButtonColors() As String
     Private intNumHabitatButtons As Integer
 
     ' Transect variables
-    Private Transect_Buttons() As Button
     Public Transect_Textboxes() As TextBox
+    Public strTransectButtonCodeNames() As String
+    Private Transect_Buttons() As Button
     Private intTransectButtonCodes() As Integer
     Private strTransectButtonTables() As String
-    Public strTransectButtonCodeNames() As String
     Private strTransectButtonUserCodeChoice() As String
     Private strTransectButtonUserNameChoice() As String
     Private strTransectButtonColors() As String
@@ -728,6 +726,7 @@ Public Class VideoMiner
     'Private frmImageForm As frmImage
     Private lastImageIndex As Integer = 0
     Public image_index As Integer = 0
+
     ' The name of the current image including the path
     Private currentImage As String
     Private strFileType As String
@@ -798,10 +797,8 @@ Public Class VideoMiner
 #Region "Video Miner Controls"
 
     Public Sub New()
-
         ' This call is required by the Windows Form Designer.
         InitializeComponent()
-
     End Sub
 
     Protected Overrides Sub Finalize()
@@ -821,7 +818,7 @@ Public Class VideoMiner
     ' ==========================================================================================================
     ' Name: frmVideoMiner_Load
     ' Description: The following code is run when the form loads. 
-    ' 1.) Disable buttons that are not be used until video and database are opened.
+    ' 1.) Disable buttons that are not be used until video and database files are opened.
     ' 2.) Load configuration file
     ' 3.) Change informative text to read no video and no db loaded.
     ' 4.) Set variables to initial state.
@@ -846,12 +843,9 @@ Public Class VideoMiner
         aVersionInfo.Revision
 
         Me.Version = strVersion
-        Me.Text = "Video Miner  " & Me.Version & " BETA"
+        Me.Text = "Video Miner " & Me.Version & " BETA"
 
-        filePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly.GetName.CodeBase)
-        If (filePath.StartsWith("file:\")) Then
-            filePath = filePath.Substring(6)    ' Remove unnecessary substring
-        End If
+        filePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
         Dim strRegFilePath As String = Registry.GetValue("HKEY_CURRENT_USER\VideoMiner", "FilePath", Nothing)
         Dim strConfigFilePath As String
         If strRegFilePath = "" Then
@@ -861,7 +855,6 @@ Public Class VideoMiner
         Else
             'Use registry key if available, otherwise use the current working directory
             strConfigFilePath = Path.Combine(strRegFilePath, "Config")
-
         End If
 
         Dim regKey As RegistryKey
@@ -927,7 +920,7 @@ Public Class VideoMiner
 
         Me.SelectNextControl(Me.SplitContainer4.Panel2, False, True, True, True)
 
-        Me.VideoTime = 0
+        Me.VideoTime = Zero
 
         ' Get the device control settings from the configuration file
         If File.Exists(strConfigFile) Then
@@ -968,16 +961,6 @@ Public Class VideoMiner
     End Sub
 
     Public Sub GetDeviceSettingsFromFile(strConfigFile As String)
-        'Dim path As String
-        'Dim strConfigFile As String
-
-        'path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly.GetName.CodeBase)
-        'If (path.StartsWith("file:\")) Then
-        '    path = path.Substring(6)    ' Remove unnecessary substring
-        'End If
-
-        'strConfigFile = strconfigFilePath & "\VideoMinerConfigurationDetails.xml"
-
         Me.ConfigurationSet = GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DeviceControl/ConfigurationSet")
         Me.RelaySetup = GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DeviceControl/Setup")
         Me.ParallelCom = GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DeviceControl/Parallel/ComPort")
@@ -995,7 +978,6 @@ Public Class VideoMiner
         Me.DeviceTwoRelayTwo = GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DeviceControl/RelayNames/Device2/Relay2")
         Me.DeviceTwoRelayThree = GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DeviceControl/RelayNames/Device2/Relay3")
         Me.DeviceTwoRelayFour = GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DeviceControl/RelayNames/Device2/Relay4")
-
     End Sub
 
     'Private Sub VideoMiner_KeyupForVideoform(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyUp
@@ -1015,11 +997,8 @@ Public Class VideoMiner
 
     'End Sub
     Private Sub VideoMiner_KeyUp(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyUp
-
-
         Dim intIndex As Integer
         'MsgBox(strKeyboardShortcut)
-
         'MsgBox(e.KeyData)
         Select Case strKeyboardShortcut
             Case Keys.Space.ToString
@@ -1123,18 +1102,10 @@ Public Class VideoMiner
         End If
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: mnuOpenFile_Click
-    ' Description: Call Sub openFile() which opens a dialogue for user to select a video file to use in the program
-    ' when the user selects "Open Video File" from the file menu.
-    ' ==========================================================================================================
     Private Sub mnuOpenFile_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuOpenFile.Click
         Me.strPreviousClipTime = Me.txtTime.Text
         If Not myFormLibrary.frmImage Is Nothing Then
-            Dim intAnswer As Integer
-
-            intAnswer = MessageBox.Show("The image file '" & Me.FileName & "' is currently open. In order to open a video, the image will be closed.  Do you want to continue?", "Image File Open", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-
+            Dim intAnswer As Integer = MessageBox.Show("The image file '" & Me.FileName & "' is currently open. In order to open a video, the image will be closed.  Do you want to continue?", "Image File Open", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
             If intAnswer = vbNo Then
                 Exit Sub
             Else
@@ -1152,6 +1123,7 @@ Public Class VideoMiner
         End If
 
         openFile()
+
         If video_file_open Then
             myFormLibrary.frmSetTime = New frmSetTime
             myFormLibrary.frmSetTime.TopLevel = True
@@ -1516,14 +1488,10 @@ Public Class VideoMiner
         Dim strTimeCode As String = getTimeCode()
         Dim arrTimeCode() As String = strTimeCode.Split(":")
 
-        'strUserTime = "00000000"
         myFormLibrary.frmSetTime = New frmSetTime
         myFormLibrary.frmSetTime.TopLevel = True
         myFormLibrary.frmSetTime.BringToFront()
         myFormLibrary.frmSetTime.ShowDialog()
-
-
-
 
         ' Take the user entered time and create a datetime object from it
         'dtUserTime = New DateTime(Now().Year, Now().Month, Now().Day, CType(strUserTime.Substring(0, 2), Integer), CType(strUserTime.Substring(2, 2), Integer), CType(strUserTime.Substring(4, 2), Integer))
@@ -1680,7 +1648,7 @@ Public Class VideoMiner
         End If
 
         If video_file_open And Not booUseGPSTimeCodes Then
-            If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playState = WMPLib.WMPPlayState.wmppsPlaying Then
+            If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.IsPlaying Then
                 blVideoWasPlaying = True
             Else
                 blVideoWasPlaying = False
@@ -2225,7 +2193,7 @@ Public Class VideoMiner
         ' If the video is not open, then we cannot pause the
         ' video stream, and there is no need to get the TimeCode.
         If video_file_open Then
-            If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playState = WMPLib.WMPPlayState.wmppsPlaying Then
+            If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.IsPlaying Then
                 blVideoWasPlaying = True
                 pauseVideo()
             Else
@@ -2236,117 +2204,117 @@ Public Class VideoMiner
             strVideoTextTime = strVideoTime
         End If
 
-        If booUseGPSTimeCodes Then
-            'Otherwise get the time from the NMEA string.
+            If booUseGPSTimeCodes Then
+                'Otherwise get the time from the NMEA string.
 
-            ' The GPRMC NMEA String does not contain elevation values. Enter null into database
-            ' if GPRMC is the chosen string type.
-            blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
-            If Not blAquiredFix Then
-                Exit Sub
+                ' The GPRMC NMEA String does not contain elevation values. Enter null into database
+                ' if GPRMC is the chosen string type.
+                blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+                If Not blAquiredFix Then
+                    Exit Sub
+                End If
             End If
-        End If
-        strVideoTextTime = strVideoTime
-        ' If an image is open and a video is closed, get the photo information from the EXIF file
-        If image_open And video_file_open = False Then
-            Call getEXIFData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
             strVideoTextTime = strVideoTime
-        End If
+            ' If an image is open and a video is closed, get the photo information from the EXIF file
+            If image_open And video_file_open = False Then
+                Call getEXIFData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+                strVideoTextTime = strVideoTime
+            End If
 
-        Try
+            Try
 
-            Dim i As Integer
-            For i = 0 To strHabitatButtonCodeNames.Length - 2
+                Dim i As Integer
+                For i = 0 To strHabitatButtonCodeNames.Length - 2
 
-                If strHabitatButtonTables(i) = "UserEntered" Then
-                    Dim strValue As String
-                    myFormLibrary.frmAddValue = New frmAddValue(dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString))
-                    myFormLibrary.frmAddValue.lblExpression.Text = "Please enter a value for " & strHabitatButtonNames(i) & ":"
-                    myFormLibrary.frmAddValue.Text = strHabitatButtonNames(i) & " Entry"
-                    myFormLibrary.frmAddValue.cmdCancel.Text = "Skip"
-                    myFormLibrary.frmAddValue.ShowDialog()
+                    If strHabitatButtonTables(i) = "UserEntered" Then
+                        Dim strValue As String
+                        myFormLibrary.frmAddValue = New frmAddValue(dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString))
+                        myFormLibrary.frmAddValue.lblExpression.Text = "Please enter a value for " & strHabitatButtonNames(i) & ":"
+                        myFormLibrary.frmAddValue.Text = strHabitatButtonNames(i) & " Entry"
+                        myFormLibrary.frmAddValue.cmdCancel.Text = "Skip"
+                        myFormLibrary.frmAddValue.ShowDialog()
 
-                    strValue = myFormLibrary.frmAddValue.strValue
+                        strValue = myFormLibrary.frmAddValue.strValue
 
-                    strHabitatButtonUserCodeChoice(i) = strValue
-                    myFormLibrary.frmAddValue.Close()
-                    myFormLibrary.frmAddValue = Nothing
-                    dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
-                    dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
-                    strHabitatButtonUserNameChoice(i) = strValue
-                    If strValue = "-9999" Then
-                        ClearSpatial(strHabitatButtonNames(i), intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
-                    Else
-                        Dim _fontfamily As FontFamily
-                        _fontfamily = New FontFamily(Me.ButtonFont)
-                        textboxes(i).Text = strHabitatButtonUserNameChoice(i)
-                        textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                        textboxes(i).BackColor = Color.LightGray
-                        textboxes(i).ForeColor = Color.LimeGreen
-                        textboxes(i).TextAlign = HorizontalAlignment.Center
-                    End If
-
-                Else
-
-                    Dim sub_form As frmTableView = New frmTableView(strHabitatButtonTables(i), i, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
-                    sub_form.Multiple = True
-                    sub_form.ShowDialog()
-                    If Not sub_form.UserClosedForm Then
-                        strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & ""
-                        strHabitatButtonUserCodeChoice(i) = strCode
+                        strHabitatButtonUserCodeChoice(i) = strValue
+                        myFormLibrary.frmAddValue.Close()
+                        myFormLibrary.frmAddValue = Nothing
                         dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
                         dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
-
-                        strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & ""
-
-                        If strName.Length = 0 Then
-                            strName = strCode
+                        strHabitatButtonUserNameChoice(i) = strValue
+                        If strValue = "-9999" Then
+                            ClearSpatial(strHabitatButtonNames(i), intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
+                        Else
+                            Dim _fontfamily As FontFamily
+                            _fontfamily = New FontFamily(Me.ButtonFont)
+                            textboxes(i).Text = strHabitatButtonUserNameChoice(i)
+                            textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
+                            textboxes(i).BackColor = Color.LightGray
+                            textboxes(i).ForeColor = Color.LimeGreen
+                            textboxes(i).TextAlign = HorizontalAlignment.Center
                         End If
-                        strHabitatButtonUserNameChoice(i) = strName
-                        Dim _fontfamily As FontFamily
-                        _fontfamily = New FontFamily(Me.ButtonFont)
-                        textboxes(i).Text = strHabitatButtonUserNameChoice(i)
-                        textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                        textboxes(i).BackColor = Color.LightGray
-                        textboxes(i).ForeColor = Color.LimeGreen
-                        textboxes(i).TextAlign = HorizontalAlignment.Center
+
+                    Else
+
+                        Dim sub_form As frmTableView = New frmTableView(strHabitatButtonTables(i), i, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
+                        sub_form.Multiple = True
+                        sub_form.ShowDialog()
+                        If Not sub_form.UserClosedForm Then
+                            strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & ""
+                            strHabitatButtonUserCodeChoice(i) = strCode
+                            dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
+                            dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
+
+                            strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & ""
+
+                            If strName.Length = 0 Then
+                                strName = strCode
+                            End If
+                            strHabitatButtonUserNameChoice(i) = strName
+                            Dim _fontfamily As FontFamily
+                            _fontfamily = New FontFamily(Me.ButtonFont)
+                            textboxes(i).Text = strHabitatButtonUserNameChoice(i)
+                            textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
+                            textboxes(i).BackColor = Color.LightGray
+                            textboxes(i).ForeColor = Color.LimeGreen
+                            textboxes(i).TextAlign = HorizontalAlignment.Center
+                        End If
                     End If
+                Next
+
+
+
+                strSpeciesCode = "NULL"
+                strSpeciesCount = "NULL"
+                strSide = "NULL"
+                strRange = "NULL"
+                strLength = "NULL"
+                strHeight = "NULL"
+                strWidth = "NULL"
+                strAbundance = "NULL"
+                strIdConfidence = "NULL"
+
+                query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "999", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+                Me.ScreenCaptureName = ""
+                'Debug.WriteLine(query)
+                Dim numrows As Integer
+                Dim oComm As OleDbCommand
+                oComm = New OleDbCommand(query, conn)
+                numrows = oComm.ExecuteNonQuery()
+                fetch_data()
+
+                If blVideoWasPlaying = True Then
+                    playVideo()
+                    blVideoWasPlaying = False
                 End If
-            Next
 
-
-
-            strSpeciesCode = "NULL"
-            strSpeciesCount = "NULL"
-            strSide = "NULL"
-            strRange = "NULL"
-            strLength = "NULL"
-            strHeight = "NULL"
-            strWidth = "NULL"
-            strAbundance = "NULL"
-            strIdConfidence = "NULL"
-
-            query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "999", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
-            Me.ScreenCaptureName = ""
-            'Debug.WriteLine(query)
-            Dim numrows As Integer
-            Dim oComm As OleDbCommand
-            oComm = New OleDbCommand(query, conn)
-            numrows = oComm.ExecuteNonQuery()
-            fetch_data()
-
-            If blVideoWasPlaying = True Then
-                playVideo()
-                blVideoWasPlaying = False
-            End If
-
-        Catch ex As Exception
-            If ex.Message.StartsWith("Syntax") Then
-                MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-            Else
-                MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-            End If
-        End Try
+            Catch ex As Exception
+                If ex.Message.StartsWith("Syntax") Then
+                    MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
+                Else
+                    MsgBox(ex.Message & vbCrLf & ex.StackTrace)
+                End If
+            End Try
     End Sub
 
     Private Sub cmdDefineAllTransectVariables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDefineAllTransectVariables.Click
@@ -2371,7 +2339,7 @@ Public Class VideoMiner
         ' If the video is not open, then we cannot pause the
         ' video stream, and there is no need to get the TimeCode.
         If video_file_open Then
-            If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playState = WMPLib.WMPPlayState.wmppsPlaying Then
+            If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.IsPlaying Then
                 blVideoWasPlaying = True
                 pauseVideo()
             Else
@@ -2516,7 +2484,6 @@ Public Class VideoMiner
                 strVideoTime = GetVideoTime(tc, strVideoDecimalTime)
                 strVideoTextTime = strVideoTime
 
-
                 ' Create a variable intCurrVideoSeconds to store the current video times second value.
                 ' Another global vaiable stores the second value at which the last record was created
                 ' Since we only want to create a record if a second has past, and the timer and thus
@@ -2615,85 +2582,85 @@ Public Class VideoMiner
 
     End Sub
 
-    Private Sub tmrPlayForSeconds_Tick(ByVal sender As Object, ByVal e As System.EventArgs) Handles tmrPlayForSeconds.Tick
+    'Private Sub tmrPlayForSeconds_Tick1(ByVal sender As Object, ByVal e As System.EventArgs) Handles tmrPlayForSeconds.Tick
 
-        Dim dblCurrentSeconds As Double
+    '    Dim dblCurrentSeconds As Double
 
-        Dim strSeconds As String()
+    '    Dim strSeconds As String()
 
-        If myFormLibrary.frmVideoPlayer Is Nothing Then
-            tmrPlayForSeconds.Stop()
-            Exit Sub
-        End If
-        dblCurrentSeconds = myFormLibrary.frmVideoPlayer.dblCurrentVideoTime
+    '    If myFormLibrary.frmVideoPlayer Is Nothing Then
+    '        tmrPlayForSeconds.Stop()
+    '        Exit Sub
+    '    End If
+    '    dblCurrentSeconds = myFormLibrary.frmVideoPlayer.dblCurrentVideoTime
 
-        strSeconds = dblCurrentSeconds.ToString.Split(".")
-        intCurrentPlaySeconds = CInt(strSeconds(0))
-        Dim strVideoTextTime As String = "00:00:00"
-        Dim strVideoDecimalTime As String = "00:00:00.00"
-        strPlaySecondsVideoTime = GetVideoTime(dblCurrentSeconds, strVideoDecimalTime)
-        strVideoTextTime = strPlaySecondsVideoTime
+    '    strSeconds = dblCurrentSeconds.ToString.Split(".")
+    '    intCurrentPlaySeconds = CInt(strSeconds(0))
+    '    Dim strVideoTextTime As String = "00:00:00"
+    '    Dim strVideoDecimalTime As String = "00:00:00.00"
+    '    strPlaySecondsVideoTime = GetVideoTime(dblCurrentSeconds, strVideoDecimalTime)
+    '    strVideoTextTime = strPlaySecondsVideoTime
 
-        ' Check to see if the end play time string is equal to the current video time string
-        ' If so the pause the video and stop the timer
-        If intCurrentPlaySeconds = intEndPlaySeconds Then
+    '    ' Check to see if the end play time string is equal to the current video time string
+    '    ' If so the pause the video and stop the timer
+    '    If intCurrentPlaySeconds = intEndPlaySeconds Then
 
-            pauseVideo()
-            Me.tmrPlayForSeconds.Stop()
-            myFormLibrary.frmVideoPlayer.blIsPlaying = False
-            Me.tmrPlayForSeconds.Enabled = False
-            If Me.chkDefineAll.Checked = True Then
-                Call Me.cmdDefineAllTransectVariables_Click(sender, e)
-                Call Me.cmdDefineAllSpatialVariables_Click(sender, e)
-            End If
-        End If
-        If Me.chkRecordEachSecond.Checked = True Then
-            Dim query As String = ""
-            Dim strX As String = "NULL"
-            Dim strY As String = "NULL"
-            Dim strZ As String = "NULL"
+    '        pauseVideo()
+    '        Me.tmrPlayForSeconds.Stop()
+    '        myFormLibrary.frmVideoPlayer.blIsPlaying = False
+    '        Me.tmrPlayForSeconds.Enabled = False
+    '        If Me.chkDefineAll.Checked = True Then
+    '            Call Me.cmdDefineAllTransectVariables_Click(sender, e)
+    '            Call Me.cmdDefineAllSpatialVariables_Click(sender, e)
+    '        End If
+    '    End If
+    '    If Me.chkRecordEachSecond.Checked = True Then
+    '        Dim query As String = ""
+    '        Dim strX As String = "NULL"
+    '        Dim strY As String = "NULL"
+    '        Dim strZ As String = "NULL"
 
-            If blFirstTime Then
-                intPreviousVideoSeconds = intCurrentPlaySeconds
-                blFirstTime = False
-            End If
+    '        If blFirstTime Then
+    '            intPreviousVideoSeconds = intCurrentPlaySeconds
+    '            blFirstTime = False
+    '        End If
 
-            If intCurrentPlaySeconds <> intPreviousVideoSeconds Then
-                Try
-                    intPreviousVideoSeconds = intCurrentPlaySeconds
+    '        If intCurrentPlaySeconds <> intPreviousVideoSeconds Then
+    '            Try
+    '                intPreviousVideoSeconds = intCurrentPlaySeconds
 
-                    strSpeciesCode = "NULL"
-                    strSpeciesCount = "NULL"
-                    strSide = "NULL"
-                    strRange = "NULL"
-                    strLength = "NULL"
-                    strHeight = "NULL"
-                    strWidth = "NULL"
-                    strAbundance = "NULL"
-                    strIdConfidence = "NULL"
-                    strComment = "NULL"
+    '                strSpeciesCode = "NULL"
+    '                strSpeciesCount = "NULL"
+    '                strSide = "NULL"
+    '                strRange = "NULL"
+    '                strLength = "NULL"
+    '                strHeight = "NULL"
+    '                strWidth = "NULL"
+    '                strAbundance = "NULL"
+    '                strIdConfidence = "NULL"
+    '                strComment = "NULL"
 
-                    query = createInsertQuery(transect_date, transect_name, strPlaySecondsVideoTime, strVideoTextTime, strVideoDecimalTime, "NULL", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+    '                query = createInsertQuery(transect_date, transect_name, strPlaySecondsVideoTime, strVideoTextTime, strVideoDecimalTime, "NULL", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
 
-                    Dim numrows As Integer
-                    Dim oComm As OleDbCommand
-                    oComm = New OleDbCommand(query, conn)
-                    numrows = oComm.ExecuteNonQuery()
-                    fetch_data()
-                Catch ex As Exception
-                    If ex.Message.StartsWith("Syntax") Then
-                        MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-                    Else
-                        MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-                    End If
-                End Try
+    '                Dim numrows As Integer
+    '                Dim oComm As OleDbCommand
+    '                oComm = New OleDbCommand(query, conn)
+    '                numrows = oComm.ExecuteNonQuery()
+    '                fetch_data()
+    '            Catch ex As Exception
+    '                If ex.Message.StartsWith("Syntax") Then
+    '                    MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
+    '                Else
+    '                    MsgBox(ex.Message & vbCrLf & ex.StackTrace)
+    '                End If
+    '            End Try
 
-            End If
-        End If
+    '        End If
+    '    End If
 
 
 
-    End Sub
+    'End Sub
 
     Private Sub chkRepeatVariables_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkRepeatVariables.CheckedChanged
         Dim i As Integer
@@ -2796,7 +2763,7 @@ Public Class VideoMiner
                 strVideoTime = GetVideoTime(tc, strVideoDecimalTime)
                 strVideoTextTime = strVideoTime
                 intPreviousVideoSeconds = CInt(Mid(strVideoTime, 7, 2))
-                If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playState = WMPLib.WMPPlayState.wmppsPlaying Then
+                If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.IsPlaying Then
                     Me.tmrRecordPerSecond.Start()
                 End If
                 'End If
@@ -3206,7 +3173,7 @@ Public Class VideoMiner
                         myFormLibrary.frmVideoPlayer.TopMost = True
                     End If
 
-                    Me.VideoTime = CDbl(strVideoTime)
+                    Me.VideoTime = Parse(strVideoTime)
                     myFormLibrary.frmVideoPlayer.Show()
 
                 Else
@@ -3245,7 +3212,8 @@ Public Class VideoMiner
             If Not myFormLibrary.frmVideoPlayer Is Nothing Then
                 blVideoOpen = True
                 strVideoFileName = strVideoFilePath
-                strVideoTime = CStr(myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition)
+                'strVideoTime = CStr(myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition)
+                strVideoTime = CStr(myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Position)
             Else
                 blVideoOpen = False
                 strVideoFileName = "NULL"
@@ -3328,7 +3296,7 @@ Public Class VideoMiner
         If Not myFormLibrary.frmVideoPlayer Is Nothing Then
             blVideoOpen = True
             strVideoFileName = strVideoFilePath
-            strVideoTime = CStr(myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition)
+            strVideoTime = CStr(myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Position)
         Else
             blVideoOpen = False
             strVideoFileName = "NULL"
@@ -3506,7 +3474,7 @@ Public Class VideoMiner
 
         Dim dblValue As Double = 0
         Try
-            dblValue = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition
+            dblValue = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Position
         Catch ex As Exception
 
         End Try
@@ -3515,12 +3483,6 @@ Public Class VideoMiner
 
     End Function
 
-    ' ==========================================================================================================
-    ' Name: openFile()
-    ' Description: Opens the video file by calling delegate function
-    ' 1.) Load Video File
-    ' 2.) If a database file is loaded already, run the files_loaded() function to Enable Buttons on main form (eg: set transect)
-    ' ==========================================================================================================
     Private Function openFile() As Integer
 
         Dim ofd As OpenFileDialog = New OpenFileDialog
@@ -3531,8 +3493,6 @@ Public Class VideoMiner
         ofd.RestoreDirectory = True
         ofd.Multiselect = False
 
-
-
         If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
             current_directory = ofd.FileName.Substring(0, ofd.FileName.LastIndexOf("\"))
             strVideoFilePath = ofd.FileName
@@ -3542,30 +3502,30 @@ Public Class VideoMiner
         End If
 
         If myFormLibrary.frmVideoPlayer Is Nothing Then
+            Try
+                myFormLibrary.frmVideoPlayer = New frmVideoPlayer
+            Catch ex As Exception
+                MessageBox.Show(ex.Message)
+            End Try
 
-            myFormLibrary.frmVideoPlayer = New frmVideoPlayer
             myFormLibrary.frmVideoPlayer.pnlHideVideo.Visible = True
 
             Dim intX As Integer = 0
             Dim intY As Integer = 0
 
-            Dim intMonitorCount As Integer = 0
-            Dim mon As Screen
-            Dim secMon As Screen
-            Dim priMon As Screen
+            Dim priMon, secMon As Screen
 
-            For Each mon In Screen.AllScreens
-                If Not mon.Primary Then
-                    secMon = mon
-                Else
-                    priMon = mon
-                End If
-                intMonitorCount += 1
-            Next
+            priMon = Screen.AllScreens(0)
+            If Screen.AllScreens.Length > 1 Then
+                ' There is more than one display, make second one the default for video
+                secMon = Screen.AllScreens(1)
+            Else
+                secMon = Nothing
+            End If
 
             Dim aPoint As System.Drawing.Point
 
-            If intMonitorCount = 1 Then
+            If secMon Is Nothing Then
                 aPoint.X = intX
                 aPoint.Y = intY / 2
                 myFormLibrary.frmVideoPlayer.Location = aPoint
@@ -3577,21 +3537,19 @@ Public Class VideoMiner
                 aPoint.X = intX + priMon.Bounds.Width / 3
                 aPoint.Y = intY / 4
                 myFormLibrary.frmVideoPlayer.Location = aPoint
-                myFormLibrary.frmVideoPlayer.WindowState = FormWindowState.Maximized
+                'myFormLibrary.frmVideoPlayer.WindowState = FormWindowState.Maximized
                 myFormLibrary.frmVideoPlayer.TopMost = True
             End If
 
-            Me.VideoTime = 0
+            Me.VideoTime = Zero
             myFormLibrary.frmVideoPlayer.Show()
-            dblVideoTimeUserSet = 0
+            'dblVideoTimeUserSet = 0
         Else
             myFormLibrary.frmVideoPlayer.pnlHideVideo.Visible = True
-            'strPreviousClipTime = Me.txtTime.Text
-            Me.VideoTime = 0
             Call myFormLibrary.frmVideoPlayer.frmVideoPlayer_Load(Me, New System.EventArgs)
+            Me.VideoTime = frmVideoPlayer.tsCurrentVideoTime
         End If
-        'video_file_open = True
-
+        Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Pause_Icon.png")
     End Function
 
     Public Sub enableDisableVideoMenu(ByVal mnuState As Boolean)
@@ -4518,7 +4476,7 @@ Public Class VideoMiner
                 Dim strSeconds As String()
                 Dim intCurrentSeconds As Integer
 
-                dblCurrentSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition
+                dblCurrentSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Position
                 'dblCurrentSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition
 
                 strSeconds = dblCurrentSeconds.ToString.Split(".")
@@ -4546,23 +4504,16 @@ Public Class VideoMiner
     End Sub
 
     Public Sub cmdPlayPause_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPlayPause.Click
-        ' ==========================================================================================================
-        ' Name: ResumeVideo_Click
-        ' Description: Functionality for "Resume Video"/"Pause Video" button.
-        '   1.) If Video is paused when the user clicks the ResumeVideo button, play the video and change
-        '       the ResumeVideo button to read "Pause Video"
-        '   2.) If Video is playing when the user clicks the ResumeVideo button, pause the video and change
-        '       the ResumeVideo button to read "Resume Video"
-        ' ==========================================================================================================    Private Sub ResumeVideo_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
-
-        If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playState = WMPLib.WMPPlayState.wmppsPaused Or myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playState = WMPLib.WMPPlayState.wmppsStopped Then
+        ' If the video is paused or stopped..
+        If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.IsPaused Or Not myFormLibrary.frmVideoPlayer.plyrVideoPlayer.IsPlaying Then
             playVideo()
             If Me.chkRecordEachSecond.Checked = True Then
                 blFirstTime = True
                 Me.tmrRecordPerSecond.Start()
             End If
         Else
+            ' If it is playing then pause it.
             pauseVideo()
         End If
 
@@ -4599,22 +4550,13 @@ Public Class VideoMiner
 
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: playVideo()
-    ' Description: call video controller to StepForwards
-    ' ==========================================================================================================
     Private Sub playVideo()
         Try
-            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.play()
-            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.settings.rate = dblVideoRate
+            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Play()
+            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Rate = dblVideoRate
             myFormLibrary.frmVideoPlayer.blIsPlaying = True
-            myFormLibrary.frmVideoPlayer.tmrCurrentTime.Start()
-
-
-            'myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.play()
-            'myFormLibrary.frmVideoPlayer.plyrVideoPlayer.settings.rate = dblVideoRate
-            'myFormLibrary.frmVideoPlayer.blIsPlaying = True
             'myFormLibrary.frmVideoPlayer.tmrCurrentTime.Start()
+            myFormLibrary.frmVideoPlayer.tmrVideo.Start()
             FfwdCount = 0
             RwndCOunt = 0
             Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Pause_Icon.png")
@@ -4622,7 +4564,6 @@ Public Class VideoMiner
                 myFormLibrary.frmSetTime.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Pause_Icon.png")
             End If
             myFormLibrary.frmVideoPlayer.pctVideoStatus.BackgroundImage = Image.FromFile(filePath & "\Play_Icon_Inverse.png")
-
         Catch ex As Exception
             MsgBox(ex.Message)
             Me.tmrRecordPerSecond.Stop()
@@ -4630,16 +4571,12 @@ Public Class VideoMiner
         End Try
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: StepRev()
-    ' Description: call video controller to step in reverse.
-    ' ==========================================================================================================
     Private Sub increaseRate()
         Try
 
             dblVideoRate = dblVideoRate + 0.25
 
-            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.settings.rate = dblVideoRate
+            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Rate = dblVideoRate
             'myFormLibrary.frmVideoPlayer.plyrVideoPlayer.settings.rate = dblVideoRate
 
             Me.lblVideoRate.Text = dblVideoRate & " X"
@@ -4649,10 +4586,6 @@ Public Class VideoMiner
 
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: StepRev()
-    ' Description: call video controller to step in reverse.
-    ' ==========================================================================================================
     Private Sub decreaseRate()
         Try
 
@@ -4660,7 +4593,7 @@ Public Class VideoMiner
                 dblVideoRate = dblVideoRate - 0.25
             End If
 
-            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.settings.rate = dblVideoRate
+            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Rate = dblVideoRate
             'myFormLibrary.frmVideoPlayer.plyrVideoPlayer.settings.rate = dblVideoRate
 
 
@@ -4672,147 +4605,159 @@ Public Class VideoMiner
     End Sub
 
     Private Sub StepForward()
+        ' This function steps forward the video by 10% based on where the video is currently and the duration of the video
+        ' I am going to try to make this button a frame stepper, using keyframes.
 
-        'Debug.Print(myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playlist.isPlaying)
+        myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Pause()
+        myFormLibrary.frmVideoPlayer.plyrVideoPlayer.NextFrame()
+        Dim dblCurrentPosition = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Position * 100.0
 
-        Dim dblDurationSeconds As Double = 0
-        Dim dblCurrentSeconds As Double = 0
-
-        dblCurrentSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition
-        dblDurationSeconds = myFormLibrary.frmVideoPlayer.dblDuration
-
-
-        'dblCurrentSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition
-        'dblDurationSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.currentMedia.duration
-
-        Dim dblDuration As Double
-        dblDuration = myFormLibrary.frmVideoPlayer.dblDuration
-        'dblDuration = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.currentMedia.duration
-        Dim intValue As Integer
-
-        intValue = CInt((dblCurrentSeconds / dblDuration) * 100)
-
-
-        Select Case intValue
-
-            Case Is < 10
-                intValue = 10
-            Case Is < 20
-                intValue = 20
-            Case Is < 30
-                intValue = 30
-            Case Is < 40
-                intValue = 40
-            Case Is < 50
-                intValue = 50
-            Case Is < 60
-                intValue = 60
-            Case Is < 70
-                intValue = 70
-            Case Is < 80
-                intValue = 80
-            Case Is < 90
-                intValue = 90
-            Case Is < 100
-                intValue = 100
-            Case Else
-                Exit Sub
-        End Select
-
-        myFormLibrary.frmVideoPlayer.blChapter = True
-        myFormLibrary.frmVideoPlayer.trkCurrentPosition.Value = intValue
-
-
-        'plyrVideoPlayer.Ctlcontrols.currentPosition = dblValue * plyrVideoPlayer.currentMedia.duration
-
-        Dim strCurrentTime As String = ""
-        Dim strDurationTime As String = ""
-
-
-        'dblCurrentSeconds = plyrVideoPlayer.Ctlcontrols.currentPosition
-        'dblDurationSeconds = plyrVideoPlayer.currentMedia.duration - dblCurrentSeconds
-
-
-
-        myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition = myFormLibrary.frmVideoPlayer.dblDuration * (intValue / 100)
-        strCurrentTime = createTimeString(myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition)
-        strDurationTime = createTimeString(dblDurationSeconds)
-        myFormLibrary.frmVideoPlayer.lblCurrentTime.Text = strCurrentTime
-        myFormLibrary.frmVideoPlayer.lblDuration.Text = strDurationTime
-
-        'If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.input.state = 2 Then
-        '    MsgBox("Buffering")
-        'Else
-        '    MsgBox("Playing")
-        'End If
 
     End Sub
 
-    Private Sub StepBackward()
-        Dim dblDurationSeconds As Double = 0
-        Dim dblCurrentSeconds As Double = 0
+    'Private Sub StepForward_old()
+    '    ' This function steps forward the video by 10% based on where the video is currently and the duration of the video
+    '    ' I am going to try to make this button a frame stepper, using keyframes.
+    '    'Debug.Print(myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playlist.isPlaying)
 
-        dblCurrentSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition
-        dblDurationSeconds = myFormLibrary.frmVideoPlayer.dblDuration
+    '    Dim dblDurationSeconds As Double = 0
+    '    Dim dblCurrentSeconds As Double = 0
 
-        'dblCurrentSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition
-        'dblDurationSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.currentMedia.duration
-
-        Dim dblDuration As Double
-        dblDuration = myFormLibrary.frmVideoPlayer.dblDuration
-        'dblDuration = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.currentMedia.duration
-        Dim intValue As Integer
-
-        intValue = CInt((dblCurrentSeconds / dblDuration) * 100)
+    '    dblCurrentSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Position
+    '    dblDurationSeconds = myFormLibrary.frmVideoPlayer.dblDuration
 
 
-        Select Case intValue
-            Case Is > 90
-                intValue = 90
-            Case Is > 80
-                intValue = 80
-            Case Is > 70
-                intValue = 70
-            Case Is > 60
-                intValue = 60
-            Case Is > 50
-                intValue = 50
-            Case Is > 40
-                intValue = 40
-            Case Is > 30
-                intValue = 30
-            Case Is > 20
-                intValue = 20
-            Case Is > 10
-                intValue = 10
-            Case Is > 0
-                intValue = 0
-                dblCurrentSeconds = 0
-            Case Else
-                Exit Sub
-        End Select
+    '    'dblCurrentSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition
+    '    'dblDurationSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.currentMedia.duration
 
-        myFormLibrary.frmVideoPlayer.blChapter = True
-        myFormLibrary.frmVideoPlayer.trkCurrentPosition.Value = intValue
+    '    Dim dblDuration As Double
+    '    dblDuration = myFormLibrary.frmVideoPlayer.dblDuration
+    '    'dblDuration = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.currentMedia.duration
+    '    Dim intValue As Integer
+
+    '    intValue = CInt((dblCurrentSeconds / dblDuration) * 100)
 
 
-        'plyrVideoPlayer.Ctlcontrols.currentPosition = dblValue * plyrVideoPlayer.currentMedia.duration
+    '    Select Case intValue
 
-        Dim strCurrentTime As String = ""
-        Dim strDurationTime As String = ""
+    '        Case Is < 10
+    '            intValue = 10
+    '        Case Is < 20
+    '            intValue = 20
+    '        Case Is < 30
+    '            intValue = 30
+    '        Case Is < 40
+    '            intValue = 40
+    '        Case Is < 50
+    '            intValue = 50
+    '        Case Is < 60
+    '            intValue = 60
+    '        Case Is < 70
+    '            intValue = 70
+    '        Case Is < 80
+    '            intValue = 80
+    '        Case Is < 90
+    '            intValue = 90
+    '        Case Is < 100
+    '            intValue = 100
+    '        Case Else
+    '            Exit Sub
+    '    End Select
+
+    '    myFormLibrary.frmVideoPlayer.blChapter = True
+    '    myFormLibrary.frmVideoPlayer.trkCurrentPosition.Value = intValue
 
 
-        'dblCurrentSeconds = plyrVideoPlayer.Ctlcontrols.currentPosition
-        'dblDurationSeconds = plyrVideoPlayer.currentMedia.duration - dblCurrentSeconds
+    '    'plyrVideoPlayer.Ctlcontrols.currentPosition = dblValue * plyrVideoPlayer.currentMedia.duration
+
+    '    Dim strCurrentTime As String = ""
+    '    Dim strDurationTime As String = ""
+
+
+    '    'dblCurrentSeconds = plyrVideoPlayer.Ctlcontrols.currentPosition
+    '    'dblDurationSeconds = plyrVideoPlayer.currentMedia.duration - dblCurrentSeconds
 
 
 
-        myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition = myFormLibrary.frmVideoPlayer.dblDuration * (intValue / 100)
-        strCurrentTime = createTimeString(myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition)
-        strDurationTime = createTimeString(dblDurationSeconds)
-        myFormLibrary.frmVideoPlayer.lblCurrentTime.Text = strCurrentTime
-        myFormLibrary.frmVideoPlayer.lblDuration.Text = strDurationTime
-    End Sub
+    '    myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Position = myFormLibrary.frmVideoPlayer.dblDuration * (intValue / 100)
+    '    'strCurrentTime = createTimeString(myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Position)
+    '    'strDurationTime = createTimeString(dblDurationSeconds)
+    '    myFormLibrary.frmVideoPlayer.lblCurrentTime.Text = strCurrentTime
+    '    myFormLibrary.frmVideoPlayer.lblDuration.Text = strDurationTime
+
+    '    'If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.input.state = 2 Then
+    '    '    MsgBox("Buffering")
+    '    'Else
+    '    '    MsgBox("Playing")
+    '    'End If
+
+    'End Sub
+
+    'Private Sub StepBackward()
+    '    Dim dblDurationSeconds As Double = 0
+    '    Dim dblCurrentSeconds As Double = 0
+
+    '    dblCurrentSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Position
+    '    dblDurationSeconds = myFormLibrary.frmVideoPlayer.dblDuration
+
+    '    'dblCurrentSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition
+    '    'dblDurationSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.currentMedia.duration
+
+    '    Dim dblDuration As Double
+    '    dblDuration = myFormLibrary.frmVideoPlayer.dblDuration
+    '    'dblDuration = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.currentMedia.duration
+    '    Dim intValue As Integer
+
+    '    intValue = CInt((dblCurrentSeconds / dblDuration) * 100)
+
+
+    '    Select Case intValue
+    '        Case Is > 90
+    '            intValue = 90
+    '        Case Is > 80
+    '            intValue = 80
+    '        Case Is > 70
+    '            intValue = 70
+    '        Case Is > 60
+    '            intValue = 60
+    '        Case Is > 50
+    '            intValue = 50
+    '        Case Is > 40
+    '            intValue = 40
+    '        Case Is > 30
+    '            intValue = 30
+    '        Case Is > 20
+    '            intValue = 20
+    '        Case Is > 10
+    '            intValue = 10
+    '        Case Is > 0
+    '            intValue = 0
+    '            dblCurrentSeconds = 0
+    '        Case Else
+    '            Exit Sub
+    '    End Select
+
+    '    myFormLibrary.frmVideoPlayer.blChapter = True
+    '    myFormLibrary.frmVideoPlayer.trkCurrentPosition.Value = intValue
+
+
+    '    'plyrVideoPlayer.Ctlcontrols.currentPosition = dblValue * plyrVideoPlayer.currentMedia.duration
+
+    '    Dim strCurrentTime As String = ""
+    '    Dim strDurationTime As String = ""
+
+
+    '    'dblCurrentSeconds = plyrVideoPlayer.Ctlcontrols.currentPosition
+    '    'dblDurationSeconds = plyrVideoPlayer.currentMedia.duration - dblCurrentSeconds
+
+
+
+    '    myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Position = myFormLibrary.frmVideoPlayer.dblDuration * (intValue / 100)
+    '    'strCurrentTime = createTimeString(myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Position)
+    '    'strDurationTime = createTimeString(dblDurationSeconds)
+    '    myFormLibrary.frmVideoPlayer.lblCurrentTime.Text = strCurrentTime
+    '    myFormLibrary.frmVideoPlayer.lblDuration.Text = strDurationTime
+    'End Sub
 
     ' ==========================================================================================================
     ' Name: pauseVideo()
@@ -4820,13 +4765,13 @@ Public Class VideoMiner
     ' ==========================================================================================================
     Private Sub pauseVideo()
         Try
-            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.pause()
+            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Pause()
             'myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.pause()
             If Me.tmrRecordPerSecond.Enabled Then
                 Me.tmrRecordPerSecond.Stop()
             End If
-            If myFormLibrary.frmVideoPlayer.tmrCurrentTime.Enabled Then
-                myFormLibrary.frmVideoPlayer.tmrCurrentTime.Stop()
+            If myFormLibrary.frmVideoPlayer.tmrVideo.Enabled Then
+                myFormLibrary.frmVideoPlayer.tmrVideo.Stop()
             End If
             myFormLibrary.frmVideoPlayer.blIsPlaying = False
             Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Play_Icon.png")
@@ -4850,15 +4795,15 @@ Public Class VideoMiner
     Private Sub stopVideo()
 
         Try
-            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.stop()
+            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Stop()
             'myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.stop()
             If Me.tmrRecordPerSecond.Enabled Then
                 Me.tmrRecordPerSecond.Stop()
             End If
-            myFormLibrary.frmVideoPlayer.tmrCurrentTime.Stop()
+            myFormLibrary.frmVideoPlayer.tmrVideo.Stop()
             myFormLibrary.frmVideoPlayer.blIsPlaying = False
             myFormLibrary.frmVideoPlayer.trkCurrentPosition.Value = 0
-            myFormLibrary.frmVideoPlayer.lblCurrentTime.Text = createElapsedTimeString(0)
+            'myFormLibrary.frmVideoPlayer.lblCurrentTime.Text = "00:00:00"
         Catch ex As Exception
 
         End Try
@@ -5256,7 +5201,7 @@ Public Class VideoMiner
         End If
         insert_string = insert_string & ") "
 
-        Dim strConfigFile As String = strconfigFilePath & "\VideoMinerConfigurationDetails.xml"
+        Dim strConfigFile As String = strConfigFilePath & "\VideoMinerConfigurationDetails.xml"
         Dim strDatabaseName As String = GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/Database/Configuration/DatabaseName")
         Dim strColumns As String = GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/Database/Configuration/Columns")
         Dim strColumnArray() As String = strColumns.Split(",")
@@ -5863,7 +5808,7 @@ SkipInsertComma:
         ' If the video is not open, then we cannot pause the
         ' video stream, and there is no need to get the TimeCode.
         If video_file_open And Not booUseGPSTimeCodes Then
-            If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playState = WMPLib.WMPPlayState.wmppsPlaying Then
+            If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.IsPlaying Then
                 blVideoWasPlaying = True
             Else
                 blVideoWasPlaying = False
@@ -6285,8 +6230,8 @@ SkipInsertComma:
         ' If the video is not open, then we cannot pause the
         ' video stream, and there is no need to get the TimeCode.
         If video_file_open Then
-            If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playState = WMPLib.WMPPlayState.wmppsPlaying Then
-                If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playState = WMPLib.WMPPlayState.wmppsPlaying Then
+            If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.IsPlaying Then
+                If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.IsPlaying Then
                     blVideoWasPlaying = True
                 Else
                     blVideoWasPlaying = False
@@ -6598,7 +6543,7 @@ SkipInsertComma:
         ' If the video is not open, then we cannot pause the
         ' video stream, and there is no need to get the TimeCode.
         If video_file_open Then
-            If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playState = WMPLib.WMPPlayState.wmppsPlaying Then
+            If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.IsPlaying Then
                 pauseVideo()
             End If
             tc = getTimeCode()
@@ -7043,7 +6988,6 @@ SkipInsertComma:
     End Sub
 
     Public Sub cmdStop_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdStop.Click
-
         Call stopVideo()
         Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Play_Icon.png")
         myFormLibrary.frmVideoPlayer.pctVideoStatus.BackgroundImage = Image.FromFile(filePath & "\Stop_Icon_Inverse.png")
@@ -7051,29 +6995,31 @@ SkipInsertComma:
 
     Private Sub cmdIncreaseRate_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdIncreaseRate.Click
 
-        If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.settings.isAvailable("rate") Then
-            Call increaseRate()
-        Else
-            If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.isAvailable("FastForward") And myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playState <> WMPLib.WMPPlayState.wmppsScanForward Then
-                myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.fastForward()
-                Me.LblRate.Text = "5.0 X"
-            End If
+        increaseRate()
+        'If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.settings.isAvailable("rate") Then
+        ' Call increaseRate()
+        'Else
+        'If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.isAvailable("FastForward") And myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playState <> WMPLib.WMPPlayState.wmppsScanForward Then
+        ' myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.fastForward()
+        ' Me.LblRate.Text = "5.0 X"
+        ' End If
 
-        End If
+        'End If
 
 
     End Sub
 
     Private Sub cmdDecreaseRate_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDecreaseRate.Click
 
-        If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.settings.isAvailable("rate") Then
-            Call decreaseRate()
-        Else
-            If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.isAvailable("FastForward") And myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playState = WMPLib.WMPPlayState.wmppsScanForward Then
-                myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.play()
-                Me.LblRate.Text = "1.0 X"
-            End If
-        End If
+        decreaseRate()
+        'If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.settings.isAvailable("rate") Then
+        ' Call decreaseRate()
+        'Else
+        'If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.isAvailable("FastForward") And myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playState = WMPLib.WMPPlayState.wmppsScanForward Then
+        'myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.play()
+        'Me.LblRate.Text = "1.0 X"
+        'End If
+        'End If
 
 
     End Sub
@@ -7135,7 +7081,7 @@ SkipInsertComma:
     End Sub
 
     Public Sub cmdPrevious_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPrevious.Click
-        Call StepBackward()
+        'Call StepBackward()
     End Sub
 
     'Private Sub chkResumeVideo_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkResumeVideo.CheckedChanged
@@ -7195,11 +7141,8 @@ SkipInsertComma:
         'End If
     End Sub
 
-
-
     ' Handles updating the NMEA text box
     Public Sub updateTextBox()
-
 
         Try
             strTimeDateSource = "GPS"
@@ -7347,10 +7290,9 @@ SkipInsertComma:
         End If
     End Sub
 
-
     Private Sub pnlSpeciesData_SizeChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles pnlSpeciesData.SizeChanged
         If db_file_open Then
-           
+
             Me.pnlSpeciesData.Controls.Clear()
             Call fillSpeciesVariableButtonPanel()
         End If
@@ -7505,7 +7447,7 @@ SkipInsertComma:
                     dataColumns.Add(dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width)
                     strColumns = strColumns & dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width & ","
                 Next
-                Dim strConfigFile As String = strconfigFilePath & "\VideoMinerConfigurationDetails.xml"
+                Dim strConfigFile As String = strConfigFilePath & "\VideoMinerConfigurationDetails.xml"
                 SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/Database/Configuration/DatabaseName", db_filename)
                 SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/Database/Configuration/Columns", strColumns.Substring(0, strColumns.Length - 1))
             End If
@@ -7522,10 +7464,11 @@ SkipInsertComma:
                     dataColumns.Add(dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width)
                     strColumns = strColumns & dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width & ","
                 Next
-                Dim strConfigFile As String = strconfigFilePath & "\VideoMinerConfigurationDetails.xml"
+                Dim strConfigFile As String = strConfigFilePath & "\VideoMinerConfigurationDetails.xml"
                 SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/Database/Configuration/DatabaseName", db_filename)
                 SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/Database/Configuration/Columns", strColumns.Substring(0, strColumns.Length - 1))
             End If
         End If
     End Sub
+
 End Class

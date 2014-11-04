@@ -19,174 +19,181 @@ Partial Class VideoMiner
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(VideoMiner))
-        Me.mnStrVideoMinerMenu = New System.Windows.Forms.MenuStrip
-        Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuOpenDatabase = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuCloseDatabase = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuOpenSession = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuSaveSession = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuSaveSessionAs = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuRefreshForm = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuVideoTools = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuOpenFile = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuUseExternalVideo = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuPlay = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuPause = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuStop = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuCapScr = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuNameOptionRoot = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuNameOption_1 = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuNameOption_2 = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuNameOption_3 = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuNameOption_4 = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuNameOption_5 = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuNameOption_6 = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuNameOption_7 = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuNameOption_8 = New System.Windows.Forms.ToolStripMenuItem
-        Me.MnuNameOption_9 = New System.Windows.Forms.ToolStripMenuItem
-        Me.CloseVideoFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuImageTools = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuOpenImg = New System.Windows.Forms.ToolStripMenuItem
-        Me.NextImageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.PreviousImageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.CloseImageFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.ZoomToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuImageZoom25 = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuImageZoom50 = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuImageZoom75 = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuImageZoom100 = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuImageZoom200 = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuConfigureTools = New System.Windows.Forms.ToolStripMenuItem
-        Me.ConfigureSpeciesEventToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.ConfigureHabitatButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.ConfigureTransectButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.ConfigureButtonFormatToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.DisableHabitatButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.EditLookupTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.GPSToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuGPSSettings = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuUseGPSTimeCodes = New System.Windows.Forms.ToolStripMenuItem
-        Me.DeviceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.DeviceControl = New System.Windows.Forms.ToolStripMenuItem
-        Me.RelayConfigurationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.mnuAbout = New System.Windows.Forms.ToolStripMenuItem
-        Me.KeyboardShortcutsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.DataCodeAssignmentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem
-        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip
-        Me.lblDatabase = New System.Windows.Forms.ToolStripStatusLabel
-        Me.ToolStripStatusLabel1 = New System.Windows.Forms.ToolStripStatusLabel
-        Me.lblVideo = New System.Windows.Forms.ToolStripStatusLabel
-        Me.SplitContainer5 = New System.Windows.Forms.SplitContainer
-        Me.SplitContainer4 = New System.Windows.Forms.SplitContainer
-        Me.lblZValue = New System.Windows.Forms.Label
-        Me.lblYValue = New System.Windows.Forms.Label
-        Me.lblGPSConnectionValue = New System.Windows.Forms.Label
-        Me.lblZ = New System.Windows.Forms.Label
-        Me.lblY = New System.Windows.Forms.Label
-        Me.lblGPSLocation = New System.Windows.Forms.Label
-        Me.lblGPSConnection = New System.Windows.Forms.Label
-        Me.lblXValue = New System.Windows.Forms.Label
-        Me.lblGPSPortValue = New System.Windows.Forms.Label
-        Me.lblX = New System.Windows.Forms.Label
-        Me.lblGPSPort = New System.Windows.Forms.Label
-        Me.txtNMEA = New System.Windows.Forms.TextBox
-        Me.SplitContainer1 = New System.Windows.Forms.SplitContainer
-        Me.SplitContainer3 = New System.Windows.Forms.SplitContainer
-        Me.cmdCloseCalendar = New System.Windows.Forms.Button
-        Me.mnthCalendar = New System.Windows.Forms.MonthCalendar
-        Me.pnlImageControls = New System.Windows.Forms.Panel
-        Me.lblImageControls = New System.Windows.Forms.Label
-        Me.cmdPreviousImage = New System.Windows.Forms.Button
-        Me.lblImageSize = New System.Windows.Forms.Label
-        Me.cmdNextImage = New System.Windows.Forms.Button
-        Me.cboZoom = New System.Windows.Forms.ComboBox
-        Me.pnlVideoControls = New System.Windows.Forms.Panel
-        Me.chkDefineAll = New System.Windows.Forms.CheckBox
-        Me.chkResumeVideo = New System.Windows.Forms.CheckBox
-        Me.cmdScreenCapture = New System.Windows.Forms.Button
-        Me.cmdNext = New System.Windows.Forms.Button
-        Me.cmdPrevious = New System.Windows.Forms.Button
-        Me.lblVideoRate = New System.Windows.Forms.Label
-        Me.LblRate = New System.Windows.Forms.Label
-        Me.cmdStop = New System.Windows.Forms.Button
-        Me.lblVideoControls = New System.Windows.Forms.Label
-        Me.cmdPlayPause = New System.Windows.Forms.Button
-        Me.cmdIncreaseRate = New System.Windows.Forms.Button
-        Me.cmdDecreaseRate = New System.Windows.Forms.Button
-        Me.cmdPlayForSeconds = New System.Windows.Forms.Button
-        Me.txtPlaySeconds = New System.Windows.Forms.TextBox
-        Me.txtTransectDate = New System.Windows.Forms.TextBox
-        Me.chkRecordEachSecond = New System.Windows.Forms.CheckBox
-        Me.txtProjectName = New System.Windows.Forms.TextBox
-        Me.txtTimeSource = New System.Windows.Forms.TextBox
-        Me.txtTime = New System.Windows.Forms.TextBox
-        Me.txtDateSource = New System.Windows.Forms.TextBox
-        Me.txtTransectTextbox = New System.Windows.Forms.TextBox
-        Me.lblProjectName = New System.Windows.Forms.Label
-        Me.txtOnOffBottomTextbox = New System.Windows.Forms.TextBox
-        Me.cmdOffBottom = New System.Windows.Forms.Button
-        Me.lblTransectDate = New System.Windows.Forms.Label
-        Me.cmdTransectEnd = New System.Windows.Forms.Button
-        Me.cmdTransectStart = New System.Windows.Forms.Button
-        Me.cmdShowSetTimecode = New System.Windows.Forms.Button
-        Me.SplitContainer2 = New System.Windows.Forms.SplitContainer
-        Me.SplitContainer6 = New System.Windows.Forms.SplitContainer
-        Me.SplitContainer7 = New System.Windows.Forms.SplitContainer
-        Me.pnlTransectData = New System.Windows.Forms.Panel
-        Me.cmdDefineAllTransectVariables = New System.Windows.Forms.Button
-        Me.lblTransectData = New System.Windows.Forms.Label
-        Me.pnlHabitatData = New System.Windows.Forms.Panel
-        Me.cmdDefineAllSpatialVariables = New System.Windows.Forms.Button
-        Me.lblHabitatData = New System.Windows.Forms.Label
-        Me.chkRepeatVariables = New System.Windows.Forms.CheckBox
-        Me.pnlSpeciesEntryControls = New System.Windows.Forms.Panel
-        Me.cmdRareSpeciesLookup = New System.Windows.Forms.Button
-        Me.radQuickEntry = New System.Windows.Forms.RadioButton
-        Me.cmdEdit = New System.Windows.Forms.Button
-        Me.radAbundanceEntry = New System.Windows.Forms.RadioButton
-        Me.radDetailedEntry = New System.Windows.Forms.RadioButton
-        Me.lblQuickSpeciesCount = New System.Windows.Forms.Label
-        Me.txtQuickSpeciesCount = New System.Windows.Forms.TextBox
-        Me.pnlSpeciesData = New System.Windows.Forms.Panel
-        Me.lblSpeciesData = New System.Windows.Forms.Label
-        Me.cmdNothingInPhoto = New System.Windows.Forms.Button
-        Me.lblDisplayRecords = New System.Windows.Forms.Label
-        Me.cmdDeleteLastRecord = New System.Windows.Forms.Button
-        Me.cmdRefreshDatabase = New System.Windows.Forms.Button
-        Me.txtDisplayRecords = New System.Windows.Forms.TextBox
-        Me.cmdAddComment = New System.Windows.Forms.Button
-        Me.grdVideoMinerDatabase = New System.Windows.Forms.DataGridView
-        Me.fldlgOpenFD = New System.Windows.Forms.OpenFileDialog
+        Me.mnStrVideoMinerMenu = New System.Windows.Forms.MenuStrip()
+        Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuOpenDatabase = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuCloseDatabase = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuOpenSession = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuSaveSession = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuSaveSessionAs = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuRefreshForm = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuVideoTools = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuOpenFile = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuUseExternalVideo = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuPlay = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuPause = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuStop = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuCapScr = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuNameOptionRoot = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuNameOption_1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuNameOption_2 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuNameOption_3 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuNameOption_4 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuNameOption_5 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuNameOption_6 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuNameOption_7 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuNameOption_8 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MnuNameOption_9 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CloseVideoFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuImageTools = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuOpenImg = New System.Windows.Forms.ToolStripMenuItem()
+        Me.NextImageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PreviousImageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CloseImageFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ZoomToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuImageZoom25 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuImageZoom50 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuImageZoom75 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuImageZoom100 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuImageZoom200 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuConfigureTools = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfigureSpeciesEventToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfigureHabitatButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfigureTransectButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfigureButtonFormatToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DisableHabitatButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.EditLookupTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.GPSToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuGPSSettings = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuUseGPSTimeCodes = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DeviceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DeviceControl = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RelayConfigurationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuAbout = New System.Windows.Forms.ToolStripMenuItem()
+        Me.KeyboardShortcutsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DataCodeAssignmentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
+        Me.lblDatabase = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ToolStripStatusLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.lblVideo = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.SplitContainer5 = New System.Windows.Forms.SplitContainer()
+        Me.SplitContainer4 = New System.Windows.Forms.SplitContainer()
+        Me.lblZValue = New System.Windows.Forms.Label()
+        Me.lblYValue = New System.Windows.Forms.Label()
+        Me.lblGPSConnectionValue = New System.Windows.Forms.Label()
+        Me.lblZ = New System.Windows.Forms.Label()
+        Me.lblY = New System.Windows.Forms.Label()
+        Me.lblGPSLocation = New System.Windows.Forms.Label()
+        Me.lblGPSConnection = New System.Windows.Forms.Label()
+        Me.lblXValue = New System.Windows.Forms.Label()
+        Me.lblGPSPortValue = New System.Windows.Forms.Label()
+        Me.lblX = New System.Windows.Forms.Label()
+        Me.lblGPSPort = New System.Windows.Forms.Label()
+        Me.txtNMEA = New System.Windows.Forms.TextBox()
+        Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
+        Me.SplitContainer3 = New System.Windows.Forms.SplitContainer()
+        Me.cmdCloseCalendar = New System.Windows.Forms.Button()
+        Me.mnthCalendar = New System.Windows.Forms.MonthCalendar()
+        Me.pnlImageControls = New System.Windows.Forms.Panel()
+        Me.lblImageControls = New System.Windows.Forms.Label()
+        Me.cmdPreviousImage = New System.Windows.Forms.Button()
+        Me.lblImageSize = New System.Windows.Forms.Label()
+        Me.cmdNextImage = New System.Windows.Forms.Button()
+        Me.cboZoom = New System.Windows.Forms.ComboBox()
+        Me.pnlVideoControls = New System.Windows.Forms.Panel()
+        Me.chkDefineAll = New System.Windows.Forms.CheckBox()
+        Me.chkResumeVideo = New System.Windows.Forms.CheckBox()
+        Me.cmdScreenCapture = New System.Windows.Forms.Button()
+        Me.cmdNext = New System.Windows.Forms.Button()
+        Me.cmdPrevious = New System.Windows.Forms.Button()
+        Me.lblVideoRate = New System.Windows.Forms.Label()
+        Me.LblRate = New System.Windows.Forms.Label()
+        Me.cmdStop = New System.Windows.Forms.Button()
+        Me.lblVideoControls = New System.Windows.Forms.Label()
+        Me.cmdPlayPause = New System.Windows.Forms.Button()
+        Me.cmdIncreaseRate = New System.Windows.Forms.Button()
+        Me.cmdDecreaseRate = New System.Windows.Forms.Button()
+        Me.cmdPlayForSeconds = New System.Windows.Forms.Button()
+        Me.txtPlaySeconds = New System.Windows.Forms.TextBox()
+        Me.txtTransectDate = New System.Windows.Forms.TextBox()
+        Me.chkRecordEachSecond = New System.Windows.Forms.CheckBox()
+        Me.txtProjectName = New System.Windows.Forms.TextBox()
+        Me.txtTimeSource = New System.Windows.Forms.TextBox()
+        Me.txtTime = New System.Windows.Forms.TextBox()
+        Me.txtDateSource = New System.Windows.Forms.TextBox()
+        Me.txtTransectTextbox = New System.Windows.Forms.TextBox()
+        Me.lblProjectName = New System.Windows.Forms.Label()
+        Me.txtOnOffBottomTextbox = New System.Windows.Forms.TextBox()
+        Me.cmdOffBottom = New System.Windows.Forms.Button()
+        Me.lblTransectDate = New System.Windows.Forms.Label()
+        Me.cmdTransectEnd = New System.Windows.Forms.Button()
+        Me.cmdTransectStart = New System.Windows.Forms.Button()
+        Me.cmdShowSetTimecode = New System.Windows.Forms.Button()
+        Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
+        Me.SplitContainer6 = New System.Windows.Forms.SplitContainer()
+        Me.SplitContainer7 = New System.Windows.Forms.SplitContainer()
+        Me.pnlTransectData = New System.Windows.Forms.Panel()
+        Me.cmdDefineAllTransectVariables = New System.Windows.Forms.Button()
+        Me.lblTransectData = New System.Windows.Forms.Label()
+        Me.pnlHabitatData = New System.Windows.Forms.Panel()
+        Me.cmdDefineAllSpatialVariables = New System.Windows.Forms.Button()
+        Me.lblHabitatData = New System.Windows.Forms.Label()
+        Me.chkRepeatVariables = New System.Windows.Forms.CheckBox()
+        Me.pnlSpeciesEntryControls = New System.Windows.Forms.Panel()
+        Me.cmdRareSpeciesLookup = New System.Windows.Forms.Button()
+        Me.radQuickEntry = New System.Windows.Forms.RadioButton()
+        Me.cmdEdit = New System.Windows.Forms.Button()
+        Me.radAbundanceEntry = New System.Windows.Forms.RadioButton()
+        Me.radDetailedEntry = New System.Windows.Forms.RadioButton()
+        Me.lblQuickSpeciesCount = New System.Windows.Forms.Label()
+        Me.txtQuickSpeciesCount = New System.Windows.Forms.TextBox()
+        Me.pnlSpeciesData = New System.Windows.Forms.Panel()
+        Me.lblSpeciesData = New System.Windows.Forms.Label()
+        Me.cmdNothingInPhoto = New System.Windows.Forms.Button()
+        Me.lblDisplayRecords = New System.Windows.Forms.Label()
+        Me.cmdDeleteLastRecord = New System.Windows.Forms.Button()
+        Me.cmdRefreshDatabase = New System.Windows.Forms.Button()
+        Me.txtDisplayRecords = New System.Windows.Forms.TextBox()
+        Me.cmdAddComment = New System.Windows.Forms.Button()
+        Me.grdVideoMinerDatabase = New System.Windows.Forms.DataGridView()
+        Me.fldlgOpenFD = New System.Windows.Forms.OpenFileDialog()
         Me.tmrRecordPerSecond = New System.Windows.Forms.Timer(Me.components)
         Me.tmrPlayForSeconds = New System.Windows.Forms.Timer(Me.components)
-        Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog
-        Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog
+        Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
+        Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrGPSExpiry = New System.Windows.Forms.Timer(Me.components)
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
+        CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer5.Panel1.SuspendLayout()
         Me.SplitContainer5.Panel2.SuspendLayout()
         Me.SplitContainer5.SuspendLayout()
+        CType(Me.SplitContainer4, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer4.Panel1.SuspendLayout()
         Me.SplitContainer4.Panel2.SuspendLayout()
         Me.SplitContainer4.SuspendLayout()
+        CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
+        CType(Me.SplitContainer3, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer3.Panel1.SuspendLayout()
         Me.SplitContainer3.Panel2.SuspendLayout()
         Me.SplitContainer3.SuspendLayout()
         Me.pnlImageControls.SuspendLayout()
         Me.pnlVideoControls.SuspendLayout()
+        CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer2.Panel1.SuspendLayout()
         Me.SplitContainer2.Panel2.SuspendLayout()
         Me.SplitContainer2.SuspendLayout()
+        CType(Me.SplitContainer6, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer6.Panel1.SuspendLayout()
         Me.SplitContainer6.Panel2.SuspendLayout()
         Me.SplitContainer6.SuspendLayout()
+        CType(Me.SplitContainer7, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer7.Panel1.SuspendLayout()
         Me.SplitContainer7.Panel2.SuspendLayout()
         Me.SplitContainer7.SuspendLayout()
@@ -1274,8 +1281,8 @@ Partial Class VideoMiner
         'pnlTransectData
         '
         Me.pnlTransectData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pnlTransectData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.pnlTransectData.Controls.Add(Me.cmdDefineAllTransectVariables)
         Me.pnlTransectData.Controls.Add(Me.lblTransectData)
@@ -1308,8 +1315,8 @@ Partial Class VideoMiner
         'pnlHabitatData
         '
         Me.pnlHabitatData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pnlHabitatData.AutoScroll = True
         Me.pnlHabitatData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.pnlHabitatData.Controls.Add(Me.cmdDefineAllSpatialVariables)
@@ -1358,7 +1365,7 @@ Partial Class VideoMiner
         'pnlSpeciesEntryControls
         '
         Me.pnlSpeciesEntryControls.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pnlSpeciesEntryControls.AutoScroll = True
         Me.pnlSpeciesEntryControls.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.pnlSpeciesEntryControls.Controls.Add(Me.cmdRareSpeciesLookup)
@@ -1456,8 +1463,8 @@ Partial Class VideoMiner
         'pnlSpeciesData
         '
         Me.pnlSpeciesData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pnlSpeciesData.AutoScroll = True
         Me.pnlSpeciesData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.pnlSpeciesData.Controls.Add(Me.lblSpeciesData)
@@ -1601,17 +1608,21 @@ Partial Class VideoMiner
         Me.SplitContainer5.Panel1.ResumeLayout(False)
         Me.SplitContainer5.Panel2.ResumeLayout(False)
         Me.SplitContainer5.Panel2.PerformLayout()
+        CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer5.ResumeLayout(False)
         Me.SplitContainer4.Panel1.ResumeLayout(False)
         Me.SplitContainer4.Panel1.PerformLayout()
         Me.SplitContainer4.Panel2.ResumeLayout(False)
+        CType(Me.SplitContainer4, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer4.ResumeLayout(False)
         Me.SplitContainer1.Panel1.ResumeLayout(False)
         Me.SplitContainer1.Panel2.ResumeLayout(False)
+        CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer1.ResumeLayout(False)
         Me.SplitContainer3.Panel1.ResumeLayout(False)
         Me.SplitContainer3.Panel1.PerformLayout()
         Me.SplitContainer3.Panel2.ResumeLayout(False)
+        CType(Me.SplitContainer3, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer3.ResumeLayout(False)
         Me.pnlImageControls.ResumeLayout(False)
         Me.pnlImageControls.PerformLayout()
@@ -1620,12 +1631,15 @@ Partial Class VideoMiner
         Me.SplitContainer2.Panel1.ResumeLayout(False)
         Me.SplitContainer2.Panel2.ResumeLayout(False)
         Me.SplitContainer2.Panel2.PerformLayout()
+        CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer2.ResumeLayout(False)
         Me.SplitContainer6.Panel1.ResumeLayout(False)
         Me.SplitContainer6.Panel2.ResumeLayout(False)
+        CType(Me.SplitContainer6, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer6.ResumeLayout(False)
         Me.SplitContainer7.Panel1.ResumeLayout(False)
         Me.SplitContainer7.Panel2.ResumeLayout(False)
+        CType(Me.SplitContainer7, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer7.ResumeLayout(False)
         Me.pnlTransectData.ResumeLayout(False)
         Me.pnlTransectData.PerformLayout()

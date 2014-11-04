@@ -6,9 +6,7 @@ Imports System.IO
 Module modGlobals
 
     Public Class myPortLibrary
-
         Public Shared aPort As SerialPort
-
     End Class
 
     Public Const DB_DATA_TABLE As String = "data"
@@ -52,21 +50,13 @@ Module modGlobals
     Public strEditTextBoxOldName As String = ""
     Public strEditTextBoxNewName As String = ""
 
-    
     Public m_PublicSerialPort As New IO.Ports.SerialPort
-    
-
-
-    'Public strNewButtonName As String
-    'Public strNewTextBoxName As String
 
     ' Library function to perform an image capture
     Public Declare Auto Function BitBlt Lib "gdi32.dll" (ByVal hdcDest As IntPtr, ByVal nXDest As Integer, ByVal nYDest As Integer, _
                                                          ByVal nWidth As Integer, ByVal nHeight As Integer, ByVal hdcSrc As IntPtr, _
                                                          ByVal nXSrc As Integer, ByVal nYSrc As Integer, ByVal dwRop As System.Int32) As Boolean
     Public Const COPY As Integer = &HCC0020
-
-
 
     Public Class myFormLibrary
 
@@ -155,6 +145,7 @@ Module modGlobals
             Return strMilitaryTime
         Catch ex As Exception
             MsgBox(ex.Message)
+            Return ""
         End Try
     End Function
 
@@ -177,14 +168,14 @@ Module modGlobals
 
     End Function
 
-    Public Function createTimeString(ByVal dblTime As Double) As String
-
+    Public Function createTimeString1(ByVal tsTime As TimeSpan) As String
+        ' Take a timespan object and create a string from it
         Dim dblSeconds As Double = 0
         Dim intMinutes As Integer = 0
         Dim intHours As Integer = 0
         Dim strTime As String = ""
 
-        dblSeconds = dblTime
+        'dblSeconds = dblTime
 
         ' Make sure that the seconds value is not over 60 seconds, if so increment the minutes variable
         ' and subtract 60 from the seconds variable
