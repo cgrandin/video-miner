@@ -4526,7 +4526,6 @@ Public Class VideoMiner
             RwndCOunt = 0
             Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Pause_Icon.png")
             myFormLibrary.frmVideoPlayer.pctVideoStatus.BackgroundImage = Image.FromFile(filePath & "\Play_Icon_Inverse.png")
-            'myFormLibrary.frmVideoPlayer.pctVideoStatus.Image = Image.FromFile(filePath & "\Play_Icon.png")
         Catch ex As Exception
             MessageBox.Show(ex.Message)
             Me.tmrRecordPerSecond.Stop()
@@ -4547,7 +4546,6 @@ Public Class VideoMiner
             myFormLibrary.frmVideoPlayer.blIsPlaying = False
             Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Play_Icon.png")
             myFormLibrary.frmVideoPlayer.pctVideoStatus.BackgroundImage = Image.FromFile(filePath & "\Pause_Icon_Inverse.png")
-            'myFormLibrary.frmVideoPlayer.pctVideoStatus.Image = Image.FromFile(filePath & "\Pause_Icon.png")
         Catch ex As Exception
             MessageBox.Show(ex.Message)
         End Try
@@ -4558,7 +4556,6 @@ Public Class VideoMiner
     Private Sub stopVideo()
         Try
             myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Stop()
-            'myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.stop()
             If Me.tmrRecordPerSecond.Enabled Then
                 Me.tmrRecordPerSecond.Stop()
             End If
@@ -4575,6 +4572,10 @@ Public Class VideoMiner
         RwndCOunt = 0
     End Sub
 
+    Public Sub videoEnded()
+        Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Play_icon.png")
+        myFormLibrary.frmVideoPlayer.pctVideoStatus.BackgroundImage = Image.FromFile(filePath & "\Stop_Icon_Inverse.png")
+    End Sub
 
     Private Sub increaseRate()
         Try

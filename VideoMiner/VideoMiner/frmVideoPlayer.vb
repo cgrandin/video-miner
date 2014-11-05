@@ -1,11 +1,11 @@
 ﻿Imports Microsoft.Win32
 Imports System.TimeSpan
+'Imports System.Windows ' For RoutedEvent
 Imports Vlc.DotNet.Core
 Imports Vlc.DotNet.Forms
 Imports Vlc.DotNet.Core.Medias
 
 Public Class frmVideoPlayer
-    'Private intSeconds As Integer = 0
     Public tsDurationTime As TimeSpan = Zero
     Public tsCurrentVideoTime As TimeSpan = Zero
     Public blIsPlaying As Boolean = False
@@ -14,16 +14,28 @@ Public Class frmVideoPlayer
     Private mbMedia As MediaBase
     'Private fmtTimeFormat As System.IFormatProvider
 
+    Event plyrVideo_EndedEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    Event plyrVideo_EndedBroadcastEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
+    'Public Shared ReadOnly VideoEndedEvent As RoutedEvent = EventManager.RegisterRoutedEvent("VideoEnded", RoutingStrategy.Bubble, GetType(RoutedEventHandler), GetType(Form))
+
+    'Public Custom Event VideoEnded As RoutedEventHandler
+    '    AddHandler(ByVal value As RoutedEventHandler)
+    '        Me.AddHandler(VideoEndedEvent)
+    '    End AddHandler
+
+    '    RemoveHandler(ByVal value As RoutedEventHandler)
+    '        Me.RemoveHandler(VideoEndedEvent, value)
+    '    End RemoveHandler
+
+    '    RaiseEvent(ByVal sender As Object, ByVal e As RoutedEventArgs)
+    '        Me.RaiseEvent(e)
+    '    End RaiseEvent
+    'End Event
+
     Public Sub frmVideoPlayer_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Me.Text = myFormLibrary.frmVideoMiner.FileName
         mbMedia = New PathMedia(strVideoFilePath)
-        'Me.SelectNextControl(Me.SplitContainer1.Panel2, False, True, True, True)
-
-        ' This should be explored. Maybe for the next version. The VLC control should have all the controls built into it..
-        'Dim cnt As New Vlc.DotNet.Forms.VlcControl
-        'cnt.Media = New Vlc.DotNet.Core.Medias.PathMedia(strVideoFilePath)
-        'cnt.Dock = DockStyle.Fill
-        'Me.Controls.Add(cnt)
     End Sub
 
     Private Sub frmVideoPlayer_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
@@ -51,9 +63,15 @@ Public Class frmVideoPlayer
         If Me.plyrVideoPlayer.IsPlaying Then
             ' Check to see if the video has reached the end. If so, reset it to the beginning and stop it. If not, update the label and scrollbar
             Me.tsDurationTime = Me.plyrVideoPlayer.Media.Duration
+            If Me.plyrVideoPlayer.Time.TotalSeconds >= tsDurationTime.TotalSeconds Then
+                ' The video played to or past the end of the video, so raise the EndReached event
+                AddHandler plyrVideo_EndedEvent, AddressOf plyrVideo_Ended
+                RaiseEvent plyrVideo_EndedEvent(Nothing, Nothing)
+                Exit Sub
+            End If
             trkCurrentPosition.Value = Me.plyrVideoPlayer.Time.TotalSeconds / Me.tsDurationTime.TotalSeconds * 100
-            Console.WriteLine(Me.plyrVideoPlayer.Time)
-            Dim strCurrTime As String = Me.plyrVideoPlayer.Time.ToString
+            Dim strCurrTime As String = Me.plyrVideoPlayer.Time.ToString()
+            'Dim strCurrTime As String = strGetVideoTime(Me.plyrVideoPlayer)
             ' Remove the last N digits from the current time from video
             strCurrTime = strCurrTime.Remove(strCurrTime.Length - VIDEO_TIME_STRIP_DIGITS)
             Me.lblCurrentTime.Text = strCurrTime
@@ -109,23 +127,17 @@ Public Class frmVideoPlayer
         End Try
     End Sub
 
-    ' The video wraps at the end, so I was trying to get it to stop gracefully once it reached the end.
     Private Sub plyrVideo_Ended(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles plyrVideoPlayer.EndReached
         'If the end of the video is reached, reset everything to the beginning
-        'Try
         If Me.tmrVideo.Enabled = True Then
             Me.tmrVideo.Stop()
         End If
-        plyrVideoPlayer.Stop()
+        plyrVideoPlayer.Refresh()
         trkCurrentPosition.Value = 0.0
         Me.lblCurrentTime.Text = Me.plyrVideoPlayer.Time.ToString
-        'Catch ex As Exception
-        'MessageBox.Show(ex.Message)
-        'End Try
-
+        ' Need to fire an event here so that the main form knows that the video stopped and was reset, so that the data in the main form can be updated
+        AddHandler plyrVideo_EndedBroadcastEvent, AddressOf myFormLibrary.frmVideoMiner.videoEnded
+        RaiseEvent plyrVideo_EndedBroadcastEvent(Nothing, Nothing)
     End Sub
 
-    Private Sub plyrVideo_EncounteredError(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles plyrVideoPlayer.EncounteredError
-
-    End Sub
 End Class
