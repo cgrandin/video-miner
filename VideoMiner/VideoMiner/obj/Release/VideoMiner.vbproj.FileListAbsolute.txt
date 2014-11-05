@@ -886,13 +886,6 @@ C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner\obj\Release\VideoMiner.xml
 C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner\obj\Release\VideoMiner.pdb
 C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner\bin\Release\VideoMiner.exe.CodeAnalysisLog.xml
 C:\VideoMiner_Version_3_0_8\VideoMiner\VideoMiner\bin\Release\VideoMiner.exe.lastcodeanalysissucceeded
-C:\github\video-miner\VideoMiner\VideoMiner\bin\Release\VideoMiner.exe
-C:\github\video-miner\VideoMiner\VideoMiner\bin\Release\VideoMiner.pdb
-C:\github\video-miner\VideoMiner\VideoMiner\bin\Release\VideoMiner.xml
-C:\github\video-miner\VideoMiner\VideoMiner\bin\Release\Interop.ADODB.dll
-C:\github\video-miner\VideoMiner\VideoMiner\bin\Release\Interop.ADOX.dll
-C:\github\video-miner\VideoMiner\VideoMiner\bin\Release\Interop.WMPLib.dll
-C:\github\video-miner\VideoMiner\VideoMiner\bin\Release\AxInterop.WMPLib.dll
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Release\Interop.ADODB.dll
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Release\Interop.ADOX.dll
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Release\Interop.WMPLib.dll
@@ -926,7 +919,3 @@ C:\github\video-miner\VideoMiner\VideoMiner\obj\Release\VideoMiner.frmConfigureB
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Release\VideoMiner.frmCreateKeyboardShortcut.resources
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Release\VideoMiner.frmEditLookupTable.resources
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Release\VideoMiner.vbproj.GenerateResource.Cache
-C:\github\video-miner\VideoMiner\VideoMiner\obj\Release\VideoMiner.exe
-C:\github\video-miner\VideoMiner\VideoMiner\obj\Release\VideoMiner.xml
-C:\github\video-miner\VideoMiner\VideoMiner\obj\Release\VideoMiner.pdb
-C:\github\video-miner\VideoMiner\VideoMiner\obj\Release\VideoMiner.vbprojResolveAssemblyReference.cache
