@@ -43,7 +43,6 @@ Partial Class frmVideoPlayer
         '
         'tmrVideo
         '
-        Me.tmrVideo.Interval = 500
         '
         'lblLoading
         '
@@ -66,9 +65,9 @@ Partial Class frmVideoPlayer
         Me.lblCurrentTime.ForeColor = System.Drawing.Color.White
         Me.lblCurrentTime.Location = New System.Drawing.Point(65, 27)
         Me.lblCurrentTime.Name = "lblCurrentTime"
-        Me.lblCurrentTime.Size = New System.Drawing.Size(64, 13)
+        Me.lblCurrentTime.Size = New System.Drawing.Size(70, 13)
         Me.lblCurrentTime.TabIndex = 3
-        Me.lblCurrentTime.Text = "00:00:00.00"
+        Me.lblCurrentTime.Text = "00:00:00.000"
         '
         'lblDuration
         '

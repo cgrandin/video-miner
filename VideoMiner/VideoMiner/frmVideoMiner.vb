@@ -654,7 +654,7 @@ Public Class VideoMiner
 
     ' Variables to store Play for Seconds variables
     Private dblPlaySecondsTC As Double = 0
-    Private strPlaySecondsVideoTime As String = "00:00:00"
+    Private strPlaySecondsVideoTime As String = VIDEO_TIME_LABEL
     Private intPlayForSeconds As Integer
     Private intPlayForSecondsTimerCount As Integer = 0
     Private intStartPlaySeconds As Integer
@@ -753,7 +753,7 @@ Public Class VideoMiner
 
 
     Public strTimeDateSource As String = "ELAPSED"
-    Public strPreviousClipTime As String = "00:00:00"
+    Public strPreviousClipTime As String = VIDEO_TIME_DECIMAL_LABEL
     Public blUseGPSTime As Boolean = False
     Public blUseComputerTime As Boolean = False
     Public blUseElapsedTime As Boolean = False
@@ -1122,14 +1122,17 @@ Public Class VideoMiner
             End If
         End If
 
-        openFile()
-
-        If video_file_open Then
-            myFormLibrary.frmSetTime = New frmSetTime
-            myFormLibrary.frmSetTime.TopLevel = True
-            myFormLibrary.frmSetTime.BringToFront()
-            myFormLibrary.frmSetTime.ShowDialog()
+        If openFile() Then
+            video_file_open = True
+            playVideo()
         End If
+
+        'If video_file_open Then
+        ' myFormLibrary.frmSetTime = New frmSetTime
+        ' myFormLibrary.frmSetTime.TopLevel = True
+        ' myFormLibrary.frmSetTime.BringToFront()
+        ' myFormLibrary.frmSetTime.ShowDialog()
+        ' End If
 
     End Sub
 
@@ -1527,9 +1530,9 @@ Public Class VideoMiner
         Dim strZ As String = "NULL"
         Dim blAquiredFix As Boolean = False
         'If they are using the video control then get the time from there.
-        Dim strVideoTime As String = "00:00:00"
-        Dim strVideoTextTime As String = "00:00:00"
-        Dim strVideoDecimalTime As String = "00:00:00.00"
+        Dim strVideoTime As String = VIDEO_TIME_LABEL
+        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
+        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
 
         If Not booUseGPSTimeCodes Then
             tc = getTimeCode()
@@ -1557,13 +1560,8 @@ Public Class VideoMiner
             MessageBox.Show("Could not read the NMEA string. Please ensure that the GPS port is open.", "GPS Port", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
             Exit Sub
         End If
-
-
-
         transect_started(strVideoTime, strVideoTextTime, strVideoDecimalTime, strX, strY, strZ)
-
     End Sub
-
 
     Private Sub TransectEnd_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdTransectEnd.Click
         ' ==========================================================================================================
@@ -1589,9 +1587,9 @@ Public Class VideoMiner
         'Dim strGPSStringType As String = regKey.GetValue("GPSStringType")
 
         'If they are using the video control then get the time from there.
-        Dim strVideoTime As String = "00:00:00"
-        Dim strVideoTextTime As String = "00:00:00"
-        Dim strVideoDecimalTime As String = "00:00:00.00"
+        Dim strVideoTime As String = VIDEO_TIME_LABEL
+        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
+        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
         If Not booUseGPSTimeCodes Then
             tc = getTimeCode()
             If video_file_open Then
@@ -1632,9 +1630,9 @@ Public Class VideoMiner
         Dim strX As String = "NULL"
         Dim strY As String = "NULL"
         Dim strZ As String = "NULL"
-        Dim strVideoTime As String = "00:00:00"
-        Dim strVideoTextTime As String = "00:00:00"
-        Dim strVideoDecimalTime As String = "00:00:00.00"
+        Dim strVideoTime As String = VIDEO_TIME_LABEL
+        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
+        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
         Dim blAquiredFix As Boolean = False
         If booUseGPSTimeCodes Then
             'Otherwise get the time from the NMEA string.
@@ -1693,10 +1691,10 @@ Public Class VideoMiner
             Exit Sub
         End If
 
-        Dim strVideoTime As String = "00:00:00"
-        Dim strVideoTextTime As String = "00:00:00"
-        Dim strVideoDecimalTime As String = "00:00:00.00"
-        Dim tc As String = "00:00:00"
+        Dim strVideoTime As String = VIDEO_TIME_LABEL
+        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
+        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
+        Dim tc As String = VIDEO_TIME_LABEL
         Dim strX As String = "NULL"
         Dim strY As String = "NULL"
         Dim strZ As String = "NULL"
@@ -2172,7 +2170,7 @@ Public Class VideoMiner
 
     Private Sub cmdDefineAllSpatialVariables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDefineAllSpatialVariables.Click
 
-        Dim tc As String = "00:00:00"
+        Dim tc As String = VIDEO_TIME_LABEL
 
         Dim strX As String = "NULL"
         Dim strY As String = "NULL"
@@ -2184,10 +2182,10 @@ Public Class VideoMiner
         Dim blFlag As Boolean = False
         Dim blAquiredFix As Boolean = False
         'If they are using the video control then get the time from there.
-        ' The time code is set to be "00:00:00" initially.
-        Dim strVideoTime As String = "00:00:00"
-        Dim strVideoTextTime As String = "00:00:00"
-        Dim strVideoDecimalTime As String = "00:00:00.00"
+        ' The time code is set to be VIDEO_TIME_LABEL initially.
+        Dim strVideoTime As String = VIDEO_TIME_LABEL
+        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
+        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
         ' do the following only when the video is open:
         ' pause stream and get the time code
         ' If the video is not open, then we cannot pause the
@@ -2204,121 +2202,121 @@ Public Class VideoMiner
             strVideoTextTime = strVideoTime
         End If
 
-            If booUseGPSTimeCodes Then
-                'Otherwise get the time from the NMEA string.
+        If booUseGPSTimeCodes Then
+            'Otherwise get the time from the NMEA string.
 
-                ' The GPRMC NMEA String does not contain elevation values. Enter null into database
-                ' if GPRMC is the chosen string type.
-                blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
-                If Not blAquiredFix Then
-                    Exit Sub
-                End If
+            ' The GPRMC NMEA String does not contain elevation values. Enter null into database
+            ' if GPRMC is the chosen string type.
+            blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+            If Not blAquiredFix Then
+                Exit Sub
             End If
+        End If
+        strVideoTextTime = strVideoTime
+        ' If an image is open and a video is closed, get the photo information from the EXIF file
+        If image_open And video_file_open = False Then
+            Call getEXIFData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
             strVideoTextTime = strVideoTime
-            ' If an image is open and a video is closed, get the photo information from the EXIF file
-            If image_open And video_file_open = False Then
-                Call getEXIFData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
-                strVideoTextTime = strVideoTime
-            End If
+        End If
 
-            Try
+        Try
 
-                Dim i As Integer
-                For i = 0 To strHabitatButtonCodeNames.Length - 2
+            Dim i As Integer
+            For i = 0 To strHabitatButtonCodeNames.Length - 2
 
-                    If strHabitatButtonTables(i) = "UserEntered" Then
-                        Dim strValue As String
-                        myFormLibrary.frmAddValue = New frmAddValue(dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString))
-                        myFormLibrary.frmAddValue.lblExpression.Text = "Please enter a value for " & strHabitatButtonNames(i) & ":"
-                        myFormLibrary.frmAddValue.Text = strHabitatButtonNames(i) & " Entry"
-                        myFormLibrary.frmAddValue.cmdCancel.Text = "Skip"
-                        myFormLibrary.frmAddValue.ShowDialog()
+                If strHabitatButtonTables(i) = "UserEntered" Then
+                    Dim strValue As String
+                    myFormLibrary.frmAddValue = New frmAddValue(dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString))
+                    myFormLibrary.frmAddValue.lblExpression.Text = "Please enter a value for " & strHabitatButtonNames(i) & ":"
+                    myFormLibrary.frmAddValue.Text = strHabitatButtonNames(i) & " Entry"
+                    myFormLibrary.frmAddValue.cmdCancel.Text = "Skip"
+                    myFormLibrary.frmAddValue.ShowDialog()
 
-                        strValue = myFormLibrary.frmAddValue.strValue
+                    strValue = myFormLibrary.frmAddValue.strValue
 
-                        strHabitatButtonUserCodeChoice(i) = strValue
-                        myFormLibrary.frmAddValue.Close()
-                        myFormLibrary.frmAddValue = Nothing
+                    strHabitatButtonUserCodeChoice(i) = strValue
+                    myFormLibrary.frmAddValue.Close()
+                    myFormLibrary.frmAddValue = Nothing
+                    dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
+                    dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
+                    strHabitatButtonUserNameChoice(i) = strValue
+                    If strValue = "-9999" Then
+                        ClearSpatial(strHabitatButtonNames(i), intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
+                    Else
+                        Dim _fontfamily As FontFamily
+                        _fontfamily = New FontFamily(Me.ButtonFont)
+                        textboxes(i).Text = strHabitatButtonUserNameChoice(i)
+                        textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
+                        textboxes(i).BackColor = Color.LightGray
+                        textboxes(i).ForeColor = Color.LimeGreen
+                        textboxes(i).TextAlign = HorizontalAlignment.Center
+                    End If
+
+                Else
+
+                    Dim sub_form As frmTableView = New frmTableView(strHabitatButtonTables(i), i, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
+                    sub_form.Multiple = True
+                    sub_form.ShowDialog()
+                    If Not sub_form.UserClosedForm Then
+                        strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & ""
+                        strHabitatButtonUserCodeChoice(i) = strCode
                         dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
                         dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
-                        strHabitatButtonUserNameChoice(i) = strValue
-                        If strValue = "-9999" Then
-                            ClearSpatial(strHabitatButtonNames(i), intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
-                        Else
-                            Dim _fontfamily As FontFamily
-                            _fontfamily = New FontFamily(Me.ButtonFont)
-                            textboxes(i).Text = strHabitatButtonUserNameChoice(i)
-                            textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                            textboxes(i).BackColor = Color.LightGray
-                            textboxes(i).ForeColor = Color.LimeGreen
-                            textboxes(i).TextAlign = HorizontalAlignment.Center
+
+                        strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & ""
+
+                        If strName.Length = 0 Then
+                            strName = strCode
                         End If
-
-                    Else
-
-                        Dim sub_form As frmTableView = New frmTableView(strHabitatButtonTables(i), i, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
-                        sub_form.Multiple = True
-                        sub_form.ShowDialog()
-                        If Not sub_form.UserClosedForm Then
-                            strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & ""
-                            strHabitatButtonUserCodeChoice(i) = strCode
-                            dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
-                            dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
-
-                            strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & ""
-
-                            If strName.Length = 0 Then
-                                strName = strCode
-                            End If
-                            strHabitatButtonUserNameChoice(i) = strName
-                            Dim _fontfamily As FontFamily
-                            _fontfamily = New FontFamily(Me.ButtonFont)
-                            textboxes(i).Text = strHabitatButtonUserNameChoice(i)
-                            textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                            textboxes(i).BackColor = Color.LightGray
-                            textboxes(i).ForeColor = Color.LimeGreen
-                            textboxes(i).TextAlign = HorizontalAlignment.Center
-                        End If
+                        strHabitatButtonUserNameChoice(i) = strName
+                        Dim _fontfamily As FontFamily
+                        _fontfamily = New FontFamily(Me.ButtonFont)
+                        textboxes(i).Text = strHabitatButtonUserNameChoice(i)
+                        textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
+                        textboxes(i).BackColor = Color.LightGray
+                        textboxes(i).ForeColor = Color.LimeGreen
+                        textboxes(i).TextAlign = HorizontalAlignment.Center
                     End If
-                Next
-
-
-
-                strSpeciesCode = "NULL"
-                strSpeciesCount = "NULL"
-                strSide = "NULL"
-                strRange = "NULL"
-                strLength = "NULL"
-                strHeight = "NULL"
-                strWidth = "NULL"
-                strAbundance = "NULL"
-                strIdConfidence = "NULL"
-
-                query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "999", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
-                Me.ScreenCaptureName = ""
-                'Debug.WriteLine(query)
-                Dim numrows As Integer
-                Dim oComm As OleDbCommand
-                oComm = New OleDbCommand(query, conn)
-                numrows = oComm.ExecuteNonQuery()
-                fetch_data()
-
-                If blVideoWasPlaying = True Then
-                    playVideo()
-                    blVideoWasPlaying = False
                 End If
+            Next
 
-            Catch ex As Exception
-                If ex.Message.StartsWith("Syntax") Then
-                    MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-                Else
-                    MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-                End If
-            End Try
+
+
+            strSpeciesCode = "NULL"
+            strSpeciesCount = "NULL"
+            strSide = "NULL"
+            strRange = "NULL"
+            strLength = "NULL"
+            strHeight = "NULL"
+            strWidth = "NULL"
+            strAbundance = "NULL"
+            strIdConfidence = "NULL"
+
+            query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "999", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+            Me.ScreenCaptureName = ""
+            'Debug.WriteLine(query)
+            Dim numrows As Integer
+            Dim oComm As OleDbCommand
+            oComm = New OleDbCommand(query, conn)
+            numrows = oComm.ExecuteNonQuery()
+            fetch_data()
+
+            If blVideoWasPlaying = True Then
+                playVideo()
+                blVideoWasPlaying = False
+            End If
+
+        Catch ex As Exception
+            If ex.Message.StartsWith("Syntax") Then
+                MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
+            Else
+                MsgBox(ex.Message & vbCrLf & ex.StackTrace)
+            End If
+        End Try
     End Sub
 
     Private Sub cmdDefineAllTransectVariables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDefineAllTransectVariables.Click
-        Dim tc As String = "00:00:00"
+        Dim tc As String = VIDEO_TIME_LABEL
 
         Dim strX As String = "NULL"
         Dim strY As String = "NULL"
@@ -2330,10 +2328,10 @@ Public Class VideoMiner
         Dim blFlag As Boolean = False
         Dim blAquiredFix As Boolean = False
         'If they are using the video control then get the time from there.
-        ' The time code is set to be "00:00:00" initially.
-        Dim strVideoTime As String = "00:00:00"
-        Dim strVideoTextTime As String = "00:00:00"
-        Dim strVideoDecimalTime As String = "00:00:00.00"
+        ' The time code is set to be VIDEO_TIME_LABEL initially.
+        Dim strVideoTime As String = VIDEO_TIME_LABEL
+        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
+        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
         ' do the following only when the video is open:
         ' pause stream and get the time code
         ' If the video is not open, then we cannot pause the
@@ -2468,10 +2466,10 @@ Public Class VideoMiner
         'Insert A record into the database every second that video is played.
         ' This will include all continuous variables.
 
-        Dim tc As String = "00:00:00"
-        Dim strVideoTime As String = "00:00:00"
-        Dim strVideoTextTime As String = "00:00:00"
-        Dim strVideoDecimalTime As String = "00:00:00.00"
+        Dim tc As String = VIDEO_TIME_LABEL
+        Dim strVideoTime As String = VIDEO_TIME_LABEL
+        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
+        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
         Dim strX As String = "NULL"
         Dim strY As String = "NULL"
         Dim strZ As String = "NULL"
@@ -2596,8 +2594,8 @@ Public Class VideoMiner
 
     '    strSeconds = dblCurrentSeconds.ToString.Split(".")
     '    intCurrentPlaySeconds = CInt(strSeconds(0))
-    '    Dim strVideoTextTime As String = "00:00:00"
-    '    Dim strVideoDecimalTime As String = "00:00:00.00"
+    '    Dim strVideoTextTime As String = VIDEO_TIME_LABEL
+    '    Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL 
     '    strPlaySecondsVideoTime = GetVideoTime(dblCurrentSeconds, strVideoDecimalTime)
     '    strVideoTextTime = strPlaySecondsVideoTime
 
@@ -2748,10 +2746,10 @@ Public Class VideoMiner
         If Me.chkRecordEachSecond.Checked = False Then
             Me.tmrRecordPerSecond.Stop()
         Else
-            Dim tc As String = "00:00:00"
-            Dim strVideoTime As String = "00:00:00"
-            Dim strVideoTextTime As String = "00:00:00"
-            Dim strVideoDecimalTime As String = "00:00:00.00"
+            Dim tc As String = VIDEO_TIME_LABEL
+            Dim strVideoTime As String = VIDEO_TIME_LABEL
+            Dim strVideoTextTime As String = VIDEO_TIME_LABEL
+            Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
             Dim strX As String = ""
             Dim strY As String = ""
             Dim strZ As String = ""
@@ -2778,7 +2776,7 @@ Public Class VideoMiner
 
     Private Sub cmdAddComment_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdAddComment.Click
 
-        Dim tc As String = "00:00:00"
+        Dim tc As String = VIDEO_TIME_LABEL
 
         Dim strX As String = "NULL"
         Dim strY As String = "NULL"
@@ -2794,10 +2792,10 @@ Public Class VideoMiner
             Exit Sub
         End If
         'If they are using the video control then get the time from there.
-        ' The time code is set to be "00:00:00" initially.
-        Dim strVideoTime As String = "00:00:00"
-        Dim strVideoTextTime As String = "00:00:00"
-        Dim strVideoDecimalTime As String = "00:00:00.00"
+        ' The time code is set to be VIDEO_TIME_LABEL initially.
+        Dim strVideoTime As String = VIDEO_TIME_LABEL
+        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
+        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
         ' do the following only when the video is open:
         ' pause stream and get the time code
         ' If the video is not open, then we cannot pause the
@@ -2877,7 +2875,7 @@ Public Class VideoMiner
     Private Sub cmdNothingInPhoto_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdNothingInPhoto.Click
 
         If db_file_open = True Then
-            Dim tc As String = "00:00:00"
+            Dim tc As String = VIDEO_TIME_LABEL
 
             Dim strX As String = "NULL"
             Dim strY As String = "NULL"
@@ -2888,10 +2886,10 @@ Public Class VideoMiner
             strComment = "Nothing in photo"
 
             'If they are using the video control then get the time from there.
-            ' The time code is set to be "00:00:00" initially.
-            Dim strPhotoTime As String = "00:00:00"
-            Dim strPhotoTextTime As String = "00:00:00"
-            Dim strPhotoDecimalTime As String = "00:00:00.00"
+            ' The time code is set to be VIDEO_TIME_LABEL initially.
+            Dim strPhotoTime As String = VIDEO_TIME_LABEL
+            Dim strPhotoTextTime As String = VIDEO_TIME_LABEL
+            Dim strPhotoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
 
             ' ======================================Code by Xida Chen (end)===========================================
             Dim j As Integer
@@ -3483,8 +3481,8 @@ Public Class VideoMiner
 
     End Function
 
-    Private Function openFile() As Integer
-
+    Private Function openFile() As Boolean
+        ' Returns True if the user chose a file to play, False is they pressed cancel or clicked the 'X'
         Dim ofd As OpenFileDialog = New OpenFileDialog
         ofd.Title = OPEN_VID_TITLE
         ofd.InitialDirectory = current_directory
@@ -3494,11 +3492,12 @@ Public Class VideoMiner
         ofd.Multiselect = False
 
         If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            'If ofd.ShowDialog() <> Windows.Forms.DialogResult.Cancel Then
             current_directory = ofd.FileName.Substring(0, ofd.FileName.LastIndexOf("\"))
             strVideoFilePath = ofd.FileName
             Me.FileName = strVideoFilePath.Substring(strVideoFilePath.LastIndexOf("\") + 1, strVideoFilePath.Length - strVideoFilePath.LastIndexOf("\") - 1)
         Else
-            Exit Function
+            Return False
         End If
 
         If myFormLibrary.frmVideoPlayer Is Nothing Then
@@ -3549,7 +3548,7 @@ Public Class VideoMiner
             Call myFormLibrary.frmVideoPlayer.frmVideoPlayer_Load(Me, New System.EventArgs)
             Me.VideoTime = frmVideoPlayer.tsCurrentVideoTime
         End If
-        Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Pause_Icon.png")
+        Return True
     End Function
 
     Public Sub enableDisableVideoMenu(ByVal mnuState As Boolean)
@@ -3780,7 +3779,7 @@ Public Class VideoMiner
             Dim numrows As Integer
 
             If tc = "" Then
-                tc = "00:00:00"
+                tc = VIDEO_TIME_LABEL
             End If
             Dim query As String = ""
 
@@ -4504,7 +4503,6 @@ Public Class VideoMiner
     End Sub
 
     Public Sub cmdPlayPause_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPlayPause.Click
-
         ' If the video is paused or stopped..
         If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.IsPaused Or Not myFormLibrary.frmVideoPlayer.plyrVideoPlayer.IsPlaying Then
             playVideo()
@@ -4513,41 +4511,9 @@ Public Class VideoMiner
                 Me.tmrRecordPerSecond.Start()
             End If
         Else
-            ' If it is playing then pause it.
+            ' If it is already playing then pause it.
             pauseVideo()
         End If
-
-        'Select Case myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playState
-
-        '    Case WMPLib.WMPPlayState.wmppsPaused
-        '        playVideo()
-
-        '        If Me.chkRecordEachSecond.Checked = True Then
-        '            blFirstTime = True
-        '            Me.tmrRecordPerSecond.Start()
-        '        End If
-        '    Case WMPLib.WMPPlayState.wmppsStopped
-        '        playVideo()
-        '        If Me.chkRecordEachSecond.Checked = True Then
-        '            blFirstTime = True
-        '            Me.tmrRecordPerSecond.Start()
-        '        End If
-        '    Case WMPLib.WMPPlayState.wmppsPlaying
-        '        pauseVideo()
-        '    Case WMPLib.WMPPlayState.wmppsScanForward
-        '        playVideo()
-        '        If Me.chkRecordEachSecond.Checked = True Then
-        '            blFirstTime = True
-        '            Me.tmrRecordPerSecond.Start()
-        '        End If
-        '    Case WMPLib.WMPPlayState.wmppsScanReverse
-        '        playVideo()
-        '        If Me.chkRecordEachSecond.Checked = True Then
-        '            blFirstTime = True
-        '            Me.tmrRecordPerSecond.Start()
-        '        End If
-        'End Select
-
     End Sub
 
     Private Sub playVideo()
@@ -4555,53 +4521,79 @@ Public Class VideoMiner
             myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Play()
             myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Rate = dblVideoRate
             myFormLibrary.frmVideoPlayer.blIsPlaying = True
-            'myFormLibrary.frmVideoPlayer.tmrCurrentTime.Start()
             myFormLibrary.frmVideoPlayer.tmrVideo.Start()
             FfwdCount = 0
             RwndCOunt = 0
             Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Pause_Icon.png")
-            If Not myFormLibrary.frmSetTime Is Nothing Then
-                myFormLibrary.frmSetTime.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Pause_Icon.png")
-            End If
             myFormLibrary.frmVideoPlayer.pctVideoStatus.BackgroundImage = Image.FromFile(filePath & "\Play_Icon_Inverse.png")
+            'myFormLibrary.frmVideoPlayer.pctVideoStatus.Image = Image.FromFile(filePath & "\Play_Icon.png")
         Catch ex As Exception
-            MsgBox(ex.Message)
+            MessageBox.Show(ex.Message)
             Me.tmrRecordPerSecond.Stop()
             myFormLibrary.frmVideoPlayer.blIsPlaying = False
         End Try
+
     End Sub
+
+    Private Sub pauseVideo()
+        Try
+            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Pause()
+            If Me.tmrRecordPerSecond.Enabled Then
+                Me.tmrRecordPerSecond.Stop()
+            End If
+            If myFormLibrary.frmVideoPlayer.tmrVideo.Enabled Then
+                myFormLibrary.frmVideoPlayer.tmrVideo.Stop()
+            End If
+            myFormLibrary.frmVideoPlayer.blIsPlaying = False
+            Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Play_Icon.png")
+            myFormLibrary.frmVideoPlayer.pctVideoStatus.BackgroundImage = Image.FromFile(filePath & "\Pause_Icon_Inverse.png")
+            'myFormLibrary.frmVideoPlayer.pctVideoStatus.Image = Image.FromFile(filePath & "\Pause_Icon.png")
+        Catch ex As Exception
+            MessageBox.Show(ex.Message)
+        End Try
+        FfwdCount = 0
+        RwndCOunt = 0
+    End Sub
+
+    Private Sub stopVideo()
+        Try
+            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Stop()
+            'myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.stop()
+            If Me.tmrRecordPerSecond.Enabled Then
+                Me.tmrRecordPerSecond.Stop()
+            End If
+            myFormLibrary.frmVideoPlayer.tmrVideo.Stop()
+            myFormLibrary.frmVideoPlayer.blIsPlaying = False
+            myFormLibrary.frmVideoPlayer.trkCurrentPosition.Value = 0
+            Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Play_icon.png")
+            myFormLibrary.frmVideoPlayer.pctVideoStatus.BackgroundImage = Image.FromFile(filePath & "\Stop_Icon_Inverse.png")
+            myFormLibrary.frmVideoPlayer.lblCurrentTime.Text = VIDEO_TIME_DECIMAL_LABEL
+        Catch ex As Exception
+            MessageBox.Show(ex.Message)
+        End Try
+        FfwdCount = 0
+        RwndCOunt = 0
+    End Sub
+
 
     Private Sub increaseRate()
         Try
-
             dblVideoRate = dblVideoRate + 0.25
-
             myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Rate = dblVideoRate
-            'myFormLibrary.frmVideoPlayer.plyrVideoPlayer.settings.rate = dblVideoRate
-
             Me.lblVideoRate.Text = dblVideoRate & " X"
-
         Catch ex As Exception
         End Try
-
     End Sub
 
     Private Sub decreaseRate()
         Try
-
             If dblVideoRate <> 0.25 Then
                 dblVideoRate = dblVideoRate - 0.25
             End If
-
             myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Rate = dblVideoRate
-            'myFormLibrary.frmVideoPlayer.plyrVideoPlayer.settings.rate = dblVideoRate
-
-
             Me.lblVideoRate.Text = dblVideoRate & " X"
-
         Catch ex As Exception
         End Try
-
     End Sub
 
     Private Sub StepForward()
@@ -4611,8 +4603,6 @@ Public Class VideoMiner
         myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Pause()
         myFormLibrary.frmVideoPlayer.plyrVideoPlayer.NextFrame()
         Dim dblCurrentPosition = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Position * 100.0
-
-
     End Sub
 
     'Private Sub StepForward_old()
@@ -4758,61 +4748,6 @@ Public Class VideoMiner
     '    myFormLibrary.frmVideoPlayer.lblCurrentTime.Text = strCurrentTime
     '    myFormLibrary.frmVideoPlayer.lblDuration.Text = strDurationTime
     'End Sub
-
-    ' ==========================================================================================================
-    ' Name: pauseVideo()
-    ' Description: call video controller to pause the video.
-    ' ==========================================================================================================
-    Private Sub pauseVideo()
-        Try
-            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Pause()
-            'myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.pause()
-            If Me.tmrRecordPerSecond.Enabled Then
-                Me.tmrRecordPerSecond.Stop()
-            End If
-            If myFormLibrary.frmVideoPlayer.tmrVideo.Enabled Then
-                myFormLibrary.frmVideoPlayer.tmrVideo.Stop()
-            End If
-            myFormLibrary.frmVideoPlayer.blIsPlaying = False
-            Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Play_Icon.png")
-            myFormLibrary.frmVideoPlayer.pctVideoStatus.BackgroundImage = Image.FromFile(filePath & "\Pause_Icon_Inverse.png")
-            If Not myFormLibrary.frmSetTime Is Nothing Then
-                myFormLibrary.frmSetTime.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Play_Icon.png")
-            End If
-        Catch ex As Exception
-
-        End Try
-
-        FfwdCount = 0
-        RwndCOunt = 0
-
-    End Sub
-
-    ' ==========================================================================================================
-    ' Name: stopStream()
-    ' Description: call video controller to stop the video.
-    ' ==========================================================================================================
-    Private Sub stopVideo()
-
-        Try
-            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Stop()
-            'myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.stop()
-            If Me.tmrRecordPerSecond.Enabled Then
-                Me.tmrRecordPerSecond.Stop()
-            End If
-            myFormLibrary.frmVideoPlayer.tmrVideo.Stop()
-            myFormLibrary.frmVideoPlayer.blIsPlaying = False
-            myFormLibrary.frmVideoPlayer.trkCurrentPosition.Value = 0
-            'myFormLibrary.frmVideoPlayer.lblCurrentTime.Text = "00:00:00"
-        Catch ex As Exception
-
-        End Try
-
-        FfwdCount = 0
-        RwndCOunt = 0
-
-    End Sub
-
 
     Private Function FormatTimeCode(ByVal str As String) As String
 
@@ -5748,10 +5683,10 @@ SkipInsertComma:
         Dim strCode As String = ""
         Dim strName As String = ""
         Dim blAquiredFix As Boolean = False
-        Dim tc As String = "00:00:00"
-        Dim strVideoTime As String = "00:00:00"
-        Dim strVideoTextTime As String = "00:00:00"
-        Dim strVideoDecimalTime As String = "00:00:00.00"
+        Dim tc As String = VIDEO_TIME_LABEL
+        Dim strVideoTime As String = VIDEO_TIME_LABEL
+        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
+        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
 
         Dim strX As String = "NULL"
         Dim strY As String = "NULL"
@@ -5801,7 +5736,7 @@ SkipInsertComma:
 
         ' ======================================Code by Xida Chen (begin)===========================================
         'If they are using the video control then get the time from there.
-        ' The time code is set to be "00:00:00" initially.
+        ' The time code is set to be VIDEO_TIME_LABEL initially.
 
         ' do the following only when the video is open:
         ' pause stream and get the time code
@@ -6210,7 +6145,7 @@ SkipInsertComma:
         End If
 
 
-        Dim tc As String = "00:00:00"
+        Dim tc As String = VIDEO_TIME_LABEL
 
         Dim strX As String = "NULL"
         Dim strY As String = "NULL"
@@ -6221,10 +6156,10 @@ SkipInsertComma:
 
         ' ======================================Code by Xida Chen (begin)===========================================
         'If they are using the video control then get the time from there.
-        ' The time code is set to be "00:00:00" initially.
-        Dim strVideoTime As String = "00:00:00"
-        Dim strVideoTextTime As String = "00:00:00"
-        Dim strVideoDecimalTime As String = "00:00:00.00"
+        ' The time code is set to be VIDEO_TIME_LABEL initially.
+        Dim strVideoTime As String = VIDEO_TIME_LABEL
+        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
+        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
         ' do the following only when the video is open:
         ' pause stream and get the time code
         ' If the video is not open, then we cannot pause the
@@ -6519,7 +6454,7 @@ SkipInsertComma:
 
         Dim btn As Button = sender
         Dim i As Integer
-        Dim tc As String = "00:00:00"
+        Dim tc As String = VIDEO_TIME_LABEL
 
         Dim strX As String = "NULL"
         Dim strY As String = "NULL"
@@ -6534,10 +6469,10 @@ SkipInsertComma:
 
         ' ======================================Code by Xida Chen (begin)===========================================
         ' If they are using the video control then get the time from there.
-        ' The time code is set to be "00:00:00" initially.
-        Dim strVideoTime As String = "00:00:00"
-        Dim strVideoTextTime As String = "00:00:00"
-        Dim strVideoDecimalTime As String = "00:00:00.00"
+        ' The time code is set to be VIDEO_TIME_LABEL initially.
+        Dim strVideoTime As String = VIDEO_TIME_LABEL
+        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
+        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
         ' do the following only when the video is open:
         ' pause stream and get the time code
         ' If the video is not open, then we cannot pause the
@@ -6989,8 +6924,6 @@ SkipInsertComma:
 
     Public Sub cmdStop_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdStop.Click
         Call stopVideo()
-        Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Play_Icon.png")
-        myFormLibrary.frmVideoPlayer.pctVideoStatus.BackgroundImage = Image.FromFile(filePath & "\Stop_Icon_Inverse.png")
     End Sub
 
     Private Sub cmdIncreaseRate_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdIncreaseRate.Click
@@ -7404,7 +7337,7 @@ SkipInsertComma:
 
     Private Sub txtTime_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtTime.TextChanged
         If Me.txtTimeSource.Text = "VIDEO" Then
-            If Me.txtTime.Text = "00:00:00" Then
+            If Me.txtTime.Text = VIDEO_TIME_LABEL Then
                 Dim strDate = Me.txtTransectDate.Text.Split("/")
                 Dim dtDate As New Date(CInt(strDate(2)), CInt(strDate(1)), CInt(strDate(0)))
                 Dim dtNewDate As Date

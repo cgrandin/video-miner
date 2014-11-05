@@ -15,17 +15,19 @@ Public Class frmVideoPlayer
     'Private fmtTimeFormat As System.IFormatProvider
 
     Public Sub frmVideoPlayer_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        myFormLibrary.frmVideoPlayer = Me
         Me.Text = myFormLibrary.frmVideoMiner.FileName
-        'Me.trkCurrentPosition.Value = 0
         mbMedia = New PathMedia(strVideoFilePath)
-        ' Start the video and the timer on the main form
-        tmrVideo.Start()
-        Me.SelectNextControl(Me.SplitContainer1.Panel2, False, True, True, True)
-        'fmtTimeFormat.GetFormat()
+        'Me.SelectNextControl(Me.SplitContainer1.Panel2, False, True, True, True)
+
+        ' This should be explored. Maybe for the next version. The VLC control should have all the controls built into it..
+        'Dim cnt As New Vlc.DotNet.Forms.VlcControl
+        'cnt.Media = New Vlc.DotNet.Core.Medias.PathMedia(strVideoFilePath)
+        'cnt.Dock = DockStyle.Fill
+        'Me.Controls.Add(cnt)
     End Sub
 
     Private Sub frmVideoPlayer_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+        ' Need an event here so the parent can handle it. This way, the data in the main form will be gracefully changed.
         If MessageBox.Show("Are you sure you want to close this video?", "Close video", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.No Then
             Me.CausesValidation = True
             e.Cancel = True
@@ -47,12 +49,13 @@ Public Class frmVideoPlayer
 
     Private Sub tmrVideo_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrVideo.Tick
         If Me.plyrVideoPlayer.IsPlaying Then
+            ' Check to see if the video has reached the end. If so, reset it to the beginning and stop it. If not, update the label and scrollbar
             Me.tsDurationTime = Me.plyrVideoPlayer.Media.Duration
             trkCurrentPosition.Value = Me.plyrVideoPlayer.Time.TotalSeconds / Me.tsDurationTime.TotalSeconds * 100
-
+            Console.WriteLine(Me.plyrVideoPlayer.Time)
             Dim strCurrTime As String = Me.plyrVideoPlayer.Time.ToString
-            ' Remove the last four digits (too precise) from the current time from video
-            strCurrTime = strCurrTime.Remove(strCurrTime.Length - 4)
+            ' Remove the last N digits from the current time from video
+            strCurrTime = strCurrTime.Remove(strCurrTime.Length - VIDEO_TIME_STRIP_DIGITS)
             Me.lblCurrentTime.Text = strCurrTime
             Me.lblDuration.Text = Me.plyrVideoPlayer.Media.Duration.ToString
 
@@ -64,6 +67,7 @@ Public Class frmVideoPlayer
             myFormLibrary.frmVideoMiner.pnlVideoControls.Visible = True
             myFormLibrary.frmVideoMiner.pnlImageControls.Visible = False
         Else
+            Me.lblCurrentTime.Text = VIDEO_TIME_DECIMAL_LABEL
             Me.plyrVideoPlayer.Play(mbMedia)
         End If
     End Sub
@@ -95,21 +99,33 @@ Public Class frmVideoPlayer
         Try
             ' trkCurrentPosition slider is on a scale of 0-100, and the video player's position
             ' is from 0-1 so the slider position must be divided by 100.
+            Dim strCurrTime As String = Me.plyrVideoPlayer.Time.ToString
+            ' Remove the last N digits from the current time from video
+            strCurrTime = strCurrTime.Remove(strCurrTime.Length - VIDEO_TIME_STRIP_DIGITS)
             plyrVideoPlayer.Position = Me.trkCurrentPosition.Value / 100.0
-            Me.lblCurrentTime.Text = Me.plyrVideoPlayer.Time.ToString
+            Me.lblCurrentTime.Text = strCurrTime
         Catch ex As Exception
             MsgBox(ex.Message)
         End Try
-
-
-
     End Sub
 
+    ' The video wraps at the end, so I was trying to get it to stop gracefully once it reached the end.
     Private Sub plyrVideo_Ended(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles plyrVideoPlayer.EndReached
-        ' If the end of the video is reached, reset everything to the beginning
-        'trkCurrentPosition.Value = 0.0
-        'Me.lblCurrentTime.Text = Me.plyrVideoPlayer.Time.ToString
-        'plyrVideoPlayer..Stop()
+        'If the end of the video is reached, reset everything to the beginning
+        'Try
+        If Me.tmrVideo.Enabled = True Then
+            Me.tmrVideo.Stop()
+        End If
+        plyrVideoPlayer.Stop()
+        trkCurrentPosition.Value = 0.0
+        Me.lblCurrentTime.Text = Me.plyrVideoPlayer.Time.ToString
+        'Catch ex As Exception
+        'MessageBox.Show(ex.Message)
+        'End Try
+
     End Sub
 
+    Private Sub plyrVideo_EncounteredError(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles plyrVideoPlayer.EncounteredError
+
+    End Sub
 End Class

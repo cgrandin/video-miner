@@ -18,6 +18,13 @@ Module modGlobals
 
     Public Const DB_CONN_STRING As String = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source="
 
+    Public Const VIDEO_TIME_LABEL As String = "00:00:00"
+    Public Const VIDEO_TIME_DECIMAL_LABEL As String = "00:00:00.000"
+    ' The number of digits to strip off the end of the video time label. Typically a video feed will have 7 digits after the '.', so 4 means we keep three of these,
+    ' i.e. 11:21:01.9870000 will become 11:21:01.987. The string above (VIDEO_TIME_DECIMAL_LABEL) should have one less than this after the '.'
+    ' This is used several times in the frmVideoPlayer class.
+    Public Const VIDEO_TIME_STRIP_DIGITS As Integer = 4
+
     Public conn As OleDbConnection
     'Public booResumeVideo As Boolean = True
     Public blRareSpecies As Boolean = False
@@ -88,7 +95,7 @@ Module modGlobals
         Public Shared frmEditLookupTable As frmEditLookupTable
 
     End Class
-   
+
 
     Public Function SingleQuote(ByVal strValue As String) As String
         Return "'" & strValue & "'"
@@ -101,7 +108,7 @@ Module modGlobals
     Public Function GetVideoTime(ByVal tc As Double, ByRef tcDecimalTime As String) As String
         Try
             'If tc = 0 Then
-            '    Return "00:00:00"
+            '    Return VIDEO_TIME_LABEL
             'End If
 
             'Get the number of seconds from the dtTimeCode
