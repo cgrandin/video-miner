@@ -153,6 +153,12 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutBox1.Designer.vb">
+      <DependentUpon>AboutBox1.vb</DependentUpon>
+    </Compile>
+    <Compile Include="AboutBox1.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="frmAddValue.Designer.vb">
       <DependentUpon>frmAddValue.vb</DependentUpon>
@@ -334,6 +340,9 @@
     <Compile Include="ValueDescriptionPair.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AboutBox1.resx">
+      <DependentUpon>AboutBox1.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmAbundanceTableView.resx">
       <DependentUpon>frmAbundanceTableView.vb</DependentUpon>
       <SubType>Designer</SubType>

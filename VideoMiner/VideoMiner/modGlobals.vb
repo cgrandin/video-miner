@@ -18,6 +18,8 @@ Module modGlobals
 
     Public Const DB_CONN_STRING As String = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source="
 
+    Public Const GITHUB_URL As String = "https://github.com/cgrandin/video-miner"
+    Public Const DESIGNER_EMAIL As String = "mailto:chris.grandin@dfo-mpo.gc.ca"
     Public Const VIDEO_TIME_LABEL As String = "00:00:00"
     Public Const VIDEO_TIME_DECIMAL_LABEL As String = "00:00:00.000"
     Public Const VIDEO_TIME_FORMAT As String = "{0:D2}:{1:D2}:{2:D2}.{3:D2}"

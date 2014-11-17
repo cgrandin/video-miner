@@ -329,6 +329,41 @@ VideoMiner
 	<summary>
   A strongly-typed resource class, for looking up localized strings, etc.
 </summary>
+</member><member name="M:VideoMiner.VideoMiner.mnuOpenSession_Click(System.Object,System.EventArgs)">
+	<summary>
+ When user selects "Open Session" from the file menu, call sub openSession() and open a dialogue
+ where the user can restore a previous session that was being run in the program via a VideoMiner Session file.
+ This restores the last video that was being played.
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.EventArgs</param>
+</member><member name="M:VideoMiner.VideoMiner.mnuSaveSession_Click(System.Object,System.EventArgs)">
+	<summary>
+ call sub saveSession() when the user selects Save Session from the file menu, and open a dialogue
+ where the user can save the current VideoMiner Session file. This saves which video is currently being played.
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.EventArgs</param>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.mnuSaveSessionAs_Click(System.Object,System.EventArgs)">
+	<summary>
+ call sub saveSessionAs() and open a dialogue where the user can save the current state
+ that is being run in the program as a new VideoMiner Session file.
+ This saves which video is currently being played.
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+</member><member name="M:VideoMiner.VideoMiner.mnuAbout_Click(System.Object,System.EventArgs)">
+	<summary>
+ When a user selects about from the menu bar, display the ABOUT message by opening the AboutBox1 form
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.EventArgs</param>
+</member><member name="T:VideoMiner.VideoMiner">
+	<summary>
+ This is the main form for the program
+ </summary>
+	<remarks></remarks>
 </member>
 </members>
 </doc>

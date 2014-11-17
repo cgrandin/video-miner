@@ -67,7 +67,7 @@ Partial Class VideoMiner
         Me.DeviceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeviceControl = New System.Windows.Forms.ToolStripMenuItem()
         Me.RelayConfigurationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuAbout = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuHelp = New System.Windows.Forms.ToolStripMenuItem()
         Me.KeyboardShortcutsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DataCodeAssignmentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.InformationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -203,7 +203,7 @@ Partial Class VideoMiner
         '
         'mnStrVideoMinerMenu
         '
-        Me.mnStrVideoMinerMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.mnuVideoTools, Me.mnuImageTools, Me.mnuConfigureTools, Me.GPSToolStripMenuItem, Me.DeviceToolStripMenuItem, Me.mnuAbout})
+        Me.mnStrVideoMinerMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.mnuVideoTools, Me.mnuImageTools, Me.mnuConfigureTools, Me.GPSToolStripMenuItem, Me.DeviceToolStripMenuItem, Me.mnuHelp})
         Me.mnStrVideoMinerMenu.Location = New System.Drawing.Point(0, 0)
         Me.mnStrVideoMinerMenu.Name = "mnStrVideoMinerMenu"
         Me.mnStrVideoMinerMenu.Size = New System.Drawing.Size(1098, 24)
@@ -512,12 +512,12 @@ Partial Class VideoMiner
         Me.RelayConfigurationToolStripMenuItem.Size = New System.Drawing.Size(179, 22)
         Me.RelayConfigurationToolStripMenuItem.Text = "Relay Configuration"
         '
-        'mnuAbout
+        'mnuHelp
         '
-        Me.mnuAbout.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.KeyboardShortcutsToolStripMenuItem, Me.DataCodeAssignmentsToolStripMenuItem, Me.InformationToolStripMenuItem})
-        Me.mnuAbout.Name = "mnuAbout"
-        Me.mnuAbout.Size = New System.Drawing.Size(52, 20)
-        Me.mnuAbout.Text = "About"
+        Me.mnuHelp.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.KeyboardShortcutsToolStripMenuItem, Me.DataCodeAssignmentsToolStripMenuItem, Me.InformationToolStripMenuItem})
+        Me.mnuHelp.Name = "mnuHelp"
+        Me.mnuHelp.Size = New System.Drawing.Size(44, 20)
+        Me.mnuHelp.Text = "Help"
         '
         'KeyboardShortcutsToolStripMenuItem
         '
@@ -1638,7 +1638,7 @@ Partial Class VideoMiner
     Friend WithEvents mnuSaveSessionAs As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuCloseDatabase As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuVideoTools As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents mnuAbout As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents mnuHelp As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuRefreshForm As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuUseExternalVideo As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents StatusStrip1 As System.Windows.Forms.StatusStrip

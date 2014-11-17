@@ -128,3 +128,4 @@ C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.exe
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.xml
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.pdb
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.vbprojResolveAssemblyReference.cache
+C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.AboutBox1.resources

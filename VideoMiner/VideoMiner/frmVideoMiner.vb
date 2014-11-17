@@ -19,10 +19,10 @@ Imports System.Xml
 Imports System.Reflection
 Imports System.Threading
 
-' ==========================================================================================================
-' Name: VideoMiner
-' Description: This is the main form of the program.
-' ==========================================================================================================
+''' <summary>
+''' This is the main form for the program
+''' </summary>
+''' <remarks></remarks>
 Public Class VideoMiner
 
 #Region "Fields"
@@ -594,7 +594,6 @@ Public Class VideoMiner
     Public Const STATUS_FONT_SIZE As Integer = 10
     Public Const DIR_SEP As String = "\"
     Public Const NULL_STRING As String = ""
-    Public Const ABOUT_STAMP As String = "VideoMiner 1.0 © Chris Grandin 2008"
     Public Const UNNAMED_TRANSECT As String = "Unnamed Transect"
     Public Const NO_TRANSECT As String = "No Transect"
     Public Const NO_SUBSTRATE As String = "No Substrate"
@@ -766,6 +765,9 @@ Public Class VideoMiner
 
     Public dataColumns As Collection
     Public blupdateColumns As Boolean = True
+
+    Private frmAbout As AboutBox1
+    Private strAbout As String
 
 #End Region
 
@@ -964,22 +966,6 @@ Public Class VideoMiner
         Me.DeviceTwoRelayFour = GetConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DeviceControl/RelayNames/Device2/Relay4")
     End Sub
 
-    'Private Sub VideoMiner_KeyupForVideoform(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyUp
-
-    '    If e.Control Then
-    '        Select Case e.KeyCode
-    '            Case Keys.Up
-    '                playVideo()
-    '            Case Keys.Down
-    '                pauseVideo()
-    '                'Case Keys.Right
-    '                '    StepFwd()
-    '                'Case Keys.Left
-    '                '    StepRev()
-    '        End Select
-    '    End If
-
-    'End Sub
     Private Sub VideoMiner_KeyUp(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyUp
         Dim intIndex As Integer
         'MsgBox(strKeyboardShortcut)
@@ -1066,7 +1052,6 @@ Public Class VideoMiner
         End Try
     End Sub
     Public Sub VideoMiner_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
-
         If strCurrentKey <> CStr(e.KeyValue) Then
             strCurrentKey = CStr(e.KeyValue)
             Dim key As Object
@@ -1086,70 +1071,49 @@ Public Class VideoMiner
         End If
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: mnuOpenSession_Click
-    ' Description: When user selects "Open Session" from the file menu, call sub openSession() and open a dialogue
-    '  where the user can restore a previous session that was being run in the program via a VideoMiner Session file
-    '  (*.vps). This restores the last video that was being played.
-    ' ==========================================================================================================
-    Private Sub mnuOpenSession_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuOpenSession.Click
+    ''' <summary>
+    ''' When user selects "Open Session" from the file menu, call sub openSession() and open a dialogue
+    ''' where the user can restore a previous session that was being run in the program via a VideoMiner Session file.
+    ''' This restores the last video that was being played.
+    ''' </summary>
+    ''' <param name="sender">System.Object</param>
+    ''' <param name="e">System.EventArgs</param>
+    Private Sub mnuOpenSession_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuOpenSession.Click
         openSession()
         Me.mnuSaveSession.Enabled = True
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: mnuSaveSession_Click
-    ' Description: call sub saveSession() when the user selects Save Session from the file menu, and open a dialogue  
-    ' where the user can save the current VideoMiner Session file (*.vps). This saves which video is currently being played.
-    ' ==========================================================================================================
-    Private Sub mnuSaveSession_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuSaveSession.Click
+    ''' <summary>
+    ''' call sub saveSession() when the user selects Save Session from the file menu, and open a dialogue
+    ''' where the user can save the current VideoMiner Session file. This saves which video is currently being played.
+    ''' </summary>
+    ''' <param name="sender">System.Object</param>
+    ''' <param name="e">System.EventArgs</param>
+    ''' <remarks></remarks>
+    Private Sub mnuSaveSession_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuSaveSession.Click
         saveSession()
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: mnuSaveSessionAs_Click
-    ' Description: call sub saveSessionAs() and open a dialogue where the user can save the current state
-    ' that is being run in the program as a new VideoMiner Session file (*.vps). This saves which video is currently being played.
-    ' ==========================================================================================================
+    ''' <summary>
+    ''' call sub saveSessionAs() and open a dialogue where the user can save the current state
+    ''' that is being run in the program as a new VideoMiner Session file.
+    ''' This saves which video is currently being played.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub mnuSaveSessionAs_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuSaveSessionAs.Click
         saveSessionAs()
         Me.mnuSaveSession.Enabled = True
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: mnuPlay_Click
-    ' Description: call sub playVideo() when the user selects "Play" from the video menu.
-    ' ==========================================================================================================
-    Private Sub mnuPlay_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        playVideo()
-
-    End Sub
-
-    ' ==========================================================================================================
-    ' Name: mnuPause_Click
-    ' Description: call sub pauseVideo() when the user selects "Pause" from the video menu.
-    ' ==========================================================================================================
-    Private Sub mnuPause_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        pauseVideo()
-
-    End Sub
-
-    ' ==========================================================================================================
-    ' Name: mnuStop_Click
-    ' Description: call sub stopStream() when the user selects "Stop" from the video menu.
-    ' ==========================================================================================================
-    Private Sub mnuStop_Click(ByVal sender As Object, ByVal e As System.EventArgs)
-        stopVideo()
-
-    End Sub
-
-    ' ==========================================================================================================
-    ' Name: mnuAbout_Click()
-    ' Description: When a user selects about from the menu bar, display the message:
-    '               "VideoMiner 1.0 © Chris Grandin 2008"       
-    ' ==========================================================================================================
-    Private Sub mnuAbout_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuAbout.Click
-        'MsgBox(ABOUT_STAMP)
+    ''' <summary>
+    ''' When a user selects about from the menu bar, display the ABOUT message by opening the AboutBox1 form
+    ''' </summary>
+    ''' <param name="sender">System.Object</param>
+    ''' <param name="e">System.EventArgs</param>
+    Private Sub mnuAbout_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles InformationToolStripMenuItem.Click
+        frmAbout = New AboutBox1
+        frmAbout.ShowDialog()
     End Sub
 
     '==========================================================================================================================
@@ -1159,7 +1123,6 @@ Public Class VideoMiner
     ' 1.) Load OpenFileDialog object to prompt user to select a database to open.
     ' 2.) When the user clicks OK, call sub openDatabase and send it the path of the database to open.
     '==========================================================================================================================
-
     Private Sub mnuOpenDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuOpenDatabase.Click
         blOpenDatabase = True
         Dim ofd As OpenFileDialog = New OpenFileDialog
