@@ -583,7 +583,8 @@ Public Class VideoMiner
     Public Const BAD_ID As Long = -1
     Public Const VIDEO_PLAYER_NAME As String = "VideoMinerPlayer"
     Public Const OPEN_DB_TITLE As String = "Open Database"
-    Public Const OPEN_VID_TITLE As String = "Open Video File"
+    Public Const OPEN_VID_TITLE As String = "Open Video"
+    Public Const OPEN_EXT_VID As String = "Use External Video"
     Public Const DB_FILE_FILTER As String = "MS Access files (*.mdb)|*.mdb"
     Public Const DB_FILE_STATUS_LOADED As String = "Database '"
     Public Const VIDEO_FILE_STATUS_LOADED As String = "Video file is open"
@@ -642,7 +643,6 @@ Public Class VideoMiner
     Private strIdConfidence As String
     Private strSpeciesCount As String
     Private strSpeciesCode As String
-
     Public blSpeciesValuesSet As Boolean = False
 
     Private intVideoSeconds As Integer = 0
@@ -661,7 +661,6 @@ Public Class VideoMiner
     Private intCurrentPlaySeconds As Integer
     Private intEndPlaySeconds As Integer = 0
     Private dblVideoRate As Double = 1
-
 
     ' Comparison value for reord every second functionality    
     Public intLastVideoSecond As Integer = 0
@@ -751,7 +750,6 @@ Public Class VideoMiner
     Public strPreviousGPSTime As String = ""
     Public dblGPSExpiry As Double = 0
 
-
     Public strTimeDateSource As String = "ELAPSED"
     Public strPreviousClipTime As String = VIDEO_TIME_DECIMAL_LABEL
     Public blUseGPSTime As Boolean = False
@@ -815,20 +813,9 @@ Public Class VideoMiner
         End Select
     End Function
 
-    ' ==========================================================================================================
-    ' Name: frmVideoMiner_Load
-    ' Description: The following code is run when the form loads. 
-    ' 1.) Disable buttons that are not be used until video and database files are opened.
-    ' 2.) Load configuration file
-    ' 3.) Change informative text to read no video and no db loaded.
-    ' 4.) Set variables to initial state.
-    ' ==========================================================================================================
     Private Sub frmVideoMiner_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-
         myFormLibrary.frmVideoMiner = Me
-
         Windows.Forms.Control.CheckForIllegalCrossThreadCalls = False
-
         Dim assembly As System.Reflection.Assembly
         Dim asType As Type
         Dim strVersion As String
@@ -841,10 +828,8 @@ Public Class VideoMiner
         aVersionInfo.Minor & "." & _
         aVersionInfo.Build & "." & _
         aVersionInfo.Revision
-
         Me.Version = strVersion
         Me.Text = "Video Miner " & Me.Version & " BETA"
-
         filePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
         Dim strRegFilePath As String = Registry.GetValue("HKEY_CURRENT_USER\VideoMiner", "FilePath", Nothing)
         Dim strConfigFilePath As String
@@ -905,7 +890,6 @@ Public Class VideoMiner
         Me.cboZoom.Items.Add("75%")
         Me.cboZoom.Items.Add("100%")
         Me.cboZoom.Items.Add("200%")
-
         Me.cboZoom.Text = "100%"
 
         Me.cmdPreviousImage.Enabled = False
@@ -1005,7 +989,7 @@ Public Class VideoMiner
                 blHandled = True
                 e.Handled = True
                 If video_file_open Then
-                    If myFormLibrary.frmVideoPlayer.blIsPlaying = False Then
+                    If Not myFormLibrary.frmVideoPlayer.IsPlaying Then
                         playVideo()
                     Else
                         pauseVideo()
@@ -1102,40 +1086,6 @@ Public Class VideoMiner
         End If
     End Sub
 
-    Private Sub mnuOpenFile_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuOpenFile.Click
-        Me.strPreviousClipTime = Me.txtTime.Text
-        If Not myFormLibrary.frmImage Is Nothing Then
-            Dim intAnswer As Integer = MessageBox.Show("The image file '" & Me.FileName & "' is currently open. In order to open a video, the image will be closed.  Do you want to continue?", "Image File Open", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-            If intAnswer = vbNo Then
-                Exit Sub
-            Else
-                myFormLibrary.frmImage.Close()
-                If myFormLibrary.frmVideoMiner.m_SerialPort Is Nothing Then
-                    myFormLibrary.frmVideoMiner.lblGPSLocation.Visible = False
-                    myFormLibrary.frmVideoMiner.lblX.Visible = False
-                    myFormLibrary.frmVideoMiner.lblXValue.Visible = False
-                    myFormLibrary.frmVideoMiner.lblY.Visible = False
-                    myFormLibrary.frmVideoMiner.lblYValue.Visible = False
-                    myFormLibrary.frmVideoMiner.lblZ.Visible = False
-                    myFormLibrary.frmVideoMiner.lblZValue.Visible = False
-                End If
-            End If
-        End If
-
-        If openFile() Then
-            video_file_open = True
-            playVideo()
-        End If
-
-        'If video_file_open Then
-        ' myFormLibrary.frmSetTime = New frmSetTime
-        ' myFormLibrary.frmSetTime.TopLevel = True
-        ' myFormLibrary.frmSetTime.BringToFront()
-        ' myFormLibrary.frmSetTime.ShowDialog()
-        ' End If
-
-    End Sub
-
     ' ==========================================================================================================
     ' Name: mnuOpenSession_Click
     ' Description: When user selects "Open Session" from the file menu, call sub openSession() and open a dialogue
@@ -1170,7 +1120,7 @@ Public Class VideoMiner
     ' Name: mnuPlay_Click
     ' Description: call sub playVideo() when the user selects "Play" from the video menu.
     ' ==========================================================================================================
-    Private Sub mnuPlay_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuPlay.Click
+    Private Sub mnuPlay_Click(ByVal sender As Object, ByVal e As System.EventArgs)
         playVideo()
 
     End Sub
@@ -1179,7 +1129,7 @@ Public Class VideoMiner
     ' Name: mnuPause_Click
     ' Description: call sub pauseVideo() when the user selects "Pause" from the video menu.
     ' ==========================================================================================================
-    Private Sub mnuPause_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuPause.Click
+    Private Sub mnuPause_Click(ByVal sender As Object, ByVal e As System.EventArgs)
         pauseVideo()
 
     End Sub
@@ -1188,7 +1138,7 @@ Public Class VideoMiner
     ' Name: mnuStop_Click
     ' Description: call sub stopStream() when the user selects "Stop" from the video menu.
     ' ==========================================================================================================
-    Private Sub mnuStop_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuStop.Click
+    Private Sub mnuStop_Click(ByVal sender As Object, ByVal e As System.EventArgs)
         stopVideo()
 
     End Sub
@@ -1319,9 +1269,6 @@ Public Class VideoMiner
         'MsgBox(Me.UseExternalVideoToolStripMenuItem.Checked)
         booUseExternalVideo = Me.mnuUseExternalVideo.Checked
         If booUseExternalVideo Then
-            Me.mnuPlay.Enabled = False
-            Me.mnuStop.Enabled = False
-            Me.mnuPause.Enabled = False
             Me.mnuOpenFile.Enabled = False
 
             'booUseGPSTimeCodes = True
@@ -1676,6 +1623,12 @@ Public Class VideoMiner
         fillSpeciesVariableButtonPanel()
     End Sub
 
+    Public Sub mnuCapScr_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuCapScr.Click
+        ' Capture the screen, as well as writing a transection to the database.
+        ' The value of all the field in the transaction are set to be 0.
+
+    End Sub
+
     ' ==========================================================================================================
     ' ======================================Code by Xida Chen (begin)===========================================
     ' Name: mnuCapScr_Click
@@ -1683,271 +1636,263 @@ Public Class VideoMiner
     '               The value of all the field in the transection are set to be 0.
     '               This function is called when the user selects "Video-->Capture Screen"
     ' ==========================================================================================================
-    Public Sub mnuCapScr_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuCapScr.Click
-        ' Make sure that the video is open, otherwise pop up a window
-        ' to tell user that no video is open.
-        If video_file_open = False Then
-            MsgBox("Must open video first.", MsgBoxStyle.OkOnly)
-            Exit Sub
-        End If
+    'Public Sub mnuCapScr_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuCapScr.Click
+    '    ' Make sure that the video is open, otherwise pop up a window
+    '    ' to tell user that no video is open.
+    '    If video_file_open = False Then
+    '        MsgBox("Must open video first.", MsgBoxStyle.OkOnly)
+    '        Exit Sub
+    '    End If
 
-        Dim strVideoTime As String = VIDEO_TIME_LABEL
-        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
-        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
-        Dim tc As String = VIDEO_TIME_LABEL
-        Dim strX As String = "NULL"
-        Dim strY As String = "NULL"
-        Dim strZ As String = "NULL"
-        Dim blAquiredFix As Boolean = False
+    '    Dim strVideoTime As String = VIDEO_TIME_LABEL
+    '    Dim strVideoTextTime As String = VIDEO_TIME_LABEL
+    '    Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
+    '    Dim tc As String = VIDEO_TIME_LABEL
+    '    Dim strX As String = "NULL"
+    '    Dim strY As String = "NULL"
+    '    Dim strZ As String = "NULL"
+    '    Dim blAquiredFix As Boolean = False
 
-        ' Get the video time
-        pauseVideo()
-        tc = getTimeCode()
-        strVideoTime = GetVideoTime(tc, strVideoDecimalTime)
-        strVideoTextTime = strVideoTime
-        Dim strVideoTimeNoColon As String
-        strVideoTimeNoColon = Replace(strVideoTime, ":", "")
+    '    ' Get the video time
+    '    pauseVideo()
+    '    tc = getTimeCode()
+    '    strVideoTime = GetVideoTime(tc, strVideoDecimalTime)
+    '    strVideoTextTime = strVideoTime
+    '    Dim strVideoTimeNoColon As String
+    '    strVideoTimeNoColon = Replace(strVideoTime, ":", "")
 
-        ' First, call the function in the dvTapeController to capture the screen
-        ' We assume that the capture screen function is only used for video, not 
-        ' for still images.
+    '    ' First, call the function in the dvTapeController to capture the screen
+    '    ' We assume that the capture screen function is only used for video, not 
+    '    ' for still images.
 
-        Dim blank As String = ""
+    '    Dim blank As String = ""
 
-        ' Set the default name to display in screen capture save as dialog
-        Dim strDefaultName As String = ""
-        'Dim dtTransectDate As Date = (Me.txtTransectDate.Text)
-        'Dim strTransectDate As String = dtTransectDate.Year & AddZeros(dtTransectDate.Month, 2) & AddZeros(dtTransectDate.Day, 2)
-        Dim strTextBoxTransectDate As String = Me.txtTransectDate.Text
-        Dim strTransectDate As String = Mid(strTextBoxTransectDate, 7, 4) & Mid(strTextBoxTransectDate, 4, 2) & Mid(strTextBoxTransectDate, 1, 2)
-        Dim strTransectTime As String = ""
-        If booUseGPSTimeCodes Then
-            blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
-            strVideoTextTime = strVideoTime
-            If Not blAquiredFix Then
-                Exit Sub
-            End If
-            strTransectTime = Replace(tc, ":", "")
+    '    ' Set the default name to display in screen capture save as dialog
+    '    Dim strDefaultName As String = ""
+    '    'Dim dtTransectDate As Date = (Me.txtTransectDate.Text)
+    '    'Dim strTransectDate As String = dtTransectDate.Year & AddZeros(dtTransectDate.Month, 2) & AddZeros(dtTransectDate.Day, 2)
+    '    Dim strTextBoxTransectDate As String = Me.txtTransectDate.Text
+    '    Dim strTransectDate As String = Mid(strTextBoxTransectDate, 7, 4) & Mid(strTextBoxTransectDate, 4, 2) & Mid(strTextBoxTransectDate, 1, 2)
+    '    Dim strTransectTime As String = ""
+    '    If booUseGPSTimeCodes Then
+    '        blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+    '        strVideoTextTime = strVideoTime
+    '        If Not blAquiredFix Then
+    '            Exit Sub
+    '        End If
+    '        strTransectTime = Replace(tc, ":", "")
 
-        Else
-            strTransectTime = strVideoTimeNoColon
-        End If
-        Dim strTodaysDate As String = Now.Year & AddZeros(Now.Month, 2) & AddZeros(Now.Day, 2)
-        Dim strTodaysTime As String = AddZeros(Now.Hour, 2) & AddZeros(Now.Minute, 2) & AddZeros(Now.Second, 2)
+    '    Else
+    '        strTransectTime = strVideoTimeNoColon
+    '    End If
+    '    Dim strTodaysDate As String = Now.Year & AddZeros(Now.Month, 2) & AddZeros(Now.Day, 2)
+    '    Dim strTodaysTime As String = AddZeros(Now.Hour, 2) & AddZeros(Now.Minute, 2) & AddZeros(Now.Second, 2)
 
-        If mnuNameOption_1.Checked Then
-            strDefaultName = "Capture_" & Me.txtProjectName.Text & "_" & strTransectDate & "_" & strTransectTime
-        ElseIf mnuNameOption_2.Checked Then
-            strDefaultName = "Capture_" & Me.txtProjectName.Text & "_" & strTodaysDate & "_" & strTodaysTime
-        ElseIf mnuNameOption_3.Checked Then
-            strDefaultName = "Capture_" & strTransectDate & "_" & strTransectTime
-        ElseIf mnuNameOption_4.Checked Then
-            strDefaultName = "Capture_" & strTodaysDate & "_" & strTodaysTime
-        ElseIf mnuNameOption_5.Checked Then
-            strDefaultName = Me.txtProjectName.Text & "_" & strTransectDate & "_" & strTransectTime
-        ElseIf mnuNameOption_6.Checked Then
-            strDefaultName = Me.txtProjectName.Text & "_" & strTodaysDate & "_" & strTodaysTime
-        ElseIf mnuNameOption_7.Checked Then
-            strDefaultName = strTransectDate & "_" & strTransectTime
-        ElseIf mnuNameOption_8.Checked Then
-            strDefaultName = strTodaysDate & "_" & strTodaysTime
-        ElseIf MnuNameOption_9.Checked Then
-            strDefaultName = ""
-        End If
+    '    If mnuNameOption_1.Checked Then
+    '        strDefaultName = "Capture_" & Me.txtProjectName.Text & "_" & strTransectDate & "_" & strTransectTime
+    '    ElseIf mnuNameOption_2.Checked Then
+    '        strDefaultName = "Capture_" & Me.txtProjectName.Text & "_" & strTodaysDate & "_" & strTodaysTime
+    '    ElseIf mnuNameOption_3.Checked Then
+    '        strDefaultName = "Capture_" & strTransectDate & "_" & strTransectTime
+    '    ElseIf mnuNameOption_4.Checked Then
+    '        strDefaultName = "Capture_" & strTodaysDate & "_" & strTodaysTime
+    '    ElseIf mnuNameOption_5.Checked Then
+    '        strDefaultName = Me.txtProjectName.Text & "_" & strTransectDate & "_" & strTransectTime
+    '    ElseIf mnuNameOption_6.Checked Then
+    '        strDefaultName = Me.txtProjectName.Text & "_" & strTodaysDate & "_" & strTodaysTime
+    '    ElseIf mnuNameOption_7.Checked Then
+    '        strDefaultName = strTransectDate & "_" & strTransectTime
+    '    ElseIf mnuNameOption_8.Checked Then
+    '        strDefaultName = strTodaysDate & "_" & strTodaysTime
+    '    ElseIf MnuNameOption_9.Checked Then
+    '        strDefaultName = ""
+    '    End If
 
-        ' Specify the name to be displayed in the save window dialog
-        Me.svDlgFileDialogScrCap.FileName = strDefaultName
-        ' Open a save as dialog to specify the path and name for the bitmap.
-        If Me.svDlgFileDialogScrCap.ShowDialog() = Windows.Forms.DialogResult.Cancel Then
-            Exit Sub
-        End If
-        Dim strFileName As String
-        strFileName = Me.svDlgFileDialogScrCap.FileName.ToString()
-        If svDlgFileDialogScrCap.FilterIndex = 2 Then
-            strFileName = strFileName.Replace("Jpeg", "bmp")
-        End If
-        Try
-            SendKeys.Send("^{PRTSC}")
-            Application.DoEvents()
-            Dim screen = Clipboard.GetDataObject
-            Dim bmp As Bitmap = CType(screen.getdata(GetType(System.Drawing.Bitmap)), Bitmap)
-            bmp.SetResolution(400, 400)
-            'bmp.Save(strFileName)
+    '    ' Specify the name to be displayed in the save window dialog
+    '    Me.svDlgFileDialogScrCap.FileName = strDefaultName
+    '    ' Open a save as dialog to specify the path and name for the bitmap.
+    '    If Me.svDlgFileDialogScrCap.ShowDialog() = Windows.Forms.DialogResult.Cancel Then
+    '        Exit Sub
+    '    End If
+    '    Dim strFileName As String
+    '    strFileName = Me.svDlgFileDialogScrCap.FileName.ToString()
+    '    If svDlgFileDialogScrCap.FilterIndex = 2 Then
+    '        strFileName = strFileName.Replace("Jpeg", "bmp")
+    '    End If
+    '    Try
+    '        SendKeys.Send("^{PRTSC}")
+    '        Application.DoEvents()
+    '        Dim screen = Clipboard.GetDataObject
+    '        Dim bmp As Bitmap = CType(screen.getdata(GetType(System.Drawing.Bitmap)), Bitmap)
+    '        bmp.SetResolution(400, 400)
+    '        'bmp.Save(strFileName)
 
-            Dim p As System.Drawing.Point = New System.Drawing.Point(0, 0)
-            Dim screenPosition As System.Drawing.Point = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.PointToScreen(p)
+    '        Dim p As System.Drawing.Point = New System.Drawing.Point(0, 0)
+    '        Dim screenPosition As System.Drawing.Point = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.PointToScreen(p)
+    '        Dim rect As New Rectangle(screenPosition.X, screenPosition.Y, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Width, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Height)
+    '        Dim cropped As Bitmap = bmp.Clone(rect, bmp.PixelFormat)
+    '        cropped.SetResolution(400, 400)
+    '        cropped.Save(strFileName, Imaging.ImageFormat.Jpeg)
+    '        Clipboard.Clear()
+    '        cropped = Nothing
+    '    Catch ex As System.OutOfMemoryException
+    '        SendKeys.Send("^{PRTSC}")
+    '        Application.DoEvents()
+    '        Dim screen = Clipboard.GetDataObject
+    '        Dim bmp As Bitmap = CType(screen.getdata(GetType(System.Drawing.Bitmap)), Bitmap)
+    '        bmp.SetResolution(400, 400)
+    '        'bmp.Save(strFileName)
+    '        Dim p As System.Drawing.Point = New System.Drawing.Point(0, 0)
+    '        Dim screenPosition As System.Drawing.Point = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.PointToScreen(p)
+    '        Dim rect As New Rectangle(screenPosition.X, screenPosition.Y, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Width, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Height)
+    '        Dim cropped As Bitmap = bmp.Clone(rect, bmp.PixelFormat)
+    '        cropped.SetResolution(400, 400)
+    '        cropped.Save(strFileName, Imaging.ImageFormat.Jpeg)
+    '        Clipboard.Clear()
+    '        cropped = Nothing
+    '    End Try
+    '    'Dim CropRect As New Rectangle(screenPosition.X, screenPosition.Y, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Width, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Height)
+    '    'Dim CropImage As Bitmap = New Bitmap(CropRect.Width, CropRect.Height)
+    '    'Using grp = Graphics.FromImage(CropImage)
+    '    '    grp.drawimage(bmp, New Rectangle(0, 0, CropRect.Width, CropRect.Height))
+    '    '    CropImage.Save(strFileName)
+    '    'End Using
 
+    '    '' Create a graphics object for the live video stream and set the bitmap to be the dimensions of the picture box
+    '    'Dim GR As Graphics = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.CreateGraphics
+    '    'Dim bmpCapture As New Bitmap(myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Width, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Height)
+    '    'Dim pbhdc As IntPtr = GR.GetHdc     ' Set up a handle to the graphics object
+    '    'Dim bmpGraphics As Graphics = Graphics.FromImage(bmpCapture)
+    '    'Dim bmpHdc As IntPtr = bmpGraphics.GetHdc
 
-            Dim rect As New Rectangle(screenPosition.X, screenPosition.Y, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Width, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Height)
-            Dim cropped As Bitmap = bmp.Clone(rect, bmp.PixelFormat)
-            cropped.SetResolution(400, 400)
-            cropped.Save(strFileName, Imaging.ImageFormat.Jpeg)
-            Clipboard.Clear()
-            cropped = Nothing
-        Catch ex As System.OutOfMemoryException
-            SendKeys.Send("^{PRTSC}")
-            Application.DoEvents()
-            Dim screen = Clipboard.GetDataObject
-            Dim bmp As Bitmap = CType(screen.getdata(GetType(System.Drawing.Bitmap)), Bitmap)
-            bmp.SetResolution(400, 400)
-            'bmp.Save(strFileName)
+    '    '' Use the library to get a screen capture of the picture box area
+    '    'BitBlt(bmpHdc, 0, 0, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Width, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Height, pbhdc, 0, 0, COPY)
+    '    'GR.ReleaseHdc(pbhdc)
+    '    'bmpGraphics.ReleaseHdc(bmpHdc)
 
-            Dim p As System.Drawing.Point = New System.Drawing.Point(0, 0)
-            Dim screenPosition As System.Drawing.Point = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.PointToScreen(p)
+    '    'bmpCapture.Save(strFileName)
 
+    '    Try
+    '        'If the user selected *.Jpeg, convert the bmp.
+    '        If svDlgFileDialogScrCap.FilterIndex = 2 Then
+    '            'Save bmp as jpg 'ConvertBMP(strFileName, ImageFormat.Jpeg)        'ConvertBMP(strFileName, ImageFormat.Emf)        'ConvertBMP(strFileName, ImageFormat.Exif)        'ConvertBMP(strFileName, ImageFormat.Gif)        'ConvertBMP(strFileName, ImageFormat.Icon)        'ConvertBMP(strFileName, ImageFormat.MemoryBmp)        'ConvertBMP(strFileName, ImageFormat.Png)        'ConvertBMP(strFileName, ImageFormat.Tiff)        'ConvertBMP(strFileName, ImageFormat.Wmf)        
+    '            ConvertBMP(strFileName, ImageFormat.Jpeg)
+    '            'If System.IO.File.Exists(strFileName) = True Then
+    '            '    System.IO.File.Delete(strFileName)
+    '            'End If
 
-            Dim rect As New Rectangle(screenPosition.X, screenPosition.Y, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Width, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Height)
-            Dim cropped As Bitmap = bmp.Clone(rect, bmp.PixelFormat)
-            cropped.SetResolution(400, 400)
-            cropped.Save(strFileName, Imaging.ImageFormat.Jpeg)
-            Clipboard.Clear()
-            cropped = Nothing
-        End Try
-        'Dim CropRect As New Rectangle(screenPosition.X, screenPosition.Y, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Width, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Height)
-        'Dim CropImage As Bitmap = New Bitmap(CropRect.Width, CropRect.Height)
-        'Using grp = Graphics.FromImage(CropImage)
-        '    grp.drawimage(bmp, New Rectangle(0, 0, CropRect.Width, CropRect.Height))
-        '    CropImage.Save(strFileName)
-        'End Using
+    '        End If
+    '    Catch ex As Exception
+    '        MsgBox("The file extension you created is invalid, please try again.")
+    '        Exit Sub
+    '    End Try
 
-
-
-        '' Create a graphics object for the live video stream and set the bitmap to be the dimensions of the picture box
-        'Dim GR As Graphics = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.CreateGraphics
-        'Dim bmpCapture As New Bitmap(myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Width, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Height)
-        'Dim pbhdc As IntPtr = GR.GetHdc     ' Set up a handle to the graphics object
-        'Dim bmpGraphics As Graphics = Graphics.FromImage(bmpCapture)
-        'Dim bmpHdc As IntPtr = bmpGraphics.GetHdc
-
-
-        '' Use the library to get a screen capture of the picture box area
-        'BitBlt(bmpHdc, 0, 0, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Width, myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Height, pbhdc, 0, 0, COPY)
-        'GR.ReleaseHdc(pbhdc)
-        'bmpGraphics.ReleaseHdc(bmpHdc)
-
-        'bmpCapture.Save(strFileName)
-
-        Try
-            'If the user selected *.Jpeg, convert the bmp.
-            If svDlgFileDialogScrCap.FilterIndex = 2 Then
-                'Save bmp as jpg 'ConvertBMP(strFileName, ImageFormat.Jpeg)        'ConvertBMP(strFileName, ImageFormat.Emf)        'ConvertBMP(strFileName, ImageFormat.Exif)        'ConvertBMP(strFileName, ImageFormat.Gif)        'ConvertBMP(strFileName, ImageFormat.Icon)        'ConvertBMP(strFileName, ImageFormat.MemoryBmp)        'ConvertBMP(strFileName, ImageFormat.Png)        'ConvertBMP(strFileName, ImageFormat.Tiff)        'ConvertBMP(strFileName, ImageFormat.Wmf)        
-                ConvertBMP(strFileName, ImageFormat.Jpeg)
-                'If System.IO.File.Exists(strFileName) = True Then
-                '    System.IO.File.Delete(strFileName)
-                'End If
-
-            End If
-        Catch ex As Exception
-            MsgBox("The file extension you created is invalid, please try again.")
-            Exit Sub
-        End Try
-
-
-        Dim strDate() As String
-        Dim strDateTime As String
-        strDate = transect_date.Split("/")
-        strDateTime = strDate(2) & ":" & strDate(1) & ":" & strDate(0)
-        strDateTime = strDateTime & " " & Me.txtTime.Text
-        Dim arguments As String
-        Dim exePathStr As String = System.Windows.Forms.Application.ExecutablePath.ToString()
-        Dim command As String = String.Concat("""", exePathStr.Substring(0, exePathStr.LastIndexOf("\") + 1), "exiftool.exe")
-        arguments = String.Concat("""", " -FileModifyDate=", DoubleQuote(strDateTime) & " ", """", strFileName, """")
-        Console.WriteLine(command & arguments)
-        'MsgBox(command & arguments)
-        Dim oProcess As New Process()
-        Dim oStartInfo As New ProcessStartInfo(command & arguments)
-        'oStartInfo.Arguments = arguments
-        oStartInfo.UseShellExecute = False
-        oStartInfo.RedirectStandardOutput = True
-        oProcess.StartInfo = oStartInfo
-        oProcess.StartInfo.CreateNoWindow = True
-        oProcess.Start()
-        Dim sOutput As String
-        Using oStreamReader As System.IO.StreamReader = oProcess.StandardOutput
-            sOutput = oStreamReader.ReadToEnd()
-        End Using
-        Console.WriteLine(sOutput)
-        Dim strFileNamePath As String
-        strFileNamePath = Path.GetFileName(strFileName)
-        Me.FileName = Mid(Me.FileName, 1, 50)
-        Me.ScreenCaptureName = strFileNamePath
-        If Not myFormLibrary.frmSpeciesEvent Is Nothing Then
-            myFormLibrary.frmSpeciesEvent.cmdScreenCapture.BackColor = Color.LimeGreen
-        End If
-        If Not myFormLibrary.frmTableView Is Nothing Then
-            myFormLibrary.frmTableView.cmdScreenCapture.BackColor = Color.LimeGreen
-        End If
-        If blScreenCaptureCalled = False Then
-            ' Next, write a transection to the database
-            Dim numrows As Integer
-            Dim query As String
-            Dim oComm As OleDbCommand
+    '    Dim strDate() As String
+    '    Dim strDateTime As String
+    '    strDate = transect_date.Split("/")
+    '    strDateTime = strDate(2) & ":" & strDate(1) & ":" & strDate(0)
+    '    strDateTime = strDateTime & " " & Me.txtTime.Text
+    '    Dim arguments As String
+    '    Dim exePathStr As String = System.Windows.Forms.Application.ExecutablePath.ToString()
+    '    Dim command As String = String.Concat("""", exePathStr.Substring(0, exePathStr.LastIndexOf("\") + 1), "exiftool.exe")
+    '    arguments = String.Concat("""", " -FileModifyDate=", DoubleQuote(strDateTime) & " ", """", strFileName, """")
+    '    Console.WriteLine(command & arguments)
+    '    'MsgBox(command & arguments)
+    '    Dim oProcess As New Process()
+    '    Dim oStartInfo As New ProcessStartInfo(command & arguments)
+    '    'oStartInfo.Arguments = arguments
+    '    oStartInfo.UseShellExecute = False
+    '    oStartInfo.RedirectStandardOutput = True
+    '    oProcess.StartInfo = oStartInfo
+    '    oProcess.StartInfo.CreateNoWindow = True
+    '    oProcess.Start()
+    '    Dim sOutput As String
+    '    Using oStreamReader As System.IO.StreamReader = oProcess.StandardOutput
+    '        sOutput = oStreamReader.ReadToEnd()
+    '    End Using
+    '    Console.WriteLine(sOutput)
+    '    Dim strFileNamePath As String
+    '    strFileNamePath = Path.GetFileName(strFileName)
+    '    Me.FileName = Mid(Me.FileName, 1, 50)
+    '    Me.ScreenCaptureName = strFileNamePath
+    '    If Not myFormLibrary.frmSpeciesEvent Is Nothing Then
+    '        myFormLibrary.frmSpeciesEvent.cmdScreenCapture.BackColor = Color.LimeGreen
+    '    End If
+    '    If Not myFormLibrary.frmTableView Is Nothing Then
+    '        myFormLibrary.frmTableView.cmdScreenCapture.BackColor = Color.LimeGreen
+    '    End If
+    '    If blScreenCaptureCalled = False Then
+    '        ' Next, write a transection to the database
+    '        Dim numrows As Integer
+    '        Dim query As String
+    '        Dim oComm As OleDbCommand
 
 
-            strSpeciesCode = "NULL"
-            strSpeciesCount = "NULL"
-            strSide = "NULL"
-            strRange = "NULL"
-            strLength = "NULL"
-            strHeight = "NULL"
-            strWidth = "NULL"
-            strAbundance = "NULL"
-            strIdConfidence = "NULL"
-            strComment = "Screen Capture"
+    '        strSpeciesCode = "NULL"
+    '        strSpeciesCount = "NULL"
+    '        strSide = "NULL"
+    '        strRange = "NULL"
+    '        strLength = "NULL"
+    '        strHeight = "NULL"
+    '        strWidth = "NULL"
+    '        strAbundance = "NULL"
+    '        strIdConfidence = "NULL"
+    '        strComment = "Screen Capture"
 
-            query = createInsertQuery(transect_date, "Screen Capture", strVideoTime, strVideoTextTime, strVideoDecimalTime, "555", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
-            Me.ScreenCaptureName = ""
+    '        query = createInsertQuery(transect_date, "Screen Capture", strVideoTime, strVideoTextTime, strVideoDecimalTime, "555", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+    '        Me.ScreenCaptureName = ""
 
-            ' Write this transaction to the database if open.
-            Try
-                oComm = New OleDbCommand(query, conn)
-                numrows = oComm.ExecuteNonQuery()
-                fetch_data()
-            Catch ex As Exception
-                If ex.Message.StartsWith("Syntax") Then
-                    MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-                Else
-                    MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-                End If
-                Exit Sub
-            End Try
-        End If
+    '        ' Write this transaction to the database if open.
+    '        Try
+    '            oComm = New OleDbCommand(query, conn)
+    '            numrows = oComm.ExecuteNonQuery()
+    '            fetch_data()
+    '        Catch ex As Exception
+    '            If ex.Message.StartsWith("Syntax") Then
+    '                MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
+    '            Else
+    '                MsgBox(ex.Message & vbCrLf & ex.StackTrace)
+    '            End If
+    '            Exit Sub
+    '        End Try
+    '    End If
 
-    End Sub
-    Private Sub VaryQualityLevel(ByVal strFilePath As String)
-        ' Get a bitmap. 
-        Dim bmp1 As New Bitmap(strFilePath)
-        Dim jgpEncoder As ImageCodecInfo = GetEncoder(ImageFormat.Jpeg)
+    'End Sub
 
-        ' Create an Encoder object based on the GUID 
-        ' for the Quality parameter category. 
-        Dim myEncoder As System.Drawing.Imaging.Encoder = System.Drawing.Imaging.Encoder.Quality
+    'Private Sub VaryQualityLevel(ByVal strFilePath As String)
+    '    ' Get a bitmap. 
+    '    Dim bmp1 As New Bitmap(strFilePath)
+    '    Dim jgpEncoder As ImageCodecInfo = GetEncoder(ImageFormat.Jpeg)
 
-        ' Create an EncoderParameters object. 
-        ' An EncoderParameters object has an array of EncoderParameter 
-        ' objects. In this case, there is only one 
-        ' EncoderParameter object in the array. 
-        Dim myEncoderParameters As New EncoderParameters(1)
+    '    ' Create an Encoder object based on the GUID 
+    '    ' for the Quality parameter category. 
+    '    Dim myEncoder As System.Drawing.Imaging.Encoder = System.Drawing.Imaging.Encoder.Quality
 
-        Dim myEncoderParameter As New EncoderParameter(myEncoder, 100&)
-        myEncoderParameters.Param(0) = myEncoderParameter
-        bmp1.Save(strFilePath, jgpEncoder, myEncoderParameters)
+    '    ' Create an EncoderParameters object. 
+    '    ' An EncoderParameters object has an array of EncoderParameter 
+    '    ' objects. In this case, there is only one 
+    '    ' EncoderParameter object in the array. 
+    '    Dim myEncoderParameters As New EncoderParameters(1)
 
-    End Sub 'VaryQualityLevel
+    '    Dim myEncoderParameter As New EncoderParameter(myEncoder, 100&)
+    '    myEncoderParameters.Param(0) = myEncoderParameter
+    '    bmp1.Save(strFilePath, jgpEncoder, myEncoderParameters)
 
-    Private Function GetEncoder(ByVal format As ImageFormat) As ImageCodecInfo
+    'End Sub 'VaryQualityLevel
 
-        Dim codecs As ImageCodecInfo() = ImageCodecInfo.GetImageDecoders()
+    'Private Function GetEncoder(ByVal format As ImageFormat) As ImageCodecInfo
 
-        Dim codec As ImageCodecInfo
-        For Each codec In codecs
-            If codec.FormatID = format.Guid Then
-                Return codec
-            End If
-        Next codec
-        Return Nothing
+    '    Dim codecs As ImageCodecInfo() = ImageCodecInfo.GetImageDecoders()
 
-    End Function
+    '    Dim codec As ImageCodecInfo
+    '    For Each codec In codecs
+    '        If codec.FormatID = format.Guid Then
+    '            Return codec
+    '        End If
+    '    Next codec
+    '    Return Nothing
+
+    'End Function
     ' ==========================================================================================================
     ' Name: mnuOpenImg_Click
     ' Description: Select the image file for processing, extracting EXIF info as well, also get all the images under
@@ -3294,7 +3239,7 @@ Public Class VideoMiner
         If Not myFormLibrary.frmVideoPlayer Is Nothing Then
             blVideoOpen = True
             strVideoFileName = strVideoFilePath
-            strVideoTime = CStr(myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Position)
+            strVideoTime = CStr(myFormLibrary.frmVideoPlayer.Position)
         Else
             blVideoOpen = False
             strVideoFileName = "NULL"
@@ -3478,91 +3423,18 @@ Public Class VideoMiner
         End Try
 
         Return dblValue
-
-    End Function
-
-    Private Function openFile() As Boolean
-        ' Returns True if the user chose a file to play, False is they pressed cancel or clicked the 'X'
-        Dim ofd As OpenFileDialog = New OpenFileDialog
-        ofd.Title = OPEN_VID_TITLE
-        ofd.InitialDirectory = current_directory
-        ofd.Filter = "Media Files (*.mpg,*.mpeg,*.avi,*.wma,*.wav,*.wmv,*.qt)|*.mpg;*.mpeg;*.avi;*.wma;*.wav;*.wmv;*.qt|All Files (*.*)|*.*"
-        ofd.FilterIndex = 1
-        ofd.RestoreDirectory = True
-        ofd.Multiselect = False
-
-        If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
-            'If ofd.ShowDialog() <> Windows.Forms.DialogResult.Cancel Then
-            current_directory = ofd.FileName.Substring(0, ofd.FileName.LastIndexOf("\"))
-            strVideoFilePath = ofd.FileName
-            Me.FileName = strVideoFilePath.Substring(strVideoFilePath.LastIndexOf("\") + 1, strVideoFilePath.Length - strVideoFilePath.LastIndexOf("\") - 1)
-        Else
-            Return False
-        End If
-
-        If myFormLibrary.frmVideoPlayer Is Nothing Then
-            Try
-                myFormLibrary.frmVideoPlayer = New frmVideoPlayer
-            Catch ex As Exception
-                MessageBox.Show(ex.Message)
-            End Try
-
-            myFormLibrary.frmVideoPlayer.pnlHideVideo.Visible = True
-
-            Dim intX As Integer = 0
-            Dim intY As Integer = 0
-
-            Dim priMon, secMon As Screen
-
-            priMon = Screen.AllScreens(0)
-            If Screen.AllScreens.Length > 1 Then
-                ' There is more than one display, make second one the default for video
-                secMon = Screen.AllScreens(1)
-            Else
-                secMon = Nothing
-            End If
-
-            Dim aPoint As System.Drawing.Point
-
-            If secMon Is Nothing Then
-                aPoint.X = intX
-                aPoint.Y = intY / 2
-                myFormLibrary.frmVideoPlayer.Location = aPoint
-                myFormLibrary.frmVideoPlayer.WindowState = FormWindowState.Normal
-                myFormLibrary.frmVideoPlayer.TopMost = True
-            Else
-                'aPoint.X = intX + priMon.Bounds.Width
-                'aPoint.Y = intY / 2
-                aPoint.X = intX + priMon.Bounds.Width / 3
-                aPoint.Y = intY / 4
-                myFormLibrary.frmVideoPlayer.Location = aPoint
-                'myFormLibrary.frmVideoPlayer.WindowState = FormWindowState.Maximized
-                myFormLibrary.frmVideoPlayer.TopMost = True
-            End If
-
-            Me.VideoTime = Zero
-            myFormLibrary.frmVideoPlayer.Show()
-            'dblVideoTimeUserSet = 0
-        Else
-            myFormLibrary.frmVideoPlayer.pnlHideVideo.Visible = True
-            Call myFormLibrary.frmVideoPlayer.frmVideoPlayer_Load(Me, New System.EventArgs)
-            Me.VideoTime = frmVideoPlayer.tsCurrentVideoTime
-        End If
-        Return True
     End Function
 
     Public Sub enableDisableVideoMenu(ByVal mnuState As Boolean)
-
+        ' Enable (mnuState=True) or Disable (mnuState=False) the menu item for opening video or opening external video
         Dim mnuItem As ToolStripMenuItem
-
         For Each mnuItem In mnuVideoTools.DropDownItems
-
-            If mnuItem.Text <> "Open Video" And mnuItem.Text <> "Use External Video" Then
+            If mnuItem.Text = OPEN_VID_TITLE Or mnuItem.Text = OPEN_EXT_VID Then
                 mnuItem.Enabled = mnuState
+            Else
+                mnuItem.Enabled = Not mnuState
             End If
-
         Next
-
     End Sub
 
     ' ==========================================================================================================
@@ -4411,85 +4283,184 @@ Public Class VideoMiner
 
     End Sub
 
-    Public Function ConvertBMP(ByVal BMPFullPath As String, ByVal imgFormat As ImageFormat) As Boolean
+    'Public Function ConvertBMP(ByVal BMPFullPath As String, ByVal imgFormat As ImageFormat) As Boolean
 
-        Dim bAns As Boolean
-        Dim strNewFileName As String
-        Dim strNewFilePath As String
-        Dim strNewFile As String
+    '    Dim bAns As Boolean
+    '    Dim strNewFileName As String
+    '    Dim strNewFilePath As String
+    '    Dim strNewFile As String
 
-        Try
+    '    Try
 
-            ' Get a bitmap. 
-            Dim bmp1 As New Bitmap(BMPFullPath)
-            Dim jgpEncoder As ImageCodecInfo = GetEncoder(ImageFormat.Jpeg)
+    '        ' Get a bitmap. 
+    '        Dim bmp1 As New Bitmap(BMPFullPath)
+    '        Dim jgpEncoder As ImageCodecInfo = GetEncoder(ImageFormat.Jpeg)
 
-            ' Create an Encoder object based on the GUID 
-            ' for the Quality parameter category. 
-            Dim myEncoder As System.Drawing.Imaging.Encoder = System.Drawing.Imaging.Encoder.Quality
+    '        ' Create an Encoder object based on the GUID 
+    '        ' for the Quality parameter category. 
+    '        Dim myEncoder As System.Drawing.Imaging.Encoder = System.Drawing.Imaging.Encoder.Quality
 
-            ' Create an EncoderParameters object. 
-            ' An EncoderParameters object has an array of EncoderParameter 
-            ' objects. In this case, there is only one 
-            ' EncoderParameter object in the array. 
-            Dim myEncoderParameters As New EncoderParameters(1)
+    '        ' Create an EncoderParameters object. 
+    '        ' An EncoderParameters object has an array of EncoderParameter 
+    '        ' objects. In this case, there is only one 
+    '        ' EncoderParameter object in the array. 
+    '        Dim myEncoderParameters As New EncoderParameters(1)
 
-            Dim myEncoderParameter As New EncoderParameter(myEncoder, 100&)
-            myEncoderParameters.Param(0) = myEncoderParameter
-            strNewFilePath = GetDirectoryName(BMPFullPath)
-            strNewFileName = GetFileNameWithoutExtension(BMPFullPath)
+    '        Dim myEncoderParameter As New EncoderParameter(myEncoder, 100&)
+    '        myEncoderParameters.Param(0) = myEncoderParameter
+    '        strNewFilePath = GetDirectoryName(BMPFullPath)
+    '        strNewFileName = GetFileNameWithoutExtension(BMPFullPath)
 
-            strNewFile = strNewFilePath & "\" & strNewFileName & ".jpg"
+    '        strNewFile = strNewFilePath & "\" & strNewFileName & ".jpg"
 
-            bmp1.Save(strNewFile, jgpEncoder, myEncoderParameters)
-            bmp1 = Nothing
-            ''bitmap class in system.drawing.imaging
-            'Dim objBmp As New Bitmap(BMPFullPath)
+    '        bmp1.Save(strNewFile, jgpEncoder, myEncoderParameters)
+    '        bmp1 = Nothing
+    '        ''bitmap class in system.drawing.imaging
+    '        'Dim objBmp As New Bitmap(BMPFullPath)
 
-            ''below 2 functions in system.io.path
-            'strNewFilePath = GetDirectoryName(BMPFullPath)
-            'strNewFileName = GetFileNameWithoutExtension(BMPFullPath)
+    '        ''below 2 functions in system.io.path
+    '        'strNewFilePath = GetDirectoryName(BMPFullPath)
+    '        'strNewFileName = GetFileNameWithoutExtension(BMPFullPath)
 
-            'strNewFile = strNewFilePath & "\" & strNewFileName & "." & imgFormat.ToString
-            'objBmp.Save(strNewFile, imgFormat)
-            'objBmp.Dispose()
-            bAns = True 'return true on success
-        Catch
-            bAns = False 'return false on error
-        End Try
-        Return bAns
+    '        'strNewFile = strNewFilePath & "\" & strNewFileName & "." & imgFormat.ToString
+    '        'objBmp.Save(strNewFile, imgFormat)
+    '        'objBmp.Dispose()
+    '        bAns = True 'return true on success
+    '    Catch
+    '        bAns = False 'return false on error
+    '    End Try
+    '    Return bAns
 
-    End Function
+    'End Function
 
 #End Region
 
 #Region "Video Functions"
 
+    Private Sub mnuOpenFile_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuOpenFile.Click
+        ' Handles the opening of a video file.
+        Me.strPreviousClipTime = Me.txtTime.Text
+        If Not myFormLibrary.frmImage Is Nothing Then
+            Dim intAnswer As Integer = MessageBox.Show("The image file '" & Me.FileName & "' is currently open. In order to open a video, the image will be closed. Do you want to continue?", "Image File Open", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+            If intAnswer = vbNo Then
+                Exit Sub
+            Else
+                myFormLibrary.frmImage.Close()
+                If myFormLibrary.frmVideoMiner.m_SerialPort Is Nothing Then
+                    myFormLibrary.frmVideoMiner.lblGPSLocation.Visible = False
+                    myFormLibrary.frmVideoMiner.lblX.Visible = False
+                    myFormLibrary.frmVideoMiner.lblXValue.Visible = False
+                    myFormLibrary.frmVideoMiner.lblY.Visible = False
+                    myFormLibrary.frmVideoMiner.lblYValue.Visible = False
+                    myFormLibrary.frmVideoMiner.lblZ.Visible = False
+                    myFormLibrary.frmVideoMiner.lblZValue.Visible = False
+                End If
+            End If
+        End If
+
+        If openVideo() Then
+            ' Disable the open video menu selection
+            enableDisableVideoMenu(False)
+            playVideo()
+        End If
+
+        'If video_file_open Then
+        ' myFormLibrary.frmSetTime = New frmSetTime
+        ' myFormLibrary.frmSetTime.TopLevel = True
+        ' myFormLibrary.frmSetTime.BringToFront()
+        ' myFormLibrary.frmSetTime.ShowDialog()
+        ' End If
+
+    End Sub
+
+    Private Function openVideo() As Boolean
+        ' Tries to open a video file.
+        ' Returns True if the user chose a file to play, False is they pressed cancel or clicked the 'X'
+        Dim ofd As OpenFileDialog = New OpenFileDialog
+        ofd.Title = OPEN_VID_TITLE
+        ofd.InitialDirectory = current_directory
+        ofd.Filter = "Media Files (*.mpg,*.mpeg,*.avi,*.wma,*.wav,*.wmv,*.qt)|*.mpg;*.mpeg;*.avi;*.wma;*.wav;*.wmv;*.qt|All Files (*.*)|*.*"
+        ofd.FilterIndex = 1
+        ofd.RestoreDirectory = True
+        ofd.Multiselect = False
+
+        If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            current_directory = ofd.FileName.Substring(0, ofd.FileName.LastIndexOf("\"))
+            strVideoFilePath = ofd.FileName
+            FileName = strVideoFilePath.Substring(strVideoFilePath.LastIndexOf("\") + 1, strVideoFilePath.Length - strVideoFilePath.LastIndexOf("\") - 1)
+        Else
+            Return False
+        End If
+
+        If myFormLibrary.frmVideoPlayer Is Nothing Then
+            Try
+                myFormLibrary.frmVideoPlayer = New frmVideoPlayer
+                myFormLibrary.frmVideoPlayer.Filename = FileName
+            Catch ex As Exception
+                MessageBox.Show(ex.Message)
+            End Try
+
+            ' Figure out where to put the video player form. If there ar3e two screens connected,
+            ' put the video on the second screen, maximized. If only one screen, put it on the same screen,
+            ' as an unmaximized window.
+            Dim intX As Integer = 0
+            Dim intY As Integer = 0
+            Dim priMon, secMon As Screen
+            priMon = Screen.AllScreens(0)
+            If Screen.AllScreens.Length > 1 Then
+                ' There is more than one display, make second one the default for video
+                secMon = Screen.AllScreens(1)
+            Else
+                secMon = Nothing
+            End If
+            Dim aPoint As System.Drawing.Point
+            If secMon Is Nothing Then
+                aPoint.X = intX
+                aPoint.Y = intY / 2
+                myFormLibrary.frmVideoPlayer.Location = aPoint
+                myFormLibrary.frmVideoPlayer.WindowState = FormWindowState.Normal
+                myFormLibrary.frmVideoPlayer.TopMost = True
+            Else
+                'aPoint.X = intX + priMon.Bounds.Width
+                'aPoint.Y = intY / 2
+                aPoint.X = intX + priMon.Bounds.Width / 3
+                aPoint.Y = intY / 4
+                myFormLibrary.frmVideoPlayer.Location = aPoint
+                'myFormLibrary.frmVideoPlayer.WindowState = FormWindowState.Maximized
+                myFormLibrary.frmVideoPlayer.TopMost = True
+            End If
+            Me.VideoTime = Zero
+            myFormLibrary.frmVideoPlayer.Show()
+            'dblVideoTimeUserSet = 0
+        Else
+            Call myFormLibrary.frmVideoPlayer.frmVideoPlayer_Load(Me, New System.EventArgs)
+            Me.VideoTime = myFormLibrary.frmVideoPlayer.CurrentVideoTime
+        End If
+        myFormLibrary.frmVideoPlayer.pnlHideVideo.Visible = True
+        pnlVideoControls.Visible = True
+        ' In the future if the frames per second are returned properly, this will show that in the status bar..
+        'Me.lblVideo.Text = "Video File '" & Me.FileName & "' is open (" & myFormLibrary.frmVideoPlayer.FPS & " frames per second)"
+        Me.lblVideo.Text = "Video File '" & Me.FileName & "' is open"
+        video_file_open = True
+        Return True
+    End Function
+
     Private Sub cmdPlayForSeconds_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPlayForSeconds.Click
         Try
             ' Check to make sure that the entered value is numeric
             If IsNumeric(Me.txtPlaySeconds.Text) Then
-
                 Dim dblCurrentSeconds As Double
-
                 Dim strSeconds As String()
                 Dim intCurrentSeconds As Integer
-
                 dblCurrentSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Position
-                'dblCurrentSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition
-
                 strSeconds = dblCurrentSeconds.ToString.Split(".")
                 intCurrentSeconds = CInt(strSeconds(0))
-
                 intPlayForSeconds = CInt(Me.txtPlaySeconds.Text)
                 Me.tmrPlayForSeconds.Interval = 100
                 Me.tmrPlayForSeconds.Enabled = True
-
                 intEndPlaySeconds = intCurrentSeconds + intPlayForSeconds
-
                 playVideo()
                 Me.tmrPlayForSeconds.Start()
-
             Else
                 MsgBox("Please Enter a Numeric Value", MsgBoxStyle.OkOnly)
                 Me.txtPlaySeconds.Focus()
@@ -4498,13 +4469,10 @@ Public Class VideoMiner
         Catch ex As Exception
 
         End Try
-
-
     End Sub
 
     Public Sub cmdPlayPause_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPlayPause.Click
-        ' If the video is paused or stopped..
-        If myFormLibrary.frmVideoPlayer.plyrVideoPlayer.IsPaused Or Not myFormLibrary.frmVideoPlayer.plyrVideoPlayer.IsPlaying Then
+        If myFormLibrary.frmVideoPlayer.IsPaused Or myFormLibrary.frmVideoPlayer.IsStopped Then
             playVideo()
             If Me.chkRecordEachSecond.Checked = True Then
                 blFirstTime = True
@@ -4516,65 +4484,75 @@ Public Class VideoMiner
         End If
     End Sub
 
+    Public Sub video_file_unload()
+        ' Dispose of the instance of the frmVideoPlayer, if it exists
+        If Not myFormLibrary.frmVideoPlayer Is Nothing Then
+            myFormLibrary.frmVideoPlayer.Dispose()
+            myFormLibrary.frmVideoPlayer = Nothing
+        End If
+        lblVideo.Text = VIDEO_FILE_STATUS_UNLOADED
+        video_file_open = False
+    End Sub
+
     Private Sub playVideo()
-        Try
-            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Play()
-            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Rate = dblVideoRate
-            myFormLibrary.frmVideoPlayer.blIsPlaying = True
-            myFormLibrary.frmVideoPlayer.tmrVideo.Start()
+        myFormLibrary.frmVideoPlayer.Rate = dblVideoRate
+        If myFormLibrary.frmVideoPlayer.playVideo() Then
             FfwdCount = 0
             RwndCOunt = 0
-            Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Pause_Icon.png")
-            myFormLibrary.frmVideoPlayer.pctVideoStatus.BackgroundImage = Image.FromFile(filePath & "\Play_Icon_Inverse.png")
-        Catch ex As Exception
-            MessageBox.Show(ex.Message)
-            Me.tmrRecordPerSecond.Stop()
-            myFormLibrary.frmVideoPlayer.blIsPlaying = False
-        End Try
-
+        End If
     End Sub
 
     Private Sub pauseVideo()
-        Try
-            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Pause()
-            If Me.tmrRecordPerSecond.Enabled Then
-                Me.tmrRecordPerSecond.Stop()
-            End If
-            If myFormLibrary.frmVideoPlayer.tmrVideo.Enabled Then
-                myFormLibrary.frmVideoPlayer.tmrVideo.Stop()
-            End If
-            myFormLibrary.frmVideoPlayer.blIsPlaying = False
-            Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Play_Icon.png")
-            myFormLibrary.frmVideoPlayer.pctVideoStatus.BackgroundImage = Image.FromFile(filePath & "\Pause_Icon_Inverse.png")
-        Catch ex As Exception
-            MessageBox.Show(ex.Message)
-        End Try
-        FfwdCount = 0
-        RwndCOunt = 0
+        'If Me.tmrRecordPerSecond.Enabled Then
+        ' Me.tmrRecordPerSecond.Stop()
+        ' End If
+        If myFormLibrary.frmVideoPlayer.pauseVideo() Then
+            FfwdCount = 0
+            RwndCOunt = 0
+        End If
     End Sub
 
     Private Sub stopVideo()
-        Try
-            myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Stop()
-            If Me.tmrRecordPerSecond.Enabled Then
-                Me.tmrRecordPerSecond.Stop()
-            End If
-            myFormLibrary.frmVideoPlayer.tmrVideo.Stop()
-            myFormLibrary.frmVideoPlayer.blIsPlaying = False
-            myFormLibrary.frmVideoPlayer.trkCurrentPosition.Value = 0
-            Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Play_icon.png")
-            myFormLibrary.frmVideoPlayer.pctVideoStatus.BackgroundImage = Image.FromFile(filePath & "\Stop_Icon_Inverse.png")
-            myFormLibrary.frmVideoPlayer.lblCurrentTime.Text = VIDEO_TIME_DECIMAL_LABEL
-        Catch ex As Exception
-            MessageBox.Show(ex.Message)
-        End Try
-        FfwdCount = 0
-        RwndCOunt = 0
+        'If Me.tmrRecordPerSecond.Enabled Then
+        ' Me.tmrRecordPerSecond.Stop()
+        ' End If
+        If myFormLibrary.frmVideoPlayer.stopVideo() Then
+            FfwdCount = 0
+            RwndCOunt = 0
+        End If
+    End Sub
+
+    Public Sub playerPaused()
+        ' This is used to sense when the video player form pauses its video from inside.
+        ' it is added as a handler and an event raised from the frmVideoPlayer class
+        cmdPlayPause.BackgroundImage = My.Resources.Play_Icon
+    End Sub
+
+    Public Sub playerPlaying()
+        ' This is used to sense when the video player form starts playing its video from inside.
+        ' it is added as a handler and an event raised from the frmVideoPlayer class
+        cmdPlayPause.BackgroundImage = My.Resources.Pause_Icon
+    End Sub
+
+    Public Sub playerStopped()
+        ' This is used to sense when the video player form stops its video from inside.
+        ' it is added as a handler and an event raised from the frmVideoPlayer class
+        cmdPlayPause.BackgroundImage = My.Resources.Play_Icon
     End Sub
 
     Public Sub videoEnded()
-        Me.cmdPlayPause.BackgroundImage = Image.FromFile(filePath & "\Play_icon.png")
-        myFormLibrary.frmVideoPlayer.pctVideoStatus.BackgroundImage = Image.FromFile(filePath & "\Stop_Icon_Inverse.png")
+        ' This is used to sense when the video ends its video from inside.
+        ' it is added as a handler and an event raised from the frmVideoPlayer class
+        cmdPlayPause.BackgroundImage = My.Resources.Play_Icon
+    End Sub
+
+    Public Sub playerClosing()
+        ' This is used to sense when the video player is closed (i.e. press the topright 'X' button)
+        ' it is added as a handler and an event raised from the frmVideoPlayer class
+        video_file_open = False
+        pnlVideoControls.Visible = False
+        enableDisableVideoMenu(True)
+        video_file_unload()
     End Sub
 
     Private Sub increaseRate()
@@ -4583,6 +4561,7 @@ Public Class VideoMiner
             myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Rate = dblVideoRate
             Me.lblVideoRate.Text = dblVideoRate & " X"
         Catch ex As Exception
+            MessageBox.Show(ex.Message)
         End Try
     End Sub
 
@@ -4594,32 +4573,22 @@ Public Class VideoMiner
             myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Rate = dblVideoRate
             Me.lblVideoRate.Text = dblVideoRate & " X"
         Catch ex As Exception
+            MessageBox.Show(ex.Message)
         End Try
     End Sub
 
-    Private Sub StepForward()
+    Private Sub Stepforward()
         ' This function steps forward the video by 10% based on where the video is currently and the duration of the video
-        ' I am going to try to make this button a frame stepper, using keyframes.
-
-        myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Pause()
-        myFormLibrary.frmVideoPlayer.plyrVideoPlayer.NextFrame()
-        Dim dblCurrentPosition = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Position * 100.0
     End Sub
 
-    'Private Sub StepForward_old()
+    'Private Sub StepForward()
     '    ' This function steps forward the video by 10% based on where the video is currently and the duration of the video
     '    ' I am going to try to make this button a frame stepper, using keyframes.
-    '    'Debug.Print(myFormLibrary.frmVideoPlayer.plyrVideoPlayer.playlist.isPlaying)
-
     '    Dim dblDurationSeconds As Double = 0
     '    Dim dblCurrentSeconds As Double = 0
 
-    '    dblCurrentSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Position
+    '    dblCurrentSeconds = myFormLibrary.frmVideoPlayer.Position
     '    dblDurationSeconds = myFormLibrary.frmVideoPlayer.dblDuration
-
-
-    '    'dblCurrentSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition
-    '    'dblDurationSeconds = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.currentMedia.duration
 
     '    Dim dblDuration As Double
     '    dblDuration = myFormLibrary.frmVideoPlayer.dblDuration
@@ -4627,8 +4596,6 @@ Public Class VideoMiner
     '    Dim intValue As Integer
 
     '    intValue = CInt((dblCurrentSeconds / dblDuration) * 100)
-
-
     '    Select Case intValue
 
     '        Case Is < 10
@@ -4793,31 +4760,6 @@ Public Class VideoMiner
 
     End Function
 
-    ' ==========================================================================================================
-    ' Name: video_file_load()
-    ' Description: Open a new window to display video chosen by user.
-    ' 1.) Change the text of text box VideoFileStatus at top of program to read the name of whichever video is loaded.
-    ' ==========================================================================================================
-    Public Sub video_file_load()
-
-        Me.lblVideo.Text = "Video File '" & Me.FileName & "' is open"
-        Me.video_file_open = True
-
-        ' MsgBox("Ensure time is set to correspond with video before creating transect observations.", MsgBoxStyle.OkOnly)
-    End Sub
-
-    ' ==========================================================================================================
-    ' Name: video_file_unload()
-    ' Description: Function called when user closes a video.
-    ' 1.) Change the text of text box VideoFileStatus at top of program to read "No Video Loaded".
-    ' ==========================================================================================================
-    Public Sub video_file_unload()
-
-        Me.lblVideo.Text = VIDEO_FILE_STATUS_UNLOADED
-        Me.video_file_open = False
-
-    End Sub
-
 #End Region
 
 #Region "Database Functions"
@@ -4921,7 +4863,8 @@ Public Class VideoMiner
                 db_file_load()
                 If video_file_open Then
                     files_loaded()
-                    video_file_load()
+                    Me.lblVideo.Text = "Video File '" & Me.FileName & "' is open"
+                    video_file_open = True
                 End If
                 fetch_data()
             End If
@@ -7006,12 +6949,12 @@ SkipInsertComma:
 
     End Sub
 
-    Private Sub CloseVideoFileToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CloseVideoFileToolStripMenuItem.Click
+    Private Sub CloseVideoFileToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         myFormLibrary.frmVideoPlayer.Close()
     End Sub
 
     Public Sub cmdNext_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdNext.Click
-        Call StepForward()
+        Call Stepforward()
     End Sub
 
     Public Sub cmdPrevious_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPrevious.Click

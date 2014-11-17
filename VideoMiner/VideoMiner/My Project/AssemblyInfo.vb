@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("Fisheries and Oceans Canada")> 
 <Assembly: AssemblyProduct("VideoMiner")> 
-<Assembly: AssemblyCopyright("Copyright © Fisheries and Oceans Canada 2012")> 
+<Assembly: AssemblyCopyright("Copyright © Fisheries and Oceans Canada 2014")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(True)> 

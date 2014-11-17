@@ -20,6 +20,7 @@ Module modGlobals
 
     Public Const VIDEO_TIME_LABEL As String = "00:00:00"
     Public Const VIDEO_TIME_DECIMAL_LABEL As String = "00:00:00.000"
+    Public Const VIDEO_TIME_FORMAT As String = "{0:D2}:{1:D2}:{2:D2}.{3:D2}"
     ' The number of digits to strip off the end of the video time label. Typically a video feed will have 7 digits after the '.', so 4 means we keep three of these,
     ' i.e. 11:21:01.9870000 will become 11:21:01.987. The string above (VIDEO_TIME_DECIMAL_LABEL) should have one less than this after the '.'
     ' This is used several times in the frmVideoPlayer class.

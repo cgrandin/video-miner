@@ -6,7 +6,233 @@ VideoMiner
 </name>
 </assembly>
 <members>
-<member name="P:VideoMiner.My.Resources.Resources.ResourceManager">
+<member name="F:VideoMiner.frmVideoPlayer.m_tsDurationTime">
+	<summary>
+ Member variable to hold the video's duration or length.
+ </summary>
+</member><member name="F:VideoMiner.frmVideoPlayer.m_tsCurrentVideoTime">
+	<summary>
+ Member variable to hold the video's current time.
+ </summary>
+</member><member name="F:VideoMiner.frmVideoPlayer.m_blFirstTick">
+	<summary>
+ Member variable to hold whether or not this is the first tick in the System.Timer's tick events
+ </summary>
+</member><member name="F:VideoMiner.frmVideoPlayer.m_blChapter">
+	<summary>
+ Member variable to hold UNKNOWN
+ </summary>
+</member><member name="F:VideoMiner.frmVideoPlayer.m_blRecordPerSecond">
+	<summary>
+ Member variable to hold whether or not to record data every second
+ </summary>
+</member><member name="F:VideoMiner.frmVideoPlayer.m_blIsEndOfVideo">
+	<summary>
+ Member variable to hold whether or not the video is at the end
+ </summary>
+</member><member name="F:VideoMiner.frmVideoPlayer.m_dblRate">
+	<summary>
+ Member variable to hold the rate the video will be played at
+ </summary>
+</member><member name="F:VideoMiner.frmVideoPlayer.m_strFilename">
+	<summary>
+ Member variable to hold the filename
+ </summary>
+</member><member name="F:VideoMiner.frmVideoPlayer.m_sngFPS">
+	<summary>
+ Member variable to hold the frames per second for the video
+ </summary>
+</member><member name="F:VideoMiner.frmVideoPlayer.m_mbMedia">
+	<summary>
+ Member variable to hold the media (video file)
+ </summary>
+</member><member name="F:VideoMiner.frmVideoPlayer.m_pnlTransparentPanel">
+	<summary>
+ Member variable to hold the transparent panel used to overlay the Vlc.DotNet control so that the user
+ can click on the video to toggle play/pause
+ </summary>
+</member><member name="P:VideoMiner.frmVideoPlayer.Position">
+	<summary>
+ This property contains the position of the currently loaded video.
+ </summary>
+	<value>Between 0.0 and 1.0</value>
+	<returns>A number of type Single</returns>
+</member><member name="P:VideoMiner.frmVideoPlayer.IsPlaying">
+	<summary>
+ This property is readonly and contains a boolean which is True if the media state of the VLC.dotnet control is Vlc.DotNet.Core.Interops.Signatures.LibVlc.Media.States.Playing
+ </summary>
+	<returns>True or False</returns>
+</member><member name="P:VideoMiner.frmVideoPlayer.IsStopped">
+	<summary>
+ This property is readonly and contains a boolean which is True if the media state of the VLC.dotnet control is Vlc.DotNet.Core.Interops.Signatures.LibVlc.Media.States.Stopped
+ </summary>
+	<returns>True or False</returns>
+</member><member name="P:VideoMiner.frmVideoPlayer.IsPaused">
+	<summary>
+ This property is readonly and contains a boolean which is True if the media state of the VLC.dotnet control is Vlc.DotNet.Core.Interops.Signatures.LibVlc.Media.States.Paused
+ </summary>
+	<returns>True or False</returns>
+</member><member name="P:VideoMiner.frmVideoPlayer.IsEndOfVideo">
+	<summary>
+ This property contains a boolean which is True if the media has reached the end of the video
+ </summary>
+	<returns>True or False</returns>
+</member><member name="P:VideoMiner.frmVideoPlayer.CurrentVideoTime">
+	<summary>
+ This property is readonly and contains a System.Timespan object which represents the time at the current position of the video
+ </summary>
+	<returns>System.Timespan</returns>
+	<remarks></remarks>
+</member><member name="P:VideoMiner.frmVideoPlayer.FPS">
+	<summary>
+ This property is readonly and contains a number of type 'Single' which represents the Frames per Second for the video.
+ </summary>
+	<returns>Single number</returns>
+	<remarks> Note this almost always returns 0 so it's use is limited</remarks>
+</member><member name="P:VideoMiner.frmVideoPlayer.Rate">
+	<summary>
+ This property contains a number of type 'Double' which represents the play rate for the video.
+ For normal playback this will be 1.0. For double spped, it will be 2.0
+ </summary>
+	<value>Double number greater or equal to 0.0</value>
+	<returns>Double number</returns>
+	<remarks></remarks>
+</member><member name="P:VideoMiner.frmVideoPlayer.Filename">
+	<summary>
+ This property contains a 'String' which represents the filename for the video.
+ </summary>
+	<returns>String</returns>
+</member><member name="E:VideoMiner.frmVideoPlayer.PauseEvent">
+	<summary>
+ This event is triggered when the user pauses the video from within the fmrVideoPlayer form.
+ It is handled by myFormLibrary.frmVideoMiner.playerPaused.
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.EventArgs</param>
+</member><member name="E:VideoMiner.frmVideoPlayer.PlayEvent">
+	<summary>
+ This event is triggered when the user plays the video from within the fmrVideoPlayer form.
+ It is handled by myFormLibrary.frmVideoMiner.playerPlaying.
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.EventArgs</param>
+</member><member name="E:VideoMiner.frmVideoPlayer.StopEvent">
+	<summary>
+ This event is triggered when the user stops the video from within the fmrVideoPlayer form.
+ It is handled by myFormLibrary.frmVideoMiner.playerStopped.
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.EventArgs</param>
+</member><member name="E:VideoMiner.frmVideoPlayer.EndedEvent">
+	<summary>
+ This event is triggered when the video has ended.
+ It is handled by plyrVideo_Ended.
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.EventArgs</param>
+</member><member name="E:VideoMiner.frmVideoPlayer.EndedBroadcastEvent">
+	<summary>
+ This event is triggered when the video has ended.
+ It is handled by myFormLibrary.frmVideoMiner.videoEnded
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.EventArgs</param>
+</member><member name="E:VideoMiner.frmVideoPlayer.ClosingEvent">
+	<summary>
+ This event is triggered when the frmVideoPlayer form is closed by clicking the 'X' top right of the window.
+ It is handled by myFormLibrary.frmVideoMiner.playerClosing
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.EventArgs</param>
+</member><member name="M:VideoMiner.frmVideoPlayer.frmVideoPlayer_Load(System.Object,System.EventArgs)">
+	<summary>
+ Loads the fmrVideoPlayer form. All member variables are initialized, and the video file is opened as a new Vlc.DotNet.Core.Medias.PathMedia object.
+ A System.Timer is started to generate update events every 500ms.
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.EventArgs</param>
+</member><member name="M:VideoMiner.frmVideoPlayer.frmVideoPlayer_FormClosing(System.Object,System.Windows.Forms.FormClosingEventArgs)">
+	<summary>
+ Unloads the frmVideoPLayer form. The player and timer are stopped and the ClosingEvent is fired
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.Windows.Forms.FormClosingEventArgs</param>
+</member><member name="M:VideoMiner.frmVideoPlayer.playVideo">
+	<summary>
+ Plays the video and change the picturebox icon to reflect this. Fires the PlayEvent.
+ </summary>
+	<returns>True or False for success. False is returned if the media was not loaded correctly or an exception was thrown</returns>
+	<remarks>If IsEndOfVideo is True and either IsStopped or IsPaused is True, 
+ that means that the player is at the end and the play request will attempt to reset the player to the beginning</remarks>
+</member><member name="M:VideoMiner.frmVideoPlayer.pauseVideo">
+	<summary>
+ Pause the video and change the picturebox icon to reflect this. Fires the PauseEvent.
+ </summary>
+	<returns>True or False for success. Only returns False if an exception is thrown</returns>
+</member><member name="M:VideoMiner.frmVideoPlayer.stopVideo">
+	<summary>
+ Stop the video and change the picturebox icon to reflect this. Fires the StopEvent.
+ </summary>
+	<returns>True or False for success. Only returns False if an exception is thrown</returns>
+</member><member name="M:VideoMiner.frmVideoPlayer.tmrVideo_Tick(System.Object,System.EventArgs)">
+	<summary>
+ Handles the System.timer tick event. If it is the first one, set up the duration label (the duration cannot be read until the video has started playing).
+ If the video has reached it's duration, fire EndedEvent. At all other times, update the label for the current time that the video has reached.
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.EventArgs</param>
+	<remarks>On the first tick, adds a transparent panel to allow user clicks on the video, since the Vlc.DotNet control does not allow it.</remarks>
+</member><member name="M:VideoMiner.frmVideoPlayer.getCurrentTime">
+	<summary>
+ Get the current time from the Position property and the duration of the video.
+ </summary>
+	<returns>A new System.Timespan object</returns>
+	<remarks>Multiplies the current position (which is between 0 and 1) by the duration of the video and
+ converts that to a Timespan object.</remarks>
+</member><member name="M:VideoMiner.frmVideoPlayer.trkCurrentPosition_MovePointer(System.Object,System.Windows.Forms.MouseEventArgs)">
+	<summary>
+ This mouse handler handles both MouseDown and MouseMove Events for the trackbar. If you press on the trackbar and move it,
+ the video will pause,then seek to that spot and remain paused.
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.Windows.Forms.MouseEventArgs</param>
+</member><member name="M:VideoMiner.frmVideoPlayer.trkCurrentPosition_MouseUp(System.Object,System.Windows.Forms.MouseEventArgs)">
+	<summary>
+ The trackbar MouseUp event just pauses the video.
+ This is here to ensure the video remains paused after seeking with the trackbar
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.Windows.Forms.MouseEventArgs</param>
+</member><member name="M:VideoMiner.frmVideoPlayer.m_pnlTransparentPanel_MouseClick(System.Object,System.Windows.Forms.MouseEventArgs)">
+	<summary>
+ This handles the user clicking on the video by using a transparent panel overlaid on the video.
+ The video will toggle between paused and playing. 
+ The Vlc.DotNet control does not capture MouseClick Events on its own so the transparent panel was needed.
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.Windows.Forms.MouseEventArgs</param>
+	<remarks>If the user clicks the right mouse button, a simple help dialog will pop up</remarks>
+</member><member name="M:VideoMiner.frmVideoPlayer.videoContextMenuChoice(System.Object,System.EventArgs)">
+	<summary>
+ This is the help dialog that appears when the user clicks the right mouse button in the video window.
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.EventArgs</param>
+</member><member name="M:VideoMiner.frmVideoPlayer.plyrVideo_Ended(System.Object,System.EventArgs)">
+	<summary>
+ This handles the Event 'EndReached' fired by the Vlc.DotNet control.
+ It will pause the video, change the current time label to equal the duration label, set the trackbar to position=1,
+  and then fire the EndedBroadcastEvent
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.EventArgs</param>
+</member><member name="T:VideoMiner.frmVideoPlayer">
+	<summary>
+ The frmVideoPlayer class provides a form with an instance of the VLC.dotnet control, a trackbar to show the position of the video, a label for the current position,
+ a label for the duration of the video clip, and a picturebox which shows what is currently happening with the video (playing, stopped, paused).
+ </summary>
+	<remarks></remarks>
+</member><member name="P:VideoMiner.My.Resources.Resources.ResourceManager">
 	<summary>
   Returns the cached ResourceManager instance used by this class.
 </summary>
@@ -14,6 +240,86 @@ VideoMiner
 	<summary>
   Overrides the current thread's CurrentUICulture property for all
   resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.Decrease_Icon">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.FastForward_Icon">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.FastForward_Icon_Inverse">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.FastForward3_Icon_Inverse">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.FastForward4_Icon_Inverse">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.Increase_Icon">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.Next_Icon">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.Pause_Icon">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.Pause_Icon_Inverse">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.Play_Icon">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.Play_Icon_Inverse">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.Previous_Icon">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.Rewind_Icon">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.Rewind_Icon_Inverse">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.Rewind3_Icon_Inverse">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.Rewind4_Icon_Inverse">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.ScreenCapture">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.ScreenCapture_">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.Stop_Icon">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:VideoMiner.My.Resources.Resources.Stop_Icon_Inverse">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
 </member><member name="P:VideoMiner.My.Resources.Resources.VideoMiner_exe">
 	<summary>

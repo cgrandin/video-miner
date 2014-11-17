@@ -1,4 +1,5 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿Imports Vlc.DotNet.Core
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class frmVideoPlayer
     Inherits System.Windows.Forms.Form
 
@@ -7,6 +8,7 @@ Partial Class frmVideoPlayer
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
+                VlcContext.CloseAll()
                 components.Dispose()
             End If
         Finally
@@ -30,6 +32,23 @@ Partial Class frmVideoPlayer
         Me.trkCurrentPosition = New System.Windows.Forms.TrackBar()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         Me.pnlHideVideo = New System.Windows.Forms.Panel()
+
+        ' Set up the vlc context for the video player. Must do this before 'new' is called for the player.
+        'Set libvlc.dll and libvlccore.dll directory path
+        VlcContext.LibVlcDllsPath = CommonStrings.LIBVLC_DLLS_PATH_DEFAULT_VALUE_AMD64
+        'Set the vlc plugins directory path
+        VlcContext.LibVlcPluginsPath = CommonStrings.PLUGINS_PATH_DEFAULT_VALUE_AMD64
+        'Set the startup options
+        VlcContext.StartupOptions.IgnoreConfig = True
+        VlcContext.StartupOptions.LogOptions.LogInFile = True
+        VlcContext.StartupOptions.LogOptions.ShowLoggerConsole = True
+        VlcContext.StartupOptions.LogOptions.Verbosity = VlcLogVerbosities.Debug
+        VlcContext.StartupOptions.AddOption("--no-repeat") ' Don't loop or repeat once the video is finished
+        VlcContext.StartupOptions.AddOption("--no-loop")
+        VlcContext.StartupOptions.AddOption("--play-and-pause") ' So video pauses at the end, leaving the last frame visible
+        'Initialize the VlcContext
+        VlcContext.Initialize()
+
         Me.plyrVideoPlayer = New Vlc.DotNet.Forms.VlcControl()
         Me.pctVideoStatus = New System.Windows.Forms.PictureBox()
         CType(Me.trkCurrentPosition, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -77,9 +96,9 @@ Partial Class frmVideoPlayer
         Me.lblDuration.ForeColor = System.Drawing.Color.White
         Me.lblDuration.Location = New System.Drawing.Point(572, 27)
         Me.lblDuration.Name = "lblDuration"
-        Me.lblDuration.Size = New System.Drawing.Size(64, 13)
+        Me.lblDuration.Size = New System.Drawing.Size(70, 13)
         Me.lblDuration.TabIndex = 3
-        Me.lblDuration.Text = "00:00:00.00"
+        Me.lblDuration.Text = "00:00:00.000"
         '
         'trkCurrentPosition
         '
@@ -120,8 +139,12 @@ Partial Class frmVideoPlayer
         '
         'pnlHideVideo
         '
+        Me.pnlHideVideo.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.pnlHideVideo.BackColor = System.Drawing.Color.Black
         Me.pnlHideVideo.Controls.Add(Me.lblLoading)
-        Me.pnlHideVideo.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnlHideVideo.ForeColor = System.Drawing.SystemColors.ControlText
         Me.pnlHideVideo.Location = New System.Drawing.Point(0, 0)
         Me.pnlHideVideo.Name = "pnlHideVideo"
         Me.pnlHideVideo.Size = New System.Drawing.Size(639, 510)
@@ -174,6 +197,5 @@ Partial Class frmVideoPlayer
     Friend WithEvents SplitContainer1 As System.Windows.Forms.SplitContainer
     Friend WithEvents pctVideoStatus As System.Windows.Forms.PictureBox
     Friend WithEvents pnlHideVideo As System.Windows.Forms.Panel
-    'Friend WithEvents plyrVideoPlayer As AxWMPLib.AxWindowsMediaPlayer
     Friend WithEvents plyrVideoPlayer As Vlc.DotNet.Forms.VlcControl
 End Class

@@ -32,9 +32,6 @@ Partial Class VideoMiner
         Me.mnuVideoTools = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuOpenFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuUseExternalVideo = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuPlay = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuPause = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuStop = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuCapScr = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuNameOptionRoot = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuNameOption_1 = New System.Windows.Forms.ToolStripMenuItem()
@@ -46,7 +43,6 @@ Partial Class VideoMiner
         Me.mnuNameOption_7 = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuNameOption_8 = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuNameOption_9 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CloseVideoFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuImageTools = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuOpenImg = New System.Windows.Forms.ToolStripMenuItem()
         Me.NextImageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -74,6 +70,7 @@ Partial Class VideoMiner
         Me.mnuAbout = New System.Windows.Forms.ToolStripMenuItem()
         Me.KeyboardShortcutsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DataCodeAssignmentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.InformationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.lblDatabase = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
@@ -260,7 +257,7 @@ Partial Class VideoMiner
         '
         'mnuVideoTools
         '
-        Me.mnuVideoTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuOpenFile, Me.mnuUseExternalVideo, Me.mnuPlay, Me.mnuPause, Me.mnuStop, Me.mnuCapScr, Me.mnuNameOptionRoot, Me.CloseVideoFileToolStripMenuItem})
+        Me.mnuVideoTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuOpenFile, Me.mnuUseExternalVideo, Me.mnuCapScr, Me.mnuNameOptionRoot})
         Me.mnuVideoTools.Name = "mnuVideoTools"
         Me.mnuVideoTools.Size = New System.Drawing.Size(49, 20)
         Me.mnuVideoTools.Text = "Video"
@@ -277,27 +274,6 @@ Partial Class VideoMiner
         Me.mnuUseExternalVideo.Name = "mnuUseExternalVideo"
         Me.mnuUseExternalVideo.Size = New System.Drawing.Size(230, 22)
         Me.mnuUseExternalVideo.Text = "Use External Video"
-        '
-        'mnuPlay
-        '
-        Me.mnuPlay.Enabled = False
-        Me.mnuPlay.Name = "mnuPlay"
-        Me.mnuPlay.Size = New System.Drawing.Size(230, 22)
-        Me.mnuPlay.Text = "Play"
-        '
-        'mnuPause
-        '
-        Me.mnuPause.Enabled = False
-        Me.mnuPause.Name = "mnuPause"
-        Me.mnuPause.Size = New System.Drawing.Size(230, 22)
-        Me.mnuPause.Text = "Pause"
-        '
-        'mnuStop
-        '
-        Me.mnuStop.Enabled = False
-        Me.mnuStop.Name = "mnuStop"
-        Me.mnuStop.Size = New System.Drawing.Size(230, 22)
-        Me.mnuStop.Text = "Stop"
         '
         'mnuCapScr
         '
@@ -378,13 +354,6 @@ Partial Class VideoMiner
         Me.MnuNameOption_9.Name = "MnuNameOption_9"
         Me.MnuNameOption_9.Size = New System.Drawing.Size(343, 22)
         Me.MnuNameOption_9.Text = "None"
-        '
-        'CloseVideoFileToolStripMenuItem
-        '
-        Me.CloseVideoFileToolStripMenuItem.Enabled = False
-        Me.CloseVideoFileToolStripMenuItem.Name = "CloseVideoFileToolStripMenuItem"
-        Me.CloseVideoFileToolStripMenuItem.Size = New System.Drawing.Size(230, 22)
-        Me.CloseVideoFileToolStripMenuItem.Text = "Close"
         '
         'mnuImageTools
         '
@@ -545,7 +514,7 @@ Partial Class VideoMiner
         '
         'mnuAbout
         '
-        Me.mnuAbout.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.KeyboardShortcutsToolStripMenuItem, Me.DataCodeAssignmentsToolStripMenuItem})
+        Me.mnuAbout.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.KeyboardShortcutsToolStripMenuItem, Me.DataCodeAssignmentsToolStripMenuItem, Me.InformationToolStripMenuItem})
         Me.mnuAbout.Name = "mnuAbout"
         Me.mnuAbout.Size = New System.Drawing.Size(52, 20)
         Me.mnuAbout.Text = "About"
@@ -563,6 +532,12 @@ Partial Class VideoMiner
         Me.DataCodeAssignmentsToolStripMenuItem.Name = "DataCodeAssignmentsToolStripMenuItem"
         Me.DataCodeAssignmentsToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
         Me.DataCodeAssignmentsToolStripMenuItem.Text = "Data Code Assignments"
+        '
+        'InformationToolStripMenuItem
+        '
+        Me.InformationToolStripMenuItem.Name = "InformationToolStripMenuItem"
+        Me.InformationToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
+        Me.InformationToolStripMenuItem.Text = "About"
         '
         'StatusStrip1
         '
@@ -1663,9 +1638,6 @@ Partial Class VideoMiner
     Friend WithEvents mnuSaveSessionAs As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuCloseDatabase As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuVideoTools As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents mnuPlay As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents mnuPause As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents mnuStop As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuAbout As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuRefreshForm As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuUseExternalVideo As System.Windows.Forms.ToolStripMenuItem
@@ -1749,7 +1721,6 @@ Partial Class VideoMiner
     Friend WithEvents mnuImageTools As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuOpenFile As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuOpenImg As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents CloseVideoFileToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents CloseImageFileToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents NextImageToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents PreviousImageToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
@@ -1799,5 +1770,6 @@ Partial Class VideoMiner
     Friend WithEvents tmrComputerTime As System.Windows.Forms.Timer
     Friend WithEvents EditLookupTableToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents pnlSpeciesEntryControls As System.Windows.Forms.Panel
+    Friend WithEvents InformationToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class
