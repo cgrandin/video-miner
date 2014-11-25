@@ -32,170 +32,170 @@ Partial Class AboutBox1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AboutBox1))
-        Me.TableLayoutPanel = New System.Windows.Forms.TableLayoutPanel()
-        Me.LogoPictureBox = New System.Windows.Forms.PictureBox()
-        Me.LabelProductName = New System.Windows.Forms.Label()
-        Me.LabelVersion = New System.Windows.Forms.Label()
-        Me.LabelCopyright = New System.Windows.Forms.Label()
-        Me.LabelCompanyName = New System.Windows.Forms.Label()
-        Me.TextBoxDescription = New System.Windows.Forms.TextBox()
-        Me.OKButton = New System.Windows.Forms.Button()
-        Me.LinkLabelGithub = New System.Windows.Forms.LinkLabel()
-        Me.LinkLabelEmail = New System.Windows.Forms.LinkLabel()
-        Me.TableLayoutPanel.SuspendLayout()
-        CType(Me.LogoPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SuspendLayout()
+        TableLayoutPanel = New System.Windows.Forms.TableLayoutPanel()
+        LogoPictureBox = New System.Windows.Forms.PictureBox()
+        LabelProductName = New System.Windows.Forms.Label()
+        LabelVersion = New System.Windows.Forms.Label()
+        LabelCopyright = New System.Windows.Forms.Label()
+        LabelCompanyName = New System.Windows.Forms.Label()
+        TextBoxDescription = New System.Windows.Forms.TextBox()
+        OKButton = New System.Windows.Forms.Button()
+        LinkLabelGithub = New System.Windows.Forms.LinkLabel()
+        LinkLabelEmail = New System.Windows.Forms.LinkLabel()
+        TableLayoutPanel.SuspendLayout()
+        CType(LogoPictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
+        SuspendLayout()
         '
         'TableLayoutPanel
         '
-        Me.TableLayoutPanel.ColumnCount = 2
-        Me.TableLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.0!))
-        Me.TableLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 67.0!))
-        Me.TableLayoutPanel.Controls.Add(Me.LogoPictureBox, 0, 0)
-        Me.TableLayoutPanel.Controls.Add(Me.LabelProductName, 1, 0)
-        Me.TableLayoutPanel.Controls.Add(Me.LabelVersion, 1, 1)
-        Me.TableLayoutPanel.Controls.Add(Me.LabelCopyright, 1, 2)
-        Me.TableLayoutPanel.Controls.Add(Me.LabelCompanyName, 1, 3)
-        Me.TableLayoutPanel.Controls.Add(Me.TextBoxDescription, 1, 4)
-        Me.TableLayoutPanel.Controls.Add(Me.OKButton, 1, 5)
-        Me.TableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel.Location = New System.Drawing.Point(9, 9)
-        Me.TableLayoutPanel.Name = "TableLayoutPanel"
-        Me.TableLayoutPanel.RowCount = 6
-        Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.0!))
-        Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.0!))
-        Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.0!))
-        Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.0!))
-        Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.0!))
-        Me.TableLayoutPanel.Size = New System.Drawing.Size(396, 258)
-        Me.TableLayoutPanel.TabIndex = 0
+        TableLayoutPanel.ColumnCount = 2
+        TableLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.0!))
+        TableLayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 67.0!))
+        TableLayoutPanel.Controls.Add(LogoPictureBox, 0, 0)
+        TableLayoutPanel.Controls.Add(LabelProductName, 1, 0)
+        TableLayoutPanel.Controls.Add(LabelVersion, 1, 1)
+        TableLayoutPanel.Controls.Add(LabelCopyright, 1, 2)
+        TableLayoutPanel.Controls.Add(LabelCompanyName, 1, 3)
+        TableLayoutPanel.Controls.Add(TextBoxDescription, 1, 4)
+        TableLayoutPanel.Controls.Add(OKButton, 1, 5)
+        TableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill
+        TableLayoutPanel.Location = New System.Drawing.Point(9, 9)
+        TableLayoutPanel.Name = "TableLayoutPanel"
+        TableLayoutPanel.RowCount = 6
+        TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.0!))
+        TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.0!))
+        TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.0!))
+        TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.0!))
+        TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        TableLayoutPanel.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.0!))
+        TableLayoutPanel.Size = New System.Drawing.Size(396, 258)
+        TableLayoutPanel.TabIndex = 0
         '
         'LogoPictureBox
         '
-        Me.LogoPictureBox.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.LogoPictureBox.Image = CType(resources.GetObject("LogoPictureBox.Image"), System.Drawing.Image)
-        Me.LogoPictureBox.Location = New System.Drawing.Point(3, 3)
-        Me.LogoPictureBox.Name = "LogoPictureBox"
-        Me.TableLayoutPanel.SetRowSpan(Me.LogoPictureBox, 6)
-        Me.LogoPictureBox.Size = New System.Drawing.Size(124, 252)
-        Me.LogoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-        Me.LogoPictureBox.TabIndex = 0
-        Me.LogoPictureBox.TabStop = False
+        LogoPictureBox.Dock = System.Windows.Forms.DockStyle.Fill
+        LogoPictureBox.Image = CType(resources.GetObject("LogoPictureBox.Image"), System.Drawing.Image)
+        LogoPictureBox.Location = New System.Drawing.Point(3, 3)
+        LogoPictureBox.Name = "LogoPictureBox"
+        TableLayoutPanel.SetRowSpan(LogoPictureBox, 6)
+        LogoPictureBox.Size = New System.Drawing.Size(124, 252)
+        LogoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        LogoPictureBox.TabIndex = 0
+        LogoPictureBox.TabStop = False
         '
         'LabelProductName
         '
-        Me.LabelProductName.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.LabelProductName.Location = New System.Drawing.Point(136, 0)
-        Me.LabelProductName.Margin = New System.Windows.Forms.Padding(6, 0, 3, 0)
-        Me.LabelProductName.MaximumSize = New System.Drawing.Size(0, 17)
-        Me.LabelProductName.Name = "LabelProductName"
-        Me.LabelProductName.Size = New System.Drawing.Size(257, 17)
-        Me.LabelProductName.TabIndex = 0
-        Me.LabelProductName.Text = "Product Name"
-        Me.LabelProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        LabelProductName.Dock = System.Windows.Forms.DockStyle.Fill
+        LabelProductName.Location = New System.Drawing.Point(136, 0)
+        LabelProductName.Margin = New System.Windows.Forms.Padding(6, 0, 3, 0)
+        LabelProductName.MaximumSize = New System.Drawing.Size(0, 17)
+        LabelProductName.Name = "LabelProductName"
+        LabelProductName.Size = New System.Drawing.Size(257, 17)
+        LabelProductName.TabIndex = 0
+        LabelProductName.Text = "Product Name"
+        LabelProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'LabelVersion
         '
-        Me.LabelVersion.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.LabelVersion.Location = New System.Drawing.Point(136, 25)
-        Me.LabelVersion.Margin = New System.Windows.Forms.Padding(6, 0, 3, 0)
-        Me.LabelVersion.MaximumSize = New System.Drawing.Size(0, 17)
-        Me.LabelVersion.Name = "LabelVersion"
-        Me.LabelVersion.Size = New System.Drawing.Size(257, 17)
-        Me.LabelVersion.TabIndex = 0
-        Me.LabelVersion.Text = "Version"
-        Me.LabelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        LabelVersion.Dock = System.Windows.Forms.DockStyle.Fill
+        LabelVersion.Location = New System.Drawing.Point(136, 25)
+        LabelVersion.Margin = New System.Windows.Forms.Padding(6, 0, 3, 0)
+        LabelVersion.MaximumSize = New System.Drawing.Size(0, 17)
+        LabelVersion.Name = "LabelVersion"
+        LabelVersion.Size = New System.Drawing.Size(257, 17)
+        LabelVersion.TabIndex = 0
+        LabelVersion.Text = "Version"
+        LabelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'LabelCopyright
         '
-        Me.LabelCopyright.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.LabelCopyright.Location = New System.Drawing.Point(136, 50)
-        Me.LabelCopyright.Margin = New System.Windows.Forms.Padding(6, 0, 3, 0)
-        Me.LabelCopyright.MaximumSize = New System.Drawing.Size(0, 17)
-        Me.LabelCopyright.Name = "LabelCopyright"
-        Me.LabelCopyright.Size = New System.Drawing.Size(257, 17)
-        Me.LabelCopyright.TabIndex = 0
-        Me.LabelCopyright.Text = "Copyright"
-        Me.LabelCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        LabelCopyright.Dock = System.Windows.Forms.DockStyle.Fill
+        LabelCopyright.Location = New System.Drawing.Point(136, 50)
+        LabelCopyright.Margin = New System.Windows.Forms.Padding(6, 0, 3, 0)
+        LabelCopyright.MaximumSize = New System.Drawing.Size(0, 17)
+        LabelCopyright.Name = "LabelCopyright"
+        LabelCopyright.Size = New System.Drawing.Size(257, 17)
+        LabelCopyright.TabIndex = 0
+        LabelCopyright.Text = "Copyright"
+        LabelCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'LabelCompanyName
         '
-        Me.LabelCompanyName.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.LabelCompanyName.Location = New System.Drawing.Point(136, 75)
-        Me.LabelCompanyName.Margin = New System.Windows.Forms.Padding(6, 0, 3, 0)
-        Me.LabelCompanyName.MaximumSize = New System.Drawing.Size(0, 17)
-        Me.LabelCompanyName.Name = "LabelCompanyName"
-        Me.LabelCompanyName.Size = New System.Drawing.Size(257, 17)
-        Me.LabelCompanyName.TabIndex = 0
-        Me.LabelCompanyName.Text = "Company Name"
-        Me.LabelCompanyName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        LabelCompanyName.Dock = System.Windows.Forms.DockStyle.Fill
+        LabelCompanyName.Location = New System.Drawing.Point(136, 75)
+        LabelCompanyName.Margin = New System.Windows.Forms.Padding(6, 0, 3, 0)
+        LabelCompanyName.MaximumSize = New System.Drawing.Size(0, 17)
+        LabelCompanyName.Name = "LabelCompanyName"
+        LabelCompanyName.Size = New System.Drawing.Size(257, 17)
+        LabelCompanyName.TabIndex = 0
+        LabelCompanyName.Text = "Company Name"
+        LabelCompanyName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'TextBoxDescription
         '
-        Me.TextBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TextBoxDescription.Location = New System.Drawing.Point(136, 103)
-        Me.TextBoxDescription.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
-        Me.TextBoxDescription.Multiline = True
-        Me.TextBoxDescription.Name = "TextBoxDescription"
-        Me.TextBoxDescription.ReadOnly = True
-        Me.TextBoxDescription.Size = New System.Drawing.Size(257, 123)
-        Me.TextBoxDescription.TabIndex = 0
-        Me.TextBoxDescription.TabStop = False
-        Me.TextBoxDescription.Text = resources.GetString("TextBoxDescription.Text")
+        TextBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill
+        TextBoxDescription.Location = New System.Drawing.Point(136, 103)
+        TextBoxDescription.Margin = New System.Windows.Forms.Padding(6, 3, 3, 3)
+        TextBoxDescription.Multiline = True
+        TextBoxDescription.Name = "TextBoxDescription"
+        TextBoxDescription.ReadOnly = True
+        TextBoxDescription.Size = New System.Drawing.Size(257, 123)
+        TextBoxDescription.TabIndex = 0
+        TextBoxDescription.TabStop = False
+        TextBoxDescription.Text = resources.GetString("TextBoxDescription.Text")
         '
         'OKButton
         '
-        Me.OKButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.OKButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.OKButton.Location = New System.Drawing.Point(318, 232)
-        Me.OKButton.Name = "OKButton"
-        Me.OKButton.Size = New System.Drawing.Size(75, 23)
-        Me.OKButton.TabIndex = 0
-        Me.OKButton.Text = "&OK"
+        OKButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        OKButton.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        OKButton.Location = New System.Drawing.Point(318, 232)
+        OKButton.Name = "OKButton"
+        OKButton.Size = New System.Drawing.Size(75, 23)
+        OKButton.TabIndex = 0
+        OKButton.Text = "&OK"
         '
         'LinkLabelGithub
         '
-        Me.LinkLabelGithub.AutoSize = True
-        Me.LinkLabelGithub.Location = New System.Drawing.Point(146, 237)
-        Me.LinkLabelGithub.Name = "LinkLabelGithub"
-        Me.LinkLabelGithub.Size = New System.Drawing.Size(119, 13)
-        Me.LinkLabelGithub.TabIndex = 1
-        Me.LinkLabelGithub.TabStop = True
-        Me.LinkLabelGithub.Text = "Source code on GitHub"
+        LinkLabelGithub.AutoSize = True
+        LinkLabelGithub.Location = New System.Drawing.Point(146, 237)
+        LinkLabelGithub.Name = "LinkLabelGithub"
+        LinkLabelGithub.Size = New System.Drawing.Size(119, 13)
+        LinkLabelGithub.TabIndex = 1
+        LinkLabelGithub.TabStop = True
+        LinkLabelGithub.Text = "Source code on GitHub"
         '
         'LinkLabelEmail
         '
-        Me.LinkLabelEmail.AutoSize = True
-        Me.LinkLabelEmail.Location = New System.Drawing.Point(147, 254)
-        Me.LinkLabelEmail.Name = "LinkLabelEmail"
-        Me.LinkLabelEmail.Size = New System.Drawing.Size(75, 13)
-        Me.LinkLabelEmail.TabIndex = 2
-        Me.LinkLabelEmail.TabStop = True
-        Me.LinkLabelEmail.Text = "Email designer"
+        LinkLabelEmail.AutoSize = True
+        LinkLabelEmail.Location = New System.Drawing.Point(147, 254)
+        LinkLabelEmail.Name = "LinkLabelEmail"
+        LinkLabelEmail.Size = New System.Drawing.Size(75, 13)
+        LinkLabelEmail.TabIndex = 2
+        LinkLabelEmail.TabStop = True
+        LinkLabelEmail.Text = "Email designer"
         '
         'AboutBox1
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.CancelButton = Me.OKButton
-        Me.ClientSize = New System.Drawing.Size(414, 276)
-        Me.Controls.Add(Me.LinkLabelEmail)
-        Me.Controls.Add(Me.LinkLabelGithub)
-        Me.Controls.Add(Me.TableLayoutPanel)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
-        Me.MaximizeBox = False
-        Me.MinimizeBox = False
-        Me.Name = "AboutBox1"
-        Me.Padding = New System.Windows.Forms.Padding(9)
-        Me.ShowInTaskbar = False
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "AboutBox1"
-        Me.TableLayoutPanel.ResumeLayout(False)
-        Me.TableLayoutPanel.PerformLayout()
-        CType(Me.LogoPictureBox, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.ResumeLayout(False)
-        Me.PerformLayout()
+        AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        CancelButton = OKButton
+        ClientSize = New System.Drawing.Size(414, 276)
+        Controls.Add(LinkLabelEmail)
+        Controls.Add(LinkLabelGithub)
+        Controls.Add(TableLayoutPanel)
+        FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+        MaximizeBox = False
+        MinimizeBox = False
+        Name = "AboutBox1"
+        Padding = New System.Windows.Forms.Padding(9)
+        ShowInTaskbar = False
+        StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
+        Text = "AboutBox1"
+        TableLayoutPanel.ResumeLayout(False)
+        TableLayoutPanel.PerformLayout()
+        CType(LogoPictureBox, System.ComponentModel.ISupportInitialize).EndInit()
+        ResumeLayout(False)
+        PerformLayout()
 
     End Sub
     Friend WithEvents LinkLabelGithub As System.Windows.Forms.LinkLabel

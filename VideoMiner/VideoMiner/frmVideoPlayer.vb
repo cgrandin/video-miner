@@ -12,11 +12,16 @@ Imports Vlc.DotNet.Core.Medias
 ''' <remarks></remarks>
 Public Class frmVideoPlayer
     ''' <summary>
+    ''' Default format for the time labels
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private Shadows Const VIDEO_TIME_FORMAT As String = "{0:D2}:{1:D2}:{2:D2}.{3:D4}" ' D4 = 4 decimal places
+    ''' <summary>
     ''' Member variable to hold the video's duration or length.
     ''' </summary>
     Private m_tsDurationTime As TimeSpan
     ''' <summary>
-    ''' Member variable to hold the video's current time.
+    ''' Member variable to hold the video's current ti
     ''' </summary>
     Private m_tsCurrentVideoTime As TimeSpan
     ''' <summary>
@@ -56,6 +61,35 @@ Public Class frmVideoPlayer
     ''' can click on the video to toggle play/pause
     ''' </summary>
     Private WithEvents m_pnlTransparentPanel As TransparentPanel
+    ''' <summary>
+    ''' The format of the time labels for the current time and the duration of the video
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_strLabelFormat As String
+
+    ''' <summary>
+    ''' Default constructor. The label time format will be the default. Current time and Duration are set to zero.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Sub New()
+        InitializeComponent()
+        m_strLabelFormat = VIDEO_TIME_FORMAT
+        m_tsCurrentVideoTime = Zero
+        m_tsDurationTime = Zero
+    End Sub
+
+    ''' <summary>
+    ''' Constructor with custom time format string. Should look something like this: "{0:D2}:{1:D2}:{2:D2}.{3:D2}"
+    ''' Current time and Duration are set to zero.
+    ''' </summary>
+    ''' <param name="videoTimeFormat"></param>
+    ''' <remarks></remarks>
+    Sub New(ByVal videoTimeFormat As String)
+        InitializeComponent()
+        m_strLabelFormat = videoTimeFormat
+        m_tsCurrentVideoTime = Zero
+        m_tsDurationTime = Zero
+    End Sub
 
     ''' <summary>
     ''' This property contains the position of the currently loaded video.
@@ -122,7 +156,18 @@ Public Class frmVideoPlayer
         End Set
     End Property
     ''' <summary>
-    ''' This property is readonly and contains a System.Timespan object which represents the time at the current position of the video
+    ''' This property is readonly and returns a formatted string representing the time at the current position of the video.
+    ''' The formatting string is defined in the constructor (either default or custom).
+    ''' </summary>
+    ''' <returns>System.Timespan</returns>
+    ''' <remarks></remarks>
+    Public ReadOnly Property CurrentVideoTimeFormatted As String
+        Get
+            Return getFormattedCurrentVideoTimeString()
+        End Get
+    End Property
+    ''' <summary>
+    ''' This property is readonly and returns a System.Timespan object representing the time at the current position of the video.
     ''' </summary>
     ''' <returns>System.Timespan</returns>
     ''' <remarks></remarks>
@@ -154,6 +199,7 @@ Public Class frmVideoPlayer
         End Get
         Set(value As Double)
             m_dblRate = value
+            plyrVideoPlayer.Rate = value
         End Set
     End Property
     ''' <summary>
@@ -170,47 +216,32 @@ Public Class frmVideoPlayer
     End Property
 
     ''' <summary>
-    ''' This event is triggered when the user pauses the video from within the fmrVideoPlayer form.
-    ''' It is handled by myFormLibrary.frmVideoMiner.playerPaused.
+    ''' This event is triggered when the user pauses the video from within this form.
     ''' </summary>
-    ''' <param name="sender">System.Object</param>
-    ''' <param name="e">System.EventArgs</param>
-    Event PauseEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    Event PauseEvent()
     ''' <summary>
-    ''' This event is triggered when the user plays the video from within the fmrVideoPlayer form.
-    ''' It is handled by myFormLibrary.frmVideoMiner.playerPlaying.
+    ''' This event is triggered when the user plays the video from within this form.
     ''' </summary>
-    ''' <param name="sender">System.Object</param>
-    ''' <param name="e">System.EventArgs</param>
-    Event PlayEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    Event PlayEvent()
     ''' <summary>
-    ''' This event is triggered when the user stops the video from within the fmrVideoPlayer form.
-    ''' It is handled by myFormLibrary.frmVideoMiner.playerStopped.
+    ''' This event is triggered when the user stops the video from within this
     ''' </summary>
     ''' <param name="sender">System.Object</param>
     ''' <param name="e">System.EventArgs</param>
-    Event StopEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    Event StopEvent()
     ''' <summary>
     ''' This event is triggered when the video has ended.
-    ''' It is handled by plyrVideo_Ended.
     ''' </summary>
-    ''' <param name="sender">System.Object</param>
-    ''' <param name="e">System.EventArgs</param>
-    Event EndedEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
-    ''' <summary>
-    ''' This event is triggered when the video has ended.
-    ''' It is handled by myFormLibrary.frmVideoMiner.videoEnded
-    ''' </summary>
-    ''' <param name="sender">System.Object</param>
-    ''' <param name="e">System.EventArgs</param>
-    Event EndedBroadcastEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    Event VideoEndedEvent()
     ''' <summary>
     ''' This event is triggered when the frmVideoPlayer form is closed by clicking the 'X' top right of the window.
-    ''' It is handled by myFormLibrary.frmVideoMiner.playerClosing
     ''' </summary>
-    ''' <param name="sender">System.Object</param>
-    ''' <param name="e">System.EventArgs</param>
-    Event ClosingEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    Event ClosingEvent()
+    ''' <summary>
+    ''' This event is triggered when the timer ticks. It is used to send a signal so that
+    ''' the parent will always have access to the correct data (current time) from the video.
+    ''' </summary>
+    Event TimerTickEvent()
 
     ''' <summary>
     ''' Loads the fmrVideoPlayer form. All member variables are initialized, and the video file is opened as a new Vlc.DotNet.Core.Medias.PathMedia object.
@@ -219,7 +250,7 @@ Public Class frmVideoPlayer
     ''' <param name="sender">System.Object</param>
     ''' <param name="e">System.EventArgs</param>
     Public Sub frmVideoPlayer_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Me.Text = m_strFilename
+        Text = m_strFilename
         m_tsDurationTime = Zero
         m_tsCurrentVideoTime = Zero
         m_blFirstTick = True
@@ -244,15 +275,14 @@ Public Class frmVideoPlayer
     ''' <param name="e">System.Windows.Forms.FormClosingEventArgs</param>
     Private Sub frmVideoPlayer_FormClosing(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         'If MessageBox.Show("Are you sure you want to close this video?", "Close video", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.No Then
-        ' Me.CausesValidation = True
+        ' CausesValidation = True
         ' e.Cancel = True
         'Else
         ' Make sure to stop video so it's not running in the background
         plyrVideoPlayer.Stop()
         'myFormLibrary.frmVideoMiner.strPreviousClipTime = myFormLibrary.frmVideoMiner.txtTime.Text
         tmrVideo.Stop()
-        AddHandler ClosingEvent, AddressOf myFormLibrary.frmVideoMiner.playerClosing
-        RaiseEvent ClosingEvent(Nothing, Nothing)
+        RaiseEvent ClosingEvent()
         'End If
     End Sub
 
@@ -283,8 +313,7 @@ Public Class frmVideoPlayer
             plyrVideoPlayer.Rate = Rate
             m_sngFPS = plyrVideoPlayer.FPS
             pctVideoStatus.BackgroundImage = My.Resources.Play_Icon_Inverse
-            AddHandler PlayEvent, AddressOf myFormLibrary.frmVideoMiner.playerPlaying
-            RaiseEvent PlayEvent(Nothing, Nothing)
+            RaiseEvent PlayEvent()
         Catch ex As Exception
             MessageBox.Show(ex.Message)
             Return False
@@ -301,8 +330,9 @@ Public Class frmVideoPlayer
             If IsPlaying Then
                 plyrVideoPlayer.Pause()
                 pctVideoStatus.BackgroundImage = My.Resources.Pause_Icon_Inverse
-                AddHandler PauseEvent, AddressOf myFormLibrary.frmVideoMiner.playerPaused
-                RaiseEvent PauseEvent(Nothing, Nothing)
+                RaiseEvent PauseEvent()
+            Else
+                pctVideoStatus.BackgroundImage = My.Resources.Pause_Icon_Inverse
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message)
@@ -322,10 +352,10 @@ Public Class frmVideoPlayer
             plyrVideoPlayer.Stop()
             pctVideoStatus.BackgroundImage = My.Resources.Stop_Icon_Inverse
             trkCurrentPosition.Value = 0
-            lblCurrentTime.Text = VIDEO_TIME_DECIMAL_LABEL
+            m_tsCurrentVideoTime = Zero
+            lblCurrentTime.Text = getFormattedCurrentVideoTimeString()
             IsEndOfVideo = False
-            AddHandler StopEvent, AddressOf myFormLibrary.frmVideoMiner.playerStopped
-            RaiseEvent StopEvent(Nothing, Nothing)
+            RaiseEvent StopEvent()
         Catch ex As Exception
             MessageBox.Show(ex.Message)
             Return False
@@ -341,11 +371,10 @@ Public Class frmVideoPlayer
     ''' <param name="e">System.EventArgs</param>
     ''' <remarks>On the first tick, adds a transparent panel to allow user clicks on the video, since the Vlc.DotNet control does not allow it.</remarks>
     Private Sub tmrVideo_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrVideo.Tick
-        Dim tsMediaTime As TimeSpan
         If IsPlaying Then
             If m_blFirstTick Then
                 m_tsDurationTime = plyrVideoPlayer.Media.Duration
-                lblDuration.Text = String.Format(VIDEO_TIME_FORMAT, m_tsDurationTime.Hours, m_tsDurationTime.Minutes, m_tsDurationTime.Seconds, m_tsDurationTime.Milliseconds)
+                lblDuration.Text = getFormattedDurationString()
                 ' Add transparent panel to grab mouse events when user clicks video directly
                 m_pnlTransparentPanel = New TransparentPanel
                 plyrVideoPlayer.Controls.Add(m_pnlTransparentPanel)
@@ -356,22 +385,14 @@ Public Class frmVideoPlayer
             End If
             ' Check to see if the video has reached the end.
             If plyrVideoPlayer.Time.Ticks >= m_tsDurationTime.Ticks Then
-                ' The video played to or past the end of the video, so raise the EndReached event
-                AddHandler EndedEvent, AddressOf plyrVideo_Ended
-                RaiseEvent EndedEvent(Nothing, Nothing)
+                ' The video played to or past the end of the video
+                endOfVideo()
                 Exit Sub
             End If
-            ' Some videos do not reach the duration value, so we need a way to raise the event at the end of the video
             trkCurrentPosition.Value = plyrVideoPlayer.Time.Ticks / m_tsDurationTime.Ticks * 100.0
-            tsMediaTime = plyrVideoPlayer.Time
-            lblCurrentTime.Text = String.Format(VIDEO_TIME_FORMAT, tsMediaTime.Hours, tsMediaTime.Minutes, tsMediaTime.Seconds, tsMediaTime.Milliseconds)
-            ' The following two lines are old calls from before I added VLC control back in -- Chris Grandin Nov 12, 2014
-            'Call myFormLibrary.frmVideoMiner.enableDisableVideoMenu(True)
-            'Call myFormLibrary.frmVideoMiner.video_file_load()
-        ElseIf IsStopped Then
-            lblCurrentTime.Text = VIDEO_TIME_DECIMAL_LABEL
-        ElseIf IsPaused Then
-            ' Do nothing
+            m_tsCurrentVideoTime = plyrVideoPlayer.Time
+            lblCurrentTime.Text = getFormattedCurrentVideoTimeString()
+            RaiseEvent TimerTickEvent()
         End If
     End Sub
 
@@ -394,7 +415,7 @@ Public Class frmVideoPlayer
     ''' <param name="e">System.Windows.Forms.MouseEventArgs</param>
     Private Sub trkCurrentPosition_MovePointer(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles trkCurrentPosition.MouseDown, trkCurrentPosition.MouseMove
         Dim dblValue As Double
-        Dim tsMediaTime As TimeSpan
+        'Dim tsMediaTime As TimeSpan
         'Make sure the left button is pressed
         If e.Button = Windows.Forms.MouseButtons.Left Then
             ' Pause the video to start from a stable place
@@ -406,13 +427,15 @@ Public Class frmVideoPlayer
             trkCurrentPosition.Value = Convert.ToInt32(dblValue)
             plyrVideoPlayer.Position = trkCurrentPosition.Value / 100.0
             ' There is a problem with the vlc control. You cannot get the time after setting the position. You need to do a play() and pause() which causes
-            ' other issues, including returning zero times much of the time. The alternative is to simply multiply the duration by the trackbar location, which is
+            ' other issues, including returning zero times much of the ti The alternative is to simply multiply the duration by the trackbar location, which is
             ' between 0 and 1, and set the time to that proportion. Not exact, but it makes it nicer and more user-friendly.
             'tsMediaTime = plyrVideoPlayer.Time ' This is the trouble line, plyrVideoPlayer.Time returns 00:00:00.00 after the position has been changed.
             plyrVideoPlayer.Refresh()
-            tsMediaTime = getCurrentTime()
-            lblCurrentTime.Text = String.Format(VIDEO_TIME_FORMAT, tsMediaTime.Hours, tsMediaTime.Minutes, tsMediaTime.Seconds, tsMediaTime.Milliseconds)
-            lblCurrentTime.Refresh()
+            'tsMediaTime = getCurrentTime()
+            m_tsCurrentVideoTime = getCurrentTime()
+            lblCurrentTime.Text = getFormattedCurrentVideoTimeString()
+            'lblCurrentTime.Text = String.Format(VIDEO_TIME_FORMAT, tsMediaTime.Hours, tsMediaTime.Minutes, tsMediaTime.Seconds, tsMediaTime.Milliseconds)
+            'lblCurrentTime.Refresh()
         End If
         'If myFormLibrary.frmVideoMiner.tmrRecordPerSecond.Enabled = True Then
         ' blRecordPerSecond = True
@@ -471,20 +494,74 @@ Public Class frmVideoPlayer
 
     ''' <summary>
     ''' This handles the Event 'EndReached' fired by the Vlc.DotNet control.
-    ''' It will pause the video, change the current time label to equal the duration label, set the trackbar to position=1,
-    '''  and then fire the EndedBroadcastEvent
     ''' </summary>
-    ''' <param name="sender">System.Object</param>
-    ''' <param name="e">System.EventArgs</param>
-    Private Sub plyrVideo_Ended(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles plyrVideoPlayer.EndReached
+    Private Sub plyrVideo_Ended() Handles plyrVideoPlayer.EndReached
+        endOfVideo()
+    End Sub
+
+    ''' <summary>
+    ''' The end of the video has been reached. Do some updating on the form and raise the VideoEnded event.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private Sub endOfVideo()
         IsEndOfVideo = True
         ' Pause and set the label to be the duration and the trackbar to the end (the trackbar can be off by a bit).
+        ' This is for cosmetic reasons, as the video is no longer playing
         pauseVideo()
+        m_tsCurrentVideoTime = m_tsDurationTime
         lblCurrentTime.Text = lblDuration.Text
         lblCurrentTime.Refresh()
         trkCurrentPosition.Value = 100.0
-        AddHandler EndedBroadcastEvent, AddressOf myFormLibrary.frmVideoMiner.videoEnded
-        RaiseEvent EndedBroadcastEvent(Nothing, Nothing)
+        RaiseEvent VideoEndedEvent()
     End Sub
 
+    ''' <summary>
+    ''' Returns a formatted string for the current video time
+    ''' </summary>
+    ''' <returns>A formatted string or an unformatted string if an exception was thrown</returns>
+    ''' <remarks></remarks>
+    Private Function getFormattedCurrentVideoTimeString() As String
+        Try
+            Return String.Format(m_strLabelFormat, m_tsCurrentVideoTime.Hours, m_tsCurrentVideoTime.Minutes, m_tsCurrentVideoTime.Seconds, m_tsCurrentVideoTime.Milliseconds)
+        Catch ex As Exception
+            Return m_tsCurrentVideoTime.ToString()
+        End Try
+    End Function
+
+    ''' <summary>
+    ''' Returns a formatted string for the duration video time
+    ''' </summary>
+    ''' <returns>A formatted string or an unformatted string if an exception was thrown</returns>
+    ''' <remarks></remarks>
+    Private Function getFormattedDurationString() As String
+        Try
+            Return String.Format(m_strLabelFormat, m_tsDurationTime.Hours, m_tsDurationTime.Minutes, m_tsDurationTime.Seconds, m_tsDurationTime.Milliseconds)
+        Catch ex As Exception
+            Return m_tsDurationTime.ToString()
+        End Try
+    End Function
+
+    ''' <summary>
+    ''' Handles the case when extra decimal points are being shown
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks>Works in tandem with lblDuration_Resize(sender As System.Object, e As System.EventArgs) Handles lblDuration.Resize</remarks>
+    Private Sub lblDuration_TextChanged(sender As System.Object, e As System.EventArgs) Handles lblDuration.TextChanged
+        lblDuration.Tag = lblDuration.Size
+    End Sub
+
+    ''' <summary>
+    ''' When the duration label automatically resizes due to extra decimal points being shown,
+    ''' this will make it grow left so that it remains looking good.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks>Works in tandem with lblDuration_TextChanged(sender As System.Object, e As System.EventArgs) Handles lblDuration.TextChanged</remarks>
+    Private Sub lblDuration_Resize(sender As System.Object, e As System.EventArgs) Handles lblDuration.Resize
+        Dim TempSize As New Size(New System.Drawing.Point(0))
+        If lblDuration.Tag Is Nothing Then lblDuration.Tag = lblDuration.Size
+        TempSize = DirectCast(lblDuration.Tag, Size)
+        lblDuration.Location = New System.Drawing.Point(lblDuration.Location.X - (lblDuration.Size.Width - TempSize.Width), lblDuration.Location.Y)
+    End Sub
 End Class

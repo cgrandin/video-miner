@@ -46,7 +46,7 @@ Public Class frmEditLookupTable
     Private Sub cboLookupTable_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboLookupTable.SelectedIndexChanged
         Dim strCharactersAllowed As String = "abcdefghijklmnopqrstuvwxyz_"
 
-        Dim txtName As String = Me.cboLookupTable.SelectedItem
+        Dim txtName As String = cboLookupTable.SelectedItem
 
         If txtName <> "" Then
             cmdEdit.Enabled = True
@@ -60,16 +60,16 @@ Public Class frmEditLookupTable
 
         
 
-        Me.TableName = Me.cboLookupTable.SelectedItem
+        TableName = cboLookupTable.SelectedItem
 
-        dbAdapter = New OleDbDataAdapter("SELECT * FROM " & Me.TableName, conn)
+        dbAdapter = New OleDbDataAdapter("SELECT * FROM " & TableName, conn)
         ds = New DataSet
         dbAdapter.Fill(ds)
-        Me.grdEditTable.DataSource = ds.Tables(0)
+        grdEditTable.DataSource = ds.Tables(0)
 
-        Me.cmdAddRecord.Enabled = True
-        Me.grdEditTable.Enabled = True
-        Me.cmdEdit.Enabled = False
+        cmdAddRecord.Enabled = True
+        grdEditTable.Enabled = True
+        cmdEdit.Enabled = False
 
     End Sub
 
@@ -78,11 +78,11 @@ Public Class frmEditLookupTable
 
         Dim dr As DataRow = ds.Tables(0).NewRow()
         Dim i As Integer
-        i = Me.grdEditTable.Rows(Me.grdEditTable.Rows.Count - 1).Cells(0).Value
+        i = grdEditTable.Rows(grdEditTable.Rows.Count - 1).Cells(0).Value
         dr.Item(0) = i + 1
         ds.Tables(0).Rows.Add(dr)
 
-        'Me.grdEditTable.Rows.Item(i).Cells(0).Value = intRecordCount
+        'grdEditTable.Rows.Item(i).Cells(0).Value = intRecordCount
 
         intRecordCount += 1
 
@@ -98,16 +98,12 @@ Public Class frmEditLookupTable
             MsgBox("Could not add records to table")
         End Try
 
-        Me.Close()
+        Close()
 
-    End Sub
-
-    Private Sub frmAddNewTable_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        myFormLibrary.frmAddNewTable = Nothing
     End Sub
 
     Private Sub Cancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Cancel.Click
-        Me.Close()
+        Close()
     End Sub
 
 
@@ -134,7 +130,7 @@ Public Class frmEditLookupTable
     End Sub
 
     Private Sub grdNewTable_RowsRemoved(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewRowsRemovedEventArgs) Handles grdEditTable.RowsRemoved
-        If Me.grdEditTable.RowCount = 0 Then
+        If grdEditTable.RowCount = 0 Then
             cmdDeleteRecord.Enabled = False
             cmdOK.Enabled = False
         End If
@@ -153,10 +149,10 @@ Public Class frmEditLookupTable
             If tblSchema.Rows(i)!TABLE_TYPE.ToString = "TABLE" Then
 
                 Dim strTableName As String
-                strTableName = tblSchema.Rows(i)!TABLE_NAME.ToString
+                strTableName = tblSchema.Rows(i)!TABLE_NAToString
 
                 If strTableName.Contains("lu_") Then
-                    Me.cboLookupTable.Items.Add(strTableName)
+                    cboLookupTable.Items.Add(strTableName)
                 End If
             End If
         Next

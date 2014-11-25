@@ -104,9 +104,13 @@ Public Class frmAddButton
 
 #End Region
 
+    Event LockUpdateEvent()
+    Event UnlockUpdateEvent()
+    Event RefreshDatabaseEvent()
+    Event AddNewTableEvent()
 
     Private Sub txtDataCode_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtDataCode.KeyPress
-        Call numericTextboxValidation(e)
+        numericTextboxValidation(e)
     End Sub
 
 
@@ -141,43 +145,26 @@ Public Class frmAddButton
 
     Private Sub frmAddButton_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         blButtonEdit = False
-        myFormLibrary.frmAddButton = Nothing
     End Sub
 
     Private Sub frmAddButton_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-
-        myFormLibrary.frmAddButton = Me
-
         Dim tblSchema As DataTable
-
         tblSchema = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, New Object() {Nothing, Nothing, Nothing, Nothing})
-
         Dim i As Integer
-
         For i = 0 To tblSchema.Rows.Count - 1
-
             If tblSchema.Rows(i)!TABLE_TYPE.ToString = "TABLE" Then
-
                 Dim strTableName As String
                 strTableName = tblSchema.Rows(i)!TABLE_NAME.ToString
-
                 If strTableName.Substring(0, 3) = "lu_" Then
-
                     If strTableName <> "lu_button_colors" And strTableName <> "lu_data_codes" And strTableName <> "lu_species_code" Then
                         Me.cboTables.Items.Add(strTableName)
                     End If
-
                 End If
-
             End If
         Next
-
         If blButtonEdit = True Then
-
             Dim strQuery As String
-
             strQuery = "SELECT ButtonText, TableName, DataCode, DataCodeName FROM " & strConfigureTable & " WHERE ButtonText = " & SingleQuote(Me.txtButtonName.Text) & ";"
-
             Dim sub_data_set As DataSet = New DataSet()
             Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, conn)
             Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
@@ -185,11 +172,8 @@ Public Class frmAddButton
 
             Dim dt As DataTable
             Dim r As DataRow
-
             dt = sub_data_set.Tables.Item(0)
-
             r = dt.Rows.Item(0)
-
             If Not r Is Nothing Then
                 If r.Item("TableName") = "UserEntered" Then
                     Me.rdInputValue.Checked = True
@@ -222,12 +206,8 @@ Public Class frmAddButton
                     txtName = txtName.Replace(Letter, String.Empty)
                 End If
             Next
-
             strEditTextBoxOldName = txtName
-
         End If
-
-
     End Sub
 
     Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
@@ -328,10 +308,10 @@ Public Class frmAddButton
             oComm = New OleDbCommand(strInsertQuery, conn)
             oComm.ExecuteNonQuery()
 
-            Call addField()
+            addField()
         Else
 
-            
+
             If Me.DataCode <> Me.OldDataCode Then
                 strSelectQuery = "SELECT * FROM lu_data_codes;"
 
@@ -388,7 +368,8 @@ Public Class frmAddButton
 
             End If
 
-            Call myFormLibrary.frmConfigureButtons.frmConfigureButtons_Activated(sender, e)
+            'CJG comment out while trying to remove myformlibrary
+            'myFormLibrary.frmConfigureButtons.frmConfigureButtons_Activated(sender, e)
             strEditTextBoxNewName = "txt" & Replace(Me.txtButtonName.Text, "%", "Percent")
 
             Dim strCharactersAllowed As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"
@@ -420,9 +401,7 @@ Public Class frmAddButton
 
         End If
 
-        myFormLibrary.frmVideoMiner.blupdateColumns = False
-        Call RefreshDatabase(Me, New EventArgs)
-        myFormLibrary.frmVideoMiner.blupdateColumns = True
+        RaiseEvent RefreshDatabaseEvent()
         blNewButton = False
 
         Me.Close()
@@ -457,8 +436,10 @@ Public Class frmAddButton
     End Sub
 
     Private Sub cmdCreateNewTable_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCreateNewTable.Click
-        myFormLibrary.frmAddNewTable = New frmAddNewTable
-        myFormLibrary.frmAddNewTable.ShowDialog()
+        RaiseEvent AddNewTableEvent()
+        ' CJG commented out while getting rid of myformlibrary
+        'myFormLibrary.frmAddNewTable = New frmAddNewTable
+        'myFormLibrary.frmAddNewTable.ShowDialog()
     End Sub
 
     Private Sub rdUseTable_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles rdUseTable.CheckedChanged

@@ -22,212 +22,212 @@ Partial Class frmRareSpeciesLookup
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.radLatinName = New System.Windows.Forms.RadioButton
-        Me.radScientificName = New System.Windows.Forms.RadioButton
-        Me.radCommonName = New System.Windows.Forms.RadioButton
-        Me.cboSpecies = New System.Windows.Forms.ComboBox
-        Me.lblSearchSpeciesBy = New System.Windows.Forms.Label
-        Me.lblCommonName = New System.Windows.Forms.Label
-        Me.lblScientificName = New System.Windows.Forms.Label
-        Me.lblLatinName = New System.Windows.Forms.Label
-        Me.lblSpeciesCode = New System.Windows.Forms.Label
-        Me.lblCommonNameValue = New System.Windows.Forms.Label
-        Me.lblScientificNameValue = New System.Windows.Forms.Label
-        Me.lblLatinNameValue = New System.Windows.Forms.Label
-        Me.lblSpeciesCodeValue = New System.Windows.Forms.Label
-        Me.cmdOK = New System.Windows.Forms.Button
-        Me.cmdCancel = New System.Windows.Forms.Button
-        Me.lblTaxonomicCode = New System.Windows.Forms.Label
-        Me.lblTaxonomicCodeValue = New System.Windows.Forms.Label
-        Me.SuspendLayout()
+        radLatinName = New System.Windows.Forms.RadioButton
+        radScientificName = New System.Windows.Forms.RadioButton
+        radCommonName = New System.Windows.Forms.RadioButton
+        cboSpecies = New System.Windows.Forms.ComboBox
+        lblSearchSpeciesBy = New System.Windows.Forms.Label
+        lblCommonName = New System.Windows.Forms.Label
+        lblScientificName = New System.Windows.Forms.Label
+        lblLatinName = New System.Windows.Forms.Label
+        lblSpeciesCode = New System.Windows.Forms.Label
+        lblCommonNameValue = New System.Windows.Forms.Label
+        lblScientificNameValue = New System.Windows.Forms.Label
+        lblLatinNameValue = New System.Windows.Forms.Label
+        lblSpeciesCodeValue = New System.Windows.Forms.Label
+        cmdOK = New System.Windows.Forms.Button
+        cmdCancel = New System.Windows.Forms.Button
+        lblTaxonomicCode = New System.Windows.Forms.Label
+        lblTaxonomicCodeValue = New System.Windows.Forms.Label
+        SuspendLayout()
         '
         'radLatinName
         '
-        Me.radLatinName.AutoSize = True
-        Me.radLatinName.Enabled = False
-        Me.radLatinName.Location = New System.Drawing.Point(25, 76)
-        Me.radLatinName.Name = "radLatinName"
-        Me.radLatinName.Size = New System.Drawing.Size(123, 17)
-        Me.radLatinName.TabIndex = 20
-        Me.radLatinName.Text = "Species Latin Name:" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10)
-        Me.radLatinName.UseVisualStyleBackColor = True
-        Me.radLatinName.Visible = False
+        radLatinName.AutoSize = True
+        radLatinName.Enabled = False
+        radLatinName.Location = New System.Drawing.Point(25, 76)
+        radLatinName.Name = "radLatinName"
+        radLatinName.Size = New System.Drawing.Size(123, 17)
+        radLatinName.TabIndex = 20
+        radLatinName.Text = "Species Latin Name:" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10)
+        radLatinName.UseVisualStyleBackColor = True
+        radLatinName.Visible = False
         '
         'radScientificName
         '
-        Me.radScientificName.AutoSize = True
-        Me.radScientificName.Location = New System.Drawing.Point(25, 76)
-        Me.radScientificName.Name = "radScientificName"
-        Me.radScientificName.Size = New System.Drawing.Size(143, 17)
-        Me.radScientificName.TabIndex = 19
-        Me.radScientificName.Text = "Species Scientific Name:"
-        Me.radScientificName.UseVisualStyleBackColor = True
+        radScientificName.AutoSize = True
+        radScientificName.Location = New System.Drawing.Point(25, 76)
+        radScientificName.Name = "radScientificName"
+        radScientificName.Size = New System.Drawing.Size(143, 17)
+        radScientificName.TabIndex = 19
+        radScientificName.Text = "Species Scientific Name:"
+        radScientificName.UseVisualStyleBackColor = True
         '
         'radCommonName
         '
-        Me.radCommonName.AutoSize = True
-        Me.radCommonName.Checked = True
-        Me.radCommonName.Location = New System.Drawing.Point(25, 53)
-        Me.radCommonName.Name = "radCommonName"
-        Me.radCommonName.Size = New System.Drawing.Size(141, 17)
-        Me.radCommonName.TabIndex = 18
-        Me.radCommonName.TabStop = True
-        Me.radCommonName.Text = "Species Common Name:"
-        Me.radCommonName.UseVisualStyleBackColor = True
+        radCommonName.AutoSize = True
+        radCommonName.Checked = True
+        radCommonName.Location = New System.Drawing.Point(25, 53)
+        radCommonName.Name = "radCommonName"
+        radCommonName.Size = New System.Drawing.Size(141, 17)
+        radCommonName.TabIndex = 18
+        radCommonName.TabStop = True
+        radCommonName.Text = "Species Common Name:"
+        radCommonName.UseVisualStyleBackColor = True
         '
         'cboSpecies
         '
-        Me.cboSpecies.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cboSpecies.FormattingEnabled = True
-        Me.cboSpecies.Location = New System.Drawing.Point(25, 99)
-        Me.cboSpecies.Name = "cboSpecies"
-        Me.cboSpecies.Size = New System.Drawing.Size(333, 21)
-        Me.cboSpecies.Sorted = True
-        Me.cboSpecies.TabIndex = 15
+        cboSpecies.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        cboSpecies.FormattingEnabled = True
+        cboSpecies.Location = New System.Drawing.Point(25, 99)
+        cboSpecies.Name = "cboSpecies"
+        cboSpecies.Size = New System.Drawing.Size(333, 21)
+        cboSpecies.Sorted = True
+        cboSpecies.TabIndex = 15
         '
         'lblSearchSpeciesBy
         '
-        Me.lblSearchSpeciesBy.AutoSize = True
-        Me.lblSearchSpeciesBy.Location = New System.Drawing.Point(22, 26)
-        Me.lblSearchSpeciesBy.Name = "lblSearchSpeciesBy"
-        Me.lblSearchSpeciesBy.Size = New System.Drawing.Size(100, 13)
-        Me.lblSearchSpeciesBy.TabIndex = 21
-        Me.lblSearchSpeciesBy.Text = "Search Species By:"
+        lblSearchSpeciesBy.AutoSize = True
+        lblSearchSpeciesBy.Location = New System.Drawing.Point(22, 26)
+        lblSearchSpeciesBy.Name = "lblSearchSpeciesBy"
+        lblSearchSpeciesBy.Size = New System.Drawing.Size(100, 13)
+        lblSearchSpeciesBy.TabIndex = 21
+        lblSearchSpeciesBy.Text = "Search Species By:"
         '
         'lblCommonName
         '
-        Me.lblCommonName.AutoSize = True
-        Me.lblCommonName.Location = New System.Drawing.Point(22, 157)
-        Me.lblCommonName.Name = "lblCommonName"
-        Me.lblCommonName.Size = New System.Drawing.Size(82, 13)
-        Me.lblCommonName.TabIndex = 22
-        Me.lblCommonName.Text = "Common Name:"
+        lblCommonName.AutoSize = True
+        lblCommonName.Location = New System.Drawing.Point(22, 157)
+        lblCommonName.Name = "lblCommonName"
+        lblCommonName.Size = New System.Drawing.Size(82, 13)
+        lblCommonName.TabIndex = 22
+        lblCommonName.Text = "Common Name:"
         '
         'lblScientificName
         '
-        Me.lblScientificName.AutoSize = True
-        Me.lblScientificName.Location = New System.Drawing.Point(22, 190)
-        Me.lblScientificName.Name = "lblScientificName"
-        Me.lblScientificName.Size = New System.Drawing.Size(84, 13)
-        Me.lblScientificName.TabIndex = 22
-        Me.lblScientificName.Text = "Scientific Name:"
+        lblScientificName.AutoSize = True
+        lblScientificName.Location = New System.Drawing.Point(22, 190)
+        lblScientificName.Name = "lblScientificName"
+        lblScientificName.Size = New System.Drawing.Size(84, 13)
+        lblScientificName.TabIndex = 22
+        lblScientificName.Text = "Scientific Name:"
         '
         'lblLatinName
         '
-        Me.lblLatinName.AutoSize = True
-        Me.lblLatinName.Enabled = False
-        Me.lblLatinName.Location = New System.Drawing.Point(22, 190)
-        Me.lblLatinName.Name = "lblLatinName"
-        Me.lblLatinName.Size = New System.Drawing.Size(64, 13)
-        Me.lblLatinName.TabIndex = 22
-        Me.lblLatinName.Text = "Latin Name:"
-        Me.lblLatinName.Visible = False
+        lblLatinName.AutoSize = True
+        lblLatinName.Enabled = False
+        lblLatinName.Location = New System.Drawing.Point(22, 190)
+        lblLatinName.Name = "lblLatinName"
+        lblLatinName.Size = New System.Drawing.Size(64, 13)
+        lblLatinName.TabIndex = 22
+        lblLatinName.Text = "Latin Name:"
+        lblLatinName.Visible = False
         '
         'lblSpeciesCode
         '
-        Me.lblSpeciesCode.AutoSize = True
-        Me.lblSpeciesCode.Location = New System.Drawing.Point(22, 223)
-        Me.lblSpeciesCode.Name = "lblSpeciesCode"
-        Me.lblSpeciesCode.Size = New System.Drawing.Size(76, 13)
-        Me.lblSpeciesCode.TabIndex = 22
-        Me.lblSpeciesCode.Text = "Species Code:"
+        lblSpeciesCode.AutoSize = True
+        lblSpeciesCode.Location = New System.Drawing.Point(22, 223)
+        lblSpeciesCode.Name = "lblSpeciesCode"
+        lblSpeciesCode.Size = New System.Drawing.Size(76, 13)
+        lblSpeciesCode.TabIndex = 22
+        lblSpeciesCode.Text = "Species Code:"
         '
         'lblCommonNameValue
         '
-        Me.lblCommonNameValue.AutoSize = True
-        Me.lblCommonNameValue.Location = New System.Drawing.Point(112, 157)
-        Me.lblCommonNameValue.Name = "lblCommonNameValue"
-        Me.lblCommonNameValue.Size = New System.Drawing.Size(0, 13)
-        Me.lblCommonNameValue.TabIndex = 23
+        lblCommonNameValue.AutoSize = True
+        lblCommonNameValue.Location = New System.Drawing.Point(112, 157)
+        lblCommonNameValue.Name = "lblCommonNameValue"
+        lblCommonNameValue.Size = New System.Drawing.Size(0, 13)
+        lblCommonNameValue.TabIndex = 23
         '
         'lblScientificNameValue
         '
-        Me.lblScientificNameValue.AutoSize = True
-        Me.lblScientificNameValue.Location = New System.Drawing.Point(112, 190)
-        Me.lblScientificNameValue.Name = "lblScientificNameValue"
-        Me.lblScientificNameValue.Size = New System.Drawing.Size(0, 13)
-        Me.lblScientificNameValue.TabIndex = 23
+        lblScientificNameValue.AutoSize = True
+        lblScientificNameValue.Location = New System.Drawing.Point(112, 190)
+        lblScientificNameValue.Name = "lblScientificNameValue"
+        lblScientificNameValue.Size = New System.Drawing.Size(0, 13)
+        lblScientificNameValue.TabIndex = 23
         '
         'lblLatinNameValue
         '
-        Me.lblLatinNameValue.AutoSize = True
-        Me.lblLatinNameValue.Enabled = False
-        Me.lblLatinNameValue.Location = New System.Drawing.Point(112, 190)
-        Me.lblLatinNameValue.Name = "lblLatinNameValue"
-        Me.lblLatinNameValue.Size = New System.Drawing.Size(0, 13)
-        Me.lblLatinNameValue.TabIndex = 23
-        Me.lblLatinNameValue.Visible = False
+        lblLatinNameValue.AutoSize = True
+        lblLatinNameValue.Enabled = False
+        lblLatinNameValue.Location = New System.Drawing.Point(112, 190)
+        lblLatinNameValue.Name = "lblLatinNameValue"
+        lblLatinNameValue.Size = New System.Drawing.Size(0, 13)
+        lblLatinNameValue.TabIndex = 23
+        lblLatinNameValue.Visible = False
         '
         'lblSpeciesCodeValue
         '
-        Me.lblSpeciesCodeValue.AutoSize = True
-        Me.lblSpeciesCodeValue.Location = New System.Drawing.Point(112, 223)
-        Me.lblSpeciesCodeValue.Name = "lblSpeciesCodeValue"
-        Me.lblSpeciesCodeValue.Size = New System.Drawing.Size(0, 13)
-        Me.lblSpeciesCodeValue.TabIndex = 23
+        lblSpeciesCodeValue.AutoSize = True
+        lblSpeciesCodeValue.Location = New System.Drawing.Point(112, 223)
+        lblSpeciesCodeValue.Name = "lblSpeciesCodeValue"
+        lblSpeciesCodeValue.Size = New System.Drawing.Size(0, 13)
+        lblSpeciesCodeValue.TabIndex = 23
         '
         'cmdOK
         '
-        Me.cmdOK.Enabled = False
-        Me.cmdOK.Location = New System.Drawing.Point(69, 319)
-        Me.cmdOK.Name = "cmdOK"
-        Me.cmdOK.Size = New System.Drawing.Size(112, 37)
-        Me.cmdOK.TabIndex = 24
-        Me.cmdOK.Text = "OK"
-        Me.cmdOK.UseVisualStyleBackColor = True
+        cmdOK.Enabled = False
+        cmdOK.Location = New System.Drawing.Point(69, 319)
+        cmdOK.Name = "cmdOK"
+        cmdOK.Size = New System.Drawing.Size(112, 37)
+        cmdOK.TabIndex = 24
+        cmdOK.Text = "OK"
+        cmdOK.UseVisualStyleBackColor = True
         '
         'cmdCancel
         '
-        Me.cmdCancel.Location = New System.Drawing.Point(187, 319)
-        Me.cmdCancel.Name = "cmdCancel"
-        Me.cmdCancel.Size = New System.Drawing.Size(112, 37)
-        Me.cmdCancel.TabIndex = 25
-        Me.cmdCancel.Text = "Cancel"
-        Me.cmdCancel.UseVisualStyleBackColor = True
+        cmdCancel.Location = New System.Drawing.Point(187, 319)
+        cmdCancel.Name = "cmdCancel"
+        cmdCancel.Size = New System.Drawing.Size(112, 37)
+        cmdCancel.TabIndex = 25
+        cmdCancel.Text = "Cancel"
+        cmdCancel.UseVisualStyleBackColor = True
         '
         'lblTaxonomicCode
         '
-        Me.lblTaxonomicCode.AutoSize = True
-        Me.lblTaxonomicCode.Location = New System.Drawing.Point(22, 255)
-        Me.lblTaxonomicCode.Name = "lblTaxonomicCode"
-        Me.lblTaxonomicCode.Size = New System.Drawing.Size(90, 13)
-        Me.lblTaxonomicCode.TabIndex = 22
-        Me.lblTaxonomicCode.Text = "Taxonomic Code:"
+        lblTaxonomicCode.AutoSize = True
+        lblTaxonomicCode.Location = New System.Drawing.Point(22, 255)
+        lblTaxonomicCode.Name = "lblTaxonomicCode"
+        lblTaxonomicCode.Size = New System.Drawing.Size(90, 13)
+        lblTaxonomicCode.TabIndex = 22
+        lblTaxonomicCode.Text = "Taxonomic Code:"
         '
         'lblTaxonomicCodeValue
         '
-        Me.lblTaxonomicCodeValue.AutoSize = True
-        Me.lblTaxonomicCodeValue.Location = New System.Drawing.Point(112, 255)
-        Me.lblTaxonomicCodeValue.Name = "lblTaxonomicCodeValue"
-        Me.lblTaxonomicCodeValue.Size = New System.Drawing.Size(0, 13)
-        Me.lblTaxonomicCodeValue.TabIndex = 23
+        lblTaxonomicCodeValue.AutoSize = True
+        lblTaxonomicCodeValue.Location = New System.Drawing.Point(112, 255)
+        lblTaxonomicCodeValue.Name = "lblTaxonomicCodeValue"
+        lblTaxonomicCodeValue.Size = New System.Drawing.Size(0, 13)
+        lblTaxonomicCodeValue.TabIndex = 23
         '
         'frmRareSpeciesLookup
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(377, 370)
-        Me.Controls.Add(Me.cmdCancel)
-        Me.Controls.Add(Me.cmdOK)
-        Me.Controls.Add(Me.lblTaxonomicCodeValue)
-        Me.Controls.Add(Me.lblSpeciesCodeValue)
-        Me.Controls.Add(Me.lblLatinNameValue)
-        Me.Controls.Add(Me.lblScientificNameValue)
-        Me.Controls.Add(Me.lblCommonNameValue)
-        Me.Controls.Add(Me.lblTaxonomicCode)
-        Me.Controls.Add(Me.lblSpeciesCode)
-        Me.Controls.Add(Me.lblLatinName)
-        Me.Controls.Add(Me.lblScientificName)
-        Me.Controls.Add(Me.lblCommonName)
-        Me.Controls.Add(Me.lblSearchSpeciesBy)
-        Me.Controls.Add(Me.radLatinName)
-        Me.Controls.Add(Me.radScientificName)
-        Me.Controls.Add(Me.radCommonName)
-        Me.Controls.Add(Me.cboSpecies)
-        Me.Name = "frmRareSpeciesLookup"
-        Me.Text = "Rare Species Lookup"
-        Me.ResumeLayout(False)
-        Me.PerformLayout()
+        AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        ClientSize = New System.Drawing.Size(377, 370)
+        Controls.Add(cmdCancel)
+        Controls.Add(cmdOK)
+        Controls.Add(lblTaxonomicCodeValue)
+        Controls.Add(lblSpeciesCodeValue)
+        Controls.Add(lblLatinNameValue)
+        Controls.Add(lblScientificNameValue)
+        Controls.Add(lblCommonNameValue)
+        Controls.Add(lblTaxonomicCode)
+        Controls.Add(lblSpeciesCode)
+        Controls.Add(lblLatinName)
+        Controls.Add(lblScientificName)
+        Controls.Add(lblCommonName)
+        Controls.Add(lblSearchSpeciesBy)
+        Controls.Add(radLatinName)
+        Controls.Add(radScientificName)
+        Controls.Add(radCommonName)
+        Controls.Add(cboSpecies)
+        Name = "frmRareSpeciesLookup"
+        Text = "Rare Species Lookup"
+        ResumeLayout(False)
+        PerformLayout()
 
     End Sub
     Friend WithEvents radLatinName As System.Windows.Forms.RadioButton

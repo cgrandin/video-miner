@@ -1,20 +1,17 @@
 ﻿Imports System.IO.Ports
 Imports MSCommLib
 
-
 Public Class frmDeviceControl
 
+    Private frmRelayConfiguration As frmRelayConfiguration
     Private arrLabels As ArrayList
     Private intTimeout As Integer = 0
 
     Private Sub frmDeviceControl_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        myFormLibrary.frmDeviceControl = Nothing
         Me.AllRelaySerialPort.Close()
     End Sub
 
     Private Sub frmDeviceControl_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-
-        myFormLibrary.frmDeviceControl = Me
 
         Dim byteStatus As Byte
         Dim i As Integer
@@ -124,8 +121,8 @@ Public Class frmDeviceControl
     End Sub
 
     Private Sub cmdRelayConfiguration_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdAllRelayConfiguration.Click
-        myFormLibrary.frmRelayConfiguration = New frmRelayConfiguration
-        myFormLibrary.frmRelayConfiguration.ShowDialog()
+        frmRelayConfiguration = New frmRelayConfiguration
+        frmRelayConfiguration.ShowDialog()
     End Sub
 
     Private Sub EnableRelayBoard(ByVal intDevice As Integer)
@@ -197,7 +194,7 @@ ReadBuffer:
 
     Private Sub cmdToggleRelay1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdToggleRelay1.Click
 
-        Call EnableRelayBoard(1)
+        EnableRelayBoard(1)
 
         ' Get the status of Relay 1
         Dim intStatus As Integer
@@ -205,9 +202,9 @@ ReadBuffer:
 
         If intStatus = 0 Then
             ' Turn on Relay 1
-            Call TurnOnRelay(1)
+            TurnOnRelay(1)
         Else
-            Call TurnOffRelay(1)
+            TurnOffRelay(1)
         End If
 
         ' Get the status of Relay 1
@@ -226,7 +223,7 @@ ReadBuffer:
 
     Private Sub cmdToggleRelay2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdToggleRelay2.Click
 
-        Call EnableRelayBoard(1)
+        EnableRelayBoard(1)
 
         ' Get the status of Relay 2
         Dim intStatus As Integer
@@ -234,9 +231,9 @@ ReadBuffer:
 
         If intStatus = 0 Then
             ' Turn on Relay 2
-            Call TurnOnRelay(2)
+            TurnOnRelay(2)
         Else
-            Call TurnOffRelay(2)
+            TurnOffRelay(2)
         End If
 
         ' Get the status of Relay 2
@@ -255,7 +252,7 @@ ReadBuffer:
 
     Private Sub cmdToggleRelay3_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdToggleRelay3.Click
 
-        Call EnableRelayBoard(1)
+        EnableRelayBoard(1)
 
         ' Get the status of Relay 3
         Dim intStatus As Integer
@@ -263,9 +260,9 @@ ReadBuffer:
 
         If intStatus = 0 Then
             ' Turn on Relay 3
-            Call TurnOnRelay(3)
+            TurnOnRelay(3)
         Else
-            Call TurnOffRelay(3)
+            TurnOffRelay(3)
         End If
 
         ' Get the status of Relay 3
@@ -284,7 +281,7 @@ ReadBuffer:
 
     Private Sub cmdToggleRelay4_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdToggleRelay4.Click
 
-        Call EnableRelayBoard(1)
+        EnableRelayBoard(1)
 
         ' Get the status of Relay 4
         Dim intStatus As Integer
@@ -292,9 +289,9 @@ ReadBuffer:
 
         If intStatus = 0 Then
             ' Turn on Relay 4
-            Call TurnOnRelay(4)
+            TurnOnRelay(4)
         Else
-            Call TurnOffRelay(4)
+            TurnOffRelay(4)
         End If
 
         ' Get the status of Relay 4
@@ -313,7 +310,7 @@ ReadBuffer:
 
     Private Sub cmdToggleRelay5_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdToggleRelay5.Click
 
-        Call EnableRelayBoard(2)
+        EnableRelayBoard(2)
 
         ' Get the status of Relay 1
         Dim intStatus As Integer
@@ -321,9 +318,9 @@ ReadBuffer:
 
         If intStatus = 0 Then
             ' Turn on Relay 1
-            Call TurnOnRelay(1)
+            TurnOnRelay(1)
         Else
-            Call TurnOffRelay(1)
+            TurnOffRelay(1)
         End If
 
         ' Get the status of Relay 1
@@ -341,7 +338,7 @@ ReadBuffer:
     End Sub
 
     Private Sub cmdToggleRelay6_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdToggleRelay6.Click
-        Call EnableRelayBoard(2)
+        EnableRelayBoard(2)
 
         ' Get the status of Relay 2
         Dim intStatus As Integer
@@ -349,9 +346,9 @@ ReadBuffer:
 
         If intStatus = 0 Then
             ' Turn on Relay 2
-            Call TurnOnRelay(2)
+            TurnOnRelay(2)
         Else
-            Call TurnOffRelay(2)
+            TurnOffRelay(2)
         End If
 
         ' Get the status of Relay 2
@@ -368,7 +365,7 @@ ReadBuffer:
     End Sub
 
     Private Sub cmdToggleRelay7_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdToggleRelay7.Click
-        Call EnableRelayBoard(2)
+        EnableRelayBoard(2)
 
         ' Get the status of Relay 3
         Dim intStatus As Integer
@@ -376,9 +373,9 @@ ReadBuffer:
 
         If intStatus = 0 Then
             ' Turn on Relay 3
-            Call TurnOnRelay(3)
+            TurnOnRelay(3)
         Else
-            Call TurnOffRelay(3)
+            TurnOffRelay(3)
         End If
 
         ' Get the status of Relay 3
@@ -395,7 +392,7 @@ ReadBuffer:
     End Sub
 
     Private Sub cmdToggleRelay8_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdToggleRelay8.Click
-        Call EnableRelayBoard(2)
+        EnableRelayBoard(2)
 
         ' Get the status of Relay 4
         Dim intStatus As Integer
@@ -403,9 +400,9 @@ ReadBuffer:
 
         If intStatus = 0 Then
             ' Turn on Relay 4
-            Call TurnOnRelay(4)
+            TurnOnRelay(4)
         Else
-            Call TurnOffRelay(4)
+            TurnOffRelay(4)
         End If
 
         ' Get the status of Relay 4

@@ -4,17 +4,9 @@ Imports System.Data.OleDb
 
 Public Class frmConfigureSpecies
 
+    Event SpeciesConfigurationUpdate()
+
 #Region "Fields"
-
-    Private m_RangeChecked As Boolean
-    Private m_IDConfidenceChecked As Boolean
-    Private m_AbundanceChecked As Boolean
-    Private m_CountChecked As Boolean
-    Private m_HeightChecked As Boolean
-    Private m_WidthChecked As Boolean
-    Private m_LengthChecked As Boolean
-    Private m_CommentsChecked As Boolean
-
     Private m_Range As String
     Private m_Side As String
     Private m_IDConfidence As String
@@ -28,86 +20,75 @@ Public Class frmConfigureSpecies
 #End Region
 
 #Region "Properties"
-
     Public Property RangeChecked() As Boolean
         Get
-            Return m_RangeChecked
+            Return chkRange.Checked
         End Get
         Set(ByVal value As Boolean)
-            m_RangeChecked = value
+            chkRange.Checked = value
         End Set
     End Property
 
     Public Property IDConfidenceChecked() As Boolean
         Get
-            Return m_IDConfidenceChecked
+            Return chkIDConfidence.Checked
         End Get
         Set(ByVal value As Boolean)
-            m_IDConfidenceChecked = value
+            chkIDConfidence.Checked = value
         End Set
     End Property
 
     Public Property AbundanceChecked() As Boolean
         Get
-            Return m_AbundanceChecked
+            Return chkAbundance.Checked
         End Get
         Set(ByVal value As Boolean)
-            m_AbundanceChecked = value
+            chkAbundance.Checked = value
         End Set
     End Property
 
     Public Property CountChecked() As Boolean
         Get
-            Return m_CountChecked
+            Return chkCount.Checked
         End Get
         Set(ByVal value As Boolean)
-            m_CountChecked = value
+            chkCount.Checked = value
         End Set
     End Property
 
     Public Property HeightChecked() As Boolean
         Get
-            Return m_HeightChecked
+            Return chkHeight.Checked
         End Get
         Set(ByVal value As Boolean)
-            m_HeightChecked = value
+            chkHeight.Checked = value
         End Set
     End Property
 
     Public Property WidthChecked() As Boolean
         Get
-            Return m_WidthChecked
+            Return chkWidth.Checked
         End Get
         Set(ByVal value As Boolean)
-            m_WidthChecked = value
+            chkWidth.Checked = value
         End Set
     End Property
 
     Public Property LengthChecked() As Boolean
         Get
-            Return m_LengthChecked
+            Return chkLength.Checked
         End Get
         Set(ByVal value As Boolean)
-            m_LengthChecked = value
+            chkLength.Checked = value
         End Set
     End Property
 
     Public Property CommentsChecked() As Boolean
         Get
-            Return m_CommentsChecked
+            Return chkComments.Checked
         End Get
         Set(ByVal value As Boolean)
-            m_CommentsChecked = value
-        End Set
-    End Property
-
-
-    Public Property Side() As String
-        Get
-            Return m_Side
-        End Get
-        Set(ByVal value As String)
-            m_Side = value
+            chkComments.Checked = value
         End Set
     End Property
 
@@ -117,6 +98,15 @@ Public Class frmConfigureSpecies
         End Get
         Set(ByVal value As String)
             m_Range = value
+        End Set
+    End Property
+
+    Public Property Side() As String
+        Get
+            Return m_Side
+        End Get
+        Set(ByVal value As String)
+            m_Side = value
         End Set
     End Property
 
@@ -191,16 +181,8 @@ Public Class frmConfigureSpecies
     Dim dt As DataTable
     Dim row As DataRow
 
-    ' On closing the form, make the object in the form library equal to nothing
-    Private Sub frmConfigureSpecies_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        myFormLibrary.frmConfigureSpecies = Nothing
-    End Sub
-
     ' The load event of the form
     Private Sub frmConfigureSpecies_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        ' Reference the form library
-        myFormLibrary.frmConfigureSpecies = Me
-
         ' Create a new dataset object containing the confidence id and description
         Dim ConfID_data_set As DataSet = New DataSet
         Dim ConfID_db_command As OleDbCommand = New OleDbCommand("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " ORDER BY ConfidenceID;", conn)
@@ -234,7 +216,7 @@ Public Class frmConfigureSpecies
         Me.cboSide.Items.Add("Starboard")
 
         ' Get the user settings for the Species configuration from and xml file
-        Call GetSettingsFromFile()
+        GetSettingsFromFile()
 
         ' Check to see if the string values are NULL
         Me.Range = checkString(Me.Range)
@@ -369,7 +351,7 @@ Public Class frmConfigureSpecies
     End Function
 
     ' Function to save the XML settings to a file
-    Public Function SaveXmlSettings(ByVal strConfigFile As String, ByVal strPath As String, ByVal strValue As String) As Boolean
+    Public Function SaveConfiguration(ByVal strConfigFile As String, ByVal strPath As String, ByVal strValue As String) As Boolean
 
         ' Check if the specified configuration file exists
         If File.Exists(strConfigFile) Then
@@ -412,7 +394,6 @@ Public Class frmConfigureSpecies
             path = path.Substring(6)    ' Remove unnecessary substring
         End If
 
-        strConfigFile = path & "\VideoMinerConfigurationDetails.xml"
 
         Me.Range = checkString(Me.txtRangeValue.Text)
         Me.Side = checkString(Me.cboSide.SelectedIndex)
@@ -424,46 +405,28 @@ Public Class frmConfigureSpecies
         Me.Length = checkString(Me.txtRangeValue.Text)
         Me.Comments = checkString(Me.txtComments.Text)
 
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Range/Displayed", Me.chkRange.Checked)
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/IDConfidence/Displayed", Me.chkIDConfidence.Checked)
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Abundance/Displayed", Me.chkAbundance.Checked)
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Count/Displayed", Me.chkCount.Checked)
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Height/Displayed", Me.chkHeight.Checked)
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Width/Displayed", Me.chkWidth.Checked)
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Length/Displayed", Me.chkLength.Checked)
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Comments/Displayed", Me.chkComments.Checked)
+        'CJG This needs to be done in the main form via events..
+        'strConfigFile = path & "\VideoMinerConfigurationDetails.xml"
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Range/Displayed", Me.chkRange.Checked)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/IDConfidence/Displayed", Me.chkIDConfidence.Checked)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Abundance/Displayed", Me.chkAbundance.Checked)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Count/Displayed", Me.chkCount.Checked)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Height/Displayed", Me.chkHeight.Checked)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Width/Displayed", Me.chkWidth.Checked)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Length/Displayed", Me.chkLength.Checked)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Comments/Displayed", Me.chkComments.Checked)
 
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Range/DefaultValue", Me.Range)
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Side/DefaultValue", Me.Side)
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/IDConfidence/DefaultValue", Me.IDConfidence)
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Abundance/DefaultValue", Me.Abundance)
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Count/DefaultValue", Me.Count)
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Height/DefaultValue", Me.SpeciesHeight)
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Width/DefaultValue", Me.SpeciesWidth)
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Length/DefaultValue", Me.Length)
-        Call SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Comments/DefaultValue", Me.Comments)
-
-        myFormLibrary.frmVideoMiner.RangeChecked = Me.chkRange.Checked
-        myFormLibrary.frmVideoMiner.IDConfidenceChecked = Me.chkIDConfidence.Checked
-        myFormLibrary.frmVideoMiner.AbundanceChecked = Me.chkAbundance.Checked
-        myFormLibrary.frmVideoMiner.CountChecked = Me.chkCount.Checked
-        myFormLibrary.frmVideoMiner.HeightChecked = Me.chkHeight.Checked
-        myFormLibrary.frmVideoMiner.WidthChecked = Me.chkWidth.Checked
-        myFormLibrary.frmVideoMiner.LengthChecked = Me.chkLength.Checked
-        myFormLibrary.frmVideoMiner.CommentsChecked = Me.chkComments.Checked
-
-        myFormLibrary.frmVideoMiner.Range = Me.Range
-        myFormLibrary.frmVideoMiner.Side = Me.Side
-        myFormLibrary.frmVideoMiner.IDConfidence = Me.IDConfidence
-        myFormLibrary.frmVideoMiner.Abundance = Me.Abundance
-        myFormLibrary.frmVideoMiner.Count = Me.Count
-        myFormLibrary.frmVideoMiner.SpeciesHeight = Me.SpeciesHeight
-        myFormLibrary.frmVideoMiner.SpeciesWidth = Me.SpeciesWidth
-        myFormLibrary.frmVideoMiner.Length = Me.Length
-        myFormLibrary.frmVideoMiner.Comments = Me.Comments
-
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Range/DefaultValue", Me.Range)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Side/DefaultValue", Me.Side)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/IDConfidence/DefaultValue", Me.IDConfidence)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Abundance/DefaultValue", Me.Abundance)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Count/DefaultValue", Me.Count)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Height/DefaultValue", Me.SpeciesHeight)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Width/DefaultValue", Me.SpeciesWidth)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Length/DefaultValue", Me.Length)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/DetailedSpeciesEventConfiguration/Comments/DefaultValue", Me.Comments)
+        RaiseEvent SpeciesConfigurationUpdate()
         Me.Close()
-
     End Sub
 
     Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
@@ -525,26 +488,26 @@ Public Class frmConfigureSpecies
     End Sub
 
     Private Sub txtAbundance_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs)
-        Call modGlobals.numericTextboxValidation(e)
+        modGlobals.numericTextboxValidation(e)
     End Sub
 
     Private Sub txtCount_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtCount.KeyPress
-        Call modGlobals.numericTextboxValidation(e)
+        modGlobals.numericTextboxValidation(e)
     End Sub
 
     Private Sub txtHeight_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtHeight.KeyPress
-        Call modGlobals.numericTextboxValidation(e)
+        modGlobals.numericTextboxValidation(e)
     End Sub
 
     Private Sub txtLength_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtLength.KeyPress
-        Call modGlobals.numericTextboxValidation(e)
+        modGlobals.numericTextboxValidation(e)
     End Sub
 
     Private Sub txtRangeValue_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtRangeValue.KeyPress
-        Call modGlobals.numericTextboxValidation(e)
+        modGlobals.numericTextboxValidation(e)
     End Sub
 
     Private Sub txtWidth_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtWidth.KeyPress
-        Call modGlobals.numericTextboxValidation(e)
+        modGlobals.numericTextboxValidation(e)
     End Sub
 End Class

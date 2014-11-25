@@ -43,24 +43,22 @@
     End Property
 
     Private Sub frmRelayNames_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        myFormLibrary.frmRelayNames = Me
-
-        Me.txtRelay1.Text = Me.Relay1Name
-        Me.txtRelay2.Text = Me.Relay2Name
-        Me.txtRelay3.Text = Me.Relay3Name
-        Me.txtRelay4.Text = Me.Relay4Name
+        txtRelay1.Text = Relay1Name
+        txtRelay2.Text = Relay2Name
+        txtRelay3.Text = Relay3Name
+        txtRelay4.Text = Relay4Name
 
     End Sub
 
     Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-        Me.Close()
+        Close()
     End Sub
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
-        Me.Relay1Name = Me.txtRelay1.Text
-        Me.Relay2Name = Me.txtRelay2.Text
-        Me.Relay3Name = Me.txtRelay3.Text
-        Me.Relay4Name = Me.txtRelay4.Text
-        Me.Close()
+        Relay1Name = txtRelay1.Text
+        Relay2Name = txtRelay2.Text
+        Relay3Name = txtRelay3.Text
+        Relay4Name = txtRelay4.Text
+        Close()
     End Sub
 End Class

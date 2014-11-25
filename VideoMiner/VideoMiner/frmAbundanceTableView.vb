@@ -26,20 +26,10 @@ Public Class frmAbundanceTableView
     Private strSelectedButtonName As String = ""
 
 
-    Private Sub TableViewForm_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
-        myFormLibrary.frmAbundanceTableView = Nothing
-    End Sub
-
-
     Private Sub TableViewForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-
-        myFormLibrary.frmAbundanceTableView = Me
-
         table_name = "lu_acfor_scale"
 
-        'If Me.m_Multiple Then
-        Me.cmdCancel.Visible = True
-        'End If
+        cmdCancel.Visible = True
         sub_data_set = New DataSet()
         query = "select * from " & table_name & ";"
         sub_db_command = New OleDbCommand(query, conn)
@@ -50,13 +40,11 @@ Public Class frmAbundanceTableView
         sub_data_binding.DataSource = sub_data_set.Tables(table_name)
         grdAbundance.DataSource = sub_data_binding
 
-        Me.Width = grdAbundance.Width
-        Me.Height = (grdAbundance.RowCount + 5) * grdAbundance.Rows(0).Height
+        Width = grdAbundance.Width
+        Height = (grdAbundance.RowCount + 5) * grdAbundance.Rows(0).Height
 
-        'Me.txtCommentBox.Text = VideoMiner.strComment
-
+        'txtCommentBox.Text = VideoMiner.strComment
         Refresh()
-
     End Sub
 
     Private Sub grdAbundance_CellBeginEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellCancelEventArgs) Handles grdAbundance.CellBeginEdit
@@ -70,16 +58,15 @@ Public Class frmAbundanceTableView
 
     Private Sub grdAbundance_SelectionChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles grdAbundance.SelectionChanged
         If grdAbundance.SelectedRows.Count = 1 Then
-            If Me.txtCommentBox.Text = "Comment" Then
-                Me.txtCommentBox.Text = ""
+            If txtCommentBox.Text = "Comment" Then
+                txtCommentBox.Text = ""
             End If
-            Me.Canceled = False
-            Me.Hide()
+            Canceled = False
+            Hide()
         End If
     End Sub
 
     Private Sub update_database()
-        'update the database
         sub_data_binding.EndEdit()
         Dim comm_builder As OleDbCommandBuilder = New OleDbCommandBuilder(sub_data_adapter)
         Try
@@ -92,25 +79,26 @@ Public Class frmAbundanceTableView
     End Sub
 
     Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-        Me.Canceled = True
-        Me.Hide()
+        Canceled = True
+        Hide()
     End Sub
 
     Private Sub cmdComment_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdComment.Click
 
-        If Me.cmdComment.Text = "Edit Comment" Then
+        If cmdComment.Text = "Edit Comment" Then
             txtCommentBox.Enabled = True
-            Me.cmdCancel.Enabled = False
-            Me.grdAbundance.Enabled = False
-            Me.grdAbundance.DefaultCellStyle.ForeColor = Color.Gray
-            Me.cmdComment.Text = "Done"
+            cmdCancel.Enabled = False
+            grdAbundance.Enabled = False
+            grdAbundance.DefaultCellStyle.ForeColor = Color.Gray
+            cmdComment.Text = "Done"
         Else
             txtCommentBox.Enabled = False
-            Me.cmdCancel.Enabled = True
-            Me.grdAbundance.Enabled = True
-            Me.grdAbundance.DefaultCellStyle.ForeColor = Color.Black
-            Me.cmdComment.Text = "Edit Comment"
-            myFormLibrary.frmVideoMiner.strComment = Me.txtCommentBox.Text
+            cmdCancel.Enabled = True
+            grdAbundance.Enabled = True
+            grdAbundance.DefaultCellStyle.ForeColor = Color.Black
+            cmdComment.Text = "Edit Comment"
+            'CJG 
+            'myFormLibrary.frmVideoMiner.strComment = txtCommentBox.Text
         End If
 
     End Sub

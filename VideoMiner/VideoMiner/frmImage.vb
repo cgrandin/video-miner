@@ -6,6 +6,7 @@ Public Class frmImage
 
     Private ptPanStartPoint As New Point
 
+    Event ImageFormClosingEvent()
 
     Private Sub PictureBox1_MouseDown(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles PictureBox1.MouseDown
         ptPanStartPoint = New Point(e.X, e.Y)
@@ -23,17 +24,7 @@ Public Class frmImage
     End Sub
 
     Private Sub frmImage_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-
-        myFormLibrary.frmVideoMiner.pnlImageControls.Visible = False
-
-        'Me.PictureBox1.Image.Dispose()
-        'Me.PictureBox1.Image = Nothing
-        myFormLibrary.frmVideoMiner.cmdNothingInPhoto.Visible = False
-        myFormLibrary.frmVideoMiner.image_open = False
-        myFormLibrary.frmImage = Nothing
-
-        Call myFormLibrary.frmVideoMiner.enableDisableImageMenu(False)
-
+        RaiseEvent ImageFormClosingEvent()
     End Sub
 
     Private Sub frmImage_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
@@ -68,56 +59,53 @@ Public Class frmImage
                 Exit Sub
         End Select
 
-        Try
-            If Not myFormLibrary.frmVideoMiner.speciesButtons(intIndex) Is Nothing Then
-                Call myFormLibrary.frmVideoMiner.SpeciesVariableButtonHandler(myFormLibrary.frmVideoMiner.speciesButtons(intIndex), Nothing)
-            End If
-        Catch ex As Exception
+        ' CJG while removing myformslibrary
+        'Try
+        '    If Not myFormLibrary.frmVideoMiner.speciesButtons(intIndex) Is Nothing Then
+        '        myFormLibrary.frmVideoMiner.SpeciesVariableButtonHandler(myFormLibrary.frmVideoMiner.speciesButtons(intIndex), Nothing)
+        '    End If
+        'Catch ex As Exception
 
-        End Try
+        'End Try
     End Sub
-    Protected Overrides Function ProcessCmdKey(ByRef msg As System.Windows.Forms.Message, ByVal keyData As System.Windows.Forms.Keys) As Boolean
 
+    ' CJG while removing myformslibrary
+    ' TODO: Fix this!!!
+    'Protected Overrides Function ProcessCmdKey(ByRef msg As System.Windows.Forms.Message, ByVal keyData As System.Windows.Forms.Keys) As Boolean
+    '    Dim keyPressed As Keys = CType(msg.WParam.ToInt32(), Keys)
+    '    Dim intAnswer As Integer
 
-        Dim keyPressed As Keys = CType(msg.WParam.ToInt32(), Keys)
-        Dim intAnswer As Integer
+    '    Select Case keyPressed
+    '        Case Keys.Right
+    '            If (myFormLibrary.frmVideoMiner.image_index + 1) > (myFormLibrary.frmVideoMiner.imageFilesList.Count - 1) Then
+    '                intAnswer = MessageBox.Show("You have reached the last image in the folder, would you like to start again at the first image?", "Last Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+    '                If intAnswer = vbYes Then
+    '                    myFormLibrary.frmVideoMiner.image_index = 0
+    '                Else
+    '                    Exit Function
+    '                End If
+    '            Else
+    '                myFormLibrary.frmVideoMiner.image_index += 1
+    '            End If
+    '            myFormLibrary.frmVideoMiner.LoadImg()
 
-        Select Case keyPressed
-            Case Keys.Right
-                If (myFormLibrary.frmVideoMiner.image_index + 1) > (myFormLibrary.frmVideoMiner.imageFilesList.Count - 1) Then
-                    intAnswer = MessageBox.Show("You have reached the last image in the folder, would you like to start again at the first image?", "Last Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                    If intAnswer = vbYes Then
-                        myFormLibrary.frmVideoMiner.image_index = 0
-                    Else
-                        Exit Function
-                    End If
-                Else
-                    myFormLibrary.frmVideoMiner.image_index += 1
-                End If
-                myFormLibrary.frmVideoMiner.LoadImg()
+    '        Case Keys.Left
+    '            If (myFormLibrary.frmVideoMiner.image_index - 1) < 0 Then
+    '                intAnswer = MessageBox.Show("You have reached the first image in the folder, would you like to start again at the last image?", "First Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+    '                If intAnswer = vbYes Then
+    '                    myFormLibrary.frmVideoMiner.image_index = myFormLibrary.frmVideoMiner.imageFilesList.Count - 1
+    '                Else
+    '                    Exit Function
+    '                End If
+    '            Else
+    '                myFormLibrary.frmVideoMiner.image_index -= 1
+    '            End If
+    '            myFormLibrary.frmVideoMiner.LoadImg()
 
-            Case Keys.Left
-                If (myFormLibrary.frmVideoMiner.image_index - 1) < 0 Then
-                    intAnswer = MessageBox.Show("You have reached the first image in the folder, would you like to start again at the last image?", "First Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                    If intAnswer = vbYes Then
-                        myFormLibrary.frmVideoMiner.image_index = myFormLibrary.frmVideoMiner.imageFilesList.Count - 1
-                    Else
-                        Exit Function
-                    End If
-                Else
-                    myFormLibrary.frmVideoMiner.image_index -= 1
-                End If
-                myFormLibrary.frmVideoMiner.LoadImg()
+    '        Case Else
+    '            Return MyBase.ProcessCmdKey(msg, keyData)
 
-            Case Else
-                Return MyBase.ProcessCmdKey(msg, keyData)
+    '    End Select
+    'End Function
 
-        End Select
-    End Function
-
-    Private Sub frmImage_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        myFormLibrary.frmImage = Me
-        myFormLibrary.frmVideoMiner.pnlImageControls.Visible = True
-        myFormLibrary.frmVideoMiner.pnlVideoControls.Visible = False
-    End Sub
 End Class

@@ -6,14 +6,9 @@ Public Class frmProjectNames
     Public strConfigFile As String
     Private clProjectNames As Collection
 
-    Private Sub frmProjectNames_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        myFormLibrary.frmProjectNames = Nothing
-    End Sub
+    Event ProjectNameChangedEvent()
 
     Private Sub frmProjectNames_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-
-        myFormLibrary.frmProjectNames = Me
-
         Dim strPath As String
 
         strPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly.GetName.CodeBase)
@@ -25,7 +20,7 @@ Public Class frmProjectNames
 
         clProjectNames = New Collection
 
-        Call GetProjectNames(strConfigFile, "VideoMinerConfigurationDetails/PreviousProjects")
+        GetProjectNames(strConfigFile, VMCD & "/PreviousProjects")
 
         Dim i As Integer
 
@@ -138,21 +133,15 @@ Public Class frmProjectNames
     End Sub
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
-
         Dim i As Integer
-
         For i = 1 To clProjectNames.Count
-
             If Me.txtProject.Text = clProjectNames.Item(i) Then
-                myFormLibrary.frmVideoMiner.txtProjectName.Text = Me.txtProject.Text
+                RaiseEvent ProjectNameChangedEvent()
                 Me.Close()
                 Exit Sub
             End If
-
         Next
-
-        Call writeProjectName(strConfigFile, "VideoMinerConfigurationDetails/PreviousProjects", Me.txtProject.Text)
-        myFormLibrary.frmVideoMiner.txtProjectName.Text = Me.txtProject.Text
+        writeProjectName(strConfigFile, VMCD & "/PreviousProjects", Me.txtProject.Text)
         Me.Close()
     End Sub
 
@@ -162,7 +151,7 @@ Public Class frmProjectNames
 
     Private Sub cmdDelete_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDelete.Click
 
-        Call deleteProjectName(strConfigFile, "VideoMinerConfigurationDetails/PreviousProjects", Me.lstProjects.SelectedItem)
+        deleteProjectName(strConfigFile, VMCD & "/PreviousProjects", Me.lstProjects.SelectedItem)
 
         Me.lstProjects.Items.Remove(lstProjects.SelectedItem)
         Me.txtProject.Text = ""

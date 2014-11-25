@@ -2,9 +2,11 @@
 
 Public Class frmKeyboardCommands
 
+    Event RefreshDatabaseEvent()
+
     Public Sub New()
 
-        ' This call is required by the Windows Form Designer.
+        ' This is required by the Windows Form Designer.
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
@@ -23,19 +25,9 @@ Public Class frmKeyboardCommands
             .Columns.Add("Button Text", 160, HorizontalAlignment.Left)
             .Columns.Add("Keyboard Shortcut", 160, HorizontalAlignment.Left)
         End With
-
-        myFormLibrary.frmKeyboardCommands = Me
-
-    End Sub
-
-
-
-    Private Sub frmKeyboardCommands_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        myFormLibrary.frmKeyboardCommands = Nothing
     End Sub
 
     Private Sub frmKeyboardCommands_Activated(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Activated
-
         Try
             Me.lstSpecies.Items.Clear()
             Dim sub_data_set As DataSet = New DataSet()
@@ -65,9 +57,7 @@ Public Class frmKeyboardCommands
     End Sub
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
-        myFormLibrary.frmVideoMiner.blupdateColumns = False
-        Call RefreshDatabase(Me, New EventArgs)
-        myFormLibrary.frmVideoMiner.blupdateColumns = False
+        RaiseEvent RefreshDatabaseEvent()
         Me.Close()
     End Sub
 
@@ -77,13 +67,12 @@ Public Class frmKeyboardCommands
             Exit Sub
         End If
 
-        myFormLibrary.frmCreateKeyboardShortcut = New frmCreateKeyboardShortcut
+        frmCreateKeyboardShortcut = New frmCreateKeyboardShortcut
 
         Dim selIdx As Integer = Me.lstSpecies.SelectedIndices.Item(0)
-        myFormLibrary.frmCreateKeyboardShortcut.ButtonText = Me.lstSpecies.Items(selIdx).SubItems(1).Text
-        myFormLibrary.frmCreateKeyboardShortcut.KeyboardShortcut = Me.lstSpecies.Items(selIdx).SubItems(2).Text
-
-        myFormLibrary.frmCreateKeyboardShortcut.ShowDialog()
+        frmCreateKeyboardShortcut.ButtonText = Me.lstSpecies.Items(selIdx).SubItems(1).Text
+        frmCreateKeyboardShortcut.KeyboardShortcut = Me.lstSpecies.Items(selIdx).SubItems(2).Text
+        frmCreateKeyboardShortcut.ShowDialog()
 
     End Sub
 End Class

@@ -2,6 +2,11 @@
 
 Public Class frmConfigureButtons
 
+    Private frmAddButton As frmAddButton
+    Public Event UpdateButtonDrawingOrder()
+    Public Event UpdateButtons()
+    Event RefreshDatabaseEvent()
+
 #Region "Fields"
     Private m_ButtonName As String
     Private m_TableName As String
@@ -89,7 +94,7 @@ Public Class frmConfigureButtons
 
     Public Sub New()
 
-        ' This call is required by the Windows Form Designer.
+        ' This is required by the Windows Form Designer.
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
@@ -109,8 +114,6 @@ Public Class frmConfigureButtons
             .Columns.Add("Referenced Table", 150, HorizontalAlignment.Left)
         End With
 
-        myFormLibrary.frmConfigureButtons = Me
-
     End Sub
 
     Private Sub cmdMoveUp_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveUp.Click
@@ -119,7 +122,7 @@ Public Class frmConfigureButtons
             Dim intSelectedIndex As Integer
             intSelectedIndex = Me.lstButtons.SelectedItems(0).Index
             'MsgBox(intSelectedIndex)
-            Call MoveListViewItem(True)
+            MoveListViewItem(True)
         Else
             MsgBox("Please select a button from the list")
         End If
@@ -179,7 +182,7 @@ Public Class frmConfigureButtons
                 .Focus()
             End If
         End With
-        Call UpdateDrawingOrder(strConfigureTable)
+        UpdateDrawingOrder(strConfigureTable)
     End Sub
 
     Private Sub cmdMoveDown_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveDown.Click
@@ -188,7 +191,7 @@ Public Class frmConfigureButtons
             Dim intSelectedIndex As Integer
             intSelectedIndex = Me.lstButtons.SelectedItems(0).Index
             'MsgBox(intSelectedIndex)
-            Call MoveListViewItem(False)
+            MoveListViewItem(False)
         Else
             MsgBox("Please select a species from the list")
         End If
@@ -197,11 +200,11 @@ Public Class frmConfigureButtons
 
     Private Sub cmdCreateNewButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCreateNewButton.Click
 
-        Call Me.UpdateDrawingOrder(strConfigureTable)
+        Me.UpdateDrawingOrder(strConfigureTable)
 
-        myFormLibrary.frmAddButton = New frmAddButton
+        frmAddButton = New frmAddButton
 
-        myFormLibrary.frmAddButton.ShowDialog()
+        frmAddButton.ShowDialog()
     End Sub
 
     Private Sub cmdEditButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEditButton.Click
@@ -213,18 +216,18 @@ Public Class frmConfigureButtons
 
         blButtonEdit = True
 
-        myFormLibrary.frmAddButton = New frmAddButton
-        myFormLibrary.frmAddButton.Text = "Edit " & Me.lstButtons.SelectedItems.Item(0).SubItems(1).Text.ToString & " Button"
-        myFormLibrary.frmAddButton.txtButtonName.Text = Me.lstButtons.SelectedItems.Item(0).SubItems(1).Text.ToString
+        frmAddButton = New frmAddButton
+        frmAddButton.Text = "Edit " & Me.lstButtons.SelectedItems.Item(0).SubItems(1).Text.ToString & " Button"
+        frmAddButton.txtButtonName.Text = Me.lstButtons.SelectedItems.Item(0).SubItems(1).Text.ToString
 
-        'Call Me.UpdateDrawingOrder(strConfigureTable)
+        'Me.UpdateDrawingOrder(strConfigureTable)
 
-        myFormLibrary.frmAddButton.ShowDialog()
+        frmAddButton.ShowDialog()
     End Sub
 
     Private Sub cmdDone_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDone.Click
 
-        'Call Me.UpdateDrawingOrder()
+        'Me.UpdateDrawingOrder()
 
         Me.Close()
 
@@ -284,32 +287,8 @@ Public Class frmConfigureButtons
 
             Next
         End If
-        myFormLibrary.frmVideoMiner.blupdateColumns = False
-        Call RefreshDatabase(Me, New EventArgs)
-        myFormLibrary.frmVideoMiner.blupdateColumns = True
-        Dim txt As TextBox
-
-        For Each txt In myFormLibrary.frmVideoMiner.textboxes
-            If Not txt Is Nothing Then
-                If Not txt.Text.StartsWith("No ") Then
-                    txt.BackColor = Color.LightGray
-                    txt.ForeColor = Color.LimeGreen
-                    txt.TextAlign = HorizontalAlignment.Center
-                End If
-            End If
-        Next
-
-        For Each txt In myFormLibrary.frmVideoMiner.Transect_Textboxes
-            If Not txt Is Nothing Then
-                If Not txt.Text.StartsWith("No ") Then
-                    txt.BackColor = Color.LightGray
-                    txt.ForeColor = Color.LimeGreen
-                    txt.TextAlign = HorizontalAlignment.Center
-                End If
-            End If
-        Next
-
-
+        RaiseEvent refreshdatabaseEvent()
+        RaiseEvent UpdateButtons()
     End Sub
 
     Private Sub cmdDeleteButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDeleteButton.Click
@@ -357,8 +336,6 @@ Public Class frmConfigureButtons
             Exit Sub
         End If
 
-
-
         Dim oComm As OleDbCommand
         Dim query As String
 
@@ -378,19 +355,15 @@ Public Class frmConfigureButtons
             oComm = New OleDbCommand(query, conn)
             oComm.ExecuteNonQuery()
 
-            Call frmConfigureButtons_Activated(Nothing, Nothing)
+            frmConfigureButtons_Activated(Nothing, Nothing)
 
-            Call Me.UpdateDrawingOrder(strConfigureTable)
+            Me.UpdateDrawingOrder(strConfigureTable)
         Catch ex As Exception
             MessageBox.Show("Could not delete the selected button due to the exception: " & ex.ToString, "Delete Button Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-            'Call RefreshDatabase(Me, New EventArgs)
+        'RefreshDatabase(Me, New EventArgs)
 
-    End Sub
-
-    Private Sub frmSpeciesList_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        myFormLibrary.frmConfigureButtons = Nothing
     End Sub
 
     Private Sub cmdMoveToPanel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveToPanel.Click
@@ -487,9 +460,9 @@ Public Class frmConfigureButtons
         oComm = New OleDbCommand(strQuery, conn)
         oComm.ExecuteNonQuery()
 
-        Call Me.UpdateDrawingOrder(strMoveToTable)
+        Me.UpdateDrawingOrder(strMoveToTable)
 
-        Call frmConfigureButtons_Activated(sender, e)
+        frmConfigureButtons_Activated(sender, e)
 
         If strMoveToTable = DB_TRANSECT_BUTTONS_TABLE Then
             dictTransectFieldValues.Add(Me.ButtonName, Me.DataCode)
@@ -498,7 +471,7 @@ Public Class frmConfigureButtons
             dictTransectFieldValues.Remove(Me.ButtonName)
             dictHabitatFieldValues.Add(Me.ButtonName, Me.DataCode)
         End If
-        'Call RefreshDatabase(sender, e)
+        RaiseEvent refreshdatabaseEvent()
 
     End Sub
 End Class

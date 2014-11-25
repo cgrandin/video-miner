@@ -5,37 +5,26 @@ Public Class frmRareSpeciesLookup
     Private tblSpecies As DataTable
     Private tblSelection As DataTable
 
+    Event SpeciesCodeChangedEvent()
+
 
     Private Sub frmRareSpeciesLookup_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         tblSpecies = Nothing
-        myFormLibrary.frmRareSpeciesLookup = Nothing
     End Sub
 
     Private Sub frmRareSpeciesLookup_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        myFormLibrary.frmRareSpeciesLookup = Me
-
-        Dim strQuery As String
-
-        strQuery = "SELECT DISTINCT CommonName, LatinName, ScientificName, SpeciesCode, TaxonomyClassLevelCode " & _
-                   "FROM lu_species_code;"
-
+        Dim strQuery As String = "SELECT DISTINCT CommonName, LatinName, ScientificName, SpeciesCode, TaxonomyClassLevelCode FROM lu_species_code;"
         Dim sub_data_set As DataSet = New DataSet()
         Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, conn)
         Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
         sub_data_adapter.Fill(sub_data_set, "lu_species_code")
-
         tblSpecies = sub_data_set.Tables(0)
-
-
-
         If strRareSpeciesCode <> "" Then
-
             Dim r As DataRow
-
             For Each r In tblSpecies.Rows
                 If r.Item("SpeciesCode") = strRareSpeciesCode Then
                     If Not r.Item("CommonName") Is DBNull.Value Then
-                        Call PopulateSpeciesLists("CommonName")
+                        PopulateSpeciesLists("CommonName")
                         cboSpecies.SelectedItem = r.Item("CommonName")
                     Else
                         If Not r.Item("ScientificName") Is DBNull.Value Then
@@ -49,28 +38,22 @@ Public Class frmRareSpeciesLookup
                 End If
             Next
         Else
-            Call PopulateSpeciesLists("CommonName")
+            PopulateSpeciesLists("CommonName")
         End If
-
     End Sub
 
     Private Sub PopulateSpeciesLists(ByVal strField As String)
-
         cboSpecies.Items.Clear()
-
         Dim r As DataRow
-
         For Each r In tblSpecies.Rows
             If r.Item(strField).ToString().Trim().Length > 0 Then
                 cboSpecies.Items.Add(r.Item(strField).ToString())
             End If
         Next
-
     End Sub
 
     Private Sub PopulateLabels(ByVal strField As String)
         Dim r As DataRow
-
         For Each r In tblSpecies.Rows
             If Not r.Item(strField) Is DBNull.Value Then
                 If r.Item(strField) = cboSpecies.SelectedItem Then
@@ -113,19 +96,12 @@ Public Class frmRareSpeciesLookup
 
     Private Sub cboSpecies_KeyUp(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles cboSpecies.KeyUp
         tblSelection = tblSpecies
-
         Dim r() As DataRow
-
-
         If radCommonName.Checked Then
             r = tblSelection.Select(" CommonName LIKE '%" & Me.cboSpecies.Text & "%'")
-
             If r.Length <> 0 Then
-
                 Me.cboSpecies.Items.Clear()
-
                 Dim i As Integer = 0
-
                 For i = 0 To r.Length - 1
                     Me.cboSpecies.Items.Add(r(i).Item("CommonName"))
                 Next
@@ -134,13 +110,9 @@ Public Class frmRareSpeciesLookup
             End If
         ElseIf radScientificName.Checked Then
             r = tblSelection.Select(" ScientificName LIKE '" & Me.cboSpecies.Text & "%'")
-
             If r.Length <> 0 Then
-
                 Me.cboSpecies.Items.Clear()
-
                 Dim i As Integer = 0
-
                 For i = 0 To r.Length - 1
                     Me.cboSpecies.Items.Add(r(i).Item("ScientificName"))
                 Next
@@ -168,34 +140,31 @@ Public Class frmRareSpeciesLookup
     End Sub
 
     Private Sub cboSpecies_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles cboSpecies.SelectedIndexChanged
-
         If radCommonName.Checked Then
-            Call PopulateLabels("CommonName")
+            PopulateLabels("CommonName")
             'ElseIf radLatinName.Checked Then
-            '    Call PopulateLabels("LatinName")
+            '    PopulateLabels("LatinName")
         Else
-            Call PopulateLabels("ScientificName")
+            PopulateLabels("ScientificName")
         End If
         Me.cmdOK.Enabled = True
-
-
     End Sub
 
     Private Sub radCommonName_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles radCommonName.CheckedChanged
         If Not tblSpecies Is Nothing Then
-            Call PopulateSpeciesLists("CommonName")
+            PopulateSpeciesLists("CommonName")
         End If
     End Sub
 
     'Private Sub radLatinName_CheckedChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles radLatinName.CheckedChanged
     '    If Not tblSpecies Is Nothing Then
-    '        Call PopulateSpeciesLists("LatinName")
+    '        PopulateSpeciesLists("LatinName")
     '    End If
     'End Sub
 
     Private Sub radScientificName_CheckedChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles radScientificName.CheckedChanged
         If Not tblSpecies Is Nothing Then
-            Call PopulateSpeciesLists("ScientificName")
+            PopulateSpeciesLists("ScientificName")
         End If
     End Sub
 
@@ -205,23 +174,9 @@ Public Class frmRareSpeciesLookup
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
         blRareSpecies = True
-
-        myFormLibrary.frmVideoMiner.SpeciesCode = Me.lblSpeciesCodeValue.Text
+        RaiseEvent SpeciesCodeChangedEvent()
         strRareSpeciesCode = Me.lblSpeciesCodeValue.Text
-
-        If Me.lblCommonNameValue.Text = "" Then
-            'If Me.lblScientificNameValue.Text = "" Then
-            'myFormLibrary.frmVideoMiner.SpeciesName = Me.lblLatinNameValue.Text
-            'Else
-            myFormLibrary.frmVideoMiner.SpeciesName = Me.lblScientificNameValue.Text
-            'End If
-        Else
-        myFormLibrary.frmVideoMiner.SpeciesName = Me.lblCommonNameValue.Text
-        End If
-
-            Call myFormLibrary.frmVideoMiner.SpeciesVariableButtonHandler(sender, e)
-
-            blRareSpecies = False
+        blRareSpecies = False
 
     End Sub
 

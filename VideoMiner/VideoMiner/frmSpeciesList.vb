@@ -1,6 +1,10 @@
 Imports System.Data.OleDb
 Public Class frmSpeciesList
 
+    Dim frmEditSpecies As frmEditSpecies
+
+    Event RefreshDatabaseEvent()
+
     Private Sub frmSpeciesList_Activated(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Activated
 
         Try
@@ -47,15 +51,7 @@ Public Class frmSpeciesList
 
 
     Public Sub New()
-
-        ' This call is required by the Windows Form Designer.
         InitializeComponent()
-
-        ' Add any initialization after the InitializeComponent() call.
-
-        ' -------------------------------------------------
-        ' Initialize Form elements
-        ' -------------------------------------------------
         With Me.lstSpecies
             .Visible = True
             .FullRowSelect = True
@@ -68,9 +64,6 @@ Public Class frmSpeciesList
             .Columns.Add("Species Code", 90, HorizontalAlignment.Left)
             .Columns.Add("Taxonomic Code", 110, HorizontalAlignment.Left)
         End With
-
-        myFormLibrary.frmSpeciesList = Me
-
     End Sub
 
     Private Sub cmdMoveUp_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveUp.Click
@@ -79,7 +72,7 @@ Public Class frmSpeciesList
             Dim intSelectedIndex As Integer
             intSelectedIndex = Me.lstSpecies.SelectedItems(0).Index
             'MsgBox(intSelectedIndex)
-            Call MoveListViewItem(intSelectedIndex - 1)
+            MoveListViewItem(intSelectedIndex - 1)
         Else
             MsgBox("Please select a species from the list")
         End If
@@ -91,7 +84,7 @@ Public Class frmSpeciesList
             Dim intSelectedIndex As Integer
             intSelectedIndex = Me.lstSpecies.SelectedItems(0).Index
             'MsgBox(intSelectedIndex)
-            Call MoveListViewItem(intSelectedIndex + 1)
+            MoveListViewItem(intSelectedIndex + 1)
         Else
             MsgBox("Please select a species from the list")
         End If
@@ -104,7 +97,7 @@ Public Class frmSpeciesList
             Dim intSelectedIndex As Integer
             intSelectedIndex = Me.lstSpecies.SelectedItems(0).Index
             'MsgBox(intSelectedIndex)
-            Call MoveListViewItem(0)
+            MoveListViewItem(0)
         Else
             MsgBox("Please select a species from the list")
         End If
@@ -116,7 +109,7 @@ Public Class frmSpeciesList
             Dim intSelectedIndex As Integer
             intSelectedIndex = Me.lstSpecies.SelectedItems(0).Index
             'MsgBox(intSelectedIndex)
-            Call MoveListViewItem(Me.lstSpecies.Items.Count - 1)
+            MoveListViewItem(Me.lstSpecies.Items.Count - 1)
         Else
             MsgBox("Please select a species from the list")
         End If
@@ -189,24 +182,23 @@ Public Class frmSpeciesList
         '    End If
         'End With
 
-        Call UpdateDrawingOrder()
+        UpdateDrawingOrder()
 
     End Sub
 
-
-
     Private Sub cmdInsertNew_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdInsertNew.Click
-
-        'Call Me.UpdateDrawingOrder()
+        'Me.UpdateDrawingOrder()
         'frmEditSpecies.txtSpeciesBtnTxt.Enabled = False
-        myFormLibrary.frmEditSpecies = New frmEditSpecies
-        myFormLibrary.frmEditSpecies.OriginalSpeciesName = ""
-        myFormLibrary.frmEditSpecies.OriginalSpeciesCode = ""
-        myFormLibrary.frmEditSpecies.cboCommonName.Text = ""
-        myFormLibrary.frmEditSpecies.cboLatinName.Text = ""
-        myFormLibrary.frmEditSpecies.cboScientificName.Text = ""
-        myFormLibrary.frmEditSpecies.Edit_Insert = "Insert"
-        myFormLibrary.frmEditSpecies.ShowDialog()
+        frmEditSpecies = New frmEditSpecies
+        With frmEditSpecies
+            .OriginalSpeciesName = ""
+            .OriginalSpeciesCode = ""
+            .cboCommonName.Text = ""
+            .cboLatinName.Text = ""
+            .cboScientificName.Text = ""
+            .Edit_Insert = "Insert"
+            .ShowDialog()
+        End With
     End Sub
 
     Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEdit.Click
@@ -215,21 +207,25 @@ Public Class frmSpeciesList
                 MsgBox("Please select a species from the list")
                 Exit Sub
             End If
-            myFormLibrary.frmEditSpecies = New frmEditSpecies
-            myFormLibrary.frmEditSpecies.Edit_Insert = "Edit"
-            myFormLibrary.frmEditSpecies.cboCommonName.Text = ""
-            myFormLibrary.frmEditSpecies.cboLatinName.Text = ""
-            myFormLibrary.frmEditSpecies.cboScientificName.Text = ""
-            'Call Me.UpdateDrawingOrder()
+            frmEditSpecies = New frmEditSpecies
+            With frmEditSpecies
+                .Edit_Insert = "Edit"
+                .cboCommonName.Text = ""
+                .cboLatinName.Text = ""
+                .cboScientificName.Text = ""
+            End With
+            'Me.UpdateDrawingOrder()
 
             Dim selIdx As Integer = Me.lstSpecies.SelectedIndices.Item(0)
             Dim strOriginalSpeciesName As String = Me.lstSpecies.Items(selIdx).SubItems(1).Text
             Dim strOriginalSpeciesCode As String = Me.lstSpecies.Items(selIdx).SubItems(2).Text
 
-            myFormLibrary.frmEditSpecies.selIdx = selIdx
-            myFormLibrary.frmEditSpecies.OriginalSpeciesName = strOriginalSpeciesName
-            myFormLibrary.frmEditSpecies.OriginalSpeciesCode = strOriginalSpeciesCode
-            myFormLibrary.frmEditSpecies.ShowDialog()
+            With frmEditSpecies
+                .selIdx = selIdx
+                .OriginalSpeciesName = strOriginalSpeciesName
+                .OriginalSpeciesCode = strOriginalSpeciesCode
+                .ShowDialog()
+            End With
         Catch ex As Exception
             MsgBox(ex.Message)
         End Try
@@ -238,7 +234,7 @@ Public Class frmSpeciesList
 
     Private Sub cmdOk_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOk.Click
 
-        Call Me.UpdateDrawingOrder()
+        Me.UpdateDrawingOrder()
 
         Me.Close()
 
@@ -271,9 +267,8 @@ Public Class frmSpeciesList
             oComm.ExecuteNonQuery()
 
         Next
-        myFormLibrary.frmVideoMiner.blupdateColumns = False
-        Call RefreshDatabase(Me, New EventArgs)
-        myFormLibrary.frmVideoMiner.blupdateColumns = False
+
+        RaiseEvent RefreshDatabaseEvent()
     End Sub
 
     Private Sub cmdDelete_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDelete.Click
@@ -295,7 +290,7 @@ Public Class frmSpeciesList
             Exit Sub
         End If
 
-        Call Me.UpdateDrawingOrder()
+        Me.UpdateDrawingOrder()
 
         Dim strSpeciesName As String = Me.lstSpecies.Items(selIdx).SubItems(1).Text
         Dim strSpeciesCode As String = Me.lstSpecies.Items(selIdx).SubItems(2).Text
@@ -310,12 +305,8 @@ Public Class frmSpeciesList
         oComm = New OleDbCommand(query, conn)
         oComm.ExecuteNonQuery()
 
-        Call frmSpeciesList_Activated(Nothing, Nothing)
+        frmSpeciesList_Activated(Nothing, Nothing)
 
-    End Sub
-
-    Private Sub frmSpeciesList_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        myFormLibrary.frmSpeciesList = Nothing
     End Sub
 
     Private Sub lstSpecies_DragDrop(ByVal sender As Object, ByVal e As System.Windows.Forms.DragEventArgs) Handles lstSpecies.DragDrop
@@ -350,7 +341,7 @@ Public Class frmSpeciesList
             'the item is moved to the new location.
             lstSpecies.Items.Remove(dragItem)
         Next
-        Call UpdateDrawingOrder()
+        UpdateDrawingOrder()
     End Sub
 
     Private Sub lstSpecies_DragEnter(ByVal sender As Object, ByVal e As System.Windows.Forms.DragEventArgs) Handles lstSpecies.DragEnter

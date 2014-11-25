@@ -19,435 +19,435 @@ Partial Class frmGpsSettings
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container
-        Me.Label1 = New System.Windows.Forms.Label
-        Me.cboComPort = New System.Windows.Forms.ComboBox
-        Me.Label2 = New System.Windows.Forms.Label
-        Me.cboBaudRate = New System.Windows.Forms.ComboBox
-        Me.Label3 = New System.Windows.Forms.Label
-        Me.cboParity = New System.Windows.Forms.ComboBox
-        Me.Label4 = New System.Windows.Forms.Label
-        Me.txtDataBits = New System.Windows.Forms.TextBox
-        Me.Label5 = New System.Windows.Forms.Label
-        Me.cboStopBits = New System.Windows.Forms.ComboBox
-        Me.cmdOK = New System.Windows.Forms.Button
-        Me.lblGPSPortMessage = New System.Windows.Forms.Label
-        Me.cmdConnection = New System.Windows.Forms.Button
-        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip
-        Me.ToolStripStatusLabelX = New System.Windows.Forms.ToolStripStatusLabel
-        Me.ToolStripStatusLabelY = New System.Windows.Forms.ToolStripStatusLabel
-        Me.ToolStripStatusLabelZ = New System.Windows.Forms.ToolStripStatusLabel
-        Me.ToolStripStatusLabelTime = New System.Windows.Forms.ToolStripStatusLabel
-        Me.Label7 = New System.Windows.Forms.Label
-        Me.radGPGGA = New System.Windows.Forms.RadioButton
-        Me.radGPRMC = New System.Windows.Forms.RadioButton
-        Me.GroupBox1 = New System.Windows.Forms.GroupBox
-        Me.lblCurrentTime = New System.Windows.Forms.Label
-        Me.lblCurrentTimeValue = New System.Windows.Forms.Label
-        Me.lblCurrentDateValue = New System.Windows.Forms.Label
-        Me.lblCurrentDate = New System.Windows.Forms.Label
-        Me.lblCurrentZValue = New System.Windows.Forms.Label
-        Me.lblCurrentZ = New System.Windows.Forms.Label
-        Me.lblCurrentYValue = New System.Windows.Forms.Label
-        Me.lblCurrentY = New System.Windows.Forms.Label
-        Me.lblCurrentXValue = New System.Windows.Forms.Label
-        Me.lblCurrentX = New System.Windows.Forms.Label
-        Me.lblDateTime = New System.Windows.Forms.Label
-        Me.lblCurrentLocation = New System.Windows.Forms.Label
-        Me.lblGPSConnection = New System.Windows.Forms.Label
-        Me.lblGPSMessage = New System.Windows.Forms.Label
-        Me.lblGPSPort = New System.Windows.Forms.Label
-        Me.tmrGPSTimeout = New System.Windows.Forms.Timer(Me.components)
-        Me.StatusStrip1.SuspendLayout()
-        Me.GroupBox1.SuspendLayout()
-        Me.SuspendLayout()
+        components = New System.ComponentModel.Container
+        Label1 = New System.Windows.Forms.Label
+        cboComPort = New System.Windows.Forms.ComboBox
+        Label2 = New System.Windows.Forms.Label
+        cboBaudRate = New System.Windows.Forms.ComboBox
+        Label3 = New System.Windows.Forms.Label
+        cboParity = New System.Windows.Forms.ComboBox
+        Label4 = New System.Windows.Forms.Label
+        txtDataBits = New System.Windows.Forms.TextBox
+        Label5 = New System.Windows.Forms.Label
+        cboStopBits = New System.Windows.Forms.ComboBox
+        cmdOK = New System.Windows.Forms.Button
+        lblGPSPortMessage = New System.Windows.Forms.Label
+        cmdConnection = New System.Windows.Forms.Button
+        StatusStrip1 = New System.Windows.Forms.StatusStrip
+        ToolStripStatusLabelX = New System.Windows.Forms.ToolStripStatusLabel
+        ToolStripStatusLabelY = New System.Windows.Forms.ToolStripStatusLabel
+        ToolStripStatusLabelZ = New System.Windows.Forms.ToolStripStatusLabel
+        ToolStripStatusLabelTime = New System.Windows.Forms.ToolStripStatusLabel
+        Label7 = New System.Windows.Forms.Label
+        radGPGGA = New System.Windows.Forms.RadioButton
+        radGPRMC = New System.Windows.Forms.RadioButton
+        GroupBox1 = New System.Windows.Forms.GroupBox
+        lblCurrentTime = New System.Windows.Forms.Label
+        lblCurrentTimeValue = New System.Windows.Forms.Label
+        lblCurrentDateValue = New System.Windows.Forms.Label
+        lblCurrentDate = New System.Windows.Forms.Label
+        lblCurrentZValue = New System.Windows.Forms.Label
+        lblCurrentZ = New System.Windows.Forms.Label
+        lblCurrentYValue = New System.Windows.Forms.Label
+        lblCurrentY = New System.Windows.Forms.Label
+        lblCurrentXValue = New System.Windows.Forms.Label
+        lblCurrentX = New System.Windows.Forms.Label
+        lblDateTime = New System.Windows.Forms.Label
+        lblCurrentLocation = New System.Windows.Forms.Label
+        lblGPSConnection = New System.Windows.Forms.Label
+        lblGPSMessage = New System.Windows.Forms.Label
+        lblGPSPort = New System.Windows.Forms.Label
+        tmrGPSTimeout = New System.Windows.Forms.Timer(components)
+        StatusStrip1.SuspendLayout()
+        GroupBox1.SuspendLayout()
+        SuspendLayout()
         '
         'Label1
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(14, 9)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(62, 13)
-        Me.Label1.TabIndex = 0
-        Me.Label1.Text = "COM Port:"
+        Label1.AutoSize = True
+        Label1.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Label1.Location = New System.Drawing.Point(14, 9)
+        Label1.Name = "Label1"
+        Label1.Size = New System.Drawing.Size(62, 13)
+        Label1.TabIndex = 0
+        Label1.Text = "COM Port:"
         '
         'cboComPort
         '
-        Me.cboComPort.FormattingEnabled = True
-        Me.cboComPort.Location = New System.Drawing.Point(12, 25)
-        Me.cboComPort.Name = "cboComPort"
-        Me.cboComPort.Size = New System.Drawing.Size(121, 21)
-        Me.cboComPort.TabIndex = 1
+        cboComPort.FormattingEnabled = True
+        cboComPort.Location = New System.Drawing.Point(12, 25)
+        cboComPort.Name = "cboComPort"
+        cboComPort.Size = New System.Drawing.Size(121, 21)
+        cboComPort.TabIndex = 1
         '
         'Label2
         '
-        Me.Label2.AutoSize = True
-        Me.Label2.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(172, 9)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(71, 13)
-        Me.Label2.TabIndex = 2
-        Me.Label2.Text = "BAUD Rate:"
+        Label2.AutoSize = True
+        Label2.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Label2.Location = New System.Drawing.Point(172, 9)
+        Label2.Name = "Label2"
+        Label2.Size = New System.Drawing.Size(71, 13)
+        Label2.TabIndex = 2
+        Label2.Text = "BAUD Rate:"
         '
         'cboBaudRate
         '
-        Me.cboBaudRate.FormattingEnabled = True
-        Me.cboBaudRate.Location = New System.Drawing.Point(170, 25)
-        Me.cboBaudRate.Name = "cboBaudRate"
-        Me.cboBaudRate.Size = New System.Drawing.Size(121, 21)
-        Me.cboBaudRate.TabIndex = 3
+        cboBaudRate.FormattingEnabled = True
+        cboBaudRate.Location = New System.Drawing.Point(170, 25)
+        cboBaudRate.Name = "cboBaudRate"
+        cboBaudRate.Size = New System.Drawing.Size(121, 21)
+        cboBaudRate.TabIndex = 3
         '
         'Label3
         '
-        Me.Label3.AutoSize = True
-        Me.Label3.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.Location = New System.Drawing.Point(14, 49)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(44, 13)
-        Me.Label3.TabIndex = 4
-        Me.Label3.Text = "Parity:"
+        Label3.AutoSize = True
+        Label3.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Label3.Location = New System.Drawing.Point(14, 49)
+        Label3.Name = "Label3"
+        Label3.Size = New System.Drawing.Size(44, 13)
+        Label3.TabIndex = 4
+        Label3.Text = "Parity:"
         '
         'cboParity
         '
-        Me.cboParity.FormattingEnabled = True
-        Me.cboParity.Location = New System.Drawing.Point(12, 65)
-        Me.cboParity.Name = "cboParity"
-        Me.cboParity.Size = New System.Drawing.Size(121, 21)
-        Me.cboParity.TabIndex = 5
+        cboParity.FormattingEnabled = True
+        cboParity.Location = New System.Drawing.Point(12, 65)
+        cboParity.Name = "cboParity"
+        cboParity.Size = New System.Drawing.Size(121, 21)
+        cboParity.TabIndex = 5
         '
         'Label4
         '
-        Me.Label4.AutoSize = True
-        Me.Label4.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label4.Location = New System.Drawing.Point(172, 49)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(61, 13)
-        Me.Label4.TabIndex = 6
-        Me.Label4.Text = "Data Bits:"
+        Label4.AutoSize = True
+        Label4.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Label4.Location = New System.Drawing.Point(172, 49)
+        Label4.Name = "Label4"
+        Label4.Size = New System.Drawing.Size(61, 13)
+        Label4.TabIndex = 6
+        Label4.Text = "Data Bits:"
         '
         'txtDataBits
         '
-        Me.txtDataBits.Location = New System.Drawing.Point(170, 65)
-        Me.txtDataBits.Name = "txtDataBits"
-        Me.txtDataBits.Size = New System.Drawing.Size(121, 21)
-        Me.txtDataBits.TabIndex = 7
+        txtDataBits.Location = New System.Drawing.Point(170, 65)
+        txtDataBits.Name = "txtDataBits"
+        txtDataBits.Size = New System.Drawing.Size(121, 21)
+        txtDataBits.TabIndex = 7
         '
         'Label5
         '
-        Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(14, 89)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(60, 13)
-        Me.Label5.TabIndex = 8
-        Me.Label5.Text = "Stop Bits:"
+        Label5.AutoSize = True
+        Label5.Location = New System.Drawing.Point(14, 89)
+        Label5.Name = "Label5"
+        Label5.Size = New System.Drawing.Size(60, 13)
+        Label5.TabIndex = 8
+        Label5.Text = "Stop Bits:"
         '
         'cboStopBits
         '
-        Me.cboStopBits.FormattingEnabled = True
-        Me.cboStopBits.Location = New System.Drawing.Point(12, 105)
-        Me.cboStopBits.Name = "cboStopBits"
-        Me.cboStopBits.Size = New System.Drawing.Size(121, 21)
-        Me.cboStopBits.TabIndex = 9
+        cboStopBits.FormattingEnabled = True
+        cboStopBits.Location = New System.Drawing.Point(12, 105)
+        cboStopBits.Name = "cboStopBits"
+        cboStopBits.Size = New System.Drawing.Size(121, 21)
+        cboStopBits.TabIndex = 9
         '
         'cmdOK
         '
-        Me.cmdOK.Location = New System.Drawing.Point(115, 331)
-        Me.cmdOK.Name = "cmdOK"
-        Me.cmdOK.Size = New System.Drawing.Size(75, 23)
-        Me.cmdOK.TabIndex = 10
-        Me.cmdOK.Text = "OK"
-        Me.cmdOK.UseVisualStyleBackColor = True
+        cmdOK.Location = New System.Drawing.Point(115, 331)
+        cmdOK.Name = "cmdOK"
+        cmdOK.Size = New System.Drawing.Size(75, 23)
+        cmdOK.TabIndex = 10
+        cmdOK.Text = "OK"
+        cmdOK.UseVisualStyleBackColor = True
         '
         'lblGPSPortMessage
         '
-        Me.lblGPSPortMessage.AutoSize = True
-        Me.lblGPSPortMessage.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblGPSPortMessage.ForeColor = System.Drawing.Color.Red
-        Me.lblGPSPortMessage.Location = New System.Drawing.Point(110, 62)
-        Me.lblGPSPortMessage.Name = "lblGPSPortMessage"
-        Me.lblGPSPortMessage.Size = New System.Drawing.Size(56, 16)
-        Me.lblGPSPortMessage.TabIndex = 13
-        Me.lblGPSPortMessage.Text = "CLOSED"
-        Me.lblGPSPortMessage.TextAlign = System.Drawing.ContentAlignment.TopCenter
+        lblGPSPortMessage.AutoSize = True
+        lblGPSPortMessage.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblGPSPortMessage.ForeColor = System.Drawing.Color.Red
+        lblGPSPortMessage.Location = New System.Drawing.Point(110, 62)
+        lblGPSPortMessage.Name = "lblGPSPortMessage"
+        lblGPSPortMessage.Size = New System.Drawing.Size(56, 16)
+        lblGPSPortMessage.TabIndex = 13
+        lblGPSPortMessage.Text = "CLOSED"
+        lblGPSPortMessage.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
         'cmdConnection
         '
-        Me.cmdConnection.Location = New System.Drawing.Point(6, 20)
-        Me.cmdConnection.Name = "cmdConnection"
-        Me.cmdConnection.Size = New System.Drawing.Size(171, 23)
-        Me.cmdConnection.TabIndex = 14
-        Me.cmdConnection.Text = "Open GPS Connection"
-        Me.cmdConnection.UseVisualStyleBackColor = True
+        cmdConnection.Location = New System.Drawing.Point(6, 20)
+        cmdConnection.Name = "cmdConnection"
+        cmdConnection.Size = New System.Drawing.Size(171, 23)
+        cmdConnection.TabIndex = 14
+        cmdConnection.Text = "Open GPS Connection"
+        cmdConnection.UseVisualStyleBackColor = True
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripStatusLabelX, Me.ToolStripStatusLabelY, Me.ToolStripStatusLabelZ, Me.ToolStripStatusLabelTime})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 366)
-        Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(304, 22)
-        Me.StatusStrip1.TabIndex = 16
-        Me.StatusStrip1.Text = "StatusStrip1"
+        StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {ToolStripStatusLabelX, ToolStripStatusLabelY, ToolStripStatusLabelZ, ToolStripStatusLabelTime})
+        StatusStrip1.Location = New System.Drawing.Point(0, 366)
+        StatusStrip1.Name = "StatusStrip1"
+        StatusStrip1.Size = New System.Drawing.Size(304, 22)
+        StatusStrip1.TabIndex = 16
+        StatusStrip1.Text = "StatusStrip1"
         '
         'ToolStripStatusLabelX
         '
-        Me.ToolStripStatusLabelX.Name = "ToolStripStatusLabelX"
-        Me.ToolStripStatusLabelX.Size = New System.Drawing.Size(0, 17)
+        ToolStripStatusLabelX.Name = "ToolStripStatusLabelX"
+        ToolStripStatusLabelX.Size = New System.Drawing.Size(0, 17)
         '
         'ToolStripStatusLabelY
         '
-        Me.ToolStripStatusLabelY.Name = "ToolStripStatusLabelY"
-        Me.ToolStripStatusLabelY.Size = New System.Drawing.Size(0, 17)
+        ToolStripStatusLabelY.Name = "ToolStripStatusLabelY"
+        ToolStripStatusLabelY.Size = New System.Drawing.Size(0, 17)
         '
         'ToolStripStatusLabelZ
         '
-        Me.ToolStripStatusLabelZ.Name = "ToolStripStatusLabelZ"
-        Me.ToolStripStatusLabelZ.Size = New System.Drawing.Size(0, 17)
+        ToolStripStatusLabelZ.Name = "ToolStripStatusLabelZ"
+        ToolStripStatusLabelZ.Size = New System.Drawing.Size(0, 17)
         '
         'ToolStripStatusLabelTime
         '
-        Me.ToolStripStatusLabelTime.Name = "ToolStripStatusLabelTime"
-        Me.ToolStripStatusLabelTime.Size = New System.Drawing.Size(0, 17)
+        ToolStripStatusLabelTime.Name = "ToolStripStatusLabelTime"
+        ToolStripStatusLabelTime.Size = New System.Drawing.Size(0, 17)
         '
         'Label7
         '
-        Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(172, 93)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(109, 13)
-        Me.Label7.TabIndex = 17
-        Me.Label7.Text = "NMEA String Type:"
+        Label7.AutoSize = True
+        Label7.Location = New System.Drawing.Point(172, 93)
+        Label7.Name = "Label7"
+        Label7.Size = New System.Drawing.Size(109, 13)
+        Label7.TabIndex = 17
+        Label7.Text = "NMEA String Type:"
         '
         'radGPGGA
         '
-        Me.radGPGGA.AutoSize = True
-        Me.radGPGGA.Checked = True
-        Me.radGPGGA.Location = New System.Drawing.Point(170, 109)
-        Me.radGPGGA.Name = "radGPGGA"
-        Me.radGPGGA.Size = New System.Drawing.Size(64, 17)
-        Me.radGPGGA.TabIndex = 18
-        Me.radGPGGA.TabStop = True
-        Me.radGPGGA.Text = "GPGGA"
-        Me.radGPGGA.UseVisualStyleBackColor = True
+        radGPGGA.AutoSize = True
+        radGPGGA.Checked = True
+        radGPGGA.Location = New System.Drawing.Point(170, 109)
+        radGPGGA.Name = "radGPGGA"
+        radGPGGA.Size = New System.Drawing.Size(64, 17)
+        radGPGGA.TabIndex = 18
+        radGPGGA.TabStop = True
+        radGPGGA.Text = "GPGGA"
+        radGPGGA.UseVisualStyleBackColor = True
         '
         'radGPRMC
         '
-        Me.radGPRMC.AutoSize = True
-        Me.radGPRMC.Location = New System.Drawing.Point(240, 109)
-        Me.radGPRMC.Name = "radGPRMC"
-        Me.radGPRMC.Size = New System.Drawing.Size(65, 17)
-        Me.radGPRMC.TabIndex = 19
-        Me.radGPRMC.TabStop = True
-        Me.radGPRMC.Text = "GPRMC"
-        Me.radGPRMC.UseVisualStyleBackColor = True
+        radGPRMC.AutoSize = True
+        radGPRMC.Location = New System.Drawing.Point(240, 109)
+        radGPRMC.Name = "radGPRMC"
+        radGPRMC.Size = New System.Drawing.Size(65, 17)
+        radGPRMC.TabIndex = 19
+        radGPRMC.TabStop = True
+        radGPRMC.Text = "GPRMC"
+        radGPRMC.UseVisualStyleBackColor = True
         '
         'GroupBox1
         '
-        Me.GroupBox1.Controls.Add(Me.lblCurrentTime)
-        Me.GroupBox1.Controls.Add(Me.lblCurrentTimeValue)
-        Me.GroupBox1.Controls.Add(Me.lblCurrentDateValue)
-        Me.GroupBox1.Controls.Add(Me.lblCurrentDate)
-        Me.GroupBox1.Controls.Add(Me.lblCurrentZValue)
-        Me.GroupBox1.Controls.Add(Me.lblCurrentZ)
-        Me.GroupBox1.Controls.Add(Me.lblCurrentYValue)
-        Me.GroupBox1.Controls.Add(Me.lblCurrentY)
-        Me.GroupBox1.Controls.Add(Me.lblCurrentXValue)
-        Me.GroupBox1.Controls.Add(Me.lblCurrentX)
-        Me.GroupBox1.Controls.Add(Me.lblDateTime)
-        Me.GroupBox1.Controls.Add(Me.lblCurrentLocation)
-        Me.GroupBox1.Controls.Add(Me.lblGPSConnection)
-        Me.GroupBox1.Controls.Add(Me.lblGPSMessage)
-        Me.GroupBox1.Controls.Add(Me.lblGPSPort)
-        Me.GroupBox1.Controls.Add(Me.lblGPSPortMessage)
-        Me.GroupBox1.Controls.Add(Me.cmdConnection)
-        Me.GroupBox1.Location = New System.Drawing.Point(12, 132)
-        Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(279, 193)
-        Me.GroupBox1.TabIndex = 20
-        Me.GroupBox1.TabStop = False
+        GroupBox1.Controls.Add(lblCurrentTime)
+        GroupBox1.Controls.Add(lblCurrentTimeValue)
+        GroupBox1.Controls.Add(lblCurrentDateValue)
+        GroupBox1.Controls.Add(lblCurrentDate)
+        GroupBox1.Controls.Add(lblCurrentZValue)
+        GroupBox1.Controls.Add(lblCurrentZ)
+        GroupBox1.Controls.Add(lblCurrentYValue)
+        GroupBox1.Controls.Add(lblCurrentY)
+        GroupBox1.Controls.Add(lblCurrentXValue)
+        GroupBox1.Controls.Add(lblCurrentX)
+        GroupBox1.Controls.Add(lblDateTime)
+        GroupBox1.Controls.Add(lblCurrentLocation)
+        GroupBox1.Controls.Add(lblGPSConnection)
+        GroupBox1.Controls.Add(lblGPSMessage)
+        GroupBox1.Controls.Add(lblGPSPort)
+        GroupBox1.Controls.Add(lblGPSPortMessage)
+        GroupBox1.Controls.Add(cmdConnection)
+        GroupBox1.Location = New System.Drawing.Point(12, 132)
+        GroupBox1.Name = "GroupBox1"
+        GroupBox1.Size = New System.Drawing.Size(279, 193)
+        GroupBox1.TabIndex = 20
+        GroupBox1.TabStop = False
         '
         'lblCurrentTime
         '
-        Me.lblCurrentTime.AutoSize = True
-        Me.lblCurrentTime.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrentTime.Location = New System.Drawing.Point(120, 142)
-        Me.lblCurrentTime.Name = "lblCurrentTime"
-        Me.lblCurrentTime.Size = New System.Drawing.Size(62, 13)
-        Me.lblCurrentTime.TabIndex = 12
-        Me.lblCurrentTime.Text = "Time(GMT):"
+        lblCurrentTime.AutoSize = True
+        lblCurrentTime.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblCurrentTime.Location = New System.Drawing.Point(120, 142)
+        lblCurrentTime.Name = "lblCurrentTime"
+        lblCurrentTime.Size = New System.Drawing.Size(62, 13)
+        lblCurrentTime.TabIndex = 12
+        lblCurrentTime.Text = "Time(GMT):"
         '
         'lblCurrentTimeValue
         '
-        Me.lblCurrentTimeValue.AutoSize = True
-        Me.lblCurrentTimeValue.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrentTimeValue.Location = New System.Drawing.Point(188, 142)
-        Me.lblCurrentTimeValue.Name = "lblCurrentTimeValue"
-        Me.lblCurrentTimeValue.Size = New System.Drawing.Size(0, 13)
-        Me.lblCurrentTimeValue.TabIndex = 12
+        lblCurrentTimeValue.AutoSize = True
+        lblCurrentTimeValue.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblCurrentTimeValue.Location = New System.Drawing.Point(188, 142)
+        lblCurrentTimeValue.Name = "lblCurrentTimeValue"
+        lblCurrentTimeValue.Size = New System.Drawing.Size(0, 13)
+        lblCurrentTimeValue.TabIndex = 12
         '
         'lblCurrentDateValue
         '
-        Me.lblCurrentDateValue.AutoSize = True
-        Me.lblCurrentDateValue.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrentDateValue.Location = New System.Drawing.Point(188, 126)
-        Me.lblCurrentDateValue.Name = "lblCurrentDateValue"
-        Me.lblCurrentDateValue.Size = New System.Drawing.Size(0, 13)
-        Me.lblCurrentDateValue.TabIndex = 12
+        lblCurrentDateValue.AutoSize = True
+        lblCurrentDateValue.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblCurrentDateValue.Location = New System.Drawing.Point(188, 126)
+        lblCurrentDateValue.Name = "lblCurrentDateValue"
+        lblCurrentDateValue.Size = New System.Drawing.Size(0, 13)
+        lblCurrentDateValue.TabIndex = 12
         '
         'lblCurrentDate
         '
-        Me.lblCurrentDate.AutoSize = True
-        Me.lblCurrentDate.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrentDate.Location = New System.Drawing.Point(120, 126)
-        Me.lblCurrentDate.Name = "lblCurrentDate"
-        Me.lblCurrentDate.Size = New System.Drawing.Size(34, 13)
-        Me.lblCurrentDate.TabIndex = 12
-        Me.lblCurrentDate.Text = "Date:"
+        lblCurrentDate.AutoSize = True
+        lblCurrentDate.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblCurrentDate.Location = New System.Drawing.Point(120, 126)
+        lblCurrentDate.Name = "lblCurrentDate"
+        lblCurrentDate.Size = New System.Drawing.Size(34, 13)
+        lblCurrentDate.TabIndex = 12
+        lblCurrentDate.Text = "Date:"
         '
         'lblCurrentZValue
         '
-        Me.lblCurrentZValue.AutoSize = True
-        Me.lblCurrentZValue.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrentZValue.Location = New System.Drawing.Point(46, 158)
-        Me.lblCurrentZValue.Name = "lblCurrentZValue"
-        Me.lblCurrentZValue.Size = New System.Drawing.Size(0, 13)
-        Me.lblCurrentZValue.TabIndex = 12
+        lblCurrentZValue.AutoSize = True
+        lblCurrentZValue.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblCurrentZValue.Location = New System.Drawing.Point(46, 158)
+        lblCurrentZValue.Name = "lblCurrentZValue"
+        lblCurrentZValue.Size = New System.Drawing.Size(0, 13)
+        lblCurrentZValue.TabIndex = 12
         '
         'lblCurrentZ
         '
-        Me.lblCurrentZ.AutoSize = True
-        Me.lblCurrentZ.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrentZ.Location = New System.Drawing.Point(6, 158)
-        Me.lblCurrentZ.Name = "lblCurrentZ"
-        Me.lblCurrentZ.Size = New System.Drawing.Size(17, 13)
-        Me.lblCurrentZ.TabIndex = 12
-        Me.lblCurrentZ.Text = "Z:"
+        lblCurrentZ.AutoSize = True
+        lblCurrentZ.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblCurrentZ.Location = New System.Drawing.Point(6, 158)
+        lblCurrentZ.Name = "lblCurrentZ"
+        lblCurrentZ.Size = New System.Drawing.Size(17, 13)
+        lblCurrentZ.TabIndex = 12
+        lblCurrentZ.Text = "Z:"
         '
         'lblCurrentYValue
         '
-        Me.lblCurrentYValue.AutoSize = True
-        Me.lblCurrentYValue.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrentYValue.Location = New System.Drawing.Point(46, 142)
-        Me.lblCurrentYValue.Name = "lblCurrentYValue"
-        Me.lblCurrentYValue.Size = New System.Drawing.Size(0, 13)
-        Me.lblCurrentYValue.TabIndex = 12
+        lblCurrentYValue.AutoSize = True
+        lblCurrentYValue.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblCurrentYValue.Location = New System.Drawing.Point(46, 142)
+        lblCurrentYValue.Name = "lblCurrentYValue"
+        lblCurrentYValue.Size = New System.Drawing.Size(0, 13)
+        lblCurrentYValue.TabIndex = 12
         '
         'lblCurrentY
         '
-        Me.lblCurrentY.AutoSize = True
-        Me.lblCurrentY.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrentY.Location = New System.Drawing.Point(6, 142)
-        Me.lblCurrentY.Name = "lblCurrentY"
-        Me.lblCurrentY.Size = New System.Drawing.Size(17, 13)
-        Me.lblCurrentY.TabIndex = 12
-        Me.lblCurrentY.Text = "Y:"
+        lblCurrentY.AutoSize = True
+        lblCurrentY.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblCurrentY.Location = New System.Drawing.Point(6, 142)
+        lblCurrentY.Name = "lblCurrentY"
+        lblCurrentY.Size = New System.Drawing.Size(17, 13)
+        lblCurrentY.TabIndex = 12
+        lblCurrentY.Text = "Y:"
         '
         'lblCurrentXValue
         '
-        Me.lblCurrentXValue.AutoSize = True
-        Me.lblCurrentXValue.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrentXValue.Location = New System.Drawing.Point(46, 126)
-        Me.lblCurrentXValue.Name = "lblCurrentXValue"
-        Me.lblCurrentXValue.Size = New System.Drawing.Size(0, 13)
-        Me.lblCurrentXValue.TabIndex = 12
+        lblCurrentXValue.AutoSize = True
+        lblCurrentXValue.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblCurrentXValue.Location = New System.Drawing.Point(46, 126)
+        lblCurrentXValue.Name = "lblCurrentXValue"
+        lblCurrentXValue.Size = New System.Drawing.Size(0, 13)
+        lblCurrentXValue.TabIndex = 12
         '
         'lblCurrentX
         '
-        Me.lblCurrentX.AutoSize = True
-        Me.lblCurrentX.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrentX.Location = New System.Drawing.Point(6, 126)
-        Me.lblCurrentX.Name = "lblCurrentX"
-        Me.lblCurrentX.Size = New System.Drawing.Size(17, 13)
-        Me.lblCurrentX.TabIndex = 12
-        Me.lblCurrentX.Text = "X:"
+        lblCurrentX.AutoSize = True
+        lblCurrentX.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblCurrentX.Location = New System.Drawing.Point(6, 126)
+        lblCurrentX.Name = "lblCurrentX"
+        lblCurrentX.Size = New System.Drawing.Size(17, 13)
+        lblCurrentX.TabIndex = 12
+        lblCurrentX.Text = "X:"
         '
         'lblDateTime
         '
-        Me.lblDateTime.AutoSize = True
-        Me.lblDateTime.Location = New System.Drawing.Point(117, 110)
-        Me.lblDateTime.Name = "lblDateTime"
-        Me.lblDateTime.Size = New System.Drawing.Size(114, 13)
-        Me.lblDateTime.TabIndex = 12
-        Me.lblDateTime.Text = "GPS Date and Time"
+        lblDateTime.AutoSize = True
+        lblDateTime.Location = New System.Drawing.Point(117, 110)
+        lblDateTime.Name = "lblDateTime"
+        lblDateTime.Size = New System.Drawing.Size(114, 13)
+        lblDateTime.TabIndex = 12
+        lblDateTime.Text = "GPS Date and Time"
         '
         'lblCurrentLocation
         '
-        Me.lblCurrentLocation.AutoSize = True
-        Me.lblCurrentLocation.Location = New System.Drawing.Point(3, 110)
-        Me.lblCurrentLocation.Name = "lblCurrentLocation"
-        Me.lblCurrentLocation.Size = New System.Drawing.Size(80, 13)
-        Me.lblCurrentLocation.TabIndex = 12
-        Me.lblCurrentLocation.Text = "GPS Location"
+        lblCurrentLocation.AutoSize = True
+        lblCurrentLocation.Location = New System.Drawing.Point(3, 110)
+        lblCurrentLocation.Name = "lblCurrentLocation"
+        lblCurrentLocation.Size = New System.Drawing.Size(80, 13)
+        lblCurrentLocation.TabIndex = 12
+        lblCurrentLocation.Text = "GPS Location"
         '
         'lblGPSConnection
         '
-        Me.lblGPSConnection.AutoSize = True
-        Me.lblGPSConnection.Location = New System.Drawing.Point(6, 83)
-        Me.lblGPSConnection.Name = "lblGPSConnection"
-        Me.lblGPSConnection.Size = New System.Drawing.Size(98, 13)
-        Me.lblGPSConnection.TabIndex = 12
-        Me.lblGPSConnection.Text = "GPS Connection:"
+        lblGPSConnection.AutoSize = True
+        lblGPSConnection.Location = New System.Drawing.Point(6, 83)
+        lblGPSConnection.Name = "lblGPSConnection"
+        lblGPSConnection.Size = New System.Drawing.Size(98, 13)
+        lblGPSConnection.TabIndex = 12
+        lblGPSConnection.Text = "GPS Connection:"
         '
         'lblGPSMessage
         '
-        Me.lblGPSMessage.AutoSize = True
-        Me.lblGPSMessage.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblGPSMessage.ForeColor = System.Drawing.Color.Red
-        Me.lblGPSMessage.Location = New System.Drawing.Point(110, 81)
-        Me.lblGPSMessage.Name = "lblGPSMessage"
-        Me.lblGPSMessage.Size = New System.Drawing.Size(77, 16)
-        Me.lblGPSMessage.TabIndex = 13
-        Me.lblGPSMessage.Text = "NO GPS FIX"
-        Me.lblGPSMessage.TextAlign = System.Drawing.ContentAlignment.TopCenter
+        lblGPSMessage.AutoSize = True
+        lblGPSMessage.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblGPSMessage.ForeColor = System.Drawing.Color.Red
+        lblGPSMessage.Location = New System.Drawing.Point(110, 81)
+        lblGPSMessage.Name = "lblGPSMessage"
+        lblGPSMessage.Size = New System.Drawing.Size(77, 16)
+        lblGPSMessage.TabIndex = 13
+        lblGPSMessage.Text = "NO GPS FIX"
+        lblGPSMessage.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
         'lblGPSPort
         '
-        Me.lblGPSPort.AutoSize = True
-        Me.lblGPSPort.Location = New System.Drawing.Point(6, 62)
-        Me.lblGPSPort.Name = "lblGPSPort"
-        Me.lblGPSPort.Size = New System.Drawing.Size(59, 13)
-        Me.lblGPSPort.TabIndex = 12
-        Me.lblGPSPort.Text = "GPS Port:"
+        lblGPSPort.AutoSize = True
+        lblGPSPort.Location = New System.Drawing.Point(6, 62)
+        lblGPSPort.Name = "lblGPSPort"
+        lblGPSPort.Size = New System.Drawing.Size(59, 13)
+        lblGPSPort.TabIndex = 12
+        lblGPSPort.Text = "GPS Port:"
         '
         'tmrGPSTimeout
         '
-        Me.tmrGPSTimeout.Interval = 1000
+        tmrGPSTimeout.Interval = 1000
         '
         'frmGpsSettings
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 13.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(304, 388)
-        Me.ControlBox = False
-        Me.Controls.Add(Me.GroupBox1)
-        Me.Controls.Add(Me.radGPRMC)
-        Me.Controls.Add(Me.radGPGGA)
-        Me.Controls.Add(Me.Label7)
-        Me.Controls.Add(Me.StatusStrip1)
-        Me.Controls.Add(Me.cmdOK)
-        Me.Controls.Add(Me.cboStopBits)
-        Me.Controls.Add(Me.Label5)
-        Me.Controls.Add(Me.txtDataBits)
-        Me.Controls.Add(Me.Label4)
-        Me.Controls.Add(Me.cboParity)
-        Me.Controls.Add(Me.Label3)
-        Me.Controls.Add(Me.cboBaudRate)
-        Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.cboComPort)
-        Me.Controls.Add(Me.Label1)
-        Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
-        Me.MaximizeBox = False
-        Me.MinimizeBox = False
-        Me.Name = "frmGpsSettings"
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "GPS Settings"
-        Me.StatusStrip1.ResumeLayout(False)
-        Me.StatusStrip1.PerformLayout()
-        Me.GroupBox1.ResumeLayout(False)
-        Me.GroupBox1.PerformLayout()
-        Me.ResumeLayout(False)
-        Me.PerformLayout()
+        AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 13.0!)
+        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        ClientSize = New System.Drawing.Size(304, 388)
+        ControlBox = False
+        Controls.Add(GroupBox1)
+        Controls.Add(radGPRMC)
+        Controls.Add(radGPGGA)
+        Controls.Add(Label7)
+        Controls.Add(StatusStrip1)
+        Controls.Add(cmdOK)
+        Controls.Add(cboStopBits)
+        Controls.Add(Label5)
+        Controls.Add(txtDataBits)
+        Controls.Add(Label4)
+        Controls.Add(cboParity)
+        Controls.Add(Label3)
+        Controls.Add(cboBaudRate)
+        Controls.Add(Label2)
+        Controls.Add(cboComPort)
+        Controls.Add(Label1)
+        Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        MaximizeBox = False
+        MinimizeBox = False
+        Name = "frmGpsSettings"
+        StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
+        Text = "GPS Settings"
+        StatusStrip1.ResumeLayout(False)
+        StatusStrip1.PerformLayout()
+        GroupBox1.ResumeLayout(False)
+        GroupBox1.PerformLayout()
+        ResumeLayout(False)
+        PerformLayout()
 
     End Sub
     Friend WithEvents Label1 As System.Windows.Forms.Label

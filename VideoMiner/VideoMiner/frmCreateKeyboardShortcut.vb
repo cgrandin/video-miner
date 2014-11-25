@@ -2,6 +2,9 @@
 
     Private m_ButtonText As String
     Private m_KeyboardShortcut As String
+
+    Event AddedNewShortcut()
+
     Public Property ButtonText() As String
         Get
             Return m_ButtonText
@@ -24,9 +27,6 @@
     Private strCurrentKey As String = ""
     Private value As Array = [Enum].GetValues(GetType(Keys))
 
-    Private Sub frmCreateKeyboardShortcut_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        myFormLibrary.frmCreateKeyboardShortcut = Nothing
-    End Sub
     Private Sub frmCreateKeyboardShortcut_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
         If blTyping = True Then
             If strCurrentKey <> CStr(e.KeyValue) Then
@@ -35,10 +35,10 @@
                 For Each key In value
                     If e.KeyValue = key Then
                         If key.ToString <> "Menu" And key.ToString <> "LWin" And key.ToString <> "RWin" Then
-                            If Me.txtCurrentShortcut.Text = "" Then
-                                Me.txtCurrentShortcut.Text = key.ToString
+                            If txtCurrentShortcut.Text = "" Then
+                                txtCurrentShortcut.Text = key.ToString
                             Else
-                                Me.txtCurrentShortcut.Text = Me.txtCurrentShortcut.Text & "+" & key.ToString
+                                txtCurrentShortcut.Text = txtCurrentShortcut.Text & "+" & key.ToString
                             End If
                         End If
                     End If
@@ -52,25 +52,24 @@
     End Sub
 
     Private Sub frmCreateKeyboardShortcut_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        myFormLibrary.frmCreateKeyboardShortcut = Me
-        Me.txtCurrentShortcut.Text = Me.KeyboardShortcut
+        txtCurrentShortcut.Text = KeyboardShortcut
     End Sub
 
     Private Sub cmdStart_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdStart.Click
-        If Me.cmdStart.Text = "Start Typing" Then
-            Me.txtCurrentShortcut.Text = ""
+        If cmdStart.Text = "Start Typing" Then
+            txtCurrentShortcut.Text = ""
             blTyping = True
-            Me.cmdStart.Text = "Stop Typing"
-            Me.cmdOK.Enabled = False
-            Me.cmdCancel.Enabled = False
+            cmdStart.Text = "Stop Typing"
+            cmdOK.Enabled = False
+            cmdCancel.Enabled = False
         Else
             blTyping = False
-            Me.cmdStart.Text = "Start Typing"
-            Me.cmdOK.Enabled = True
-            Me.cmdCancel.Enabled = True
+            cmdStart.Text = "Start Typing"
+            cmdOK.Enabled = True
+            cmdCancel.Enabled = True
             Dim query As String
             Dim oComm As OleDb.OleDbCommand
-            query = "SELECT KeyboardShortcut FROM " & DB_SPECIES_BUTTONS_TABLE & " WHERE KeyboardShortcut = " & DoubleQuote(Me.txtCurrentShortcut.Text)
+            query = "SELECT KeyboardShortcut FROM " & DB_SPECIES_BUTTONS_TABLE & " WHERE KeyboardShortcut = " & DoubleQuote(txtCurrentShortcut.Text)
             Dim sub_data_set As DataSet = New DataSet()
             oComm = New OleDb.OleDbCommand(query, conn)
             Dim sub_data_adapter As OleDb.OleDbDataAdapter = New OleDb.OleDbDataAdapter(oComm)
@@ -80,13 +79,13 @@
             d = sub_data_set.Tables(0)
             If d.Rows.Count <> 0 Then
                 MsgBox("That keyboard shortcut is already in use, please enter a new one.")
-                Me.txtCurrentShortcut.Text = Me.KeyboardShortcut
+                txtCurrentShortcut.Text = KeyboardShortcut
             End If
         End If
     End Sub
 
     Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-        Me.Close()
+        Close()
     End Sub
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
@@ -94,17 +93,15 @@
             Dim query As String
             Dim oComm As OleDb.OleDbCommand
             query = "UPDATE " & DB_SPECIES_BUTTONS_TABLE & " " & _
-                        "SET KeyboardShortCut = " & DoubleQuote(Me.txtCurrentShortcut.Text) & " " & _
-                        "WHERE ButtonText = " & DoubleQuote(Me.ButtonText)
+                        "SET KeyboardShortCut = " & DoubleQuote(txtCurrentShortcut.Text) & " " & _
+                        "WHERE ButtonText = " & DoubleQuote(ButtonText)
 
             oComm = New OleDb.OleDbCommand(query, conn)
             oComm.ExecuteNonQuery()
-            If Not myFormLibrary.frmEditSpecies Is Nothing Then
-                myFormLibrary.frmEditSpecies.txtKeyboardShortcut.Text = Me.txtCurrentShortcut.Text
-            End If
+            RaiseEvent AddedNewShortcut()
         Catch ex As Exception
 
         End Try
-        Me.Close()
+        Close()
     End Sub
 End Class

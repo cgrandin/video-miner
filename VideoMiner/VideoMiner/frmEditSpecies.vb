@@ -1,6 +1,7 @@
 Imports System.Data.OleDb
 
 Public Class frmEditSpecies
+    Private WithEvents frmCreateKeyboardShortcut As frmCreateKeyboardShortcut
     Private m_OriginalSpeciesName As String
     Private m_OpriginalSpeciesCode As String
     Private m_SpeciesName As String
@@ -51,14 +52,12 @@ Public Class frmEditSpecies
 
     End Sub
 
-    Private Sub frmEditSpecies_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        myFormLibrary.frmEditSpecies = Nothing
+    Private Sub added_new_shortcut() Handles frmCreateKeyboardShortcut.AddedNewShortcut
+        txtKeyboardShortcut.Text = frmCreateKeyboardShortcut.txtCurrentShortcut.Text
     End Sub
 
     Private Sub frmEditSpecies_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Try
-            myFormLibrary.frmEditSpecies = Me
-
             Dim strQuery As String
             Dim strColor As String
             If Edit_Insert = "Edit" Then
@@ -101,21 +100,21 @@ Public Class frmEditSpecies
                        "ORDER BY ScientificName;"
 
             Me.cboScientificName.Items.Clear()
-            Call PopulateSpeciesLists(Me.cboScientificName, strQuery)
+            PopulateSpeciesLists(Me.cboScientificName, strQuery)
 
             'strQuery = "SELECT DISTINCT LatinName " & _
             '           "FROM lu_species_code " & _
             '           "ORDER BY LatinName;"
 
             'Me.cboLatinName.Items.Clear()
-            'Call PopulateSpeciesLists(Me.cboLatinName, strQuery)
+            'PopulateSpeciesLists(Me.cboLatinName, strQuery)
 
             strQuery = "SELECT DISTINCT CommonName " & _
                        "FROM lu_species_code " & _
                        "ORDER BY CommonName;"
 
             Me.cboCommonName.Items.Clear()
-            Call PopulateSpeciesLists(Me.cboCommonName, strQuery)
+            PopulateSpeciesLists(Me.cboCommonName, strQuery)
 
             strQuery = "SELECT TaxonomyClassLevelCode FROM lu_species_code WHERE SpeciesCode = " & SingleQuote(Me.txtSpeciesCode.Text) & ";"
 
@@ -327,7 +326,7 @@ Public Class frmEditSpecies
             Me.cboScientificName.SelectedIndex = -1
             Me.txtSpeciesCode.Text = ""
             Me.txtTaxonomicLevel.Text = ""
-            Call GetSpeciesCode(strQuery)
+            GetSpeciesCode(strQuery)
         End If
 
     End Sub
@@ -350,7 +349,7 @@ Public Class frmEditSpecies
             Me.cboCommonName.SelectedIndex = -1
             Me.txtSpeciesCode.Text = ""
 
-            Call GetSpeciesCode(strQuery)
+            GetSpeciesCode(strQuery)
         End If
     End Sub
 
@@ -372,12 +371,12 @@ Public Class frmEditSpecies
     '        Me.cboCommonName.SelectedIndex = -1
     '        Me.txtSpeciesCode.Text = ""
     '        Me.txtTaxonomicLevel.Text = ""
-    '        Call GetSpeciesCode(strQuery)
+    '        GetSpeciesCode(strQuery)
     '    End If
     'End Sub
 
     Private Sub radCommonName_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles radCommonName.CheckedChanged
-        Call EnableDisable()
+        EnableDisable()
     End Sub
 
     Private Sub EnableDisable()
@@ -401,11 +400,11 @@ Public Class frmEditSpecies
     End Sub
 
     Private Sub radScientificName_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles radScientificName.CheckedChanged
-        Call EnableDisable()
+        EnableDisable()
     End Sub
 
     'Private Sub radLatinName_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles radLatinName.CheckedChanged
-    '    Call EnableDisable()
+    '    EnableDisable()
     'End Sub
 
     Private Sub cboButtonColors_DrawItem(ByVal sender As Object, ByVal e As System.Windows.Forms.DrawItemEventArgs) Handles cboButtonColors.DrawItem
@@ -433,12 +432,12 @@ Public Class frmEditSpecies
     End Sub
 
     Private Sub cmdChange_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdChange.Click
-        myFormLibrary.frmCreateKeyboardShortcut = New frmCreateKeyboardShortcut
+        frmCreateKeyboardShortcut = New frmCreateKeyboardShortcut
 
-        myFormLibrary.frmCreateKeyboardShortcut.ButtonText = Me.txtSpeciesBtnTxt.Text
-        myFormLibrary.frmCreateKeyboardShortcut.KeyboardShortcut = Me.txtKeyboardShortcut.Text
+        frmCreateKeyboardShortcut.ButtonText = Me.txtSpeciesBtnTxt.Text
+        frmCreateKeyboardShortcut.KeyboardShortcut = Me.txtKeyboardShortcut.Text
 
-        myFormLibrary.frmCreateKeyboardShortcut.ShowDialog()
+        frmCreateKeyboardShortcut.ShowDialog()
     End Sub
 
 End Class

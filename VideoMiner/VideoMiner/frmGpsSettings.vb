@@ -3,9 +3,23 @@ Imports System.IO.Ports
 Public Class frmGpsSettings
     Private Const GPSTimeout As Integer = 30
     Private blErrorFlag As Boolean = False
+    Private m_spSerialPort As IO.Ports.SerialPort
+    Public m_intSearchingCounter As Integer = 0
 
-    Private Sub frmGpsSettings_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        myFormLibrary.frmGpsSettings = Nothing
+    Event GPSConnectedEvent()
+    Event GPSDisconnectedEvent()
+    Event CloseSerialPortEvent()
+    Event OpenSerialPortEvent()
+    Event ConnectingPortEvent()
+
+    ''' <summary>
+    ''' Create a new instance of the GPS settings form.
+    ''' </summary>
+    ''' <param name="serialPort">A serial port object, could be Nothing, Closed, or Open</param>
+    ''' <remarks></remarks>
+    Public Sub New(serialPort As IO.Ports.SerialPort)
+        InitializeComponent()
+        m_spSerialPort = SerialPort
     End Sub
 
     Private Sub frmGpsSettings_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
@@ -13,8 +27,6 @@ Public Class frmGpsSettings
         Windows.Forms.Control.CheckForIllegalCrossThreadCalls = False
 
         Try
-            myFormLibrary.frmGpsSettings = Me
-
             Dim regKey As RegistryKey
             regKey = Registry.CurrentUser.CreateSubKey("Software\VideoMiner")
 
@@ -69,8 +81,8 @@ Public Class frmGpsSettings
             End If
             Me.txtDataBits.Text = strDataBits
 
-            If Not myFormLibrary.frmVideoMiner.m_SerialPort Is Nothing Then
-                If myFormLibrary.frmVideoMiner.m_SerialPort.IsOpen Then
+            If Not m_spSerialPort Is Nothing Then
+                If m_spSerialPort.IsOpen Then
                     tmrGPSTimeout.Start()
                     'Me.lblGPSMessage.Text = "GPS FIX"
                     'Me.lblGPSMessage.ForeColor = Color.Green
@@ -107,14 +119,11 @@ Public Class frmGpsSettings
             MsgBox("At line " & line & " " & ex.Message)
         End Try
 
-
-
-        'Call EnableDisable()
+        'EnableDisable()
 
     End Sub
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
-
         Dim regKey As RegistryKey
         regKey = Registry.CurrentUser.CreateSubKey("Software\VideoMiner")
         If Me.radGPGGA.Checked = True Then
@@ -154,7 +163,6 @@ Public Class frmGpsSettings
 
     End Sub
 
-    ' Handles clicking on the GPS connection button
     Private Sub cmdConnection_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdConnection.Click
         Dim currentDomain As AppDomain = AppDomain.CurrentDomain
         AddHandler currentDomain.UnhandledException, AddressOf UnHandledHandler
@@ -168,7 +176,8 @@ Public Class frmGpsSettings
             Me.txtDataBits.Enabled = False
             Me.radGPGGA.Enabled = False
             Me.radGPRMC.Enabled = False
-            myFormLibrary.frmVideoMiner.tryCount = 0
+            ' CJG commented out while removing the myformlibrary stuff
+            'myFormLibrary.frmVideoMiner.tryCount = 0
             Dim blGPSOpen As Boolean = OpenGPS()    ' Open GPS connection
             If blErrorFlag = True Then
                 blErrorFlag = False
@@ -184,16 +193,11 @@ Public Class frmGpsSettings
             If blGPSOpen Then       ' If the port is opened then change the GPS elements to show its open
                 Me.lblGPSPortMessage.Text = "OPEN"
                 Me.lblGPSPortMessage.ForeColor = Color.LimeGreen
-                myFormLibrary.frmVideoMiner.lblGPSPortValue.Text = "OPEN"
-                myFormLibrary.frmVideoMiner.lblGPSPortValue.ForeColor = Color.LimeGreen
                 Me.lblGPSMessage.Text = "SEARCHING. . ."
                 Me.lblGPSMessage.ForeColor = Color.Blue
-                myFormLibrary.frmVideoMiner.lblGPSConnectionValue.Text = "SEARCHING. . ."
-                myFormLibrary.frmVideoMiner.lblGPSConnectionValue.ForeColor = Color.Blue
-                'AddHandler myFormLibrary.frmVideoMiner.aSerialPort.DataReceived, AddressOf myFormLibrary.frmVideoMiner.updateTextBox
+                RaiseEvent GPSConnectedEvent()
 
                 tmrGPSTimeout.Start()
-                'myFormLibrary.frmVideoMiner.tmrGPSExpiry.Start()
             Else                    ' If the port is closed then change the GPS elements to show its closed
                 Me.cmdConnection.Enabled = True
                 Me.cboBaudRate.Enabled = True
@@ -205,29 +209,25 @@ Public Class frmGpsSettings
                 Me.radGPRMC.Enabled = True
                 Me.lblGPSPortMessage.Text = "CLOSED"
                 Me.lblGPSPortMessage.ForeColor = Color.Red
-                myFormLibrary.frmVideoMiner.lblGPSPortValue.Text = "CLOSED"
-                myFormLibrary.frmVideoMiner.lblGPSPortValue.ForeColor = Color.Red
                 Me.lblGPSMessage.Text = "NO GPS FIX"
                 Me.lblGPSMessage.ForeColor = Color.Red
-                myFormLibrary.frmVideoMiner.lblGPSConnectionValue.Text = "NO GPS FIX"
-                myFormLibrary.frmVideoMiner.lblGPSConnectionValue.ForeColor = Color.Red
+                RaiseEvent GPSDisconnectedEvent()
             End If
         Else                        ' If the user closes the connection
             'If Not myFormLibrary.frmVideoMiner.m_SerialPort Is Nothing Then
 
-            If myFormLibrary.frmVideoMiner.m_SerialPort.IsOpen Then
-                Dim closePort As Thread
-                closePort = New Thread(New ThreadStart(AddressOf CloseSerialPort))
+            If m_spSerialPort.IsOpen Then
+                Dim closePort As Thread = New Thread(New ThreadStart(AddressOf CloseSerialPort))
                 closePort.Start()
             End If
-            'myFormLibrary.frmVideoMiner.m_SerialPort.Close()                ' Close the port
             If tmrGPSTimeout.Enabled Then
                 tmrGPSTimeout.Stop()
             End If
-            If myFormLibrary.frmVideoMiner.tmrGPSExpiry.Enabled Then
-                myFormLibrary.frmVideoMiner.tmrGPSExpiry.Stop()
-            End If
-            If Not myFormLibrary.frmVideoMiner.m_SerialPort.IsOpen Then     ' If the port is closed then reset the GPS elements
+            'CJG commented while removing myformlibrary
+            'If myFormLibrary.frmVideoMiner.tmrGPSExpiry.Enabled Then
+            ' myFormLibrary.frmVideoMiner.tmrGPSExpiry.Stop()
+            'End If
+            If Not m_spSerialPort.IsOpen Then     ' If the port is closed then reset the GPS elements
                 Me.cmdConnection.Text = "Open GPS Connection"
                 Me.cboBaudRate.Enabled = True
                 Me.cboComPort.Enabled = True
@@ -236,44 +236,29 @@ Public Class frmGpsSettings
                 Me.txtDataBits.Enabled = True
                 Me.radGPGGA.Enabled = True
                 Me.radGPRMC.Enabled = True
-                myFormLibrary.frmVideoMiner.tryCount = 0
                 Me.lblGPSMessage.Text = "NO GPS FIX"
                 Me.lblGPSMessage.ForeColor = Color.Red
-                myFormLibrary.frmVideoMiner.lblGPSConnectionValue.Text = "NO GPS FIX"
-                myFormLibrary.frmVideoMiner.lblGPSConnectionValue.ForeColor = Color.Red
                 Me.lblGPSPortMessage.Text = "CLOSED"
                 Me.lblGPSPortMessage.ForeColor = Color.Red
-                myFormLibrary.frmVideoMiner.lblGPSPortValue.Text = "CLOSED"
-                myFormLibrary.frmVideoMiner.lblGPSPortValue.ForeColor = Color.Red
-                myFormLibrary.frmVideoMiner.txtNMEA.Text = ""
                 Me.lblCurrentYValue.Text = ""
                 Me.lblCurrentXValue.Text = ""
                 Me.lblCurrentZValue.Text = ""
                 Me.lblCurrentDateValue.Text = ""
                 Me.lblCurrentTimeValue.Text = ""
-                myFormLibrary.frmVideoMiner.lblXValue.Text = ""
-                myFormLibrary.frmVideoMiner.lblYValue.Text = ""
-                myFormLibrary.frmVideoMiner.lblZValue.Text = ""
-                'RemoveHandler myFormLibrary.frmVideoMiner.m_SerialPort.DataReceived, AddressOf myFormLibrary.frmVideoMiner.updateTextBox
-
-                'End If
+                RaiseEvent GPSDisconnectedEvent()
             End If
         End If
     End Sub
+
     Public Sub CloseSerialPort()
-        Try
-            myFormLibrary.frmVideoMiner.m_SerialPort.Close()
-            'myFormLibrary.frmVideoMiner.m_SerialPort = Nothing
-        Catch ex As Exception
-            MsgBox(ex)
-        End Try
+        RaiseEvent CloseSerialPortEvent()
     End Sub
+
     Sub UnHandledHandler(ByVal sender As Object, ByVal args As UnhandledExceptionEventArgs)
         Dim e As Exception = DirectCast(args.ExceptionObject, Exception)
 
         Console.WriteLine("MyHandler caught : " + e.Message)
         Console.WriteLine("Runtime terminating: {0}", args.IsTerminating)
-
 
         Dim st As New StackTrace(e, True)
         Dim frame As StackFrame
@@ -284,24 +269,22 @@ Public Class frmGpsSettings
 
     End Sub
 
-    ' Function to open the GPS port
     Public Function OpenGPS() As Boolean
 
         Dim currentDomain As AppDomain = AppDomain.CurrentDomain
         AddHandler currentDomain.UnhandledException, AddressOf UnHandledHandler
         Dim strPrompt As String = ""
 
-        myFormLibrary.frmVideoMiner.m_SerialPort = m_PublicSerialPort
+        'CJG removing myformlibrary
+        'myFormLibrary.frmVideoMiner.m_SerialPort = m_PublicSerialPort
 
         Dim dr As DialogResult
-        If myFormLibrary.frmVideoMiner.m_SerialPort.IsOpen Then     ' If the serial port is already open then return true
+        If m_spSerialPort.IsOpen Then
             Return True
         End If
 
-        'AddHandler myFormLibrary.frmVideoMiner.aSerialPort.ErrorReceived, AddressOf myFormLibrary.frmGpsSettings.HandleSerialError
         Try
-            ' Set the serial port properties from the GPS object
-            With myFormLibrary.frmVideoMiner.m_SerialPort
+            With m_spSerialPort
                 .PortName = CType(Me.cboComPort.Text, String)
                 .BaudRate = CType(Val(Me.cboBaudRate.Text), Integer)
 
@@ -335,136 +318,69 @@ Public Class frmGpsSettings
             End With
         Catch ex As Exception
             dr = MessageBox.Show("Could not open GPS port: " & ex.Message & " Please check the configuration file and try again.", "GPS Port Failure", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-            myFormLibrary.frmVideoMiner.m_SerialPort.Close()
+            RaiseEvent CloseSerialPortEvent()
             Return False
         End Try
-        If myFormLibrary.frmVideoMiner.m_SerialPort.IsOpen Then     ' If the serial port is open then return true
+        If m_spSerialPort.IsOpen Then
             Return True
         End If
-
     End Function
 
     Private Sub HandleSerialError(ByVal sender As System.Object, ByVal e As SerialErrorReceivedEventArgs)
         MessageBox.Show("There was an error opening the GPS port: " & e.EventType & " Please check the settings and try again.", "GPS Port Failure", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
         blErrorFlag = True
-        If myFormLibrary.frmVideoMiner.m_SerialPort.IsOpen Then
-            myFormLibrary.frmVideoMiner.m_SerialPort.Close()
-            myFormLibrary.frmVideoMiner.m_SerialPort.DiscardInBuffer()
+        If m_spSerialPort.IsOpen Then
+            m_spSerialPort.Close()
+            m_spSerialPort.DiscardInBuffer()
         End If
         If tmrGPSTimeout.Enabled = True Then
             tmrGPSTimeout.Stop()
         End If
     End Sub
 
-    ' Handles the GPS Timeout tick event
     Private Sub tmrGPSTimeout_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrGPSTimeout.Tick
 
-        Dim currentDomain As AppDomain = AppDomain.CurrentDomain
-        AddHandler currentDomain.UnhandledException, AddressOf UnHandledHandler
+        'Dim currentDomain As AppDomain = AppDomain.CurrentDomain
+        'AddHandler currentDomain.UnhandledException, AddressOf UnHandledHandler
 
-        myFormLibrary.frmVideoMiner.searchingCounter += 1
-        If myFormLibrary.frmVideoMiner.searchingCounter >= 3 Then
+        m_intSearchingCounter += 1
+        If m_intSearchingCounter >= 3 Then
             Me.lblGPSMessage.Text = "SEARCHING. . ."
-            myFormLibrary.frmVideoMiner.lblGPSConnectionValue.Text = "SEARCHING. . ."
             Me.lblGPSMessage.ForeColor = Color.Blue
-            myFormLibrary.frmVideoMiner.lblGPSConnectionValue.ForeColor = Color.Blue
             Me.lblCurrentXValue.Text = ""
-            myFormLibrary.frmVideoMiner.lblXValue.ForeColor = Color.Red
             Me.lblCurrentYValue.Text = ""
-            myFormLibrary.frmVideoMiner.lblYValue.ForeColor = Color.Red
             Me.lblCurrentZValue.Text = ""
-            myFormLibrary.frmVideoMiner.lblZValue.ForeColor = Color.Red
             Me.lblCurrentDateValue.Text = ""
-            myFormLibrary.frmVideoMiner.txtTransectDate.ForeColor = Color.Red
             Me.lblCurrentTimeValue.Text = ""
-            myFormLibrary.frmVideoMiner.txtDateSource.ForeColor = Color.Red
-            If myFormLibrary.frmVideoMiner.searchingCounter = (GPSTimeout + 3) Then
-                Me.tmrGPSTimeout.Stop() ' Stop the timer
-
-                ' Inform the user of the connection timeout
-                Dim dr As DialogResult
-                dr = MessageBox.Show("GPS session has timed out. Please make sure the GPS unit is turned on, also check the connection and try again.", "GPS Fix", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
+            RaiseEvent ConnectingPortEvent()
+            If m_intSearchingCounter = (GPSTimeout + 3) Then
+                tmrGPSTimeout.Stop()
+                Dim dr As DialogResult = MessageBox.Show("GPS session has timed out. Please make sure the GPS unit is turned on, also check the connection and try again.", "GPS Fix", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
                 Me.cmdConnection.Text = "Open GPS Connection"
-
-                ' Reset the try counter and close the serial port
-                myFormLibrary.frmVideoMiner.searchingCounter = 0
-                myFormLibrary.frmVideoMiner.m_SerialPort.Close()
-                If Not myFormLibrary.frmVideoMiner.m_SerialPort.IsOpen Then     ' If the port is closed then reset the GPS elements
-                    Me.cmdConnection.Text = "Open GPS Connection"
-                    Me.cmdConnection.Enabled = True
-                    Me.cboBaudRate.Enabled = True
-                    Me.cboComPort.Enabled = True
-                    Me.cboParity.Enabled = True
-                    Me.cboStopBits.Enabled = True
-                    Me.txtDataBits.Enabled = True
-                    Me.radGPGGA.Enabled = True
-                    Me.radGPRMC.Enabled = True
-                    Me.lblGPSMessage.Text = "NO GPS FIX"
-                    Me.lblGPSMessage.ForeColor = Color.Red
-                    myFormLibrary.frmVideoMiner.lblGPSConnectionValue.Text = "NO GPS FIX"
-                    myFormLibrary.frmVideoMiner.lblGPSConnectionValue.ForeColor = Color.Red
-                    Me.lblGPSPortMessage.Text = "CLOSED"
-                    Me.lblGPSPortMessage.ForeColor = Color.Red
-                    myFormLibrary.frmVideoMiner.lblGPSPortValue.Text = "CLOSED"
-                    myFormLibrary.frmVideoMiner.lblGPSPortValue.ForeColor = Color.Red
-                    myFormLibrary.frmVideoMiner.txtNMEA.Text = ""
-                    Me.lblCurrentYValue.Text = ""
-                    Me.lblCurrentXValue.Text = ""
-                    Me.lblCurrentZValue.Text = ""
-                    myFormLibrary.frmVideoMiner.lblXValue.Text = ""
-                    myFormLibrary.frmVideoMiner.lblYValue.Text = ""
-                    myFormLibrary.frmVideoMiner.lblZValue.Text = ""
-                    myFormLibrary.frmVideoMiner.txtTime.ForeColor = Color.Red
-                    myFormLibrary.frmVideoMiner.txtTimeSource.ForeColor = Color.Red
-                    myFormLibrary.frmVideoMiner.txtDateSource.ForeColor = Color.Red
-                End If
-                Exit Sub
+                m_intSearchingCounter = 0
+                RaiseEvent CloseSerialPortEvent()
+                Me.cmdConnection.Enabled = True
+                Me.cboBaudRate.Enabled = True
+                Me.cboComPort.Enabled = True
+                Me.cboParity.Enabled = True
+                Me.cboStopBits.Enabled = True
+                Me.txtDataBits.Enabled = True
+                Me.radGPGGA.Enabled = True
+                Me.radGPRMC.Enabled = True
+                Me.lblGPSMessage.Text = "NO GPS FIX"
+                Me.lblGPSMessage.ForeColor = Color.Red
+                Me.lblGPSPortMessage.Text = "CLOSED"
+                Me.lblGPSPortMessage.ForeColor = Color.Red
+                Me.lblCurrentYValue.Text = ""
+                Me.lblCurrentXValue.Text = ""
+                Me.lblCurrentZValue.Text = ""
+                RaiseEvent GPSDisconnectedEvent()
             End If
         End If
-
-
-
-        'myFormLibrary.frmVideoMiner.tryCount += 1   ' Increment the try counter
-
-        '' If there is no data being recieved from the port
-        'If Me.lblCurrentYValue.Text = "" And lblCurrentXValue.Text = "" Then
-        '    ' If the try counter is equal to the timeout constant
-        '    If myFormLibrary.frmVideoMiner.tryCount = GPSTimeout Then
-        '        Me.tmrGPSTimeout.Stop() ' Stop the timer
-
-        '        ' Inform the user of the connection timeout
-        '        Dim dr As DialogResult
-        '        dr = MessageBox.Show("GPS session has timed out. Please make sure the GPS unit is turned on, also check the connection and try again.", "GPS Fix", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-        '        Me.cmdConnection.Text = "Open GPS Connection"
-
-        '        ' Reset the try counter and close the serial port
-        '        myFormLibrary.frmVideoMiner.tryCount = 0
-        '        myFormLibrary.frmVideoMiner.m_SerialPort.Close()
-        '        If Not myFormLibrary.frmVideoMiner.m_SerialPort.IsOpen Then     ' If the port is closed then reset the GPS elements
-        '            Me.cmdConnection.Text = "Open GPS Connection"
-        '            Me.cmdConnection.Enabled = True
-        '            Me.lblGPSMessage.Text = "NO GPS FIX"
-        '            Me.lblGPSMessage.ForeColor = Color.Red
-        '            Me.lblGPSPortMessage.Text = "CLOSED"
-        '            Me.lblGPSPortMessage.ForeColor = Color.Red
-        '            myFormLibrary.frmVideoMiner.txtNMEA.Text = ""
-        '            Me.lblCurrentYValue.Text = ""
-        '            Me.lblCurrentXValue.Text = ""
-        '        End If
-        '        Exit Sub
-        '    End If
-        'Else    ' If there is data being received then stop the timer and exit
-        '    Me.tmrGPSTimeout.Stop()
-        '    Exit Sub
-        'End If
     End Sub
 
     Public Sub New()
-
-        ' This call is required by the Windows Form Designer.
         InitializeComponent()
-
-        ' Add any initialization after the InitializeComponent() call.
         With Me.cboComPort
             .Items.Add("COM1")
             .Items.Add("COM2")

@@ -8,17 +8,65 @@ Public Class frmConfigureButtonFormat
 
     Dim blLoad As Boolean = True
 
+    Event RefreshDatabaseEvent()
+    Event ButtonConfigurationChangedEvent()
+
+    Public Property ButtonHeight As Integer
+        Get
+            Return CInt(txtButtonHeight.Text)
+        End Get
+        Set(value As Integer)
+            txtButtonHeight.Text = CStr(value)
+        End Set
+    End Property
+
+    Public Property ButtonWidth As Integer
+        Get
+            Return CInt(txtButtonWidth.Text)
+        End Get
+        Set(value As Integer)
+            txtButtonWidth.Text = CStr(value)
+        End Set
+    End Property
+
+    Public Property ButtonTextSize As Integer
+        Get
+            Return CInt(cboButtonTextSize.Text)
+        End Get
+        Set(value As Integer)
+            cboButtonTextSize.Text = CStr(value)
+        End Set
+    End Property
+
+    Public Property ButtonFont As String
+        Get
+            Return cboButtonFont.Text
+        End Get
+        Set(value As String)
+            cboButtonFont.Text = value
+        End Set
+    End Property
+
+    Public Sub New(intButtonHeight As Integer, intButtonWidth As Integer, strButtonFont As String, intButtonTextSize As Integer)
+        InitializeComponent()
+        ButtonHeight = intButtonHeight
+        ButtonWidth = intButtonWidth
+        ButtonFont = strButtonFont
+        ButtonTextSize = intButtonTextSize
+    End Sub
+
     Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
         Me.Close()
     End Sub
 
     Private Sub txtButtonLength_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtButtonHeight.KeyPress
-        Call numericTextboxValidation(sender, e)
+        numericTextboxValidation(sender, e)
     End Sub
 
     Private Sub txtButonWidth_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtButtonWidth.KeyPress
-        Call numericTextboxValidation(sender, e)
+        numericTextboxValidation(sender, e)
     End Sub
+
     ' Function used for validating text entered into a text box
     Public Sub numericTextboxValidation(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs)
         Select Case e.KeyChar
@@ -31,14 +79,9 @@ Public Class frmConfigureButtonFormat
         End Select
     End Sub
 
-    Private Sub frmConfigureSpeciesButtons_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        myFormLibrary.frmConfigureButtonFormat = Nothing
-    End Sub
-
     Private Sub frmConfigureSpeciesButtons_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        myFormLibrary.frmConfigureButtonFormat = Me
-        Me.txtButtonHeight.Text = myFormLibrary.frmVideoMiner.ButtonHeight
-        Me.txtButtonWidth.Text = myFormLibrary.frmVideoMiner.ButtonWidth
+        Me.txtButtonHeight.Text = ButtonHeight
+        Me.txtButtonWidth.Text = ButtonWidth
         Me.cboButtonFont.DrawMode = DrawMode.OwnerDrawFixed
         Me.cboButtonFont.Font = New Font("Microsoft Sans Serif, 11.25pt", 11.25)
         Me.cboButtonFont.ItemHeight = 20
@@ -50,14 +93,14 @@ Public Class frmConfigureButtonFormat
             cboButtonFont.Items.Add(objFontFamily.Name)
         Next
 
-        Me.cboButtonFont.SelectedItem = myFormLibrary.frmVideoMiner.ButtonFont
+        Me.cboButtonFont.SelectedItem = ButtonFont
 
         Dim arrFontSize() As Integer = {8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72}
         Dim i As Integer
         For i = 0 To arrFontSize.Length - 1
             Me.cboButtonTextSize.Items.Add(arrFontSize(i))
         Next
-        Me.cboButtonTextSize.Text = myFormLibrary.frmVideoMiner.ButtonTextSize
+        Me.cboButtonTextSize.Text = ButtonTextSize
 
         blLoad = False
     End Sub
@@ -91,7 +134,7 @@ Public Class frmConfigureButtonFormat
     End Sub
 
     Private Sub cboButtonTextSize_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles cboButtonTextSize.KeyPress
-        Call numericTextboxValidation(sender, e)
+        numericTextboxValidation(sender, e)
     End Sub
 
     Private Sub cboButtonTextSize_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles cboButtonTextSize.TextChanged
@@ -142,23 +185,14 @@ Public Class frmConfigureButtonFormat
     End Sub
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
-        myFormLibrary.frmVideoMiner.ButtonHeight = CInt(Me.txtButtonHeight.Text)
-        myFormLibrary.frmVideoMiner.ButtonWidth = CInt(Me.txtButtonWidth.Text)
-        myFormLibrary.frmVideoMiner.ButtonFont = Me.cboButtonFont.Text
-        myFormLibrary.frmVideoMiner.ButtonTextSize = CInt(Me.cboButtonTextSize.Text)
-
-        Dim strConfigFile As String = strconfigFilePath & "\VideoMinerConfigurationDetails.xml"
-        SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/ButtonFormat/ButtonSize/Height", Me.txtButtonHeight.Text)
-        SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/ButtonFormat/ButtonSize/Width", Me.txtButtonWidth.Text)
-        SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/ButtonFormat/ButtonText/Font", Me.cboButtonFont.Text)
-        SaveXmlSettings(strConfigFile, "VideoMinerConfigurationDetails/ButtonFormat/ButtonText/TextSize", Me.cboButtonTextSize.Text)
-
-        If myFormLibrary.frmVideoMiner.db_file_open Then
-            myFormLibrary.frmVideoMiner.blupdateColumns = False
-            myFormLibrary.frmVideoMiner.pnlSpeciesData.Controls.Clear()
-            Call RefreshDatabase(sender, e)
-            myFormLibrary.frmVideoMiner.blupdateColumns = True
-        End If
+        RaiseEvent ButtonConfigurationChangedEvent()
+        ' CJG this need to be turned into events
+        'Dim strConfigFile As String = strConfigFilePath & "\" & VIDEOMINER_CONFIG_FILE_NAME
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/ButtonFormat/ButtonSize/Height", Me.txtButtonHeight.Text)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/ButtonFormat/ButtonSize/Width", Me.txtButtonWidth.Text)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/ButtonFormat/ButtonText/Font", Me.cboButtonFont.Text)
+        'SaveConfiguration(strConfigFile, "VideoMinerConfigurationDetails/ButtonFormat/ButtonText/TextSize", Me.cboButtonTextSize.Text)
+        RaiseEvent RefreshDatabaseEvent()
         Me.Close()
     End Sub
 

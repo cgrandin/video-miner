@@ -9,6 +9,7 @@ Imports System.Data.OleDb
 
 Public Class frmSpeciesEvent
 
+    Event SpeciesButtonConfigurationChangedEvent()
 
 #Region "Fields"
     Private m_SpeciesName As String
@@ -213,8 +214,6 @@ Public Class frmSpeciesEvent
 
 #End Region
 
-
-
     Private Const NULL_STRING As String = ""
     Private Const COUNT_STRING As String = "1"
     Private Const LENGTH_STRING As String = "0"
@@ -229,40 +228,31 @@ Public Class frmSpeciesEvent
     Private clLabelNames As New Collection
 
 
-    Private Sub getProperties()
+    Public Sub New(blRangeChecked As Boolean, blIDConfidenceChecked As Boolean, blAbundanceChecked As Boolean, blCountChecked As Boolean, blHeightChecked As Boolean, _
+                   blWidthChecked As Boolean, blLengthChecked As Boolean, blCommentsChecked As Boolean, _
+                   strRange As String, strSide As String, strIDConfidence As String, strAbundance As String, strCount As String, strHeight As String, _
+                   strWidth As String, strLength As String, strComments As String)
+        InitializeComponent()
+        Me.RangeChecked = blRangeChecked
+        Me.IDConfidenceChecked = blIDConfidenceChecked
+        Me.AbundanceChecked = blAbundanceChecked
+        Me.CountChecked = blCountChecked
+        Me.HeightChecked = blHeightChecked
+        Me.WidthChecked = blWidthChecked
+        Me.LengthChecked = blLengthChecked
+        Me.CommentsChecked = blCommentsChecked
 
-
-        Me.RangeChecked = myFormLibrary.frmVideoMiner.RangeChecked
-        Me.IDConfidenceChecked = myFormLibrary.frmVideoMiner.IDConfidenceChecked
-        Me.AbundanceChecked = myFormLibrary.frmVideoMiner.AbundanceChecked
-        Me.CountChecked = myFormLibrary.frmVideoMiner.CountChecked
-        Me.HeightChecked = myFormLibrary.frmVideoMiner.HeightChecked
-        Me.WidthChecked = myFormLibrary.frmVideoMiner.WidthChecked
-        Me.LengthChecked = myFormLibrary.frmVideoMiner.LengthChecked
-        Me.CommentsChecked = myFormLibrary.frmVideoMiner.CommentsChecked
-
-        Me.Range = checkActivated(myFormLibrary.frmVideoMiner.Range, Me.RangeChecked)
-        Me.Side = checkActivated(myFormLibrary.frmVideoMiner.Side, Me.RangeChecked)
-        Me.IDConfidence = checkActivated(myFormLibrary.frmVideoMiner.IDConfidence, Me.IDConfidenceChecked)
-        Me.Abundance = checkActivated(myFormLibrary.frmVideoMiner.Abundance, Me.AbundanceChecked)
-        Me.Count = checkActivated(myFormLibrary.frmVideoMiner.Count, Me.CountChecked)
-        Me.SpeciesHeight = checkActivated(myFormLibrary.frmVideoMiner.SpeciesHeight, Me.HeightChecked)
-        Me.SpeciesWidth = checkActivated(myFormLibrary.frmVideoMiner.SpeciesWidth, Me.WidthChecked)
-        Me.Length = checkActivated(myFormLibrary.frmVideoMiner.Length, Me.LengthChecked)
-        Me.Comments = checkActivated(myFormLibrary.frmVideoMiner.Comments, Me.CommentsChecked)
-
+        Me.Range = strRange
+        Me.Side = strSide
+        Me.IDConfidence = strIDConfidence
+        Me.Abundance = strAbundance
+        Me.Count = strCount
+        Me.SpeciesHeight = strHeight
+        Me.SpeciesWidth = strWidth
+        Me.Length = strLength
+        Me.Comments = strComments
 
     End Sub
-
-    Private Function checkActivated(ByVal strValue As String, ByVal blActive As Boolean)
-
-        If blActive Then
-            Return strValue
-        Else
-            Return ""
-        End If
-
-    End Function
 
     Private Sub loadCollection()
 
@@ -575,14 +565,13 @@ Public Class frmSpeciesEvent
     End Sub
 
     Private Sub GetSpeciesVariables()
-
         Try
             Dim ctlControl As Control
             Dim ctlSpeciesControl As Control
             Dim row As DataRow
             Dim dt As DataTable
 
-            For Each ctlControl In myFormLibrary.frmSpeciesEvent.pnlSpeciesEvent.Controls
+            For Each ctlControl In pnlSpeciesEvent.Controls
 
                 ctlSpeciesControl = ctlControl
 
@@ -695,57 +684,29 @@ Public Class frmSpeciesEvent
 
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: SpeciesEventForm_Activated()
-    ' Description: Every time the form SpeciesEventForm is activated, focus the cursor on the textbox portRangeTextbox.
-    ' ==========================================================================================================
     Private Sub SpeciesEventForm_Activated(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Activated
         'txtLeftRange.Focus()
     End Sub
 
     Private Sub SpeciesEventForm_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-
-        Call GetSpeciesVariables()
-
-        myFormLibrary.frmVideoMiner.Range = Me.Range
-        myFormLibrary.frmVideoMiner.Side = Me.Side
-        myFormLibrary.frmVideoMiner.IDConfidence = Me.IDConfidence
-        myFormLibrary.frmVideoMiner.Abundance = Me.Abundance
-        myFormLibrary.frmVideoMiner.Count = Me.Count
-        myFormLibrary.frmVideoMiner.SpeciesHeight = Me.SpeciesHeight
-        myFormLibrary.frmVideoMiner.SpeciesWidth = Me.SpeciesWidth
-        myFormLibrary.frmVideoMiner.Length = Me.Length
-        myFormLibrary.frmVideoMiner.Comments = Me.Comments
-        myFormLibrary.frmVideoMiner.SpeciesCode = Me.SpeciesCode
-
-
-        myFormLibrary.frmSpeciesEvent = Nothing
+        GetSpeciesVariables()
+        RaiseEvent SpeciesButtonConfigurationChangedEvent()
     End Sub
 
     Private Sub SpeciesEventForm_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
 
         If e.KeyCode = Keys.Enter Then
-            Call ok_Click(Nothing, Nothing)
+            ok_Click(Nothing, Nothing)
         End If
 
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: SpeciesEventForm_Load()
-    ' Description: Called when the form SpeciesEventForm is loaded to set the initial values of the texboxes
-    '              and the onCenterButton.
-    ' ==========================================================================================================
     Private Sub SpeciesEventForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        loadCollection()
+        fillSpeciesEventPanel()
 
-        myFormLibrary.frmSpeciesEvent = Me
-
-        Call getProperties()
-
-        Call loadCollection()
-
-        Call fillSpeciesEventPanel()
-
-        myFormLibrary.frmVideoMiner.blSpeciesValuesSet = False
+        'CJG
+        'myFormLibrary.frmVideoMiner.blSpeciesValuesSet = False
         centerButtonPressed = False
 
         Dim sub_data_set As DataSet = New DataSet()
@@ -771,12 +732,13 @@ Public Class frmSpeciesEvent
 
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: SpeciesEventForm_Paint()
-    ' Description: When the SpeciesEventForm is displayed, draw a red arc at the bottom of the form with an
-    '              attatched red line going to the top of the form. This line helps a user visualize the center line,
-    '              and ranges to the left or right of the center line.
-    ' ==========================================================================================================
+    ''' <summary>
+    '''  When the SpeciesEventForm is displayed, draw a red arc at the bottom of the form with an
+    '''  attatched red line going to the top of the form. This line helps a user visualize the center line,
+    '''  and ranges to the left or right of the center line.
+    ''' </summary>
+    ''' <param name="sender"></param><param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub pnlSpeciesEvent_Paint(ByVal sender As Object, ByVal e As System.Windows.Forms.PaintEventArgs) Handles pnlSpeciesEvent.Paint
         Dim a As Graphics = e.Graphics
         Dim mypen As Pen
@@ -792,40 +754,38 @@ Public Class frmSpeciesEvent
         Dim xCenter As Integer
         xCenter = CType(pnlSpeciesEvent.Width / 2, Integer)
 
-
         a.DrawLine(mypen, xCenter, 200, xCenter, 0)
         a.Dispose()
         mypen.Dispose()
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: ok_Click()
-    ' Description: Called when the user mouseclicks the ok button
-    ' 1.) If the user has not selected "On Centerline" and either the portRangeTextbox or the starboardRangeTextBox
-    '     are not filled in or are not numeric, alert the user to fill them in with an integer.
-    ' 2.) Else if "On Centerline" has been selected or "On Centerline" has not been selected AND portRangeTextbox and
-    '     starboardRangeTextBox have both been flled in, then, hide the SpeciesEventForm
-    ' ==========================================================================================================
+    ''' <summary>
+    ''' 1.) If the user has not selected "On Centerline" and either the portRangeTextbox or the starboardRangeTextBox
+    '''     are not filled in or are not numeric, alert the user to fill them in with an integer.
+    ''' 2.) Else if "On Centerline" has been selected or "On Centerline" has not been selected AND portRangeTextbox and
+    '''     starboardRangeTextBox have both been flled in, then, hide the SpeciesEventForm
+    ''' </summary>
+    ''' <param name="sender"></param><param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub ok_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles ok.Click
-
         Dim ItemSelected As String
         ItemSelected = CType(Me.speciesComboBox.SelectedItem, ValueDescriptionPair).Value
         Me.SpeciesCode = ItemSelected.ToString
-
-        myFormLibrary.frmVideoMiner.blSpeciesValuesSet = True
-
-        If Not myFormLibrary.frmRareSpeciesLookup Is Nothing Then
-            myFormLibrary.frmRareSpeciesLookup.Close()
-        End If
-
+        'CJG
+        'myFormLibrary.frmVideoMiner.blSpeciesValuesSet = True
+        'If Not myFormLibrary.frmRareSpeciesLookup Is Nothing Then
+        ' myFormLibrary.frmRareSpeciesLookup.Close()
+        ' End If
         Me.Close()
         Me.Dispose()
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: validate_range()
-    ' Description: Function to validate value being passed to it is not null and is numeric.
-    ' ==========================================================================================================
+    ''' <summary>
+    ''' Description: Function to validate value being passed to it is not null and is numeric.
+    ''' </summary>
+    ''' <param name="t"></param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
     Private Function validate_range(ByVal t As TextBox) As Boolean
         If Not t.Text Like "#" _
                 And Not t.Text Like "##" _
@@ -837,14 +797,19 @@ Public Class frmSpeciesEvent
         Return True
     End Function
 
-
     Private Sub btnCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCancel.Click
-        myFormLibrary.frmVideoMiner.blSpeciesValuesSet = False
-        myFormLibrary.frmVideoMiner.blSpeciesCancelled = True
+        'CJG
+        'myFormLibrary.frmVideoMiner.blSpeciesValuesSet = False
+        'myFormLibrary.frmVideoMiner.blSpeciesCancelled = True
         Me.Close()
     End Sub
 
-    ' Function used for validating text entered into a text box
+    ''' <summary>
+    ''' Used for validating text entered into a text box
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Public Sub numericTextboxValidation(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs)
         Select Case e.KeyChar
             ' Allow the following characters to be entered into the text box: 1,2,3,4,5,6,7,8,9,0,. and BACKSPACE
@@ -857,7 +822,6 @@ Public Class frmSpeciesEvent
     End Sub
 
     Public Sub sideControl(ByVal sender As Object, ByVal e As System.EventArgs)
-
         Dim cboSide As ComboBox
         cboSide = sender
 
@@ -873,8 +837,9 @@ Public Class frmSpeciesEvent
     End Sub
 
     Private Sub cmdScreenCapture_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdScreenCapture.Click
-        myFormLibrary.frmVideoMiner.blScreenCaptureCalled = True
-        Call myFormLibrary.frmVideoMiner.mnuCapScr_Click(sender, e)
-        myFormLibrary.frmVideoMiner.blScreenCaptureCalled = False
+        'CJG
+        'myFormLibrary.frmVideoMiner.blScreenCaptureCalled = True
+        'myFormLibrary.frmVideoMiner.mnuCapScr_Click(sender, e)
+        'myFormLibrary.frmVideoMiner.blScreenCaptureCalled = False
     End Sub
 End Class

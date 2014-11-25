@@ -87,7 +87,11 @@ Public Class Point
 
 #Region "Methods"
 
-    ' Method to get a point location from a NMEA string
+    ''' <summary>
+    ''' Get a point location from a NMEA string
+    ''' </summary>
+    ''' <returns>True or False</returns>
+    ''' <remarks></remarks>
     Public Function GetPoint() As Boolean
         Dim booAquiredFix As Boolean = False
 
@@ -151,9 +155,9 @@ Public Class Point
 
                         End Try
 
-                        myFormLibrary.frmVideoMiner.GPS_X = X
-                        myFormLibrary.frmVideoMiner.GPS_Y = Y
-                        myFormLibrary.frmVideoMiner.GPS_Z = Z
+                        'myFormLibrary.frmVideoMiner.GPS_X = X
+                        'myFormLibrary.frmVideoMiner.GPS_Y = Y
+                        'myFormLibrary.frmVideoMiner.GPS_Z = Z
                         Dim intHours As Integer = 0
                         intHours = CType(Mid(arrValues(1), 1, 2), Integer)
                         Dim strHours As String
@@ -180,9 +184,11 @@ Public Class Point
                         Else
                             strSeconds = intSeconds.ToString
                         End If
+                        GpsUserTime = strHours & strMinutes & strSeconds & "00"
+                        GpsDateTime = strHours & ":" & strMinutes & ":" & strSeconds
 
-                        myFormLibrary.frmVideoMiner.GPSUserTime = strHours & strMinutes & strSeconds & "00"
-                        myFormLibrary.frmVideoMiner.GPSDateTime = strHours & ":" & strMinutes & ":" & strSeconds
+                        'myFormLibrary.frmVideoMiner.GPSUserTime = strHours & strMinutes & strSeconds & "00"
+                        'myFormLibrary.frmVideoMiner.GPSDateTime = strHours & ":" & strMinutes & ":" & strSeconds
                     End If
                 End If
                 If Trim(UCase(arrValues(0).ToString)) = "GPRMC" Then
@@ -228,7 +234,7 @@ Public Class Point
                     Catch
                     End Try
                     If strDays <> "" And strMonths <> "" And strYears <> "" Then
-                        myFormLibrary.frmVideoMiner.GPSDate = strDays & "/" & strMonths & "/" & strYears
+                        GpsDate = strDays & "/" & strMonths & "/" & strYears
                     End If
                 End If
             Next
@@ -391,11 +397,10 @@ Public Class Point
         '    Dim frame As StackFrame
         '    frame = st.GetFrame(0)
         '    Dim line As Integer
-        '    line = frame.GetFileLineNumber
+        '    line = fraGetFileLineNumber
         '    MsgBox("At line " & line & " " & ex.Message & " Stack trace: " & st.ToString)
         'End Try
     End Function
-
 
     Private Function dm2dd(ByVal dblCoordinate As Double) As Double
 

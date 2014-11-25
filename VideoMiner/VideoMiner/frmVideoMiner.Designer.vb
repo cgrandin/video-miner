@@ -19,1614 +19,1614 @@ Partial Class VideoMiner
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container()
+        components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(VideoMiner))
-        Me.mnStrVideoMinerMenu = New System.Windows.Forms.MenuStrip()
-        Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuOpenDatabase = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuCloseDatabase = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuOpenSession = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuSaveSession = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuSaveSessionAs = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuRefreshForm = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuVideoTools = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuOpenFile = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuUseExternalVideo = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuCapScr = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuNameOptionRoot = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuNameOption_1 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuNameOption_2 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuNameOption_3 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuNameOption_4 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuNameOption_5 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuNameOption_6 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuNameOption_7 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuNameOption_8 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MnuNameOption_9 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuImageTools = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuOpenImg = New System.Windows.Forms.ToolStripMenuItem()
-        Me.NextImageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.PreviousImageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.CloseImageFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ZoomToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuImageZoom25 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuImageZoom50 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuImageZoom75 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuImageZoom100 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuImageZoom200 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuConfigureTools = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ConfigureSpeciesEventToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ConfigureHabitatButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ConfigureTransectButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ConfigureButtonFormatToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DisableHabitatButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.EditLookupTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.GPSToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuGPSSettings = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuUseGPSTimeCodes = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DeviceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DeviceControl = New System.Windows.Forms.ToolStripMenuItem()
-        Me.RelayConfigurationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuHelp = New System.Windows.Forms.ToolStripMenuItem()
-        Me.KeyboardShortcutsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DataCodeAssignmentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.InformationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
-        Me.lblDatabase = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.ToolStripStatusLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.lblVideo = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.SplitContainer5 = New System.Windows.Forms.SplitContainer()
-        Me.SplitContainer4 = New System.Windows.Forms.SplitContainer()
-        Me.lblZValue = New System.Windows.Forms.Label()
-        Me.lblYValue = New System.Windows.Forms.Label()
-        Me.lblGPSConnectionValue = New System.Windows.Forms.Label()
-        Me.lblZ = New System.Windows.Forms.Label()
-        Me.lblY = New System.Windows.Forms.Label()
-        Me.lblGPSLocation = New System.Windows.Forms.Label()
-        Me.lblGPSConnection = New System.Windows.Forms.Label()
-        Me.lblXValue = New System.Windows.Forms.Label()
-        Me.lblGPSPortValue = New System.Windows.Forms.Label()
-        Me.lblX = New System.Windows.Forms.Label()
-        Me.lblGPSPort = New System.Windows.Forms.Label()
-        Me.txtNMEA = New System.Windows.Forms.TextBox()
-        Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
-        Me.SplitContainer3 = New System.Windows.Forms.SplitContainer()
-        Me.cmdCloseCalendar = New System.Windows.Forms.Button()
-        Me.mnthCalendar = New System.Windows.Forms.MonthCalendar()
-        Me.pnlImageControls = New System.Windows.Forms.Panel()
-        Me.lblImageControls = New System.Windows.Forms.Label()
-        Me.cmdPreviousImage = New System.Windows.Forms.Button()
-        Me.lblImageSize = New System.Windows.Forms.Label()
-        Me.cmdNextImage = New System.Windows.Forms.Button()
-        Me.cboZoom = New System.Windows.Forms.ComboBox()
-        Me.pnlVideoControls = New System.Windows.Forms.Panel()
-        Me.chkDefineAll = New System.Windows.Forms.CheckBox()
-        Me.chkResumeVideo = New System.Windows.Forms.CheckBox()
-        Me.cmdScreenCapture = New System.Windows.Forms.Button()
-        Me.cmdNext = New System.Windows.Forms.Button()
-        Me.cmdPrevious = New System.Windows.Forms.Button()
-        Me.lblVideoRate = New System.Windows.Forms.Label()
-        Me.LblRate = New System.Windows.Forms.Label()
-        Me.cmdStop = New System.Windows.Forms.Button()
-        Me.lblVideoControls = New System.Windows.Forms.Label()
-        Me.cmdPlayPause = New System.Windows.Forms.Button()
-        Me.cmdIncreaseRate = New System.Windows.Forms.Button()
-        Me.cmdDecreaseRate = New System.Windows.Forms.Button()
-        Me.cmdPlayForSeconds = New System.Windows.Forms.Button()
-        Me.txtPlaySeconds = New System.Windows.Forms.TextBox()
-        Me.txtTransectDate = New System.Windows.Forms.TextBox()
-        Me.chkRecordEachSecond = New System.Windows.Forms.CheckBox()
-        Me.txtProjectName = New System.Windows.Forms.TextBox()
-        Me.txtTimeSource = New System.Windows.Forms.TextBox()
-        Me.txtTime = New System.Windows.Forms.TextBox()
-        Me.txtDateSource = New System.Windows.Forms.TextBox()
-        Me.txtTransectTextbox = New System.Windows.Forms.TextBox()
-        Me.lblProjectName = New System.Windows.Forms.Label()
-        Me.txtOnOffBottomTextbox = New System.Windows.Forms.TextBox()
-        Me.cmdOffBottom = New System.Windows.Forms.Button()
-        Me.lblTransectDate = New System.Windows.Forms.Label()
-        Me.cmdTransectEnd = New System.Windows.Forms.Button()
-        Me.cmdTransectStart = New System.Windows.Forms.Button()
-        Me.cmdShowSetTimecode = New System.Windows.Forms.Button()
-        Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
-        Me.SplitContainer6 = New System.Windows.Forms.SplitContainer()
-        Me.SplitContainer7 = New System.Windows.Forms.SplitContainer()
-        Me.pnlTransectData = New System.Windows.Forms.Panel()
-        Me.cmdDefineAllTransectVariables = New System.Windows.Forms.Button()
-        Me.lblTransectData = New System.Windows.Forms.Label()
-        Me.pnlHabitatData = New System.Windows.Forms.Panel()
-        Me.cmdDefineAllSpatialVariables = New System.Windows.Forms.Button()
-        Me.lblHabitatData = New System.Windows.Forms.Label()
-        Me.chkRepeatVariables = New System.Windows.Forms.CheckBox()
-        Me.pnlSpeciesEntryControls = New System.Windows.Forms.Panel()
-        Me.cmdRareSpeciesLookup = New System.Windows.Forms.Button()
-        Me.radQuickEntry = New System.Windows.Forms.RadioButton()
-        Me.cmdEdit = New System.Windows.Forms.Button()
-        Me.radAbundanceEntry = New System.Windows.Forms.RadioButton()
-        Me.radDetailedEntry = New System.Windows.Forms.RadioButton()
-        Me.lblQuickSpeciesCount = New System.Windows.Forms.Label()
-        Me.txtQuickSpeciesCount = New System.Windows.Forms.TextBox()
-        Me.pnlSpeciesData = New System.Windows.Forms.Panel()
-        Me.lblSpeciesData = New System.Windows.Forms.Label()
-        Me.cmdNothingInPhoto = New System.Windows.Forms.Button()
-        Me.lblDisplayRecords = New System.Windows.Forms.Label()
-        Me.cmdDeleteLastRecord = New System.Windows.Forms.Button()
-        Me.cmdRefreshDatabase = New System.Windows.Forms.Button()
-        Me.txtDisplayRecords = New System.Windows.Forms.TextBox()
-        Me.cmdAddComment = New System.Windows.Forms.Button()
-        Me.grdVideoMinerDatabase = New System.Windows.Forms.DataGridView()
-        Me.fldlgOpenFD = New System.Windows.Forms.OpenFileDialog()
-        Me.tmrRecordPerSecond = New System.Windows.Forms.Timer(Me.components)
-        Me.tmrPlayForSeconds = New System.Windows.Forms.Timer(Me.components)
-        Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
-        Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
-        Me.tmrGPSExpiry = New System.Windows.Forms.Timer(Me.components)
-        Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
-        Me.mnStrVideoMinerMenu.SuspendLayout()
-        Me.StatusStrip1.SuspendLayout()
-        CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SplitContainer5.Panel1.SuspendLayout()
-        Me.SplitContainer5.Panel2.SuspendLayout()
-        Me.SplitContainer5.SuspendLayout()
-        CType(Me.SplitContainer4, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SplitContainer4.Panel1.SuspendLayout()
-        Me.SplitContainer4.Panel2.SuspendLayout()
-        Me.SplitContainer4.SuspendLayout()
-        CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SplitContainer1.Panel1.SuspendLayout()
-        Me.SplitContainer1.Panel2.SuspendLayout()
-        Me.SplitContainer1.SuspendLayout()
-        CType(Me.SplitContainer3, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SplitContainer3.Panel1.SuspendLayout()
-        Me.SplitContainer3.Panel2.SuspendLayout()
-        Me.SplitContainer3.SuspendLayout()
-        Me.pnlImageControls.SuspendLayout()
-        Me.pnlVideoControls.SuspendLayout()
-        CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SplitContainer2.Panel1.SuspendLayout()
-        Me.SplitContainer2.Panel2.SuspendLayout()
-        Me.SplitContainer2.SuspendLayout()
-        CType(Me.SplitContainer6, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SplitContainer6.Panel1.SuspendLayout()
-        Me.SplitContainer6.Panel2.SuspendLayout()
-        Me.SplitContainer6.SuspendLayout()
-        CType(Me.SplitContainer7, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SplitContainer7.Panel1.SuspendLayout()
-        Me.SplitContainer7.Panel2.SuspendLayout()
-        Me.SplitContainer7.SuspendLayout()
-        Me.pnlTransectData.SuspendLayout()
-        Me.pnlHabitatData.SuspendLayout()
-        Me.pnlSpeciesEntryControls.SuspendLayout()
-        Me.pnlSpeciesData.SuspendLayout()
-        CType(Me.grdVideoMinerDatabase, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SuspendLayout()
+        mnStrVideoMinerMenu = New System.Windows.Forms.MenuStrip()
+        FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        mnuOpenDatabase = New System.Windows.Forms.ToolStripMenuItem()
+        mnuCloseDatabase = New System.Windows.Forms.ToolStripMenuItem()
+        mnuOpenSession = New System.Windows.Forms.ToolStripMenuItem()
+        mnuSaveSession = New System.Windows.Forms.ToolStripMenuItem()
+        mnuSaveSessionAs = New System.Windows.Forms.ToolStripMenuItem()
+        mnuRefreshForm = New System.Windows.Forms.ToolStripMenuItem()
+        mnuVideoTools = New System.Windows.Forms.ToolStripMenuItem()
+        mnuOpenFile = New System.Windows.Forms.ToolStripMenuItem()
+        mnuUseExternalVideo = New System.Windows.Forms.ToolStripMenuItem()
+        mnuCapScr = New System.Windows.Forms.ToolStripMenuItem()
+        mnuNameOptionRoot = New System.Windows.Forms.ToolStripMenuItem()
+        mnuNameOption_1 = New System.Windows.Forms.ToolStripMenuItem()
+        mnuNameOption_2 = New System.Windows.Forms.ToolStripMenuItem()
+        mnuNameOption_3 = New System.Windows.Forms.ToolStripMenuItem()
+        mnuNameOption_4 = New System.Windows.Forms.ToolStripMenuItem()
+        mnuNameOption_5 = New System.Windows.Forms.ToolStripMenuItem()
+        mnuNameOption_6 = New System.Windows.Forms.ToolStripMenuItem()
+        mnuNameOption_7 = New System.Windows.Forms.ToolStripMenuItem()
+        mnuNameOption_8 = New System.Windows.Forms.ToolStripMenuItem()
+        MnuNameOption_9 = New System.Windows.Forms.ToolStripMenuItem()
+        mnuImageTools = New System.Windows.Forms.ToolStripMenuItem()
+        mnuOpenImg = New System.Windows.Forms.ToolStripMenuItem()
+        NextImageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        PreviousImageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        CloseImageFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        ZoomToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        mnuImageZoom25 = New System.Windows.Forms.ToolStripMenuItem()
+        mnuImageZoom50 = New System.Windows.Forms.ToolStripMenuItem()
+        mnuImageZoom75 = New System.Windows.Forms.ToolStripMenuItem()
+        mnuImageZoom100 = New System.Windows.Forms.ToolStripMenuItem()
+        mnuImageZoom200 = New System.Windows.Forms.ToolStripMenuItem()
+        mnuConfigureTools = New System.Windows.Forms.ToolStripMenuItem()
+        ConfigureSpeciesEventToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        ConfigureHabitatButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        ConfigureTransectButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        ConfigureButtonFormatToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        DisableHabitatButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        EditLookupTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        GPSToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        mnuGPSSettings = New System.Windows.Forms.ToolStripMenuItem()
+        mnuUseGPSTimeCodes = New System.Windows.Forms.ToolStripMenuItem()
+        DeviceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        DeviceControl = New System.Windows.Forms.ToolStripMenuItem()
+        RelayConfigurationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        mnuHelp = New System.Windows.Forms.ToolStripMenuItem()
+        KeyboardShortcutsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        DataCodeAssignmentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        InformationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        StatusStrip1 = New System.Windows.Forms.StatusStrip()
+        lblDatabase = New System.Windows.Forms.ToolStripStatusLabel()
+        ToolStripStatusLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
+        lblVideo = New System.Windows.Forms.ToolStripStatusLabel()
+        SplitContainer5 = New System.Windows.Forms.SplitContainer()
+        SplitContainer4 = New System.Windows.Forms.SplitContainer()
+        lblZValue = New System.Windows.Forms.Label()
+        lblYValue = New System.Windows.Forms.Label()
+        lblGPSConnectionValue = New System.Windows.Forms.Label()
+        lblZ = New System.Windows.Forms.Label()
+        lblY = New System.Windows.Forms.Label()
+        lblGPSLocation = New System.Windows.Forms.Label()
+        lblGPSConnection = New System.Windows.Forms.Label()
+        lblXValue = New System.Windows.Forms.Label()
+        lblGPSPortValue = New System.Windows.Forms.Label()
+        lblX = New System.Windows.Forms.Label()
+        lblGPSPort = New System.Windows.Forms.Label()
+        txtNMEA = New System.Windows.Forms.TextBox()
+        SplitContainer1 = New System.Windows.Forms.SplitContainer()
+        SplitContainer3 = New System.Windows.Forms.SplitContainer()
+        cmdCloseCalendar = New System.Windows.Forms.Button()
+        mnthCalendar = New System.Windows.Forms.MonthCalendar()
+        pnlImageControls = New System.Windows.Forms.Panel()
+        lblImageControls = New System.Windows.Forms.Label()
+        cmdPreviousImage = New System.Windows.Forms.Button()
+        lblImageSize = New System.Windows.Forms.Label()
+        cmdNextImage = New System.Windows.Forms.Button()
+        cboZoom = New System.Windows.Forms.ComboBox()
+        pnlVideoControls = New System.Windows.Forms.Panel()
+        chkDefineAll = New System.Windows.Forms.CheckBox()
+        chkResumeVideo = New System.Windows.Forms.CheckBox()
+        cmdScreenCapture = New System.Windows.Forms.Button()
+        cmdNext = New System.Windows.Forms.Button()
+        cmdPrevious = New System.Windows.Forms.Button()
+        lblVideoRate = New System.Windows.Forms.Label()
+        LblRate = New System.Windows.Forms.Label()
+        cmdStop = New System.Windows.Forms.Button()
+        lblVideoControls = New System.Windows.Forms.Label()
+        cmdPlayPause = New System.Windows.Forms.Button()
+        cmdIncreaseRate = New System.Windows.Forms.Button()
+        cmdDecreaseRate = New System.Windows.Forms.Button()
+        cmdPlayForSeconds = New System.Windows.Forms.Button()
+        txtPlaySeconds = New System.Windows.Forms.TextBox()
+        txtTransectDate = New System.Windows.Forms.TextBox()
+        chkRecordEachSecond = New System.Windows.Forms.CheckBox()
+        txtProjectName = New System.Windows.Forms.TextBox()
+        txtTimeSource = New System.Windows.Forms.TextBox()
+        txtTime = New System.Windows.Forms.TextBox()
+        txtDateSource = New System.Windows.Forms.TextBox()
+        txtTransectTextbox = New System.Windows.Forms.TextBox()
+        lblProjectName = New System.Windows.Forms.Label()
+        txtOnOffBottomTextbox = New System.Windows.Forms.TextBox()
+        cmdOffBottom = New System.Windows.Forms.Button()
+        lblTransectDate = New System.Windows.Forms.Label()
+        cmdTransectEnd = New System.Windows.Forms.Button()
+        cmdTransectStart = New System.Windows.Forms.Button()
+        cmdShowSetTimecode = New System.Windows.Forms.Button()
+        SplitContainer2 = New System.Windows.Forms.SplitContainer()
+        SplitContainer6 = New System.Windows.Forms.SplitContainer()
+        SplitContainer7 = New System.Windows.Forms.SplitContainer()
+        pnlTransectData = New System.Windows.Forms.Panel()
+        cmdDefineAllTransectVariables = New System.Windows.Forms.Button()
+        lblTransectData = New System.Windows.Forms.Label()
+        pnlHabitatData = New System.Windows.Forms.Panel()
+        cmdDefineAllSpatialVariables = New System.Windows.Forms.Button()
+        lblHabitatData = New System.Windows.Forms.Label()
+        chkRepeatVariables = New System.Windows.Forms.CheckBox()
+        pnlSpeciesEntryControls = New System.Windows.Forms.Panel()
+        cmdRareSpeciesLookup = New System.Windows.Forms.Button()
+        radQuickEntry = New System.Windows.Forms.RadioButton()
+        cmdEdit = New System.Windows.Forms.Button()
+        radAbundanceEntry = New System.Windows.Forms.RadioButton()
+        radDetailedEntry = New System.Windows.Forms.RadioButton()
+        lblQuickSpeciesCount = New System.Windows.Forms.Label()
+        txtQuickSpeciesCount = New System.Windows.Forms.TextBox()
+        pnlSpeciesData = New System.Windows.Forms.Panel()
+        lblSpeciesData = New System.Windows.Forms.Label()
+        cmdNothingInPhoto = New System.Windows.Forms.Button()
+        lblDisplayRecords = New System.Windows.Forms.Label()
+        cmdDeleteLastRecord = New System.Windows.Forms.Button()
+        cmdRefreshDatabase = New System.Windows.Forms.Button()
+        txtDisplayRecords = New System.Windows.Forms.TextBox()
+        cmdAddComment = New System.Windows.Forms.Button()
+        grdVideoMinerDatabase = New System.Windows.Forms.DataGridView()
+        fldlgOpenFD = New System.Windows.Forms.OpenFileDialog()
+        tmrRecordPerSecond = New System.Windows.Forms.Timer(components)
+        tmrPlayForSeconds = New System.Windows.Forms.Timer(components)
+        svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
+        svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
+        tmrGPSExpiry = New System.Windows.Forms.Timer(components)
+        tmrComputerTime = New System.Windows.Forms.Timer(components)
+        mnStrVideoMinerMenu.SuspendLayout()
+        StatusStrip1.SuspendLayout()
+        CType(SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
+        SplitContainer5.Panel1.SuspendLayout()
+        SplitContainer5.Panel2.SuspendLayout()
+        SplitContainer5.SuspendLayout()
+        CType(SplitContainer4, System.ComponentModel.ISupportInitialize).BeginInit()
+        SplitContainer4.Panel1.SuspendLayout()
+        SplitContainer4.Panel2.SuspendLayout()
+        SplitContainer4.SuspendLayout()
+        CType(SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
+        SplitContainer1.Panel1.SuspendLayout()
+        SplitContainer1.Panel2.SuspendLayout()
+        SplitContainer1.SuspendLayout()
+        CType(SplitContainer3, System.ComponentModel.ISupportInitialize).BeginInit()
+        SplitContainer3.Panel1.SuspendLayout()
+        SplitContainer3.Panel2.SuspendLayout()
+        SplitContainer3.SuspendLayout()
+        pnlImageControls.SuspendLayout()
+        pnlVideoControls.SuspendLayout()
+        CType(SplitContainer2, System.ComponentModel.ISupportInitialize).BeginInit()
+        SplitContainer2.Panel1.SuspendLayout()
+        SplitContainer2.Panel2.SuspendLayout()
+        SplitContainer2.SuspendLayout()
+        CType(SplitContainer6, System.ComponentModel.ISupportInitialize).BeginInit()
+        SplitContainer6.Panel1.SuspendLayout()
+        SplitContainer6.Panel2.SuspendLayout()
+        SplitContainer6.SuspendLayout()
+        CType(SplitContainer7, System.ComponentModel.ISupportInitialize).BeginInit()
+        SplitContainer7.Panel1.SuspendLayout()
+        SplitContainer7.Panel2.SuspendLayout()
+        SplitContainer7.SuspendLayout()
+        pnlTransectData.SuspendLayout()
+        pnlHabitatData.SuspendLayout()
+        pnlSpeciesEntryControls.SuspendLayout()
+        pnlSpeciesData.SuspendLayout()
+        CType(grdVideoMinerDatabase, System.ComponentModel.ISupportInitialize).BeginInit()
+        SuspendLayout()
         '
         'mnStrVideoMinerMenu
         '
-        Me.mnStrVideoMinerMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.mnuVideoTools, Me.mnuImageTools, Me.mnuConfigureTools, Me.GPSToolStripMenuItem, Me.DeviceToolStripMenuItem, Me.mnuHelp})
-        Me.mnStrVideoMinerMenu.Location = New System.Drawing.Point(0, 0)
-        Me.mnStrVideoMinerMenu.Name = "mnStrVideoMinerMenu"
-        Me.mnStrVideoMinerMenu.Size = New System.Drawing.Size(1098, 24)
-        Me.mnStrVideoMinerMenu.TabIndex = 30
-        Me.mnStrVideoMinerMenu.Text = "MenuStrip1"
+        mnStrVideoMinerMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {FileToolStripMenuItem, mnuVideoTools, mnuImageTools, mnuConfigureTools, GPSToolStripMenuItem, DeviceToolStripMenuItem, mnuHelp})
+        mnStrVideoMinerMenu.Location = New System.Drawing.Point(0, 0)
+        mnStrVideoMinerMenu.Name = "mnStrVideoMinerMenu"
+        mnStrVideoMinerMenu.Size = New System.Drawing.Size(1098, 24)
+        mnStrVideoMinerMenu.TabIndex = 30
+        mnStrVideoMinerMenu.Text = "MenuStrip1"
         '
         'FileToolStripMenuItem
         '
-        Me.FileToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuOpenDatabase, Me.mnuCloseDatabase, Me.mnuOpenSession, Me.mnuSaveSession, Me.mnuSaveSessionAs, Me.mnuRefreshForm})
-        Me.FileToolStripMenuItem.Name = "FileToolStripMenuItem"
-        Me.FileToolStripMenuItem.Size = New System.Drawing.Size(37, 20)
-        Me.FileToolStripMenuItem.Text = "File"
+        FileToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {mnuOpenDatabase, mnuCloseDatabase, mnuOpenSession, mnuSaveSession, mnuSaveSessionAs, mnuRefreshForm})
+        FileToolStripMenuItem.Name = "FileToolStripMenuItem"
+        FileToolStripMenuItem.Size = New System.Drawing.Size(37, 20)
+        FileToolStripMenuItem.Text = "File"
         '
         'mnuOpenDatabase
         '
-        Me.mnuOpenDatabase.Name = "mnuOpenDatabase"
-        Me.mnuOpenDatabase.Size = New System.Drawing.Size(156, 22)
-        Me.mnuOpenDatabase.Text = "Open Database"
+        mnuOpenDatabase.Name = "mnuOpenDatabase"
+        mnuOpenDatabase.Size = New System.Drawing.Size(156, 22)
+        mnuOpenDatabase.Text = "Open Database"
         '
         'mnuCloseDatabase
         '
-        Me.mnuCloseDatabase.Name = "mnuCloseDatabase"
-        Me.mnuCloseDatabase.Size = New System.Drawing.Size(156, 22)
-        Me.mnuCloseDatabase.Text = "Close Database"
+        mnuCloseDatabase.Name = "mnuCloseDatabase"
+        mnuCloseDatabase.Size = New System.Drawing.Size(156, 22)
+        mnuCloseDatabase.Text = "Close Database"
         '
         'mnuOpenSession
         '
-        Me.mnuOpenSession.Name = "mnuOpenSession"
-        Me.mnuOpenSession.Size = New System.Drawing.Size(156, 22)
-        Me.mnuOpenSession.Text = "Open Session"
+        mnuOpenSession.Name = "mnuOpenSession"
+        mnuOpenSession.Size = New System.Drawing.Size(156, 22)
+        mnuOpenSession.Text = "Open Session"
         '
         'mnuSaveSession
         '
-        Me.mnuSaveSession.Enabled = False
-        Me.mnuSaveSession.Name = "mnuSaveSession"
-        Me.mnuSaveSession.Size = New System.Drawing.Size(156, 22)
-        Me.mnuSaveSession.Text = "Save Session"
+        mnuSaveSession.Enabled = False
+        mnuSaveSession.Name = "mnuSaveSession"
+        mnuSaveSession.Size = New System.Drawing.Size(156, 22)
+        mnuSaveSession.Text = "Save Session"
         '
         'mnuSaveSessionAs
         '
-        Me.mnuSaveSessionAs.Name = "mnuSaveSessionAs"
-        Me.mnuSaveSessionAs.Size = New System.Drawing.Size(156, 22)
-        Me.mnuSaveSessionAs.Text = "Save Session As"
+        mnuSaveSessionAs.Name = "mnuSaveSessionAs"
+        mnuSaveSessionAs.Size = New System.Drawing.Size(156, 22)
+        mnuSaveSessionAs.Text = "Save Session As"
         '
         'mnuRefreshForm
         '
-        Me.mnuRefreshForm.Enabled = False
-        Me.mnuRefreshForm.Name = "mnuRefreshForm"
-        Me.mnuRefreshForm.Size = New System.Drawing.Size(156, 22)
-        Me.mnuRefreshForm.Text = "Refresh Data"
+        mnuRefreshForm.Enabled = False
+        mnuRefreshForm.Name = "mnuRefreshForm"
+        mnuRefreshForm.Size = New System.Drawing.Size(156, 22)
+        mnuRefreshForm.Text = "Refresh Data"
         '
         'mnuVideoTools
         '
-        Me.mnuVideoTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuOpenFile, Me.mnuUseExternalVideo, Me.mnuCapScr, Me.mnuNameOptionRoot})
-        Me.mnuVideoTools.Name = "mnuVideoTools"
-        Me.mnuVideoTools.Size = New System.Drawing.Size(49, 20)
-        Me.mnuVideoTools.Text = "Video"
+        mnuVideoTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {mnuOpenFile, mnuUseExternalVideo, mnuCapScr, mnuNameOptionRoot})
+        mnuVideoTools.Name = "mnuVideoTools"
+        mnuVideoTools.Size = New System.Drawing.Size(49, 20)
+        mnuVideoTools.Text = "Video"
         '
         'mnuOpenFile
         '
-        Me.mnuOpenFile.Name = "mnuOpenFile"
-        Me.mnuOpenFile.Size = New System.Drawing.Size(230, 22)
-        Me.mnuOpenFile.Text = "Open Video"
+        mnuOpenFile.Name = "mnuOpenFile"
+        mnuOpenFile.Size = New System.Drawing.Size(230, 22)
+        mnuOpenFile.Text = "Open Video"
         '
         'mnuUseExternalVideo
         '
-        Me.mnuUseExternalVideo.CheckOnClick = True
-        Me.mnuUseExternalVideo.Name = "mnuUseExternalVideo"
-        Me.mnuUseExternalVideo.Size = New System.Drawing.Size(230, 22)
-        Me.mnuUseExternalVideo.Text = "Use External Video"
+        mnuUseExternalVideo.CheckOnClick = True
+        mnuUseExternalVideo.Name = "mnuUseExternalVideo"
+        mnuUseExternalVideo.Size = New System.Drawing.Size(230, 22)
+        mnuUseExternalVideo.Text = "Use External Video"
         '
         'mnuCapScr
         '
-        Me.mnuCapScr.Enabled = False
-        Me.mnuCapScr.Name = "mnuCapScr"
-        Me.mnuCapScr.Size = New System.Drawing.Size(230, 22)
-        Me.mnuCapScr.Text = "Capture Screen"
+        mnuCapScr.Enabled = False
+        mnuCapScr.Name = "mnuCapScr"
+        mnuCapScr.Size = New System.Drawing.Size(230, 22)
+        mnuCapScr.Text = "Capture Screen"
         '
         'mnuNameOptionRoot
         '
-        Me.mnuNameOptionRoot.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuNameOption_1, Me.mnuNameOption_2, Me.mnuNameOption_3, Me.mnuNameOption_4, Me.mnuNameOption_5, Me.mnuNameOption_6, Me.mnuNameOption_7, Me.mnuNameOption_8, Me.MnuNameOption_9})
-        Me.mnuNameOptionRoot.Enabled = False
-        Me.mnuNameOptionRoot.Name = "mnuNameOptionRoot"
-        Me.mnuNameOptionRoot.Size = New System.Drawing.Size(230, 22)
-        Me.mnuNameOptionRoot.Text = "Capture Screen Default Name"
+        mnuNameOptionRoot.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {mnuNameOption_1, mnuNameOption_2, mnuNameOption_3, mnuNameOption_4, mnuNameOption_5, mnuNameOption_6, mnuNameOption_7, mnuNameOption_8, MnuNameOption_9})
+        mnuNameOptionRoot.Enabled = False
+        mnuNameOptionRoot.Name = "mnuNameOptionRoot"
+        mnuNameOptionRoot.Size = New System.Drawing.Size(230, 22)
+        mnuNameOptionRoot.Text = "Capture Screen Default Name"
         '
         'mnuNameOption_1
         '
-        Me.mnuNameOption_1.CheckOnClick = True
-        Me.mnuNameOption_1.Name = "mnuNameOption_1"
-        Me.mnuNameOption_1.Size = New System.Drawing.Size(343, 22)
-        Me.mnuNameOption_1.Text = "Capture_[Project]_[Transect_Date]_[Transect_Time]"
+        mnuNameOption_1.CheckOnClick = True
+        mnuNameOption_1.Name = "mnuNameOption_1"
+        mnuNameOption_1.Size = New System.Drawing.Size(343, 22)
+        mnuNameOption_1.Text = "Capture_[Project]_[Transect_Date]_[Transect_Time]"
         '
         'mnuNameOption_2
         '
-        Me.mnuNameOption_2.CheckOnClick = True
-        Me.mnuNameOption_2.Name = "mnuNameOption_2"
-        Me.mnuNameOption_2.Size = New System.Drawing.Size(343, 22)
-        Me.mnuNameOption_2.Text = "Capture_[Project]_[Todays_Date]_[Todays_Time]"
+        mnuNameOption_2.CheckOnClick = True
+        mnuNameOption_2.Name = "mnuNameOption_2"
+        mnuNameOption_2.Size = New System.Drawing.Size(343, 22)
+        mnuNameOption_2.Text = "Capture_[Project]_[Todays_Date]_[Todays_Time]"
         '
         'mnuNameOption_3
         '
-        Me.mnuNameOption_3.CheckOnClick = True
-        Me.mnuNameOption_3.Name = "mnuNameOption_3"
-        Me.mnuNameOption_3.Size = New System.Drawing.Size(343, 22)
-        Me.mnuNameOption_3.Text = "Capture_[Transect_Date]_[Transect_Time]"
+        mnuNameOption_3.CheckOnClick = True
+        mnuNameOption_3.Name = "mnuNameOption_3"
+        mnuNameOption_3.Size = New System.Drawing.Size(343, 22)
+        mnuNameOption_3.Text = "Capture_[Transect_Date]_[Transect_Time]"
         '
         'mnuNameOption_4
         '
-        Me.mnuNameOption_4.CheckOnClick = True
-        Me.mnuNameOption_4.Name = "mnuNameOption_4"
-        Me.mnuNameOption_4.Size = New System.Drawing.Size(343, 22)
-        Me.mnuNameOption_4.Text = "Capture_[Todays_Date]_[Todays_Time]"
+        mnuNameOption_4.CheckOnClick = True
+        mnuNameOption_4.Name = "mnuNameOption_4"
+        mnuNameOption_4.Size = New System.Drawing.Size(343, 22)
+        mnuNameOption_4.Text = "Capture_[Todays_Date]_[Todays_Time]"
         '
         'mnuNameOption_5
         '
-        Me.mnuNameOption_5.CheckOnClick = True
-        Me.mnuNameOption_5.Name = "mnuNameOption_5"
-        Me.mnuNameOption_5.Size = New System.Drawing.Size(343, 22)
-        Me.mnuNameOption_5.Text = "[Project]_[Transect_Date]_[Transect_Time]"
+        mnuNameOption_5.CheckOnClick = True
+        mnuNameOption_5.Name = "mnuNameOption_5"
+        mnuNameOption_5.Size = New System.Drawing.Size(343, 22)
+        mnuNameOption_5.Text = "[Project]_[Transect_Date]_[Transect_Time]"
         '
         'mnuNameOption_6
         '
-        Me.mnuNameOption_6.CheckOnClick = True
-        Me.mnuNameOption_6.Name = "mnuNameOption_6"
-        Me.mnuNameOption_6.Size = New System.Drawing.Size(343, 22)
-        Me.mnuNameOption_6.Text = "[Project]_[Todays_Date]_[Todays_Time]"
+        mnuNameOption_6.CheckOnClick = True
+        mnuNameOption_6.Name = "mnuNameOption_6"
+        mnuNameOption_6.Size = New System.Drawing.Size(343, 22)
+        mnuNameOption_6.Text = "[Project]_[Todays_Date]_[Todays_Time]"
         '
         'mnuNameOption_7
         '
-        Me.mnuNameOption_7.CheckOnClick = True
-        Me.mnuNameOption_7.Name = "mnuNameOption_7"
-        Me.mnuNameOption_7.Size = New System.Drawing.Size(343, 22)
-        Me.mnuNameOption_7.Text = "[Transect_Date]_[Transect_Time]"
+        mnuNameOption_7.CheckOnClick = True
+        mnuNameOption_7.Name = "mnuNameOption_7"
+        mnuNameOption_7.Size = New System.Drawing.Size(343, 22)
+        mnuNameOption_7.Text = "[Transect_Date]_[Transect_Time]"
         '
         'mnuNameOption_8
         '
-        Me.mnuNameOption_8.CheckOnClick = True
-        Me.mnuNameOption_8.Name = "mnuNameOption_8"
-        Me.mnuNameOption_8.Size = New System.Drawing.Size(343, 22)
-        Me.mnuNameOption_8.Text = "[Todays_Date]_[Todays_Time]"
+        mnuNameOption_8.CheckOnClick = True
+        mnuNameOption_8.Name = "mnuNameOption_8"
+        mnuNameOption_8.Size = New System.Drawing.Size(343, 22)
+        mnuNameOption_8.Text = "[Todays_Date]_[Todays_Time]"
         '
         'MnuNameOption_9
         '
-        Me.MnuNameOption_9.Checked = True
-        Me.MnuNameOption_9.CheckOnClick = True
-        Me.MnuNameOption_9.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.MnuNameOption_9.Name = "MnuNameOption_9"
-        Me.MnuNameOption_9.Size = New System.Drawing.Size(343, 22)
-        Me.MnuNameOption_9.Text = "None"
+        MnuNameOption_9.Checked = True
+        MnuNameOption_9.CheckOnClick = True
+        MnuNameOption_9.CheckState = System.Windows.Forms.CheckState.Checked
+        MnuNameOption_9.Name = "MnuNameOption_9"
+        MnuNameOption_9.Size = New System.Drawing.Size(343, 22)
+        MnuNameOption_9.Text = "None"
         '
         'mnuImageTools
         '
-        Me.mnuImageTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuOpenImg, Me.NextImageToolStripMenuItem, Me.PreviousImageToolStripMenuItem, Me.CloseImageFileToolStripMenuItem, Me.ZoomToolStripMenuItem})
-        Me.mnuImageTools.Name = "mnuImageTools"
-        Me.mnuImageTools.Size = New System.Drawing.Size(52, 20)
-        Me.mnuImageTools.Text = "Image"
+        mnuImageTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {mnuOpenImg, NextImageToolStripMenuItem, PreviousImageToolStripMenuItem, CloseImageFileToolStripMenuItem, ZoomToolStripMenuItem})
+        mnuImageTools.Name = "mnuImageTools"
+        mnuImageTools.Size = New System.Drawing.Size(52, 20)
+        mnuImageTools.Text = "Image"
         '
         'mnuOpenImg
         '
-        Me.mnuOpenImg.Name = "mnuOpenImg"
-        Me.mnuOpenImg.Size = New System.Drawing.Size(155, 22)
-        Me.mnuOpenImg.Text = "Open Image"
+        mnuOpenImg.Name = "mnuOpenImg"
+        mnuOpenImg.Size = New System.Drawing.Size(155, 22)
+        mnuOpenImg.Text = "Open Image"
         '
         'NextImageToolStripMenuItem
         '
-        Me.NextImageToolStripMenuItem.Enabled = False
-        Me.NextImageToolStripMenuItem.Name = "NextImageToolStripMenuItem"
-        Me.NextImageToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
-        Me.NextImageToolStripMenuItem.Text = "Next Image"
+        NextImageToolStripMenuItem.Enabled = False
+        NextImageToolStripMenuItem.Name = "NextImageToolStripMenuItem"
+        NextImageToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
+        NextImageToolStripMenuItem.Text = "Next Image"
         '
         'PreviousImageToolStripMenuItem
         '
-        Me.PreviousImageToolStripMenuItem.Enabled = False
-        Me.PreviousImageToolStripMenuItem.Name = "PreviousImageToolStripMenuItem"
-        Me.PreviousImageToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
-        Me.PreviousImageToolStripMenuItem.Text = "Previous Image"
+        PreviousImageToolStripMenuItem.Enabled = False
+        PreviousImageToolStripMenuItem.Name = "PreviousImageToolStripMenuItem"
+        PreviousImageToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
+        PreviousImageToolStripMenuItem.Text = "Previous Image"
         '
         'CloseImageFileToolStripMenuItem
         '
-        Me.CloseImageFileToolStripMenuItem.Enabled = False
-        Me.CloseImageFileToolStripMenuItem.Name = "CloseImageFileToolStripMenuItem"
-        Me.CloseImageFileToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
-        Me.CloseImageFileToolStripMenuItem.Text = "Close"
+        CloseImageFileToolStripMenuItem.Enabled = False
+        CloseImageFileToolStripMenuItem.Name = "CloseImageFileToolStripMenuItem"
+        CloseImageFileToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
+        CloseImageFileToolStripMenuItem.Text = "Close"
         '
         'ZoomToolStripMenuItem
         '
-        Me.ZoomToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuImageZoom25, Me.mnuImageZoom50, Me.mnuImageZoom75, Me.mnuImageZoom100, Me.mnuImageZoom200})
-        Me.ZoomToolStripMenuItem.Enabled = False
-        Me.ZoomToolStripMenuItem.Name = "ZoomToolStripMenuItem"
-        Me.ZoomToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
-        Me.ZoomToolStripMenuItem.Text = "Zoom"
+        ZoomToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {mnuImageZoom25, mnuImageZoom50, mnuImageZoom75, mnuImageZoom100, mnuImageZoom200})
+        ZoomToolStripMenuItem.Enabled = False
+        ZoomToolStripMenuItem.Name = "ZoomToolStripMenuItem"
+        ZoomToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
+        ZoomToolStripMenuItem.Text = "Zoom"
         '
         'mnuImageZoom25
         '
-        Me.mnuImageZoom25.Name = "mnuImageZoom25"
-        Me.mnuImageZoom25.Size = New System.Drawing.Size(102, 22)
-        Me.mnuImageZoom25.Text = "25%"
+        mnuImageZoom25.Name = "mnuImageZoom25"
+        mnuImageZoom25.Size = New System.Drawing.Size(102, 22)
+        mnuImageZoom25.Text = "25%"
         '
         'mnuImageZoom50
         '
-        Me.mnuImageZoom50.Name = "mnuImageZoom50"
-        Me.mnuImageZoom50.Size = New System.Drawing.Size(102, 22)
-        Me.mnuImageZoom50.Text = "50%"
+        mnuImageZoom50.Name = "mnuImageZoom50"
+        mnuImageZoom50.Size = New System.Drawing.Size(102, 22)
+        mnuImageZoom50.Text = "50%"
         '
         'mnuImageZoom75
         '
-        Me.mnuImageZoom75.Name = "mnuImageZoom75"
-        Me.mnuImageZoom75.Size = New System.Drawing.Size(102, 22)
-        Me.mnuImageZoom75.Text = "75%"
+        mnuImageZoom75.Name = "mnuImageZoom75"
+        mnuImageZoom75.Size = New System.Drawing.Size(102, 22)
+        mnuImageZoom75.Text = "75%"
         '
         'mnuImageZoom100
         '
-        Me.mnuImageZoom100.Name = "mnuImageZoom100"
-        Me.mnuImageZoom100.Size = New System.Drawing.Size(102, 22)
-        Me.mnuImageZoom100.Text = "100%"
+        mnuImageZoom100.Name = "mnuImageZoom100"
+        mnuImageZoom100.Size = New System.Drawing.Size(102, 22)
+        mnuImageZoom100.Text = "100%"
         '
         'mnuImageZoom200
         '
-        Me.mnuImageZoom200.Name = "mnuImageZoom200"
-        Me.mnuImageZoom200.Size = New System.Drawing.Size(102, 22)
-        Me.mnuImageZoom200.Text = "200%"
+        mnuImageZoom200.Name = "mnuImageZoom200"
+        mnuImageZoom200.Size = New System.Drawing.Size(102, 22)
+        mnuImageZoom200.Text = "200%"
         '
         'mnuConfigureTools
         '
-        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ConfigureSpeciesEventToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureButtonFormatToolStripMenuItem, Me.DisableHabitatButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem})
-        Me.mnuConfigureTools.Enabled = False
-        Me.mnuConfigureTools.Name = "mnuConfigureTools"
-        Me.mnuConfigureTools.Size = New System.Drawing.Size(72, 20)
-        Me.mnuConfigureTools.Text = "Configure"
+        mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {ConfigureSpeciesEventToolStripMenuItem, ConfigureHabitatButtonToolStripMenuItem, ConfigureTransectButtonsToolStripMenuItem, ConfigureButtonFormatToolStripMenuItem, DisableHabitatButtonsToolStripMenuItem, EditLookupTableToolStripMenuItem})
+        mnuConfigureTools.Enabled = False
+        mnuConfigureTools.Name = "mnuConfigureTools"
+        mnuConfigureTools.Size = New System.Drawing.Size(72, 20)
+        mnuConfigureTools.Text = "Configure"
         '
         'ConfigureSpeciesEventToolStripMenuItem
         '
-        Me.ConfigureSpeciesEventToolStripMenuItem.Name = "ConfigureSpeciesEventToolStripMenuItem"
-        Me.ConfigureSpeciesEventToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
-        Me.ConfigureSpeciesEventToolStripMenuItem.Text = "Configure Species Event"
+        ConfigureSpeciesEventToolStripMenuItem.Name = "ConfigureSpeciesEventToolStripMenuItem"
+        ConfigureSpeciesEventToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
+        ConfigureSpeciesEventToolStripMenuItem.Text = "Configure Species Event"
         '
         'ConfigureHabitatButtonToolStripMenuItem
         '
-        Me.ConfigureHabitatButtonToolStripMenuItem.Name = "ConfigureHabitatButtonToolStripMenuItem"
-        Me.ConfigureHabitatButtonToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
-        Me.ConfigureHabitatButtonToolStripMenuItem.Text = "Configure Habitat Buttons"
+        ConfigureHabitatButtonToolStripMenuItem.Name = "ConfigureHabitatButtonToolStripMenuItem"
+        ConfigureHabitatButtonToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
+        ConfigureHabitatButtonToolStripMenuItem.Text = "Configure Habitat Buttons"
         '
         'ConfigureTransectButtonsToolStripMenuItem
         '
-        Me.ConfigureTransectButtonsToolStripMenuItem.Name = "ConfigureTransectButtonsToolStripMenuItem"
-        Me.ConfigureTransectButtonsToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
-        Me.ConfigureTransectButtonsToolStripMenuItem.Text = "Configure Transect Buttons"
+        ConfigureTransectButtonsToolStripMenuItem.Name = "ConfigureTransectButtonsToolStripMenuItem"
+        ConfigureTransectButtonsToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
+        ConfigureTransectButtonsToolStripMenuItem.Text = "Configure Transect Buttons"
         '
         'ConfigureButtonFormatToolStripMenuItem
         '
-        Me.ConfigureButtonFormatToolStripMenuItem.Name = "ConfigureButtonFormatToolStripMenuItem"
-        Me.ConfigureButtonFormatToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
-        Me.ConfigureButtonFormatToolStripMenuItem.Text = "Configure Button Format"
+        ConfigureButtonFormatToolStripMenuItem.Name = "ConfigureButtonFormatToolStripMenuItem"
+        ConfigureButtonFormatToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
+        ConfigureButtonFormatToolStripMenuItem.Text = "Configure Button Format"
         '
         'DisableHabitatButtonsToolStripMenuItem
         '
-        Me.DisableHabitatButtonsToolStripMenuItem.Name = "DisableHabitatButtonsToolStripMenuItem"
-        Me.DisableHabitatButtonsToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
-        Me.DisableHabitatButtonsToolStripMenuItem.Text = "Disable Habitat Buttons"
+        DisableHabitatButtonsToolStripMenuItem.Name = "DisableHabitatButtonsToolStripMenuItem"
+        DisableHabitatButtonsToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
+        DisableHabitatButtonsToolStripMenuItem.Text = "Disable Habitat Buttons"
         '
         'EditLookupTableToolStripMenuItem
         '
-        Me.EditLookupTableToolStripMenuItem.Name = "EditLookupTableToolStripMenuItem"
-        Me.EditLookupTableToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
-        Me.EditLookupTableToolStripMenuItem.Text = "Edit Lookup Table"
+        EditLookupTableToolStripMenuItem.Name = "EditLookupTableToolStripMenuItem"
+        EditLookupTableToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
+        EditLookupTableToolStripMenuItem.Text = "Edit Lookup Table"
         '
         'GPSToolStripMenuItem
         '
-        Me.GPSToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuGPSSettings, Me.mnuUseGPSTimeCodes})
-        Me.GPSToolStripMenuItem.Name = "GPSToolStripMenuItem"
-        Me.GPSToolStripMenuItem.Size = New System.Drawing.Size(40, 20)
-        Me.GPSToolStripMenuItem.Text = "GPS"
+        GPSToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {mnuGPSSettings, mnuUseGPSTimeCodes})
+        GPSToolStripMenuItem.Name = "GPSToolStripMenuItem"
+        GPSToolStripMenuItem.Size = New System.Drawing.Size(40, 20)
+        GPSToolStripMenuItem.Text = "GPS"
         '
         'mnuGPSSettings
         '
-        Me.mnuGPSSettings.Name = "mnuGPSSettings"
-        Me.mnuGPSSettings.Size = New System.Drawing.Size(183, 22)
-        Me.mnuGPSSettings.Text = "GPS Settings"
-        Me.mnuGPSSettings.Visible = False
+        mnuGPSSettings.Name = "mnuGPSSettings"
+        mnuGPSSettings.Size = New System.Drawing.Size(183, 22)
+        mnuGPSSettings.Text = "GPS Settings"
+        mnuGPSSettings.Visible = False
         '
         'mnuUseGPSTimeCodes
         '
-        Me.mnuUseGPSTimeCodes.CheckOnClick = True
-        Me.mnuUseGPSTimeCodes.Name = "mnuUseGPSTimeCodes"
-        Me.mnuUseGPSTimeCodes.Size = New System.Drawing.Size(183, 22)
-        Me.mnuUseGPSTimeCodes.Text = "Use GPS Time Codes"
+        mnuUseGPSTimeCodes.CheckOnClick = True
+        mnuUseGPSTimeCodes.Name = "mnuUseGPSTimeCodes"
+        mnuUseGPSTimeCodes.Size = New System.Drawing.Size(183, 22)
+        mnuUseGPSTimeCodes.Text = "Use GPS Time Codes"
         '
         'DeviceToolStripMenuItem
         '
-        Me.DeviceToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DeviceControl, Me.RelayConfigurationToolStripMenuItem})
-        Me.DeviceToolStripMenuItem.Name = "DeviceToolStripMenuItem"
-        Me.DeviceToolStripMenuItem.Size = New System.Drawing.Size(54, 20)
-        Me.DeviceToolStripMenuItem.Text = "Device"
-        Me.DeviceToolStripMenuItem.Visible = False
+        DeviceToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {DeviceControl, RelayConfigurationToolStripMenuItem})
+        DeviceToolStripMenuItem.Name = "DeviceToolStripMenuItem"
+        DeviceToolStripMenuItem.Size = New System.Drawing.Size(54, 20)
+        DeviceToolStripMenuItem.Text = "Device"
+        DeviceToolStripMenuItem.Visible = False
         '
         'DeviceControl
         '
-        Me.DeviceControl.Name = "DeviceControl"
-        Me.DeviceControl.Size = New System.Drawing.Size(179, 22)
-        Me.DeviceControl.Text = "Device Control"
+        DeviceControl.Name = "DeviceControl"
+        DeviceControl.Size = New System.Drawing.Size(179, 22)
+        DeviceControl.Text = "Device Control"
         '
         'RelayConfigurationToolStripMenuItem
         '
-        Me.RelayConfigurationToolStripMenuItem.Name = "RelayConfigurationToolStripMenuItem"
-        Me.RelayConfigurationToolStripMenuItem.Size = New System.Drawing.Size(179, 22)
-        Me.RelayConfigurationToolStripMenuItem.Text = "Relay Configuration"
+        RelayConfigurationToolStripMenuItem.Name = "RelayConfigurationToolStripMenuItem"
+        RelayConfigurationToolStripMenuItem.Size = New System.Drawing.Size(179, 22)
+        RelayConfigurationToolStripMenuItem.Text = "Relay Configuration"
         '
         'mnuHelp
         '
-        Me.mnuHelp.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.KeyboardShortcutsToolStripMenuItem, Me.DataCodeAssignmentsToolStripMenuItem, Me.InformationToolStripMenuItem})
-        Me.mnuHelp.Name = "mnuHelp"
-        Me.mnuHelp.Size = New System.Drawing.Size(44, 20)
-        Me.mnuHelp.Text = "Help"
+        mnuHelp.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {KeyboardShortcutsToolStripMenuItem, DataCodeAssignmentsToolStripMenuItem, InformationToolStripMenuItem})
+        mnuHelp.Name = "mnuHelp"
+        mnuHelp.Size = New System.Drawing.Size(44, 20)
+        mnuHelp.Text = "Help"
         '
         'KeyboardShortcutsToolStripMenuItem
         '
-        Me.KeyboardShortcutsToolStripMenuItem.Enabled = False
-        Me.KeyboardShortcutsToolStripMenuItem.Name = "KeyboardShortcutsToolStripMenuItem"
-        Me.KeyboardShortcutsToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
-        Me.KeyboardShortcutsToolStripMenuItem.Text = "Keyboard Shortcuts"
+        KeyboardShortcutsToolStripMenuItem.Enabled = False
+        KeyboardShortcutsToolStripMenuItem.Name = "KeyboardShortcutsToolStripMenuItem"
+        KeyboardShortcutsToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
+        KeyboardShortcutsToolStripMenuItem.Text = "Keyboard Shortcuts"
         '
         'DataCodeAssignmentsToolStripMenuItem
         '
-        Me.DataCodeAssignmentsToolStripMenuItem.Enabled = False
-        Me.DataCodeAssignmentsToolStripMenuItem.Name = "DataCodeAssignmentsToolStripMenuItem"
-        Me.DataCodeAssignmentsToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
-        Me.DataCodeAssignmentsToolStripMenuItem.Text = "Data Code Assignments"
+        DataCodeAssignmentsToolStripMenuItem.Enabled = False
+        DataCodeAssignmentsToolStripMenuItem.Name = "DataCodeAssignmentsToolStripMenuItem"
+        DataCodeAssignmentsToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
+        DataCodeAssignmentsToolStripMenuItem.Text = "Data Code Assignments"
         '
         'InformationToolStripMenuItem
         '
-        Me.InformationToolStripMenuItem.Name = "InformationToolStripMenuItem"
-        Me.InformationToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
-        Me.InformationToolStripMenuItem.Text = "About"
+        InformationToolStripMenuItem.Name = "InformationToolStripMenuItem"
+        InformationToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
+        InformationToolStripMenuItem.Text = "About"
         '
         'StatusStrip1
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblDatabase, Me.ToolStripStatusLabel1, Me.lblVideo})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 3)
-        Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(1098, 22)
-        Me.StatusStrip1.TabIndex = 45
-        Me.StatusStrip1.Text = "StatusStrip1"
+        StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {lblDatabase, ToolStripStatusLabel1, lblVideo})
+        StatusStrip1.Location = New System.Drawing.Point(0, 3)
+        StatusStrip1.Name = "StatusStrip1"
+        StatusStrip1.Size = New System.Drawing.Size(1098, 22)
+        StatusStrip1.TabIndex = 45
+        StatusStrip1.Text = "StatusStrip1"
         '
         'lblDatabase
         '
-        Me.lblDatabase.ForeColor = System.Drawing.Color.Red
-        Me.lblDatabase.Name = "lblDatabase"
-        Me.lblDatabase.Size = New System.Drawing.Size(0, 17)
+        lblDatabase.ForeColor = System.Drawing.Color.Red
+        lblDatabase.Name = "lblDatabase"
+        lblDatabase.Size = New System.Drawing.Size(0, 17)
         '
         'ToolStripStatusLabel1
         '
-        Me.ToolStripStatusLabel1.Name = "ToolStripStatusLabel1"
-        Me.ToolStripStatusLabel1.Size = New System.Drawing.Size(10, 17)
-        Me.ToolStripStatusLabel1.Text = "|"
+        ToolStripStatusLabel1.Name = "ToolStripStatusLabel1"
+        ToolStripStatusLabel1.Size = New System.Drawing.Size(10, 17)
+        ToolStripStatusLabel1.Text = "|"
         '
         'lblVideo
         '
-        Me.lblVideo.ForeColor = System.Drawing.Color.Red
-        Me.lblVideo.Name = "lblVideo"
-        Me.lblVideo.Size = New System.Drawing.Size(0, 17)
+        lblVideo.ForeColor = System.Drawing.Color.Red
+        lblVideo.Name = "lblVideo"
+        lblVideo.Size = New System.Drawing.Size(0, 17)
         '
         'SplitContainer5
         '
-        Me.SplitContainer5.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitContainer5.Location = New System.Drawing.Point(0, 24)
-        Me.SplitContainer5.Name = "SplitContainer5"
-        Me.SplitContainer5.Orientation = System.Windows.Forms.Orientation.Horizontal
+        SplitContainer5.Dock = System.Windows.Forms.DockStyle.Fill
+        SplitContainer5.Location = New System.Drawing.Point(0, 24)
+        SplitContainer5.Name = "SplitContainer5"
+        SplitContainer5.Orientation = System.Windows.Forms.Orientation.Horizontal
         '
         'SplitContainer5.Panel1
         '
-        Me.SplitContainer5.Panel1.Controls.Add(Me.SplitContainer4)
+        SplitContainer5.Panel1.Controls.Add(SplitContainer4)
         '
         'SplitContainer5.Panel2
         '
-        Me.SplitContainer5.Panel2.Controls.Add(Me.StatusStrip1)
-        Me.SplitContainer5.Size = New System.Drawing.Size(1098, 705)
-        Me.SplitContainer5.SplitterDistance = 676
-        Me.SplitContainer5.TabIndex = 46
+        SplitContainer5.Panel2.Controls.Add(StatusStrip1)
+        SplitContainer5.Size = New System.Drawing.Size(1098, 705)
+        SplitContainer5.SplitterDistance = 676
+        SplitContainer5.TabIndex = 46
         '
         'SplitContainer4
         '
-        Me.SplitContainer4.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitContainer4.IsSplitterFixed = True
-        Me.SplitContainer4.Location = New System.Drawing.Point(0, 0)
-        Me.SplitContainer4.Name = "SplitContainer4"
-        Me.SplitContainer4.Orientation = System.Windows.Forms.Orientation.Horizontal
+        SplitContainer4.Dock = System.Windows.Forms.DockStyle.Fill
+        SplitContainer4.IsSplitterFixed = True
+        SplitContainer4.Location = New System.Drawing.Point(0, 0)
+        SplitContainer4.Name = "SplitContainer4"
+        SplitContainer4.Orientation = System.Windows.Forms.Orientation.Horizontal
         '
         'SplitContainer4.Panel1
         '
-        Me.SplitContainer4.Panel1.Controls.Add(Me.lblZValue)
-        Me.SplitContainer4.Panel1.Controls.Add(Me.lblYValue)
-        Me.SplitContainer4.Panel1.Controls.Add(Me.lblGPSConnectionValue)
-        Me.SplitContainer4.Panel1.Controls.Add(Me.lblZ)
-        Me.SplitContainer4.Panel1.Controls.Add(Me.lblY)
-        Me.SplitContainer4.Panel1.Controls.Add(Me.lblGPSLocation)
-        Me.SplitContainer4.Panel1.Controls.Add(Me.lblGPSConnection)
-        Me.SplitContainer4.Panel1.Controls.Add(Me.lblXValue)
-        Me.SplitContainer4.Panel1.Controls.Add(Me.lblGPSPortValue)
-        Me.SplitContainer4.Panel1.Controls.Add(Me.lblX)
-        Me.SplitContainer4.Panel1.Controls.Add(Me.lblGPSPort)
-        Me.SplitContainer4.Panel1.Controls.Add(Me.txtNMEA)
+        SplitContainer4.Panel1.Controls.Add(lblZValue)
+        SplitContainer4.Panel1.Controls.Add(lblYValue)
+        SplitContainer4.Panel1.Controls.Add(lblGPSConnectionValue)
+        SplitContainer4.Panel1.Controls.Add(lblZ)
+        SplitContainer4.Panel1.Controls.Add(lblY)
+        SplitContainer4.Panel1.Controls.Add(lblGPSLocation)
+        SplitContainer4.Panel1.Controls.Add(lblGPSConnection)
+        SplitContainer4.Panel1.Controls.Add(lblXValue)
+        SplitContainer4.Panel1.Controls.Add(lblGPSPortValue)
+        SplitContainer4.Panel1.Controls.Add(lblX)
+        SplitContainer4.Panel1.Controls.Add(lblGPSPort)
+        SplitContainer4.Panel1.Controls.Add(txtNMEA)
         '
         'SplitContainer4.Panel2
         '
-        Me.SplitContainer4.Panel2.Controls.Add(Me.SplitContainer1)
-        Me.SplitContainer4.Size = New System.Drawing.Size(1098, 676)
-        Me.SplitContainer4.SplitterDistance = 46
-        Me.SplitContainer4.TabIndex = 45
+        SplitContainer4.Panel2.Controls.Add(SplitContainer1)
+        SplitContainer4.Size = New System.Drawing.Size(1098, 676)
+        SplitContainer4.SplitterDistance = 46
+        SplitContainer4.TabIndex = 45
         '
         'lblZValue
         '
-        Me.lblZValue.AutoSize = True
-        Me.lblZValue.ForeColor = System.Drawing.Color.LimeGreen
-        Me.lblZValue.Location = New System.Drawing.Point(426, 16)
-        Me.lblZValue.Name = "lblZValue"
-        Me.lblZValue.Size = New System.Drawing.Size(0, 13)
-        Me.lblZValue.TabIndex = 60
-        Me.lblZValue.Visible = False
+        lblZValue.AutoSize = True
+        lblZValue.ForeColor = System.Drawing.Color.LimeGreen
+        lblZValue.Location = New System.Drawing.Point(426, 16)
+        lblZValue.Name = "lblZValue"
+        lblZValue.Size = New System.Drawing.Size(0, 13)
+        lblZValue.TabIndex = 60
+        lblZValue.Visible = False
         '
         'lblYValue
         '
-        Me.lblYValue.AutoSize = True
-        Me.lblYValue.ForeColor = System.Drawing.Color.LimeGreen
-        Me.lblYValue.Location = New System.Drawing.Point(322, 16)
-        Me.lblYValue.Name = "lblYValue"
-        Me.lblYValue.Size = New System.Drawing.Size(0, 13)
-        Me.lblYValue.TabIndex = 60
-        Me.lblYValue.Visible = False
+        lblYValue.AutoSize = True
+        lblYValue.ForeColor = System.Drawing.Color.LimeGreen
+        lblYValue.Location = New System.Drawing.Point(322, 16)
+        lblYValue.Name = "lblYValue"
+        lblYValue.Size = New System.Drawing.Size(0, 13)
+        lblYValue.TabIndex = 60
+        lblYValue.Visible = False
         '
         'lblGPSConnectionValue
         '
-        Me.lblGPSConnectionValue.AutoSize = True
-        Me.lblGPSConnectionValue.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblGPSConnectionValue.ForeColor = System.Drawing.Color.Red
-        Me.lblGPSConnectionValue.Location = New System.Drawing.Point(108, 19)
-        Me.lblGPSConnectionValue.Name = "lblGPSConnectionValue"
-        Me.lblGPSConnectionValue.Size = New System.Drawing.Size(77, 13)
-        Me.lblGPSConnectionValue.TabIndex = 60
-        Me.lblGPSConnectionValue.Text = "NO GPS FIX"
-        Me.lblGPSConnectionValue.Visible = False
+        lblGPSConnectionValue.AutoSize = True
+        lblGPSConnectionValue.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblGPSConnectionValue.ForeColor = System.Drawing.Color.Red
+        lblGPSConnectionValue.Location = New System.Drawing.Point(108, 19)
+        lblGPSConnectionValue.Name = "lblGPSConnectionValue"
+        lblGPSConnectionValue.Size = New System.Drawing.Size(77, 13)
+        lblGPSConnectionValue.TabIndex = 60
+        lblGPSConnectionValue.Text = "NO GPS FIX"
+        lblGPSConnectionValue.Visible = False
         '
         'lblZ
         '
-        Me.lblZ.AutoSize = True
-        Me.lblZ.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblZ.Location = New System.Drawing.Point(401, 16)
-        Me.lblZ.Name = "lblZ"
-        Me.lblZ.Size = New System.Drawing.Size(19, 13)
-        Me.lblZ.TabIndex = 60
-        Me.lblZ.Text = "Z:"
-        Me.lblZ.Visible = False
+        lblZ.AutoSize = True
+        lblZ.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblZ.Location = New System.Drawing.Point(401, 16)
+        lblZ.Name = "lblZ"
+        lblZ.Size = New System.Drawing.Size(19, 13)
+        lblZ.TabIndex = 60
+        lblZ.Text = "Z:"
+        lblZ.Visible = False
         '
         'lblY
         '
-        Me.lblY.AutoSize = True
-        Me.lblY.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblY.Location = New System.Drawing.Point(299, 16)
-        Me.lblY.Name = "lblY"
-        Me.lblY.Size = New System.Drawing.Size(19, 13)
-        Me.lblY.TabIndex = 60
-        Me.lblY.Text = "Y:"
-        Me.lblY.Visible = False
+        lblY.AutoSize = True
+        lblY.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblY.Location = New System.Drawing.Point(299, 16)
+        lblY.Name = "lblY"
+        lblY.Size = New System.Drawing.Size(19, 13)
+        lblY.TabIndex = 60
+        lblY.Text = "Y:"
+        lblY.Visible = False
         '
         'lblGPSLocation
         '
-        Me.lblGPSLocation.AutoSize = True
-        Me.lblGPSLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblGPSLocation.Location = New System.Drawing.Point(204, 3)
-        Me.lblGPSLocation.Name = "lblGPSLocation"
-        Me.lblGPSLocation.Size = New System.Drawing.Size(89, 13)
-        Me.lblGPSLocation.TabIndex = 60
-        Me.lblGPSLocation.Text = "GPS Location:"
-        Me.lblGPSLocation.Visible = False
+        lblGPSLocation.AutoSize = True
+        lblGPSLocation.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblGPSLocation.Location = New System.Drawing.Point(204, 3)
+        lblGPSLocation.Name = "lblGPSLocation"
+        lblGPSLocation.Size = New System.Drawing.Size(89, 13)
+        lblGPSLocation.TabIndex = 60
+        lblGPSLocation.Text = "GPS Location:"
+        lblGPSLocation.Visible = False
         '
         'lblGPSConnection
         '
-        Me.lblGPSConnection.AutoSize = True
-        Me.lblGPSConnection.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblGPSConnection.Location = New System.Drawing.Point(3, 19)
-        Me.lblGPSConnection.Name = "lblGPSConnection"
-        Me.lblGPSConnection.Size = New System.Drawing.Size(104, 13)
-        Me.lblGPSConnection.TabIndex = 60
-        Me.lblGPSConnection.Text = "GPS Connection:"
-        Me.lblGPSConnection.Visible = False
+        lblGPSConnection.AutoSize = True
+        lblGPSConnection.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblGPSConnection.Location = New System.Drawing.Point(3, 19)
+        lblGPSConnection.Name = "lblGPSConnection"
+        lblGPSConnection.Size = New System.Drawing.Size(104, 13)
+        lblGPSConnection.TabIndex = 60
+        lblGPSConnection.Text = "GPS Connection:"
+        lblGPSConnection.Visible = False
         '
         'lblXValue
         '
-        Me.lblXValue.AutoSize = True
-        Me.lblXValue.ForeColor = System.Drawing.Color.LimeGreen
-        Me.lblXValue.Location = New System.Drawing.Point(227, 16)
-        Me.lblXValue.Name = "lblXValue"
-        Me.lblXValue.Size = New System.Drawing.Size(0, 13)
-        Me.lblXValue.TabIndex = 60
-        Me.lblXValue.Visible = False
+        lblXValue.AutoSize = True
+        lblXValue.ForeColor = System.Drawing.Color.LimeGreen
+        lblXValue.Location = New System.Drawing.Point(227, 16)
+        lblXValue.Name = "lblXValue"
+        lblXValue.Size = New System.Drawing.Size(0, 13)
+        lblXValue.TabIndex = 60
+        lblXValue.Visible = False
         '
         'lblGPSPortValue
         '
-        Me.lblGPSPortValue.AutoSize = True
-        Me.lblGPSPortValue.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblGPSPortValue.ForeColor = System.Drawing.Color.Red
-        Me.lblGPSPortValue.Location = New System.Drawing.Point(108, 3)
-        Me.lblGPSPortValue.Name = "lblGPSPortValue"
-        Me.lblGPSPortValue.Size = New System.Drawing.Size(56, 13)
-        Me.lblGPSPortValue.TabIndex = 60
-        Me.lblGPSPortValue.Text = "CLOSED"
-        Me.lblGPSPortValue.Visible = False
+        lblGPSPortValue.AutoSize = True
+        lblGPSPortValue.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblGPSPortValue.ForeColor = System.Drawing.Color.Red
+        lblGPSPortValue.Location = New System.Drawing.Point(108, 3)
+        lblGPSPortValue.Name = "lblGPSPortValue"
+        lblGPSPortValue.Size = New System.Drawing.Size(56, 13)
+        lblGPSPortValue.TabIndex = 60
+        lblGPSPortValue.Text = "CLOSED"
+        lblGPSPortValue.Visible = False
         '
         'lblX
         '
-        Me.lblX.AutoSize = True
-        Me.lblX.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblX.Location = New System.Drawing.Point(204, 16)
-        Me.lblX.Name = "lblX"
-        Me.lblX.Size = New System.Drawing.Size(19, 13)
-        Me.lblX.TabIndex = 60
-        Me.lblX.Text = "X:"
-        Me.lblX.Visible = False
+        lblX.AutoSize = True
+        lblX.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblX.Location = New System.Drawing.Point(204, 16)
+        lblX.Name = "lblX"
+        lblX.Size = New System.Drawing.Size(19, 13)
+        lblX.TabIndex = 60
+        lblX.Text = "X:"
+        lblX.Visible = False
         '
         'lblGPSPort
         '
-        Me.lblGPSPort.AutoSize = True
-        Me.lblGPSPort.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblGPSPort.Location = New System.Drawing.Point(3, 3)
-        Me.lblGPSPort.Name = "lblGPSPort"
-        Me.lblGPSPort.Size = New System.Drawing.Size(63, 13)
-        Me.lblGPSPort.TabIndex = 60
-        Me.lblGPSPort.Text = "GPS Port:"
-        Me.lblGPSPort.Visible = False
+        lblGPSPort.AutoSize = True
+        lblGPSPort.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblGPSPort.Location = New System.Drawing.Point(3, 3)
+        lblGPSPort.Name = "lblGPSPort"
+        lblGPSPort.Size = New System.Drawing.Size(63, 13)
+        lblGPSPort.TabIndex = 60
+        lblGPSPort.Text = "GPS Port:"
+        lblGPSPort.Visible = False
         '
         'txtNMEA
         '
-        Me.txtNMEA.Location = New System.Drawing.Point(387, 3)
-        Me.txtNMEA.Name = "txtNMEA"
-        Me.txtNMEA.Size = New System.Drawing.Size(100, 20)
-        Me.txtNMEA.TabIndex = 48
-        Me.txtNMEA.Visible = False
+        txtNMEA.Location = New System.Drawing.Point(387, 3)
+        txtNMEA.Name = "txtNMEA"
+        txtNMEA.Size = New System.Drawing.Size(100, 20)
+        txtNMEA.TabIndex = 48
+        txtNMEA.Visible = False
         '
         'SplitContainer1
         '
-        Me.SplitContainer1.BackColor = System.Drawing.SystemColors.Control
-        Me.SplitContainer1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitContainer1.Location = New System.Drawing.Point(0, 0)
-        Me.SplitContainer1.Margin = New System.Windows.Forms.Padding(2)
-        Me.SplitContainer1.Name = "SplitContainer1"
-        Me.SplitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal
+        SplitContainer1.BackColor = System.Drawing.SystemColors.Control
+        SplitContainer1.Dock = System.Windows.Forms.DockStyle.Fill
+        SplitContainer1.Location = New System.Drawing.Point(0, 0)
+        SplitContainer1.Margin = New System.Windows.Forms.Padding(2)
+        SplitContainer1.Name = "SplitContainer1"
+        SplitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal
         '
         'SplitContainer1.Panel1
         '
-        Me.SplitContainer1.Panel1.Controls.Add(Me.SplitContainer3)
+        SplitContainer1.Panel1.Controls.Add(SplitContainer3)
         '
         'SplitContainer1.Panel2
         '
-        Me.SplitContainer1.Panel2.Controls.Add(Me.grdVideoMinerDatabase)
-        Me.SplitContainer1.Size = New System.Drawing.Size(1098, 626)
-        Me.SplitContainer1.SplitterDistance = 497
-        Me.SplitContainer1.TabIndex = 22
+        SplitContainer1.Panel2.Controls.Add(grdVideoMinerDatabase)
+        SplitContainer1.Size = New System.Drawing.Size(1098, 626)
+        SplitContainer1.SplitterDistance = 497
+        SplitContainer1.TabIndex = 22
         '
         'SplitContainer3
         '
-        Me.SplitContainer3.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitContainer3.Location = New System.Drawing.Point(0, 0)
-        Me.SplitContainer3.Name = "SplitContainer3"
+        SplitContainer3.Dock = System.Windows.Forms.DockStyle.Fill
+        SplitContainer3.Location = New System.Drawing.Point(0, 0)
+        SplitContainer3.Name = "SplitContainer3"
         '
         'SplitContainer3.Panel1
         '
-        Me.SplitContainer3.Panel1.Controls.Add(Me.cmdCloseCalendar)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.mnthCalendar)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.pnlImageControls)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.pnlVideoControls)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.txtTransectDate)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.chkRecordEachSecond)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.txtProjectName)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.txtTimeSource)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.txtTime)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.txtDateSource)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.txtTransectTextbox)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.lblProjectName)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.txtOnOffBottomTextbox)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.cmdOffBottom)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.lblTransectDate)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.cmdTransectEnd)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.cmdTransectStart)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.cmdShowSetTimecode)
+        SplitContainer3.Panel1.Controls.Add(cmdCloseCalendar)
+        SplitContainer3.Panel1.Controls.Add(mnthCalendar)
+        SplitContainer3.Panel1.Controls.Add(pnlImageControls)
+        SplitContainer3.Panel1.Controls.Add(pnlVideoControls)
+        SplitContainer3.Panel1.Controls.Add(txtTransectDate)
+        SplitContainer3.Panel1.Controls.Add(chkRecordEachSecond)
+        SplitContainer3.Panel1.Controls.Add(txtProjectName)
+        SplitContainer3.Panel1.Controls.Add(txtTimeSource)
+        SplitContainer3.Panel1.Controls.Add(txtTime)
+        SplitContainer3.Panel1.Controls.Add(txtDateSource)
+        SplitContainer3.Panel1.Controls.Add(txtTransectTextbox)
+        SplitContainer3.Panel1.Controls.Add(lblProjectName)
+        SplitContainer3.Panel1.Controls.Add(txtOnOffBottomTextbox)
+        SplitContainer3.Panel1.Controls.Add(cmdOffBottom)
+        SplitContainer3.Panel1.Controls.Add(lblTransectDate)
+        SplitContainer3.Panel1.Controls.Add(cmdTransectEnd)
+        SplitContainer3.Panel1.Controls.Add(cmdTransectStart)
+        SplitContainer3.Panel1.Controls.Add(cmdShowSetTimecode)
         '
         'SplitContainer3.Panel2
         '
-        Me.SplitContainer3.Panel2.Controls.Add(Me.SplitContainer2)
-        Me.SplitContainer3.Size = New System.Drawing.Size(1098, 497)
-        Me.SplitContainer3.SplitterDistance = 208
-        Me.SplitContainer3.TabIndex = 43
+        SplitContainer3.Panel2.Controls.Add(SplitContainer2)
+        SplitContainer3.Size = New System.Drawing.Size(1098, 497)
+        SplitContainer3.SplitterDistance = 208
+        SplitContainer3.TabIndex = 43
         '
         'cmdCloseCalendar
         '
-        Me.cmdCloseCalendar.ForeColor = System.Drawing.Color.Black
-        Me.cmdCloseCalendar.Location = New System.Drawing.Point(98, 82)
-        Me.cmdCloseCalendar.Name = "cmdCloseCalendar"
-        Me.cmdCloseCalendar.Size = New System.Drawing.Size(16, 20)
-        Me.cmdCloseCalendar.TabIndex = 50
-        Me.cmdCloseCalendar.Text = "X"
-        Me.cmdCloseCalendar.TextAlign = System.Drawing.ContentAlignment.TopCenter
-        Me.cmdCloseCalendar.UseVisualStyleBackColor = True
-        Me.cmdCloseCalendar.Visible = False
+        cmdCloseCalendar.ForeColor = System.Drawing.Color.Black
+        cmdCloseCalendar.Location = New System.Drawing.Point(98, 82)
+        cmdCloseCalendar.Name = "cmdCloseCalendar"
+        cmdCloseCalendar.Size = New System.Drawing.Size(16, 20)
+        cmdCloseCalendar.TabIndex = 50
+        cmdCloseCalendar.Text = "X"
+        cmdCloseCalendar.TextAlign = System.Drawing.ContentAlignment.TopCenter
+        cmdCloseCalendar.UseVisualStyleBackColor = True
+        cmdCloseCalendar.Visible = False
         '
         'mnthCalendar
         '
-        Me.mnthCalendar.Location = New System.Drawing.Point(11, 101)
-        Me.mnthCalendar.MaxSelectionCount = 1
-        Me.mnthCalendar.Name = "mnthCalendar"
-        Me.mnthCalendar.ShowToday = False
-        Me.mnthCalendar.ShowTodayCircle = False
-        Me.mnthCalendar.TabIndex = 50
-        Me.mnthCalendar.Visible = False
+        mnthCalendar.Location = New System.Drawing.Point(11, 101)
+        mnthCalendar.MaxSelectionCount = 1
+        mnthCalendar.Name = "mnthCalendar"
+        mnthCalendar.ShowToday = False
+        mnthCalendar.ShowTodayCircle = False
+        mnthCalendar.TabIndex = 50
+        mnthCalendar.Visible = False
         '
         'pnlImageControls
         '
-        Me.pnlImageControls.Controls.Add(Me.lblImageControls)
-        Me.pnlImageControls.Controls.Add(Me.cmdPreviousImage)
-        Me.pnlImageControls.Controls.Add(Me.lblImageSize)
-        Me.pnlImageControls.Controls.Add(Me.cmdNextImage)
-        Me.pnlImageControls.Controls.Add(Me.cboZoom)
-        Me.pnlImageControls.Location = New System.Drawing.Point(6, 195)
-        Me.pnlImageControls.Name = "pnlImageControls"
-        Me.pnlImageControls.Size = New System.Drawing.Size(169, 108)
-        Me.pnlImageControls.TabIndex = 38
-        Me.pnlImageControls.Visible = False
+        pnlImageControls.Controls.Add(lblImageControls)
+        pnlImageControls.Controls.Add(cmdPreviousImage)
+        pnlImageControls.Controls.Add(lblImageSize)
+        pnlImageControls.Controls.Add(cmdNextImage)
+        pnlImageControls.Controls.Add(cboZoom)
+        pnlImageControls.Location = New System.Drawing.Point(6, 195)
+        pnlImageControls.Name = "pnlImageControls"
+        pnlImageControls.Size = New System.Drawing.Size(169, 108)
+        pnlImageControls.TabIndex = 38
+        pnlImageControls.Visible = False
         '
         'lblImageControls
         '
-        Me.lblImageControls.AutoSize = True
-        Me.lblImageControls.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblImageControls.Location = New System.Drawing.Point(3, 0)
-        Me.lblImageControls.Name = "lblImageControls"
-        Me.lblImageControls.Size = New System.Drawing.Size(104, 15)
-        Me.lblImageControls.TabIndex = 54
-        Me.lblImageControls.Text = "Image Controls"
+        lblImageControls.AutoSize = True
+        lblImageControls.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblImageControls.Location = New System.Drawing.Point(3, 0)
+        lblImageControls.Name = "lblImageControls"
+        lblImageControls.Size = New System.Drawing.Size(104, 15)
+        lblImageControls.TabIndex = 54
+        lblImageControls.Text = "Image Controls"
         '
         'cmdPreviousImage
         '
-        Me.cmdPreviousImage.Location = New System.Drawing.Point(6, 27)
-        Me.cmdPreviousImage.Name = "cmdPreviousImage"
-        Me.cmdPreviousImage.Size = New System.Drawing.Size(32, 23)
-        Me.cmdPreviousImage.TabIndex = 50
-        Me.cmdPreviousImage.Text = "<"
-        Me.cmdPreviousImage.UseVisualStyleBackColor = True
-        Me.cmdPreviousImage.Visible = False
+        cmdPreviousImage.Location = New System.Drawing.Point(6, 27)
+        cmdPreviousImage.Name = "cmdPreviousImage"
+        cmdPreviousImage.Size = New System.Drawing.Size(32, 23)
+        cmdPreviousImage.TabIndex = 50
+        cmdPreviousImage.Text = "<"
+        cmdPreviousImage.UseVisualStyleBackColor = True
+        cmdPreviousImage.Visible = False
         '
         'lblImageSize
         '
-        Me.lblImageSize.AutoSize = True
-        Me.lblImageSize.Location = New System.Drawing.Point(7, 60)
-        Me.lblImageSize.Name = "lblImageSize"
-        Me.lblImageSize.Size = New System.Drawing.Size(62, 13)
-        Me.lblImageSize.TabIndex = 53
-        Me.lblImageSize.Text = "Image Size:"
-        Me.lblImageSize.Visible = False
+        lblImageSize.AutoSize = True
+        lblImageSize.Location = New System.Drawing.Point(7, 60)
+        lblImageSize.Name = "lblImageSize"
+        lblImageSize.Size = New System.Drawing.Size(62, 13)
+        lblImageSize.TabIndex = 53
+        lblImageSize.Text = "Image Size:"
+        lblImageSize.Visible = False
         '
         'cmdNextImage
         '
-        Me.cmdNextImage.Location = New System.Drawing.Point(53, 27)
-        Me.cmdNextImage.Name = "cmdNextImage"
-        Me.cmdNextImage.Size = New System.Drawing.Size(32, 23)
-        Me.cmdNextImage.TabIndex = 51
-        Me.cmdNextImage.Text = ">"
-        Me.cmdNextImage.UseVisualStyleBackColor = True
-        Me.cmdNextImage.Visible = False
+        cmdNextImage.Location = New System.Drawing.Point(53, 27)
+        cmdNextImage.Name = "cmdNextImage"
+        cmdNextImage.Size = New System.Drawing.Size(32, 23)
+        cmdNextImage.TabIndex = 51
+        cmdNextImage.Text = ">"
+        cmdNextImage.UseVisualStyleBackColor = True
+        cmdNextImage.Visible = False
         '
         'cboZoom
         '
-        Me.cboZoom.FormattingEnabled = True
-        Me.cboZoom.Location = New System.Drawing.Point(5, 78)
-        Me.cboZoom.MaxLength = 4
-        Me.cboZoom.Name = "cboZoom"
-        Me.cboZoom.Size = New System.Drawing.Size(121, 21)
-        Me.cboZoom.TabIndex = 52
-        Me.cboZoom.Visible = False
+        cboZoom.FormattingEnabled = True
+        cboZoom.Location = New System.Drawing.Point(5, 78)
+        cboZoom.MaxLength = 4
+        cboZoom.Name = "cboZoom"
+        cboZoom.Size = New System.Drawing.Size(121, 21)
+        cboZoom.TabIndex = 52
+        cboZoom.Visible = False
         '
         'pnlVideoControls
         '
-        Me.pnlVideoControls.Controls.Add(Me.chkDefineAll)
-        Me.pnlVideoControls.Controls.Add(Me.chkResumeVideo)
-        Me.pnlVideoControls.Controls.Add(Me.cmdScreenCapture)
-        Me.pnlVideoControls.Controls.Add(Me.cmdNext)
-        Me.pnlVideoControls.Controls.Add(Me.cmdPrevious)
-        Me.pnlVideoControls.Controls.Add(Me.lblVideoRate)
-        Me.pnlVideoControls.Controls.Add(Me.LblRate)
-        Me.pnlVideoControls.Controls.Add(Me.cmdStop)
-        Me.pnlVideoControls.Controls.Add(Me.lblVideoControls)
-        Me.pnlVideoControls.Controls.Add(Me.cmdPlayPause)
-        Me.pnlVideoControls.Controls.Add(Me.cmdIncreaseRate)
-        Me.pnlVideoControls.Controls.Add(Me.cmdDecreaseRate)
-        Me.pnlVideoControls.Controls.Add(Me.cmdPlayForSeconds)
-        Me.pnlVideoControls.Controls.Add(Me.txtPlaySeconds)
-        Me.pnlVideoControls.Location = New System.Drawing.Point(10, 332)
-        Me.pnlVideoControls.Name = "pnlVideoControls"
-        Me.pnlVideoControls.Size = New System.Drawing.Size(169, 162)
-        Me.pnlVideoControls.TabIndex = 38
-        Me.pnlVideoControls.Visible = False
+        pnlVideoControls.Controls.Add(chkDefineAll)
+        pnlVideoControls.Controls.Add(chkResumeVideo)
+        pnlVideoControls.Controls.Add(cmdScreenCapture)
+        pnlVideoControls.Controls.Add(cmdNext)
+        pnlVideoControls.Controls.Add(cmdPrevious)
+        pnlVideoControls.Controls.Add(lblVideoRate)
+        pnlVideoControls.Controls.Add(LblRate)
+        pnlVideoControls.Controls.Add(cmdStop)
+        pnlVideoControls.Controls.Add(lblVideoControls)
+        pnlVideoControls.Controls.Add(cmdPlayPause)
+        pnlVideoControls.Controls.Add(cmdIncreaseRate)
+        pnlVideoControls.Controls.Add(cmdDecreaseRate)
+        pnlVideoControls.Controls.Add(cmdPlayForSeconds)
+        pnlVideoControls.Controls.Add(txtPlaySeconds)
+        pnlVideoControls.Location = New System.Drawing.Point(10, 332)
+        pnlVideoControls.Name = "pnlVideoControls"
+        pnlVideoControls.Size = New System.Drawing.Size(169, 162)
+        pnlVideoControls.TabIndex = 38
+        pnlVideoControls.Visible = False
         '
         'chkDefineAll
         '
-        Me.chkDefineAll.AutoSize = True
-        Me.chkDefineAll.Location = New System.Drawing.Point(3, 112)
-        Me.chkDefineAll.Name = "chkDefineAll"
-        Me.chkDefineAll.Size = New System.Drawing.Size(164, 17)
-        Me.chkDefineAll.TabIndex = 59
-        Me.chkDefineAll.Text = "Define All After Play Seconds"
-        Me.chkDefineAll.UseVisualStyleBackColor = True
+        chkDefineAll.AutoSize = True
+        chkDefineAll.Location = New System.Drawing.Point(3, 112)
+        chkDefineAll.Name = "chkDefineAll"
+        chkDefineAll.Size = New System.Drawing.Size(164, 17)
+        chkDefineAll.TabIndex = 59
+        chkDefineAll.Text = "Define All After Play Seconds"
+        chkDefineAll.UseVisualStyleBackColor = True
         '
         'chkResumeVideo
         '
-        Me.chkResumeVideo.AutoSize = True
-        Me.chkResumeVideo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkResumeVideo.Location = New System.Drawing.Point(3, 128)
-        Me.chkResumeVideo.Name = "chkResumeVideo"
-        Me.chkResumeVideo.Size = New System.Drawing.Size(116, 30)
-        Me.chkResumeVideo.TabIndex = 58
-        Me.chkResumeVideo.Text = "Resume Video" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "After Species Entry"
-        Me.chkResumeVideo.UseVisualStyleBackColor = True
+        chkResumeVideo.AutoSize = True
+        chkResumeVideo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        chkResumeVideo.Location = New System.Drawing.Point(3, 128)
+        chkResumeVideo.Name = "chkResumeVideo"
+        chkResumeVideo.Size = New System.Drawing.Size(116, 30)
+        chkResumeVideo.TabIndex = 58
+        chkResumeVideo.Text = "Resume Video" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "After Species Entry"
+        chkResumeVideo.UseVisualStyleBackColor = True
         '
         'cmdScreenCapture
         '
-        Me.cmdScreenCapture.BackgroundImage = CType(resources.GetObject("cmdScreenCapture.BackgroundImage"), System.Drawing.Image)
-        Me.cmdScreenCapture.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.cmdScreenCapture.Location = New System.Drawing.Point(133, 22)
-        Me.cmdScreenCapture.Name = "cmdScreenCapture"
-        Me.cmdScreenCapture.Size = New System.Drawing.Size(33, 26)
-        Me.cmdScreenCapture.TabIndex = 57
-        Me.cmdScreenCapture.UseVisualStyleBackColor = True
+        cmdScreenCapture.BackgroundImage = CType(resources.GetObject("cmdScreenCapture.BackgroundImage"), System.Drawing.Image)
+        cmdScreenCapture.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        cmdScreenCapture.Location = New System.Drawing.Point(133, 22)
+        cmdScreenCapture.Name = "cmdScreenCapture"
+        cmdScreenCapture.Size = New System.Drawing.Size(33, 26)
+        cmdScreenCapture.TabIndex = 57
+        cmdScreenCapture.UseVisualStyleBackColor = True
         '
         'cmdNext
         '
-        Me.cmdNext.BackgroundImage = CType(resources.GetObject("cmdNext.BackgroundImage"), System.Drawing.Image)
-        Me.cmdNext.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.cmdNext.Location = New System.Drawing.Point(101, 22)
-        Me.cmdNext.Name = "cmdNext"
-        Me.cmdNext.Size = New System.Drawing.Size(26, 26)
-        Me.cmdNext.TabIndex = 57
-        Me.cmdNext.UseVisualStyleBackColor = True
+        cmdNext.BackgroundImage = CType(resources.GetObject("cmdNext.BackgroundImage"), System.Drawing.Image)
+        cmdNext.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        cmdNext.Location = New System.Drawing.Point(101, 22)
+        cmdNext.Name = "cmdNext"
+        cmdNext.Size = New System.Drawing.Size(26, 26)
+        cmdNext.TabIndex = 57
+        cmdNext.UseVisualStyleBackColor = True
         '
         'cmdPrevious
         '
-        Me.cmdPrevious.BackgroundImage = CType(resources.GetObject("cmdPrevious.BackgroundImage"), System.Drawing.Image)
-        Me.cmdPrevious.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.cmdPrevious.Location = New System.Drawing.Point(69, 22)
-        Me.cmdPrevious.Name = "cmdPrevious"
-        Me.cmdPrevious.Size = New System.Drawing.Size(26, 26)
-        Me.cmdPrevious.TabIndex = 56
-        Me.cmdPrevious.UseVisualStyleBackColor = True
+        cmdPrevious.BackgroundImage = CType(resources.GetObject("cmdPrevious.BackgroundImage"), System.Drawing.Image)
+        cmdPrevious.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        cmdPrevious.Location = New System.Drawing.Point(69, 22)
+        cmdPrevious.Name = "cmdPrevious"
+        cmdPrevious.Size = New System.Drawing.Size(26, 26)
+        cmdPrevious.TabIndex = 56
+        cmdPrevious.UseVisualStyleBackColor = True
         '
         'lblVideoRate
         '
-        Me.lblVideoRate.AutoSize = True
-        Me.lblVideoRate.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblVideoRate.ForeColor = System.Drawing.Color.Blue
-        Me.lblVideoRate.Location = New System.Drawing.Point(46, 61)
-        Me.lblVideoRate.Name = "lblVideoRate"
-        Me.lblVideoRate.Size = New System.Drawing.Size(46, 17)
-        Me.lblVideoRate.TabIndex = 55
-        Me.lblVideoRate.Text = "1.0 X"
+        lblVideoRate.AutoSize = True
+        lblVideoRate.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblVideoRate.ForeColor = System.Drawing.Color.Blue
+        lblVideoRate.Location = New System.Drawing.Point(46, 61)
+        lblVideoRate.Name = "lblVideoRate"
+        lblVideoRate.Size = New System.Drawing.Size(46, 17)
+        lblVideoRate.TabIndex = 55
+        lblVideoRate.Text = "1.0 X"
         '
         'LblRate
         '
-        Me.LblRate.AutoSize = True
-        Me.LblRate.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblRate.Location = New System.Drawing.Point(3, 61)
-        Me.LblRate.Name = "LblRate"
-        Me.LblRate.Size = New System.Drawing.Size(47, 17)
-        Me.LblRate.TabIndex = 55
-        Me.LblRate.Text = "Rate:"
+        LblRate.AutoSize = True
+        LblRate.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        LblRate.Location = New System.Drawing.Point(3, 61)
+        LblRate.Name = "LblRate"
+        LblRate.Size = New System.Drawing.Size(47, 17)
+        LblRate.TabIndex = 55
+        LblRate.Text = "Rate:"
         '
         'cmdStop
         '
-        Me.cmdStop.BackgroundImage = CType(resources.GetObject("cmdStop.BackgroundImage"), System.Drawing.Image)
-        Me.cmdStop.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.cmdStop.Location = New System.Drawing.Point(37, 22)
-        Me.cmdStop.Name = "cmdStop"
-        Me.cmdStop.Size = New System.Drawing.Size(26, 26)
-        Me.cmdStop.TabIndex = 38
-        Me.cmdStop.UseVisualStyleBackColor = True
+        cmdStop.BackgroundImage = CType(resources.GetObject("cmdStop.BackgroundImage"), System.Drawing.Image)
+        cmdStop.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        cmdStop.Location = New System.Drawing.Point(37, 22)
+        cmdStop.Name = "cmdStop"
+        cmdStop.Size = New System.Drawing.Size(26, 26)
+        cmdStop.TabIndex = 38
+        cmdStop.UseVisualStyleBackColor = True
         '
         'lblVideoControls
         '
-        Me.lblVideoControls.AutoSize = True
-        Me.lblVideoControls.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblVideoControls.Location = New System.Drawing.Point(3, 0)
-        Me.lblVideoControls.Name = "lblVideoControls"
-        Me.lblVideoControls.Size = New System.Drawing.Size(100, 15)
-        Me.lblVideoControls.TabIndex = 54
-        Me.lblVideoControls.Text = "Video Controls"
+        lblVideoControls.AutoSize = True
+        lblVideoControls.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblVideoControls.Location = New System.Drawing.Point(3, 0)
+        lblVideoControls.Name = "lblVideoControls"
+        lblVideoControls.Size = New System.Drawing.Size(100, 15)
+        lblVideoControls.TabIndex = 54
+        lblVideoControls.Text = "Video Controls"
         '
         'cmdPlayPause
         '
-        Me.cmdPlayPause.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdPlayPause.BackgroundImage = CType(resources.GetObject("cmdPlayPause.BackgroundImage"), System.Drawing.Image)
-        Me.cmdPlayPause.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.cmdPlayPause.Location = New System.Drawing.Point(6, 22)
-        Me.cmdPlayPause.Margin = New System.Windows.Forms.Padding(2)
-        Me.cmdPlayPause.Name = "cmdPlayPause"
-        Me.cmdPlayPause.Size = New System.Drawing.Size(26, 26)
-        Me.cmdPlayPause.TabIndex = 46
-        Me.cmdPlayPause.UseVisualStyleBackColor = False
+        cmdPlayPause.BackColor = System.Drawing.SystemColors.Control
+        cmdPlayPause.BackgroundImage = CType(resources.GetObject("cmdPlayPause.BackgroundImage"), System.Drawing.Image)
+        cmdPlayPause.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        cmdPlayPause.Location = New System.Drawing.Point(6, 22)
+        cmdPlayPause.Margin = New System.Windows.Forms.Padding(2)
+        cmdPlayPause.Name = "cmdPlayPause"
+        cmdPlayPause.Size = New System.Drawing.Size(26, 26)
+        cmdPlayPause.TabIndex = 46
+        cmdPlayPause.UseVisualStyleBackColor = False
         '
         'cmdIncreaseRate
         '
-        Me.cmdIncreaseRate.BackgroundImage = CType(resources.GetObject("cmdIncreaseRate.BackgroundImage"), System.Drawing.Image)
-        Me.cmdIncreaseRate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.cmdIncreaseRate.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdIncreaseRate.Location = New System.Drawing.Point(138, 58)
-        Me.cmdIncreaseRate.Name = "cmdIncreaseRate"
-        Me.cmdIncreaseRate.Size = New System.Drawing.Size(20, 20)
-        Me.cmdIncreaseRate.TabIndex = 38
-        Me.cmdIncreaseRate.UseVisualStyleBackColor = True
+        cmdIncreaseRate.BackgroundImage = CType(resources.GetObject("cmdIncreaseRate.BackgroundImage"), System.Drawing.Image)
+        cmdIncreaseRate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        cmdIncreaseRate.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        cmdIncreaseRate.Location = New System.Drawing.Point(138, 58)
+        cmdIncreaseRate.Name = "cmdIncreaseRate"
+        cmdIncreaseRate.Size = New System.Drawing.Size(20, 20)
+        cmdIncreaseRate.TabIndex = 38
+        cmdIncreaseRate.UseVisualStyleBackColor = True
         '
         'cmdDecreaseRate
         '
-        Me.cmdDecreaseRate.BackgroundImage = CType(resources.GetObject("cmdDecreaseRate.BackgroundImage"), System.Drawing.Image)
-        Me.cmdDecreaseRate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.cmdDecreaseRate.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdDecreaseRate.Location = New System.Drawing.Point(112, 58)
-        Me.cmdDecreaseRate.Name = "cmdDecreaseRate"
-        Me.cmdDecreaseRate.Size = New System.Drawing.Size(20, 20)
-        Me.cmdDecreaseRate.TabIndex = 38
-        Me.cmdDecreaseRate.UseVisualStyleBackColor = True
+        cmdDecreaseRate.BackgroundImage = CType(resources.GetObject("cmdDecreaseRate.BackgroundImage"), System.Drawing.Image)
+        cmdDecreaseRate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        cmdDecreaseRate.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        cmdDecreaseRate.Location = New System.Drawing.Point(112, 58)
+        cmdDecreaseRate.Name = "cmdDecreaseRate"
+        cmdDecreaseRate.Size = New System.Drawing.Size(20, 20)
+        cmdDecreaseRate.TabIndex = 38
+        cmdDecreaseRate.UseVisualStyleBackColor = True
         '
         'cmdPlayForSeconds
         '
-        Me.cmdPlayForSeconds.Location = New System.Drawing.Point(6, 89)
-        Me.cmdPlayForSeconds.Name = "cmdPlayForSeconds"
-        Me.cmdPlayForSeconds.Size = New System.Drawing.Size(80, 21)
-        Me.cmdPlayForSeconds.TabIndex = 40
-        Me.cmdPlayForSeconds.Text = "Play Seconds"
-        Me.cmdPlayForSeconds.UseVisualStyleBackColor = True
+        cmdPlayForSeconds.Location = New System.Drawing.Point(6, 89)
+        cmdPlayForSeconds.Name = "cmdPlayForSeconds"
+        cmdPlayForSeconds.Size = New System.Drawing.Size(80, 21)
+        cmdPlayForSeconds.TabIndex = 40
+        cmdPlayForSeconds.Text = "Play Seconds"
+        cmdPlayForSeconds.UseVisualStyleBackColor = True
         '
         'txtPlaySeconds
         '
-        Me.txtPlaySeconds.Location = New System.Drawing.Point(89, 89)
-        Me.txtPlaySeconds.Name = "txtPlaySeconds"
-        Me.txtPlaySeconds.Size = New System.Drawing.Size(69, 20)
-        Me.txtPlaySeconds.TabIndex = 41
+        txtPlaySeconds.Location = New System.Drawing.Point(89, 89)
+        txtPlaySeconds.Name = "txtPlaySeconds"
+        txtPlaySeconds.Size = New System.Drawing.Size(69, 20)
+        txtPlaySeconds.TabIndex = 41
         '
         'txtTransectDate
         '
-        Me.txtTransectDate.BackColor = System.Drawing.SystemColors.Window
-        Me.txtTransectDate.Enabled = False
-        Me.txtTransectDate.Location = New System.Drawing.Point(11, 82)
-        Me.txtTransectDate.MaxLength = 50
-        Me.txtTransectDate.Name = "txtTransectDate"
-        Me.txtTransectDate.ReadOnly = True
-        Me.txtTransectDate.Size = New System.Drawing.Size(86, 20)
-        Me.txtTransectDate.TabIndex = 49
+        txtTransectDate.BackColor = System.Drawing.SystemColors.Window
+        txtTransectDate.Enabled = False
+        txtTransectDate.Location = New System.Drawing.Point(11, 82)
+        txtTransectDate.MaxLength = 50
+        txtTransectDate.Name = "txtTransectDate"
+        txtTransectDate.ReadOnly = True
+        txtTransectDate.Size = New System.Drawing.Size(86, 20)
+        txtTransectDate.TabIndex = 49
         '
         'chkRecordEachSecond
         '
-        Me.chkRecordEachSecond.AutoSize = True
-        Me.chkRecordEachSecond.Enabled = False
-        Me.chkRecordEachSecond.Location = New System.Drawing.Point(10, 309)
-        Me.chkRecordEachSecond.Name = "chkRecordEachSecond"
-        Me.chkRecordEachSecond.Size = New System.Drawing.Size(173, 17)
-        Me.chkRecordEachSecond.TabIndex = 39
-        Me.chkRecordEachSecond.Text = "Record Every Second of Video"
-        Me.chkRecordEachSecond.UseVisualStyleBackColor = True
+        chkRecordEachSecond.AutoSize = True
+        chkRecordEachSecond.Enabled = False
+        chkRecordEachSecond.Location = New System.Drawing.Point(10, 309)
+        chkRecordEachSecond.Name = "chkRecordEachSecond"
+        chkRecordEachSecond.Size = New System.Drawing.Size(173, 17)
+        chkRecordEachSecond.TabIndex = 39
+        chkRecordEachSecond.Text = "Record Every Second of Video"
+        chkRecordEachSecond.UseVisualStyleBackColor = True
         '
         'txtProjectName
         '
-        Me.txtProjectName.Enabled = False
-        Me.txtProjectName.Location = New System.Drawing.Point(11, 138)
-        Me.txtProjectName.MaxLength = 50
-        Me.txtProjectName.Name = "txtProjectName"
-        Me.txtProjectName.Size = New System.Drawing.Size(92, 20)
-        Me.txtProjectName.TabIndex = 47
+        txtProjectName.Enabled = False
+        txtProjectName.Location = New System.Drawing.Point(11, 138)
+        txtProjectName.MaxLength = 50
+        txtProjectName.Name = "txtProjectName"
+        txtProjectName.Size = New System.Drawing.Size(92, 20)
+        txtProjectName.TabIndex = 47
         '
         'txtTimeSource
         '
-        Me.txtTimeSource.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.txtTimeSource.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtTimeSource.ForeColor = System.Drawing.Color.LimeGreen
-        Me.txtTimeSource.Location = New System.Drawing.Point(11, 51)
-        Me.txtTimeSource.Margin = New System.Windows.Forms.Padding(2)
-        Me.txtTimeSource.Name = "txtTimeSource"
-        Me.txtTimeSource.ReadOnly = True
-        Me.txtTimeSource.Size = New System.Drawing.Size(116, 13)
-        Me.txtTimeSource.TabIndex = 45
-        Me.txtTimeSource.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        txtTimeSource.BorderStyle = System.Windows.Forms.BorderStyle.None
+        txtTimeSource.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        txtTimeSource.ForeColor = System.Drawing.Color.LimeGreen
+        txtTimeSource.Location = New System.Drawing.Point(11, 51)
+        txtTimeSource.Margin = New System.Windows.Forms.Padding(2)
+        txtTimeSource.Name = "txtTimeSource"
+        txtTimeSource.ReadOnly = True
+        txtTimeSource.Size = New System.Drawing.Size(116, 13)
+        txtTimeSource.TabIndex = 45
+        txtTimeSource.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'txtTime
         '
-        Me.txtTime.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.txtTime.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtTime.ForeColor = System.Drawing.Color.LimeGreen
-        Me.txtTime.Location = New System.Drawing.Point(11, 34)
-        Me.txtTime.Margin = New System.Windows.Forms.Padding(2)
-        Me.txtTime.Name = "txtTime"
-        Me.txtTime.ReadOnly = True
-        Me.txtTime.Size = New System.Drawing.Size(116, 13)
-        Me.txtTime.TabIndex = 45
-        Me.txtTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        txtTime.BorderStyle = System.Windows.Forms.BorderStyle.None
+        txtTime.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        txtTime.ForeColor = System.Drawing.Color.LimeGreen
+        txtTime.Location = New System.Drawing.Point(11, 34)
+        txtTime.Margin = New System.Windows.Forms.Padding(2)
+        txtTime.Name = "txtTime"
+        txtTime.ReadOnly = True
+        txtTime.Size = New System.Drawing.Size(116, 13)
+        txtTime.TabIndex = 45
+        txtTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'txtDateSource
         '
-        Me.txtDateSource.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.txtDateSource.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtDateSource.ForeColor = System.Drawing.Color.LimeGreen
-        Me.txtDateSource.Location = New System.Drawing.Point(13, 107)
-        Me.txtDateSource.Margin = New System.Windows.Forms.Padding(2)
-        Me.txtDateSource.Name = "txtDateSource"
-        Me.txtDateSource.ReadOnly = True
-        Me.txtDateSource.Size = New System.Drawing.Size(116, 13)
-        Me.txtDateSource.TabIndex = 45
+        txtDateSource.BorderStyle = System.Windows.Forms.BorderStyle.None
+        txtDateSource.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        txtDateSource.ForeColor = System.Drawing.Color.LimeGreen
+        txtDateSource.Location = New System.Drawing.Point(13, 107)
+        txtDateSource.Margin = New System.Windows.Forms.Padding(2)
+        txtDateSource.Name = "txtDateSource"
+        txtDateSource.ReadOnly = True
+        txtDateSource.Size = New System.Drawing.Size(116, 13)
+        txtDateSource.TabIndex = 45
         '
         'txtTransectTextbox
         '
-        Me.txtTransectTextbox.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.txtTransectTextbox.ForeColor = System.Drawing.Color.LimeGreen
-        Me.txtTransectTextbox.Location = New System.Drawing.Point(11, 192)
-        Me.txtTransectTextbox.Margin = New System.Windows.Forms.Padding(2)
-        Me.txtTransectTextbox.Name = "txtTransectTextbox"
-        Me.txtTransectTextbox.ReadOnly = True
-        Me.txtTransectTextbox.Size = New System.Drawing.Size(116, 13)
-        Me.txtTransectTextbox.TabIndex = 45
+        txtTransectTextbox.BorderStyle = System.Windows.Forms.BorderStyle.None
+        txtTransectTextbox.ForeColor = System.Drawing.Color.LimeGreen
+        txtTransectTextbox.Location = New System.Drawing.Point(11, 192)
+        txtTransectTextbox.Margin = New System.Windows.Forms.Padding(2)
+        txtTransectTextbox.Name = "txtTransectTextbox"
+        txtTransectTextbox.ReadOnly = True
+        txtTransectTextbox.Size = New System.Drawing.Size(116, 13)
+        txtTransectTextbox.TabIndex = 45
         '
         'lblProjectName
         '
-        Me.lblProjectName.AutoSize = True
-        Me.lblProjectName.Location = New System.Drawing.Point(8, 122)
-        Me.lblProjectName.Name = "lblProjectName"
-        Me.lblProjectName.Size = New System.Drawing.Size(74, 13)
-        Me.lblProjectName.TabIndex = 46
-        Me.lblProjectName.Text = "Project Name:"
+        lblProjectName.AutoSize = True
+        lblProjectName.Location = New System.Drawing.Point(8, 122)
+        lblProjectName.Name = "lblProjectName"
+        lblProjectName.Size = New System.Drawing.Size(74, 13)
+        lblProjectName.TabIndex = 46
+        lblProjectName.Text = "Project Name:"
         '
         'txtOnOffBottomTextbox
         '
-        Me.txtOnOffBottomTextbox.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.txtOnOffBottomTextbox.Location = New System.Drawing.Point(11, 267)
-        Me.txtOnOffBottomTextbox.Margin = New System.Windows.Forms.Padding(2)
-        Me.txtOnOffBottomTextbox.Name = "txtOnOffBottomTextbox"
-        Me.txtOnOffBottomTextbox.ReadOnly = True
-        Me.txtOnOffBottomTextbox.Size = New System.Drawing.Size(116, 13)
-        Me.txtOnOffBottomTextbox.TabIndex = 44
+        txtOnOffBottomTextbox.BorderStyle = System.Windows.Forms.BorderStyle.None
+        txtOnOffBottomTextbox.Location = New System.Drawing.Point(11, 267)
+        txtOnOffBottomTextbox.Margin = New System.Windows.Forms.Padding(2)
+        txtOnOffBottomTextbox.Name = "txtOnOffBottomTextbox"
+        txtOnOffBottomTextbox.ReadOnly = True
+        txtOnOffBottomTextbox.Size = New System.Drawing.Size(116, 13)
+        txtOnOffBottomTextbox.TabIndex = 44
         '
         'cmdOffBottom
         '
-        Me.cmdOffBottom.Location = New System.Drawing.Point(11, 238)
-        Me.cmdOffBottom.Margin = New System.Windows.Forms.Padding(2)
-        Me.cmdOffBottom.Name = "cmdOffBottom"
-        Me.cmdOffBottom.Size = New System.Drawing.Size(116, 25)
-        Me.cmdOffBottom.TabIndex = 43
-        Me.cmdOffBottom.Text = "Off Bottom"
-        Me.cmdOffBottom.UseVisualStyleBackColor = True
+        cmdOffBottom.Location = New System.Drawing.Point(11, 238)
+        cmdOffBottom.Margin = New System.Windows.Forms.Padding(2)
+        cmdOffBottom.Name = "cmdOffBottom"
+        cmdOffBottom.Size = New System.Drawing.Size(116, 25)
+        cmdOffBottom.TabIndex = 43
+        cmdOffBottom.Text = "Off Bottom"
+        cmdOffBottom.UseVisualStyleBackColor = True
         '
         'lblTransectDate
         '
-        Me.lblTransectDate.AutoSize = True
-        Me.lblTransectDate.Location = New System.Drawing.Point(8, 66)
-        Me.lblTransectDate.Name = "lblTransectDate"
-        Me.lblTransectDate.Size = New System.Drawing.Size(156, 13)
-        Me.lblTransectDate.TabIndex = 48
-        Me.lblTransectDate.Text = "Transect Date DD/MM/YYYY: "
+        lblTransectDate.AutoSize = True
+        lblTransectDate.Location = New System.Drawing.Point(8, 66)
+        lblTransectDate.Name = "lblTransectDate"
+        lblTransectDate.Size = New System.Drawing.Size(156, 13)
+        lblTransectDate.TabIndex = 48
+        lblTransectDate.Text = "Transect Date DD/MM/YYYY: "
         '
         'cmdTransectEnd
         '
-        Me.cmdTransectEnd.Location = New System.Drawing.Point(11, 209)
-        Me.cmdTransectEnd.Margin = New System.Windows.Forms.Padding(2)
-        Me.cmdTransectEnd.Name = "cmdTransectEnd"
-        Me.cmdTransectEnd.Size = New System.Drawing.Size(116, 25)
-        Me.cmdTransectEnd.TabIndex = 42
-        Me.cmdTransectEnd.Text = "Transect End"
-        Me.cmdTransectEnd.UseVisualStyleBackColor = True
+        cmdTransectEnd.Location = New System.Drawing.Point(11, 209)
+        cmdTransectEnd.Margin = New System.Windows.Forms.Padding(2)
+        cmdTransectEnd.Name = "cmdTransectEnd"
+        cmdTransectEnd.Size = New System.Drawing.Size(116, 25)
+        cmdTransectEnd.TabIndex = 42
+        cmdTransectEnd.Text = "Transect End"
+        cmdTransectEnd.UseVisualStyleBackColor = True
         '
         'cmdTransectStart
         '
-        Me.cmdTransectStart.Location = New System.Drawing.Point(11, 163)
-        Me.cmdTransectStart.Margin = New System.Windows.Forms.Padding(2)
-        Me.cmdTransectStart.Name = "cmdTransectStart"
-        Me.cmdTransectStart.Size = New System.Drawing.Size(116, 25)
-        Me.cmdTransectStart.TabIndex = 41
-        Me.cmdTransectStart.Text = "Transect Start"
-        Me.cmdTransectStart.UseVisualStyleBackColor = True
+        cmdTransectStart.Location = New System.Drawing.Point(11, 163)
+        cmdTransectStart.Margin = New System.Windows.Forms.Padding(2)
+        cmdTransectStart.Name = "cmdTransectStart"
+        cmdTransectStart.Size = New System.Drawing.Size(116, 25)
+        cmdTransectStart.TabIndex = 41
+        cmdTransectStart.Text = "Transect Start"
+        cmdTransectStart.UseVisualStyleBackColor = True
         '
         'cmdShowSetTimecode
         '
-        Me.cmdShowSetTimecode.Location = New System.Drawing.Point(11, 5)
-        Me.cmdShowSetTimecode.Margin = New System.Windows.Forms.Padding(2)
-        Me.cmdShowSetTimecode.Name = "cmdShowSetTimecode"
-        Me.cmdShowSetTimecode.Size = New System.Drawing.Size(116, 25)
-        Me.cmdShowSetTimecode.TabIndex = 40
-        Me.cmdShowSetTimecode.Text = "Set Time"
-        Me.cmdShowSetTimecode.UseVisualStyleBackColor = True
+        cmdShowSetTimecode.Location = New System.Drawing.Point(11, 5)
+        cmdShowSetTimecode.Margin = New System.Windows.Forms.Padding(2)
+        cmdShowSetTimecode.Name = "cmdShowSetTimecode"
+        cmdShowSetTimecode.Size = New System.Drawing.Size(116, 25)
+        cmdShowSetTimecode.TabIndex = 40
+        cmdShowSetTimecode.Text = "Set Time"
+        cmdShowSetTimecode.UseVisualStyleBackColor = True
         '
         'SplitContainer2
         '
-        Me.SplitContainer2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitContainer2.Location = New System.Drawing.Point(0, 0)
-        Me.SplitContainer2.Name = "SplitContainer2"
-        Me.SplitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal
+        SplitContainer2.Dock = System.Windows.Forms.DockStyle.Fill
+        SplitContainer2.Location = New System.Drawing.Point(0, 0)
+        SplitContainer2.Name = "SplitContainer2"
+        SplitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal
         '
         'SplitContainer2.Panel1
         '
-        Me.SplitContainer2.Panel1.Controls.Add(Me.SplitContainer6)
+        SplitContainer2.Panel1.Controls.Add(SplitContainer6)
         '
         'SplitContainer2.Panel2
         '
-        Me.SplitContainer2.Panel2.Controls.Add(Me.cmdNothingInPhoto)
-        Me.SplitContainer2.Panel2.Controls.Add(Me.lblDisplayRecords)
-        Me.SplitContainer2.Panel2.Controls.Add(Me.cmdDeleteLastRecord)
-        Me.SplitContainer2.Panel2.Controls.Add(Me.cmdRefreshDatabase)
-        Me.SplitContainer2.Panel2.Controls.Add(Me.txtDisplayRecords)
-        Me.SplitContainer2.Panel2.Controls.Add(Me.cmdAddComment)
-        Me.SplitContainer2.Size = New System.Drawing.Size(886, 497)
-        Me.SplitContainer2.SplitterDistance = 423
-        Me.SplitContainer2.TabIndex = 0
+        SplitContainer2.Panel2.Controls.Add(cmdNothingInPhoto)
+        SplitContainer2.Panel2.Controls.Add(lblDisplayRecords)
+        SplitContainer2.Panel2.Controls.Add(cmdDeleteLastRecord)
+        SplitContainer2.Panel2.Controls.Add(cmdRefreshDatabase)
+        SplitContainer2.Panel2.Controls.Add(txtDisplayRecords)
+        SplitContainer2.Panel2.Controls.Add(cmdAddComment)
+        SplitContainer2.Size = New System.Drawing.Size(886, 497)
+        SplitContainer2.SplitterDistance = 423
+        SplitContainer2.TabIndex = 0
         '
         'SplitContainer6
         '
-        Me.SplitContainer6.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitContainer6.Location = New System.Drawing.Point(0, 0)
-        Me.SplitContainer6.Name = "SplitContainer6"
+        SplitContainer6.Dock = System.Windows.Forms.DockStyle.Fill
+        SplitContainer6.Location = New System.Drawing.Point(0, 0)
+        SplitContainer6.Name = "SplitContainer6"
         '
         'SplitContainer6.Panel1
         '
-        Me.SplitContainer6.Panel1.AutoScroll = True
-        Me.SplitContainer6.Panel1.Controls.Add(Me.SplitContainer7)
+        SplitContainer6.Panel1.AutoScroll = True
+        SplitContainer6.Panel1.Controls.Add(SplitContainer7)
         '
         'SplitContainer6.Panel2
         '
-        Me.SplitContainer6.Panel2.AutoScroll = True
-        Me.SplitContainer6.Panel2.Controls.Add(Me.pnlSpeciesEntryControls)
-        Me.SplitContainer6.Panel2.Controls.Add(Me.pnlSpeciesData)
-        Me.SplitContainer6.Size = New System.Drawing.Size(886, 423)
-        Me.SplitContainer6.SplitterDistance = 472
-        Me.SplitContainer6.TabIndex = 44
+        SplitContainer6.Panel2.AutoScroll = True
+        SplitContainer6.Panel2.Controls.Add(pnlSpeciesEntryControls)
+        SplitContainer6.Panel2.Controls.Add(pnlSpeciesData)
+        SplitContainer6.Size = New System.Drawing.Size(886, 423)
+        SplitContainer6.SplitterDistance = 472
+        SplitContainer6.TabIndex = 44
         '
         'SplitContainer7
         '
-        Me.SplitContainer7.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitContainer7.Location = New System.Drawing.Point(0, 0)
-        Me.SplitContainer7.Name = "SplitContainer7"
+        SplitContainer7.Dock = System.Windows.Forms.DockStyle.Fill
+        SplitContainer7.Location = New System.Drawing.Point(0, 0)
+        SplitContainer7.Name = "SplitContainer7"
         '
         'SplitContainer7.Panel1
         '
-        Me.SplitContainer7.Panel1.Controls.Add(Me.pnlTransectData)
+        SplitContainer7.Panel1.Controls.Add(pnlTransectData)
         '
         'SplitContainer7.Panel2
         '
-        Me.SplitContainer7.Panel2.Controls.Add(Me.pnlHabitatData)
-        Me.SplitContainer7.Size = New System.Drawing.Size(472, 423)
-        Me.SplitContainer7.SplitterDistance = 236
-        Me.SplitContainer7.TabIndex = 0
+        SplitContainer7.Panel2.Controls.Add(pnlHabitatData)
+        SplitContainer7.Size = New System.Drawing.Size(472, 423)
+        SplitContainer7.SplitterDistance = 236
+        SplitContainer7.TabIndex = 0
         '
         'pnlTransectData
         '
-        Me.pnlTransectData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        pnlTransectData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pnlTransectData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.pnlTransectData.Controls.Add(Me.cmdDefineAllTransectVariables)
-        Me.pnlTransectData.Controls.Add(Me.lblTransectData)
-        Me.pnlTransectData.Location = New System.Drawing.Point(0, 0)
-        Me.pnlTransectData.Name = "pnlTransectData"
-        Me.pnlTransectData.Size = New System.Drawing.Size(236, 423)
-        Me.pnlTransectData.TabIndex = 51
+        pnlTransectData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
+        pnlTransectData.Controls.Add(cmdDefineAllTransectVariables)
+        pnlTransectData.Controls.Add(lblTransectData)
+        pnlTransectData.Location = New System.Drawing.Point(0, 0)
+        pnlTransectData.Name = "pnlTransectData"
+        pnlTransectData.Size = New System.Drawing.Size(236, 423)
+        pnlTransectData.TabIndex = 51
         '
         'cmdDefineAllTransectVariables
         '
-        Me.cmdDefineAllTransectVariables.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdDefineAllTransectVariables.ForeColor = System.Drawing.Color.Blue
-        Me.cmdDefineAllTransectVariables.Location = New System.Drawing.Point(6, 19)
-        Me.cmdDefineAllTransectVariables.Name = "cmdDefineAllTransectVariables"
-        Me.cmdDefineAllTransectVariables.Size = New System.Drawing.Size(170, 44)
-        Me.cmdDefineAllTransectVariables.TabIndex = 52
-        Me.cmdDefineAllTransectVariables.Text = "Define All"
-        Me.cmdDefineAllTransectVariables.UseVisualStyleBackColor = True
-        Me.cmdDefineAllTransectVariables.Visible = False
+        cmdDefineAllTransectVariables.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        cmdDefineAllTransectVariables.ForeColor = System.Drawing.Color.Blue
+        cmdDefineAllTransectVariables.Location = New System.Drawing.Point(6, 19)
+        cmdDefineAllTransectVariables.Name = "cmdDefineAllTransectVariables"
+        cmdDefineAllTransectVariables.Size = New System.Drawing.Size(170, 44)
+        cmdDefineAllTransectVariables.TabIndex = 52
+        cmdDefineAllTransectVariables.Text = "Define All"
+        cmdDefineAllTransectVariables.UseVisualStyleBackColor = True
+        cmdDefineAllTransectVariables.Visible = False
         '
         'lblTransectData
         '
-        Me.lblTransectData.AutoSize = True
-        Me.lblTransectData.Location = New System.Drawing.Point(3, 3)
-        Me.lblTransectData.Name = "lblTransectData"
-        Me.lblTransectData.Size = New System.Drawing.Size(97, 13)
-        Me.lblTransectData.TabIndex = 37
-        Me.lblTransectData.Text = "TRANSECT DATA"
+        lblTransectData.AutoSize = True
+        lblTransectData.Location = New System.Drawing.Point(3, 3)
+        lblTransectData.Name = "lblTransectData"
+        lblTransectData.Size = New System.Drawing.Size(97, 13)
+        lblTransectData.TabIndex = 37
+        lblTransectData.Text = "TRANSECT DATA"
         '
         'pnlHabitatData
         '
-        Me.pnlHabitatData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        pnlHabitatData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pnlHabitatData.AutoScroll = True
-        Me.pnlHabitatData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.pnlHabitatData.Controls.Add(Me.cmdDefineAllSpatialVariables)
-        Me.pnlHabitatData.Controls.Add(Me.lblHabitatData)
-        Me.pnlHabitatData.Controls.Add(Me.chkRepeatVariables)
-        Me.pnlHabitatData.Location = New System.Drawing.Point(0, 0)
-        Me.pnlHabitatData.Margin = New System.Windows.Forms.Padding(2)
-        Me.pnlHabitatData.Name = "pnlHabitatData"
-        Me.pnlHabitatData.Size = New System.Drawing.Size(232, 423)
-        Me.pnlHabitatData.TabIndex = 36
+        pnlHabitatData.AutoScroll = True
+        pnlHabitatData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
+        pnlHabitatData.Controls.Add(cmdDefineAllSpatialVariables)
+        pnlHabitatData.Controls.Add(lblHabitatData)
+        pnlHabitatData.Controls.Add(chkRepeatVariables)
+        pnlHabitatData.Location = New System.Drawing.Point(0, 0)
+        pnlHabitatData.Margin = New System.Windows.Forms.Padding(2)
+        pnlHabitatData.Name = "pnlHabitatData"
+        pnlHabitatData.Size = New System.Drawing.Size(232, 423)
+        pnlHabitatData.TabIndex = 36
         '
         'cmdDefineAllSpatialVariables
         '
-        Me.cmdDefineAllSpatialVariables.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdDefineAllSpatialVariables.ForeColor = System.Drawing.Color.Blue
-        Me.cmdDefineAllSpatialVariables.Location = New System.Drawing.Point(6, 36)
-        Me.cmdDefineAllSpatialVariables.Name = "cmdDefineAllSpatialVariables"
-        Me.cmdDefineAllSpatialVariables.Size = New System.Drawing.Size(170, 44)
-        Me.cmdDefineAllSpatialVariables.TabIndex = 52
-        Me.cmdDefineAllSpatialVariables.Text = "Define All"
-        Me.cmdDefineAllSpatialVariables.UseVisualStyleBackColor = True
-        Me.cmdDefineAllSpatialVariables.Visible = False
+        cmdDefineAllSpatialVariables.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        cmdDefineAllSpatialVariables.ForeColor = System.Drawing.Color.Blue
+        cmdDefineAllSpatialVariables.Location = New System.Drawing.Point(6, 36)
+        cmdDefineAllSpatialVariables.Name = "cmdDefineAllSpatialVariables"
+        cmdDefineAllSpatialVariables.Size = New System.Drawing.Size(170, 44)
+        cmdDefineAllSpatialVariables.TabIndex = 52
+        cmdDefineAllSpatialVariables.Text = "Define All"
+        cmdDefineAllSpatialVariables.UseVisualStyleBackColor = True
+        cmdDefineAllSpatialVariables.Visible = False
         '
         'lblHabitatData
         '
-        Me.lblHabitatData.AutoSize = True
-        Me.lblHabitatData.Location = New System.Drawing.Point(3, 3)
-        Me.lblHabitatData.Name = "lblHabitatData"
-        Me.lblHabitatData.Size = New System.Drawing.Size(85, 13)
-        Me.lblHabitatData.TabIndex = 37
-        Me.lblHabitatData.Text = "HABITAT DATA"
+        lblHabitatData.AutoSize = True
+        lblHabitatData.Location = New System.Drawing.Point(3, 3)
+        lblHabitatData.Name = "lblHabitatData"
+        lblHabitatData.Size = New System.Drawing.Size(85, 13)
+        lblHabitatData.TabIndex = 37
+        lblHabitatData.Text = "HABITAT DATA"
         '
         'chkRepeatVariables
         '
-        Me.chkRepeatVariables.AutoSize = True
-        Me.chkRepeatVariables.Checked = True
-        Me.chkRepeatVariables.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkRepeatVariables.Location = New System.Drawing.Point(6, 19)
-        Me.chkRepeatVariables.Name = "chkRepeatVariables"
-        Me.chkRepeatVariables.Size = New System.Drawing.Size(210, 17)
-        Me.chkRepeatVariables.TabIndex = 37
-        Me.chkRepeatVariables.Text = "Repeat Habitat Data For Every Record"
-        Me.chkRepeatVariables.UseVisualStyleBackColor = True
-        Me.chkRepeatVariables.Visible = False
+        chkRepeatVariables.AutoSize = True
+        chkRepeatVariables.Checked = True
+        chkRepeatVariables.CheckState = System.Windows.Forms.CheckState.Checked
+        chkRepeatVariables.Location = New System.Drawing.Point(6, 19)
+        chkRepeatVariables.Name = "chkRepeatVariables"
+        chkRepeatVariables.Size = New System.Drawing.Size(210, 17)
+        chkRepeatVariables.TabIndex = 37
+        chkRepeatVariables.Text = "Repeat Habitat Data For Every Record"
+        chkRepeatVariables.UseVisualStyleBackColor = True
+        chkRepeatVariables.Visible = False
         '
         'pnlSpeciesEntryControls
         '
-        Me.pnlSpeciesEntryControls.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        pnlSpeciesEntryControls.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pnlSpeciesEntryControls.AutoScroll = True
-        Me.pnlSpeciesEntryControls.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.pnlSpeciesEntryControls.Controls.Add(Me.cmdRareSpeciesLookup)
-        Me.pnlSpeciesEntryControls.Controls.Add(Me.radQuickEntry)
-        Me.pnlSpeciesEntryControls.Controls.Add(Me.cmdEdit)
-        Me.pnlSpeciesEntryControls.Controls.Add(Me.radAbundanceEntry)
-        Me.pnlSpeciesEntryControls.Controls.Add(Me.radDetailedEntry)
-        Me.pnlSpeciesEntryControls.Controls.Add(Me.lblQuickSpeciesCount)
-        Me.pnlSpeciesEntryControls.Controls.Add(Me.txtQuickSpeciesCount)
-        Me.pnlSpeciesEntryControls.Location = New System.Drawing.Point(1, 0)
-        Me.pnlSpeciesEntryControls.Name = "pnlSpeciesEntryControls"
-        Me.pnlSpeciesEntryControls.Size = New System.Drawing.Size(409, 79)
-        Me.pnlSpeciesEntryControls.TabIndex = 38
+        pnlSpeciesEntryControls.AutoScroll = True
+        pnlSpeciesEntryControls.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
+        pnlSpeciesEntryControls.Controls.Add(cmdRareSpeciesLookup)
+        pnlSpeciesEntryControls.Controls.Add(radQuickEntry)
+        pnlSpeciesEntryControls.Controls.Add(cmdEdit)
+        pnlSpeciesEntryControls.Controls.Add(radAbundanceEntry)
+        pnlSpeciesEntryControls.Controls.Add(radDetailedEntry)
+        pnlSpeciesEntryControls.Controls.Add(lblQuickSpeciesCount)
+        pnlSpeciesEntryControls.Controls.Add(txtQuickSpeciesCount)
+        pnlSpeciesEntryControls.Location = New System.Drawing.Point(1, 0)
+        pnlSpeciesEntryControls.Name = "pnlSpeciesEntryControls"
+        pnlSpeciesEntryControls.Size = New System.Drawing.Size(409, 79)
+        pnlSpeciesEntryControls.TabIndex = 38
         '
         'cmdRareSpeciesLookup
         '
-        Me.cmdRareSpeciesLookup.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdRareSpeciesLookup.Location = New System.Drawing.Point(6, 29)
-        Me.cmdRareSpeciesLookup.Name = "cmdRareSpeciesLookup"
-        Me.cmdRareSpeciesLookup.Size = New System.Drawing.Size(140, 44)
-        Me.cmdRareSpeciesLookup.TabIndex = 59
-        Me.cmdRareSpeciesLookup.Text = "Rare Species Lookup"
-        Me.cmdRareSpeciesLookup.UseVisualStyleBackColor = True
-        Me.cmdRareSpeciesLookup.Visible = False
+        cmdRareSpeciesLookup.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        cmdRareSpeciesLookup.Location = New System.Drawing.Point(6, 29)
+        cmdRareSpeciesLookup.Name = "cmdRareSpeciesLookup"
+        cmdRareSpeciesLookup.Size = New System.Drawing.Size(140, 44)
+        cmdRareSpeciesLookup.TabIndex = 59
+        cmdRareSpeciesLookup.Text = "Rare Species Lookup"
+        cmdRareSpeciesLookup.UseVisualStyleBackColor = True
+        cmdRareSpeciesLookup.Visible = False
         '
         'radQuickEntry
         '
-        Me.radQuickEntry.AutoSize = True
-        Me.radQuickEntry.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.radQuickEntry.Location = New System.Drawing.Point(5, 3)
-        Me.radQuickEntry.Name = "radQuickEntry"
-        Me.radQuickEntry.Size = New System.Drawing.Size(99, 20)
-        Me.radQuickEntry.TabIndex = 44
-        Me.radQuickEntry.Text = "Quick Entry"
-        Me.radQuickEntry.UseVisualStyleBackColor = True
-        Me.radQuickEntry.Visible = False
+        radQuickEntry.AutoSize = True
+        radQuickEntry.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        radQuickEntry.Location = New System.Drawing.Point(5, 3)
+        radQuickEntry.Name = "radQuickEntry"
+        radQuickEntry.Size = New System.Drawing.Size(99, 20)
+        radQuickEntry.TabIndex = 44
+        radQuickEntry.Text = "Quick Entry"
+        radQuickEntry.UseVisualStyleBackColor = True
+        radQuickEntry.Visible = False
         '
         'cmdEdit
         '
-        Me.cmdEdit.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdEdit.Location = New System.Drawing.Point(152, 29)
-        Me.cmdEdit.Name = "cmdEdit"
-        Me.cmdEdit.Size = New System.Drawing.Size(140, 44)
-        Me.cmdEdit.TabIndex = 45
-        Me.cmdEdit.Text = "Edit Species List"
-        Me.cmdEdit.UseVisualStyleBackColor = True
-        Me.cmdEdit.Visible = False
+        cmdEdit.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        cmdEdit.Location = New System.Drawing.Point(152, 29)
+        cmdEdit.Name = "cmdEdit"
+        cmdEdit.Size = New System.Drawing.Size(140, 44)
+        cmdEdit.TabIndex = 45
+        cmdEdit.Text = "Edit Species List"
+        cmdEdit.UseVisualStyleBackColor = True
+        cmdEdit.Visible = False
         '
         'radAbundanceEntry
         '
-        Me.radAbundanceEntry.AutoSize = True
-        Me.radAbundanceEntry.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.radAbundanceEntry.Location = New System.Drawing.Point(232, 3)
-        Me.radAbundanceEntry.Name = "radAbundanceEntry"
-        Me.radAbundanceEntry.Size = New System.Drawing.Size(138, 20)
-        Me.radAbundanceEntry.TabIndex = 43
-        Me.radAbundanceEntry.Text = "Abundance Entry"
-        Me.radAbundanceEntry.UseVisualStyleBackColor = True
-        Me.radAbundanceEntry.Visible = False
+        radAbundanceEntry.AutoSize = True
+        radAbundanceEntry.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        radAbundanceEntry.Location = New System.Drawing.Point(232, 3)
+        radAbundanceEntry.Name = "radAbundanceEntry"
+        radAbundanceEntry.Size = New System.Drawing.Size(138, 20)
+        radAbundanceEntry.TabIndex = 43
+        radAbundanceEntry.Text = "Abundance Entry"
+        radAbundanceEntry.UseVisualStyleBackColor = True
+        radAbundanceEntry.Visible = False
         '
         'radDetailedEntry
         '
-        Me.radDetailedEntry.AutoSize = True
-        Me.radDetailedEntry.Checked = True
-        Me.radDetailedEntry.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.radDetailedEntry.Location = New System.Drawing.Point(108, 3)
-        Me.radDetailedEntry.Name = "radDetailedEntry"
-        Me.radDetailedEntry.Size = New System.Drawing.Size(118, 20)
-        Me.radDetailedEntry.TabIndex = 43
-        Me.radDetailedEntry.TabStop = True
-        Me.radDetailedEntry.Text = "Detailed Entry"
-        Me.radDetailedEntry.UseVisualStyleBackColor = True
-        Me.radDetailedEntry.Visible = False
+        radDetailedEntry.AutoSize = True
+        radDetailedEntry.Checked = True
+        radDetailedEntry.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        radDetailedEntry.Location = New System.Drawing.Point(108, 3)
+        radDetailedEntry.Name = "radDetailedEntry"
+        radDetailedEntry.Size = New System.Drawing.Size(118, 20)
+        radDetailedEntry.TabIndex = 43
+        radDetailedEntry.TabStop = True
+        radDetailedEntry.Text = "Detailed Entry"
+        radDetailedEntry.UseVisualStyleBackColor = True
+        radDetailedEntry.Visible = False
         '
         'lblQuickSpeciesCount
         '
-        Me.lblQuickSpeciesCount.AutoSize = True
-        Me.lblQuickSpeciesCount.Location = New System.Drawing.Point(298, 32)
-        Me.lblQuickSpeciesCount.Name = "lblQuickSpeciesCount"
-        Me.lblQuickSpeciesCount.Size = New System.Drawing.Size(62, 26)
-        Me.lblQuickSpeciesCount.TabIndex = 45
-        Me.lblQuickSpeciesCount.Text = "Quick Entry" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Count"
-        Me.lblQuickSpeciesCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.lblQuickSpeciesCount.Visible = False
+        lblQuickSpeciesCount.AutoSize = True
+        lblQuickSpeciesCount.Location = New System.Drawing.Point(298, 32)
+        lblQuickSpeciesCount.Name = "lblQuickSpeciesCount"
+        lblQuickSpeciesCount.Size = New System.Drawing.Size(62, 26)
+        lblQuickSpeciesCount.TabIndex = 45
+        lblQuickSpeciesCount.Text = "Quick Entry" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Count"
+        lblQuickSpeciesCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        lblQuickSpeciesCount.Visible = False
         '
         'txtQuickSpeciesCount
         '
-        Me.txtQuickSpeciesCount.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtQuickSpeciesCount.Location = New System.Drawing.Point(366, 32)
-        Me.txtQuickSpeciesCount.Name = "txtQuickSpeciesCount"
-        Me.txtQuickSpeciesCount.Size = New System.Drawing.Size(38, 23)
-        Me.txtQuickSpeciesCount.TabIndex = 39
-        Me.txtQuickSpeciesCount.Visible = False
+        txtQuickSpeciesCount.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        txtQuickSpeciesCount.Location = New System.Drawing.Point(366, 32)
+        txtQuickSpeciesCount.Name = "txtQuickSpeciesCount"
+        txtQuickSpeciesCount.Size = New System.Drawing.Size(38, 23)
+        txtQuickSpeciesCount.TabIndex = 39
+        txtQuickSpeciesCount.Visible = False
         '
         'pnlSpeciesData
         '
-        Me.pnlSpeciesData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        pnlSpeciesData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pnlSpeciesData.AutoScroll = True
-        Me.pnlSpeciesData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.pnlSpeciesData.Controls.Add(Me.lblSpeciesData)
-        Me.pnlSpeciesData.Location = New System.Drawing.Point(0, 80)
-        Me.pnlSpeciesData.Margin = New System.Windows.Forms.Padding(2)
-        Me.pnlSpeciesData.Name = "pnlSpeciesData"
-        Me.pnlSpeciesData.Size = New System.Drawing.Size(410, 343)
-        Me.pnlSpeciesData.TabIndex = 37
+        pnlSpeciesData.AutoScroll = True
+        pnlSpeciesData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
+        pnlSpeciesData.Controls.Add(lblSpeciesData)
+        pnlSpeciesData.Location = New System.Drawing.Point(0, 80)
+        pnlSpeciesData.Margin = New System.Windows.Forms.Padding(2)
+        pnlSpeciesData.Name = "pnlSpeciesData"
+        pnlSpeciesData.Size = New System.Drawing.Size(410, 343)
+        pnlSpeciesData.TabIndex = 37
         '
         'lblSpeciesData
         '
-        Me.lblSpeciesData.AutoSize = True
-        Me.lblSpeciesData.Location = New System.Drawing.Point(3, 3)
-        Me.lblSpeciesData.Name = "lblSpeciesData"
-        Me.lblSpeciesData.Size = New System.Drawing.Size(84, 13)
-        Me.lblSpeciesData.TabIndex = 38
-        Me.lblSpeciesData.Text = "SPECIES DATA"
+        lblSpeciesData.AutoSize = True
+        lblSpeciesData.Location = New System.Drawing.Point(3, 3)
+        lblSpeciesData.Name = "lblSpeciesData"
+        lblSpeciesData.Size = New System.Drawing.Size(84, 13)
+        lblSpeciesData.TabIndex = 38
+        lblSpeciesData.Text = "SPECIES DATA"
         '
         'cmdNothingInPhoto
         '
-        Me.cmdNothingInPhoto.Location = New System.Drawing.Point(163, 3)
-        Me.cmdNothingInPhoto.Name = "cmdNothingInPhoto"
-        Me.cmdNothingInPhoto.Size = New System.Drawing.Size(154, 44)
-        Me.cmdNothingInPhoto.TabIndex = 55
-        Me.cmdNothingInPhoto.Text = "Nothing In Photo"
-        Me.cmdNothingInPhoto.UseVisualStyleBackColor = True
-        Me.cmdNothingInPhoto.Visible = False
+        cmdNothingInPhoto.Location = New System.Drawing.Point(163, 3)
+        cmdNothingInPhoto.Name = "cmdNothingInPhoto"
+        cmdNothingInPhoto.Size = New System.Drawing.Size(154, 44)
+        cmdNothingInPhoto.TabIndex = 55
+        cmdNothingInPhoto.Text = "Nothing In Photo"
+        cmdNothingInPhoto.UseVisualStyleBackColor = True
+        cmdNothingInPhoto.Visible = False
         '
         'lblDisplayRecords
         '
-        Me.lblDisplayRecords.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblDisplayRecords.AutoSize = True
-        Me.lblDisplayRecords.Location = New System.Drawing.Point(575, 41)
-        Me.lblDisplayRecords.Name = "lblDisplayRecords"
-        Me.lblDisplayRecords.Size = New System.Drawing.Size(96, 26)
-        Me.lblDisplayRecords.TabIndex = 57
-        Me.lblDisplayRecords.Text = "Number of" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Displayed Records"
-        Me.lblDisplayRecords.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.lblDisplayRecords.Visible = False
+        lblDisplayRecords.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        lblDisplayRecords.AutoSize = True
+        lblDisplayRecords.Location = New System.Drawing.Point(575, 41)
+        lblDisplayRecords.Name = "lblDisplayRecords"
+        lblDisplayRecords.Size = New System.Drawing.Size(96, 26)
+        lblDisplayRecords.TabIndex = 57
+        lblDisplayRecords.Text = "Number of" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Displayed Records"
+        lblDisplayRecords.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        lblDisplayRecords.Visible = False
         '
         'cmdDeleteLastRecord
         '
-        Me.cmdDeleteLastRecord.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdDeleteLastRecord.Location = New System.Drawing.Point(808, 33)
-        Me.cmdDeleteLastRecord.Name = "cmdDeleteLastRecord"
-        Me.cmdDeleteLastRecord.Size = New System.Drawing.Size(75, 34)
-        Me.cmdDeleteLastRecord.TabIndex = 58
-        Me.cmdDeleteLastRecord.Text = "Delete Last Record"
-        Me.cmdDeleteLastRecord.UseVisualStyleBackColor = True
-        Me.cmdDeleteLastRecord.Visible = False
+        cmdDeleteLastRecord.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        cmdDeleteLastRecord.Location = New System.Drawing.Point(808, 33)
+        cmdDeleteLastRecord.Name = "cmdDeleteLastRecord"
+        cmdDeleteLastRecord.Size = New System.Drawing.Size(75, 34)
+        cmdDeleteLastRecord.TabIndex = 58
+        cmdDeleteLastRecord.Text = "Delete Last Record"
+        cmdDeleteLastRecord.UseVisualStyleBackColor = True
+        cmdDeleteLastRecord.Visible = False
         '
         'cmdRefreshDatabase
         '
-        Me.cmdRefreshDatabase.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdRefreshDatabase.Location = New System.Drawing.Point(727, 33)
-        Me.cmdRefreshDatabase.Name = "cmdRefreshDatabase"
-        Me.cmdRefreshDatabase.Size = New System.Drawing.Size(75, 34)
-        Me.cmdRefreshDatabase.TabIndex = 58
-        Me.cmdRefreshDatabase.Text = "Refresh Database"
-        Me.cmdRefreshDatabase.UseVisualStyleBackColor = True
-        Me.cmdRefreshDatabase.Visible = False
+        cmdRefreshDatabase.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        cmdRefreshDatabase.Location = New System.Drawing.Point(727, 33)
+        cmdRefreshDatabase.Name = "cmdRefreshDatabase"
+        cmdRefreshDatabase.Size = New System.Drawing.Size(75, 34)
+        cmdRefreshDatabase.TabIndex = 58
+        cmdRefreshDatabase.Text = "Refresh Database"
+        cmdRefreshDatabase.UseVisualStyleBackColor = True
+        cmdRefreshDatabase.Visible = False
         '
         'txtDisplayRecords
         '
-        Me.txtDisplayRecords.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtDisplayRecords.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtDisplayRecords.Location = New System.Drawing.Point(677, 44)
-        Me.txtDisplayRecords.Name = "txtDisplayRecords"
-        Me.txtDisplayRecords.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDisplayRecords.Size = New System.Drawing.Size(44, 23)
-        Me.txtDisplayRecords.TabIndex = 56
-        Me.txtDisplayRecords.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        Me.txtDisplayRecords.Visible = False
+        txtDisplayRecords.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        txtDisplayRecords.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        txtDisplayRecords.Location = New System.Drawing.Point(677, 44)
+        txtDisplayRecords.Name = "txtDisplayRecords"
+        txtDisplayRecords.RightToLeft = System.Windows.Forms.RightToLeft.No
+        txtDisplayRecords.Size = New System.Drawing.Size(44, 23)
+        txtDisplayRecords.TabIndex = 56
+        txtDisplayRecords.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        txtDisplayRecords.Visible = False
         '
         'cmdAddComment
         '
-        Me.cmdAddComment.Location = New System.Drawing.Point(3, 2)
-        Me.cmdAddComment.Name = "cmdAddComment"
-        Me.cmdAddComment.Size = New System.Drawing.Size(154, 44)
-        Me.cmdAddComment.TabIndex = 37
-        Me.cmdAddComment.Text = "Add Comment"
-        Me.cmdAddComment.UseVisualStyleBackColor = True
-        Me.cmdAddComment.Visible = False
+        cmdAddComment.Location = New System.Drawing.Point(3, 2)
+        cmdAddComment.Name = "cmdAddComment"
+        cmdAddComment.Size = New System.Drawing.Size(154, 44)
+        cmdAddComment.TabIndex = 37
+        cmdAddComment.Text = "Add Comment"
+        cmdAddComment.UseVisualStyleBackColor = True
+        cmdAddComment.Visible = False
         '
         'grdVideoMinerDatabase
         '
-        Me.grdVideoMinerDatabase.AllowUserToAddRows = False
-        Me.grdVideoMinerDatabase.AllowUserToDeleteRows = False
-        Me.grdVideoMinerDatabase.AllowUserToOrderColumns = True
-        Me.grdVideoMinerDatabase.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grdVideoMinerDatabase.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdVideoMinerDatabase.Location = New System.Drawing.Point(0, 0)
-        Me.grdVideoMinerDatabase.Margin = New System.Windows.Forms.Padding(2)
-        Me.grdVideoMinerDatabase.Name = "grdVideoMinerDatabase"
-        Me.grdVideoMinerDatabase.ReadOnly = True
-        Me.grdVideoMinerDatabase.RowTemplate.Height = 24
-        Me.grdVideoMinerDatabase.Size = New System.Drawing.Size(1098, 125)
-        Me.grdVideoMinerDatabase.TabIndex = 0
+        grdVideoMinerDatabase.AllowUserToAddRows = False
+        grdVideoMinerDatabase.AllowUserToDeleteRows = False
+        grdVideoMinerDatabase.AllowUserToOrderColumns = True
+        grdVideoMinerDatabase.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        grdVideoMinerDatabase.Dock = System.Windows.Forms.DockStyle.Fill
+        grdVideoMinerDatabase.Location = New System.Drawing.Point(0, 0)
+        grdVideoMinerDatabase.Margin = New System.Windows.Forms.Padding(2)
+        grdVideoMinerDatabase.Name = "grdVideoMinerDatabase"
+        grdVideoMinerDatabase.ReadOnly = True
+        grdVideoMinerDatabase.RowTemplate.Height = 24
+        grdVideoMinerDatabase.Size = New System.Drawing.Size(1098, 125)
+        grdVideoMinerDatabase.TabIndex = 0
         '
         'tmrRecordPerSecond
         '
-        Me.tmrRecordPerSecond.Interval = 200
+        tmrRecordPerSecond.Interval = 200
         '
         'tmrPlayForSeconds
         '
-        Me.tmrPlayForSeconds.Interval = 10
+        tmrPlayForSeconds.Interval = 10
         '
         'svDlgFileDialogScrCap
         '
-        Me.svDlgFileDialogScrCap.Filter = "Jpeg (*.jpg)|*.jpg|Bitmap (*.bmp)|*.bmp"
-        Me.svDlgFileDialogScrCap.Title = "Save Screen Capture as..."
+        svDlgFileDialogScrCap.Filter = "Jpeg (*.jpg)|*.jpg|Bitmap (*.bmp)|*.bmp"
+        svDlgFileDialogScrCap.Title = "Save Screen Capture as..."
         '
         'tmrGPSExpiry
         '
-        Me.tmrGPSExpiry.Interval = 750
+        tmrGPSExpiry.Interval = 750
         '
         'tmrComputerTime
         '
-        Me.tmrComputerTime.Interval = 500
+        tmrComputerTime.Interval = 500
         '
         'VideoMiner
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.ClientSize = New System.Drawing.Size(1098, 729)
-        Me.Controls.Add(Me.SplitContainer5)
-        Me.Controls.Add(Me.mnStrVideoMinerMenu)
-        Me.DoubleBuffered = True
-        Me.ForeColor = System.Drawing.Color.Black
-        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.KeyPreview = True
-        Me.MainMenuStrip = Me.mnStrVideoMinerMenu
-        Me.Name = "VideoMiner"
-        Me.Text = "VideoMiner 3.0.2"
-        Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
-        Me.mnStrVideoMinerMenu.ResumeLayout(False)
-        Me.mnStrVideoMinerMenu.PerformLayout()
-        Me.StatusStrip1.ResumeLayout(False)
-        Me.StatusStrip1.PerformLayout()
-        Me.SplitContainer5.Panel1.ResumeLayout(False)
-        Me.SplitContainer5.Panel2.ResumeLayout(False)
-        Me.SplitContainer5.Panel2.PerformLayout()
-        CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.SplitContainer5.ResumeLayout(False)
-        Me.SplitContainer4.Panel1.ResumeLayout(False)
-        Me.SplitContainer4.Panel1.PerformLayout()
-        Me.SplitContainer4.Panel2.ResumeLayout(False)
-        CType(Me.SplitContainer4, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.SplitContainer4.ResumeLayout(False)
-        Me.SplitContainer1.Panel1.ResumeLayout(False)
-        Me.SplitContainer1.Panel2.ResumeLayout(False)
-        CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.SplitContainer1.ResumeLayout(False)
-        Me.SplitContainer3.Panel1.ResumeLayout(False)
-        Me.SplitContainer3.Panel1.PerformLayout()
-        Me.SplitContainer3.Panel2.ResumeLayout(False)
-        CType(Me.SplitContainer3, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.SplitContainer3.ResumeLayout(False)
-        Me.pnlImageControls.ResumeLayout(False)
-        Me.pnlImageControls.PerformLayout()
-        Me.pnlVideoControls.ResumeLayout(False)
-        Me.pnlVideoControls.PerformLayout()
-        Me.SplitContainer2.Panel1.ResumeLayout(False)
-        Me.SplitContainer2.Panel2.ResumeLayout(False)
-        Me.SplitContainer2.Panel2.PerformLayout()
-        CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.SplitContainer2.ResumeLayout(False)
-        Me.SplitContainer6.Panel1.ResumeLayout(False)
-        Me.SplitContainer6.Panel2.ResumeLayout(False)
-        CType(Me.SplitContainer6, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.SplitContainer6.ResumeLayout(False)
-        Me.SplitContainer7.Panel1.ResumeLayout(False)
-        Me.SplitContainer7.Panel2.ResumeLayout(False)
-        CType(Me.SplitContainer7, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.SplitContainer7.ResumeLayout(False)
-        Me.pnlTransectData.ResumeLayout(False)
-        Me.pnlTransectData.PerformLayout()
-        Me.pnlHabitatData.ResumeLayout(False)
-        Me.pnlHabitatData.PerformLayout()
-        Me.pnlSpeciesEntryControls.ResumeLayout(False)
-        Me.pnlSpeciesEntryControls.PerformLayout()
-        Me.pnlSpeciesData.ResumeLayout(False)
-        Me.pnlSpeciesData.PerformLayout()
-        CType(Me.grdVideoMinerDatabase, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.ResumeLayout(False)
-        Me.PerformLayout()
+        AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        ClientSize = New System.Drawing.Size(1098, 729)
+        Controls.Add(SplitContainer5)
+        Controls.Add(mnStrVideoMinerMenu)
+        DoubleBuffered = True
+        ForeColor = System.Drawing.Color.Black
+        Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        KeyPreview = True
+        MainMenuStrip = mnStrVideoMinerMenu
+        Name = "VideoMiner"
+        Text = "VideoMiner 3.0.2"
+        WindowState = System.Windows.Forms.FormWindowState.Maximized
+        mnStrVideoMinerMenu.ResumeLayout(False)
+        mnStrVideoMinerMenu.PerformLayout()
+        StatusStrip1.ResumeLayout(False)
+        StatusStrip1.PerformLayout()
+        SplitContainer5.Panel1.ResumeLayout(False)
+        SplitContainer5.Panel2.ResumeLayout(False)
+        SplitContainer5.Panel2.PerformLayout()
+        CType(SplitContainer5, System.ComponentModel.ISupportInitialize).EndInit()
+        SplitContainer5.ResumeLayout(False)
+        SplitContainer4.Panel1.ResumeLayout(False)
+        SplitContainer4.Panel1.PerformLayout()
+        SplitContainer4.Panel2.ResumeLayout(False)
+        CType(SplitContainer4, System.ComponentModel.ISupportInitialize).EndInit()
+        SplitContainer4.ResumeLayout(False)
+        SplitContainer1.Panel1.ResumeLayout(False)
+        SplitContainer1.Panel2.ResumeLayout(False)
+        CType(SplitContainer1, System.ComponentModel.ISupportInitialize).EndInit()
+        SplitContainer1.ResumeLayout(False)
+        SplitContainer3.Panel1.ResumeLayout(False)
+        SplitContainer3.Panel1.PerformLayout()
+        SplitContainer3.Panel2.ResumeLayout(False)
+        CType(SplitContainer3, System.ComponentModel.ISupportInitialize).EndInit()
+        SplitContainer3.ResumeLayout(False)
+        pnlImageControls.ResumeLayout(False)
+        pnlImageControls.PerformLayout()
+        pnlVideoControls.ResumeLayout(False)
+        pnlVideoControls.PerformLayout()
+        SplitContainer2.Panel1.ResumeLayout(False)
+        SplitContainer2.Panel2.ResumeLayout(False)
+        SplitContainer2.Panel2.PerformLayout()
+        CType(SplitContainer2, System.ComponentModel.ISupportInitialize).EndInit()
+        SplitContainer2.ResumeLayout(False)
+        SplitContainer6.Panel1.ResumeLayout(False)
+        SplitContainer6.Panel2.ResumeLayout(False)
+        CType(SplitContainer6, System.ComponentModel.ISupportInitialize).EndInit()
+        SplitContainer6.ResumeLayout(False)
+        SplitContainer7.Panel1.ResumeLayout(False)
+        SplitContainer7.Panel2.ResumeLayout(False)
+        CType(SplitContainer7, System.ComponentModel.ISupportInitialize).EndInit()
+        SplitContainer7.ResumeLayout(False)
+        pnlTransectData.ResumeLayout(False)
+        pnlTransectData.PerformLayout()
+        pnlHabitatData.ResumeLayout(False)
+        pnlHabitatData.PerformLayout()
+        pnlSpeciesEntryControls.ResumeLayout(False)
+        pnlSpeciesEntryControls.PerformLayout()
+        pnlSpeciesData.ResumeLayout(False)
+        pnlSpeciesData.PerformLayout()
+        CType(grdVideoMinerDatabase, System.ComponentModel.ISupportInitialize).EndInit()
+        ResumeLayout(False)
+        PerformLayout()
 
     End Sub
 

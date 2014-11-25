@@ -2,10 +2,6 @@
 
 Public Class frmDataCodes
 
-    Private Sub frmDataCodes_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        myFormLibrary.frmDataCodes = Nothing
-    End Sub
-
     Private Sub frmDataCodes_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         Dim query As String
         Dim data_cmd As OleDbCommand

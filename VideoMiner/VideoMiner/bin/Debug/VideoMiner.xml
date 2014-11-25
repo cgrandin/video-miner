@@ -6,13 +6,18 @@ VideoMiner
 </name>
 </assembly>
 <members>
-<member name="F:VideoMiner.frmVideoPlayer.m_tsDurationTime">
+<member name="F:VideoMiner.frmVideoPlayer.VIDEO_TIME_FORMAT">
+	<summary>
+ Default format for the time labels
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.frmVideoPlayer.m_tsDurationTime">
 	<summary>
  Member variable to hold the video's duration or length.
  </summary>
 </member><member name="F:VideoMiner.frmVideoPlayer.m_tsCurrentVideoTime">
 	<summary>
- Member variable to hold the video's current time.
+ Member variable to hold the video's current ti
  </summary>
 </member><member name="F:VideoMiner.frmVideoPlayer.m_blFirstTick">
 	<summary>
@@ -51,6 +56,23 @@ VideoMiner
  Member variable to hold the transparent panel used to overlay the Vlc.DotNet control so that the user
  can click on the video to toggle play/pause
  </summary>
+</member><member name="F:VideoMiner.frmVideoPlayer.m_strLabelFormat">
+	<summary>
+ The format of the time labels for the current time and the duration of the video
+ </summary>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmVideoPlayer.#ctor">
+	<summary>
+ Default constructor. The label time format will be the default. Current time and Duration are set to zero.
+ </summary>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmVideoPlayer.#ctor(System.String)">
+	<summary>
+ Constructor with custom time format string. Should look something like this: "{0:D2}:{1:D2}:{2:D2}.{3:D2}"
+ Current time and Duration are set to zero.
+ </summary>
+	<param name="videoTimeFormat"></param>
+	<remarks></remarks>
 </member><member name="P:VideoMiner.frmVideoPlayer.Position">
 	<summary>
  This property contains the position of the currently loaded video.
@@ -77,9 +99,16 @@ VideoMiner
  This property contains a boolean which is True if the media has reached the end of the video
  </summary>
 	<returns>True or False</returns>
+</member><member name="P:VideoMiner.frmVideoPlayer.CurrentVideoTimeFormatted">
+	<summary>
+ This property is readonly and returns a formatted string representing the time at the current position of the video.
+ The formatting string is defined in the constructor (either default or custom).
+ </summary>
+	<returns>System.Timespan</returns>
+	<remarks></remarks>
 </member><member name="P:VideoMiner.frmVideoPlayer.CurrentVideoTime">
 	<summary>
- This property is readonly and contains a System.Timespan object which represents the time at the current position of the video
+ This property is readonly and returns a System.Timespan object representing the time at the current position of the video.
  </summary>
 	<returns>System.Timespan</returns>
 	<remarks></remarks>
@@ -104,46 +133,25 @@ VideoMiner
 	<returns>String</returns>
 </member><member name="E:VideoMiner.frmVideoPlayer.PauseEvent">
 	<summary>
- This event is triggered when the user pauses the video from within the fmrVideoPlayer form.
- It is handled by myFormLibrary.frmVideoMiner.playerPaused.
+ This event is triggered when the user pauses the video from within this form.
  </summary>
-	<param name="sender">System.Object</param>
-	<param name="e">System.EventArgs</param>
 </member><member name="E:VideoMiner.frmVideoPlayer.PlayEvent">
 	<summary>
- This event is triggered when the user plays the video from within the fmrVideoPlayer form.
- It is handled by myFormLibrary.frmVideoMiner.playerPlaying.
+ This event is triggered when the user plays the video from within this form.
  </summary>
-	<param name="sender">System.Object</param>
-	<param name="e">System.EventArgs</param>
-</member><member name="E:VideoMiner.frmVideoPlayer.StopEvent">
-	<summary>
- This event is triggered when the user stops the video from within the fmrVideoPlayer form.
- It is handled by myFormLibrary.frmVideoMiner.playerStopped.
- </summary>
-	<param name="sender">System.Object</param>
-	<param name="e">System.EventArgs</param>
-</member><member name="E:VideoMiner.frmVideoPlayer.EndedEvent">
+</member><member name="E:VideoMiner.frmVideoPlayer.VideoEndedEvent">
 	<summary>
  This event is triggered when the video has ended.
- It is handled by plyrVideo_Ended.
  </summary>
-	<param name="sender">System.Object</param>
-	<param name="e">System.EventArgs</param>
-</member><member name="E:VideoMiner.frmVideoPlayer.EndedBroadcastEvent">
-	<summary>
- This event is triggered when the video has ended.
- It is handled by myFormLibrary.frmVideoMiner.videoEnded
- </summary>
-	<param name="sender">System.Object</param>
-	<param name="e">System.EventArgs</param>
 </member><member name="E:VideoMiner.frmVideoPlayer.ClosingEvent">
 	<summary>
  This event is triggered when the frmVideoPlayer form is closed by clicking the 'X' top right of the window.
- It is handled by myFormLibrary.frmVideoMiner.playerClosing
  </summary>
-	<param name="sender">System.Object</param>
-	<param name="e">System.EventArgs</param>
+</member><member name="E:VideoMiner.frmVideoPlayer.TimerTickEvent">
+	<summary>
+ This event is triggered when the timer ticks. It is used to send a signal so that
+ the parent will always have access to the correct data (current time) from the video.
+ </summary>
 </member><member name="M:VideoMiner.frmVideoPlayer.frmVideoPlayer_Load(System.Object,System.EventArgs)">
 	<summary>
  Loads the fmrVideoPlayer form. All member variables are initialized, and the video file is opened as a new Vlc.DotNet.Core.Medias.PathMedia object.
@@ -218,14 +226,42 @@ VideoMiner
  </summary>
 	<param name="sender">System.Object</param>
 	<param name="e">System.EventArgs</param>
-</member><member name="M:VideoMiner.frmVideoPlayer.plyrVideo_Ended(System.Object,System.EventArgs)">
+</member><member name="M:VideoMiner.frmVideoPlayer.plyrVideo_Ended">
 	<summary>
  This handles the Event 'EndReached' fired by the Vlc.DotNet control.
- It will pause the video, change the current time label to equal the duration label, set the trackbar to position=1,
-  and then fire the EndedBroadcastEvent
  </summary>
-	<param name="sender">System.Object</param>
-	<param name="e">System.EventArgs</param>
+</member><member name="M:VideoMiner.frmVideoPlayer.endOfVideo">
+	<summary>
+ The end of the video has been reached. Do some updating on the form and raise the VideoEnded event.
+ </summary>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmVideoPlayer.getFormattedCurrentVideoTimeString">
+	<summary>
+ Returns a formatted string for the current video time
+ </summary>
+	<returns>A formatted string or an unformatted string if an exception was thrown</returns>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmVideoPlayer.getFormattedDurationString">
+	<summary>
+ Returns a formatted string for the duration video time
+ </summary>
+	<returns>A formatted string or an unformatted string if an exception was thrown</returns>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmVideoPlayer.lblDuration_TextChanged(System.Object,System.EventArgs)">
+	<summary>
+ Handles the case when extra decimal points are being shown
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks>Works in tandem with lblDuration_Resize(sender As System.Object, e As System.EventArgs) Handles lblDuration.Resize</remarks>
+</member><member name="M:VideoMiner.frmVideoPlayer.lblDuration_Resize(System.Object,System.EventArgs)">
+	<summary>
+ When the duration label automatically resizes due to extra decimal points being shown,
+ this will make it grow left so that it remains looking good.
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks>Works in tandem with lblDuration_TextChanged(sender As System.Object, e As System.EventArgs) Handles lblDuration.TextChanged</remarks>
 </member><member name="T:VideoMiner.frmVideoPlayer">
 	<summary>
  The frmVideoPlayer class provides a form with an instance of the VLC.dotnet control, a trackbar to show the position of the video, a label for the current position,
@@ -329,9 +365,154 @@ VideoMiner
 	<summary>
   A strongly-typed resource class, for looking up localized strings, etc.
 </summary>
+</member><member name="M:VideoMiner.Point.GetPoint">
+	<summary>
+ Get a point location from a NMEA string
+ </summary>
+	<returns>True or False</returns>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmSpeciesEvent.pnlSpeciesEvent_Paint(System.Object,System.Windows.Forms.PaintEventArgs)">
+	<summary>
+  When the SpeciesEventForm is displayed, draw a red arc at the bottom of the form with an
+  attatched red line going to the top of the form. This line helps a user visualize the center line,
+  and ranges to the left or right of the center line.
+ </summary>
+	<param name="sender"></param><param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmSpeciesEvent.ok_Click(System.Object,System.EventArgs)">
+	<summary>
+ 1.) If the user has not selected "On Centerline" and either the portRangeTextbox or the starboardRangeTextBox
+     are not filled in or are not numeric, alert the user to fill them in with an integer.
+ 2.) Else if "On Centerline" has been selected or "On Centerline" has not been selected AND portRangeTextbox and
+     starboardRangeTextBox have both been flled in, then, hide the SpeciesEventForm
+ </summary>
+	<param name="sender"></param><param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmSpeciesEvent.validate_range(System.Windows.Forms.TextBox)">
+	<summary>
+ Description: Function to validate value being passed to it is not null and is numeric.
+ </summary>
+	<param name="t"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmSpeciesEvent.numericTextboxValidation(System.Object,System.Windows.Forms.KeyPressEventArgs)">
+	<summary>
+ Used for validating text entered into a text box
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmGpsSettings.#ctor(System.IO.Ports.SerialPort)">
+	<summary>
+ Create a new instance of the GPS settings form.
+ </summary>
+	<param name="serialPort">A serial port object, could be Nothing, Closed, or Open</param>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.modGlobals.SingleQuote(System.String)">
+	<summary>
+ Place single quotes (') around a String
+ </summary>
+	<param name="strValue">The string to place single quotes around</param>
+	<returns>A single quoted String</returns>
+	<remarks>Used for database query string building in VideoMiner</remarks>
+</member><member name="M:VideoMiner.modGlobals.DoubleQuote(System.String)">
+	<summary>
+ Place double quotes (") around a String
+ </summary>
+	<param name="strValue">The string to place double quotes around</param>
+	<returns>A double quoted String</returns>
+	<remarks>Used for database query string building in VideoMiner</remarks>
+</member><member name="M:VideoMiner.modGlobals.numericTextboxValidation(System.Windows.Forms.KeyPressEventArgs@)">
+	<summary>
+ Validates text entered into TextBoxes in the project
+ </summary>
+	<param name="e">System.Windows.Forms.KeyPressEventArgs</param>
+	<remarks>Allows only digits, period, and backspace to be used in a TextBox</remarks>
+</member><member name="M:VideoMiner.modGlobals.ToMilitaryTime(System.DateTime)">
+	<summary>
+ Change a given time into military (24 hour) time
+ </summary>
+	<param name="dtRealTime">DateTime</param>
+	<returns>String representing the time in 24-hour format</returns>
+	<remarks>If the number of milliseconds in the time is greater than 500, the seconds will be rounded up by one</remarks>
+</member><member name="T:VideoMiner.modGlobals">
+	<summary>
+ This module defines 'Global' variables and functions.
+ </summary>
+	<remarks>Think hard before adding something here, especially new classes. The program should
+ remain object-oriented as much as possible and adding things here will likely break that</remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_strWorkingPath">
+	<summary>
+ The working directory of the software
+ </summary>
+</member><member name="F:VideoMiner.VideoMiner.m_strConfigFilePath">
+	<summary>
+ The configuration directory for the software
+ </summary>
+	<remarks>This will be the directory given by (m_strWorkingPath)\Config</remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_strConfigFile">
+	<summary>
+ The full path for the configuration file
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_strDatabasePath">
+	<summary>
+ Holds the last known database path as entered by the user in the OpenFileDialog
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_strVideoPath">
+	<summary>
+ Holds the last known video file path as entered by the user in the OpenFileDialog
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_strSessionPath">
+	<summary>
+ Holds the path of the last known session's path as entered by the user in the OpenFileDialog
+ </summary>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.frmVideoMiner_Load(System.Object,System.EventArgs)">
+	<summary>
+ Load the main VideoMiner form.
+ </summary>
+	<param name="sender">System.Object</param>
+	<param name="e">System.EventArgs</param>
+	<remarks>Get version name from assembly, read and process the Config file, and setup the form controls for an unloaded state.</remarks>
+</member><member name="M:VideoMiner.VideoMiner.GetDeviceSettingsFromFile(System.String)">
+	<summary>
+ Retrieve the configuration settings from the XML configuration file
+ </summary>
+	<param name="m_strConfigFile"></param>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.SaveConfiguration(System.String,System.String)">
+	<summary>
+ Save a single variable's value to the XML configuration file. If the variable does not exist,
+ a new node, and any parent nodes which are required will be added to the XML document
+ </summary>
+	<param name="xPath">An XPath String representing the XML node name</param>
+	<param name="strValue">The value to save in the node represented by xPath</param>
+	<returns>A Boolean representing success or failure</returns>
+</member><member name="M:VideoMiner.VideoMiner.CreateXMLNode(System.Xml.XmlDocument@,System.Xml.XmlElement@,System.String,System.String,System.String)">
+	<summary>
+ Recursively create a node and any required parrent nodes represented by the string 'xPath'
+ eg. if xPath = "X/Y/Z", the function will insert a node with parents if necessary X-&gt;Y-&gt;Z
+ where "Z" is the base case and assumed to be the innerText of the child node.
+ </summary>
+	<param name="docNode">A reference to an XmlDocument root node</param>
+	<param name="node">A reference to a parent to add a new node to. If Nothing, assume docNode is the parent</param>
+	<param name="xPath">An XPath String representing the node you wish to add</param>
+	<param name="strValue">String representing the value to set the variable to</param>
+	<param name="leftPath">String representing the xPath to the left of the current node</param>
+	<remarks>xPath is a "/" seperated string where "/" represents node breaks.
+ i.e. "X/Y/Z" represents X is parent of Y, Y is parent of Z and Z is the variable with a value to set</remarks>
+</member><member name="M:VideoMiner.VideoMiner.GetConfiguration(System.String)">
+	<summary>
+ Get a single variable's value for a given node from the XML configuration file.
+ </summary>
+	<param name="xPath">An XPath String representing the XML node name, with children seperated by "/"</param>
+	<returns>A String, the value of the requested XML node</returns>
 </member><member name="M:VideoMiner.VideoMiner.mnuOpenSession_Click(System.Object,System.EventArgs)">
 	<summary>
- When user selects "Open Session" from the file menu, call sub openSession() and open a dialogue
+ When user selects "Open Session" from the file menu, sub openSession() and open a dialogue
  where the user can restore a previous session that was being run in the program via a VideoMiner Session file.
  This restores the last video that was being played.
  </summary>
@@ -339,7 +520,7 @@ VideoMiner
 	<param name="e">System.EventArgs</param>
 </member><member name="M:VideoMiner.VideoMiner.mnuSaveSession_Click(System.Object,System.EventArgs)">
 	<summary>
- call sub saveSession() when the user selects Save Session from the file menu, and open a dialogue
+ sub saveSession() when the user selects Save Session from the file menu, and open a dialogue
  where the user can save the current VideoMiner Session file. This saves which video is currently being played.
  </summary>
 	<param name="sender">System.Object</param>
@@ -347,7 +528,7 @@ VideoMiner
 	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.mnuSaveSessionAs_Click(System.Object,System.EventArgs)">
 	<summary>
- call sub saveSessionAs() and open a dialogue where the user can save the current state
+ sub saveSessionAs() and open a dialogue where the user can save the current state
  that is being run in the program as a new VideoMiner Session file.
  This saves which video is currently being played.
  </summary>
@@ -359,11 +540,44 @@ VideoMiner
  </summary>
 	<param name="sender">System.Object</param>
 	<param name="e">System.EventArgs</param>
+</member><member name="M:VideoMiner.VideoMiner.mnuOpenDatabase_Click(System.Object,System.EventArgs)">
+	<summary>
+ When the user clicks "Open Database" in the file menu, open a dialogue where a database can be selected
+ and opened for use in the program.
+ Load OpenFileDialog object to prompt user to select a database to open.
+ When the user clicks OK, sub openDatabase and send it the path of the database to open.
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.openSession">
+	<summary>
+ Open a session which has saved the previous state of the program in VideoMiner Session file (*.xml)
+ This will open the video that was being played when the session was saved.
+ </summary>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.saveSession">
+	<summary>
+ Save the session, i.e. which database and which video and the video's position
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.Save_XmlSettings(System.String,System.String)">
+	<summary>
+ Function to save the XML settings to a file
+ </summary>
+	<param name="strPath"></param>
+	<param name="strValue"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.openVideo">
+	<summary>
+ Open a video file. Will create a new instance of frmVideoPlayer
+ </summary>
+	<returns>Boolean representing success</returns>
+	<remarks>Returns True if the user chose a file to play, False is they pressed cancel or clicked the 'X'</remarks>
 </member><member name="T:VideoMiner.VideoMiner">
 	<summary>
  This is the main form for the program
  </summary>
-	<remarks></remarks>
 </member>
 </members>
 </doc>

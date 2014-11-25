@@ -22,64 +22,64 @@ Partial Class frmCreateKeyboardShortcut
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.txtCurrentShortcut = New System.Windows.Forms.TextBox
-        Me.cmdStart = New System.Windows.Forms.Button
-        Me.cmdOK = New System.Windows.Forms.Button
-        Me.cmdCancel = New System.Windows.Forms.Button
-        Me.SuspendLayout()
+        txtCurrentShortcut = New System.Windows.Forms.TextBox
+        cmdStart = New System.Windows.Forms.Button
+        cmdOK = New System.Windows.Forms.Button
+        cmdCancel = New System.Windows.Forms.Button
+        SuspendLayout()
         '
         'txtCurrentShortcut
         '
-        Me.txtCurrentShortcut.Location = New System.Drawing.Point(12, 12)
-        Me.txtCurrentShortcut.Name = "txtCurrentShortcut"
-        Me.txtCurrentShortcut.ReadOnly = True
-        Me.txtCurrentShortcut.Size = New System.Drawing.Size(156, 20)
-        Me.txtCurrentShortcut.TabIndex = 0
-        Me.txtCurrentShortcut.TabStop = False
+        txtCurrentShortcut.Location = New System.Drawing.Point(12, 12)
+        txtCurrentShortcut.Name = "txtCurrentShortcut"
+        txtCurrentShortcut.ReadOnly = True
+        txtCurrentShortcut.Size = New System.Drawing.Size(156, 20)
+        txtCurrentShortcut.TabIndex = 0
+        txtCurrentShortcut.TabStop = False
         '
         'cmdStart
         '
-        Me.cmdStart.Location = New System.Drawing.Point(174, 10)
-        Me.cmdStart.Name = "cmdStart"
-        Me.cmdStart.Size = New System.Drawing.Size(75, 23)
-        Me.cmdStart.TabIndex = 1
-        Me.cmdStart.Text = "Start Typing"
-        Me.cmdStart.UseVisualStyleBackColor = True
+        cmdStart.Location = New System.Drawing.Point(174, 10)
+        cmdStart.Name = "cmdStart"
+        cmdStart.Size = New System.Drawing.Size(75, 23)
+        cmdStart.TabIndex = 1
+        cmdStart.Text = "Start Typing"
+        cmdStart.UseVisualStyleBackColor = True
         '
         'cmdOK
         '
-        Me.cmdOK.Location = New System.Drawing.Point(12, 38)
-        Me.cmdOK.Name = "cmdOK"
-        Me.cmdOK.Size = New System.Drawing.Size(75, 23)
-        Me.cmdOK.TabIndex = 1
-        Me.cmdOK.Text = "OK"
-        Me.cmdOK.UseVisualStyleBackColor = True
+        cmdOK.Location = New System.Drawing.Point(12, 38)
+        cmdOK.Name = "cmdOK"
+        cmdOK.Size = New System.Drawing.Size(75, 23)
+        cmdOK.TabIndex = 1
+        cmdOK.Text = "OK"
+        cmdOK.UseVisualStyleBackColor = True
         '
         'cmdCancel
         '
-        Me.cmdCancel.Location = New System.Drawing.Point(93, 38)
-        Me.cmdCancel.Name = "cmdCancel"
-        Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
-        Me.cmdCancel.TabIndex = 1
-        Me.cmdCancel.Text = "Cancel"
-        Me.cmdCancel.UseVisualStyleBackColor = True
+        cmdCancel.Location = New System.Drawing.Point(93, 38)
+        cmdCancel.Name = "cmdCancel"
+        cmdCancel.Size = New System.Drawing.Size(75, 23)
+        cmdCancel.TabIndex = 1
+        cmdCancel.Text = "Cancel"
+        cmdCancel.UseVisualStyleBackColor = True
         '
         'frmCreateKeyboardShortcut
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(261, 72)
-        Me.Controls.Add(Me.cmdCancel)
-        Me.Controls.Add(Me.cmdOK)
-        Me.Controls.Add(Me.cmdStart)
-        Me.Controls.Add(Me.txtCurrentShortcut)
-        Me.KeyPreview = True
-        Me.MaximizeBox = False
-        Me.MinimizeBox = False
-        Me.Name = "frmCreateKeyboardShortcut"
-        Me.Text = "Create Keyboard Shortcut"
-        Me.ResumeLayout(False)
-        Me.PerformLayout()
+        AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        ClientSize = New System.Drawing.Size(261, 72)
+        Controls.Add(cmdCancel)
+        Controls.Add(cmdOK)
+        Controls.Add(cmdStart)
+        Controls.Add(txtCurrentShortcut)
+        KeyPreview = True
+        MaximizeBox = False
+        MinimizeBox = False
+        Name = "frmCreateKeyboardShortcut"
+        Text = "Create Keyboard Shortcut"
+        ResumeLayout(False)
+        PerformLayout()
 
     End Sub
     Friend WithEvents txtCurrentShortcut As System.Windows.Forms.TextBox

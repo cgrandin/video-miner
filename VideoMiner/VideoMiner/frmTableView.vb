@@ -22,6 +22,61 @@ Public Class frmTableView
     Private m_dictFieldValues As Dictionary(Of String, String)
     Private m_txtTextBoxes As TextBox()
 
+    Event ClearSpatialInformationEvent()
+
+    Public Property SelectedButtonName As String
+        Get
+            Return strSelectedButtonName
+        End Get
+        Set(value As String)
+            strSelectedButtonName = value
+        End Set
+    End Property
+
+    Public Property NumButtons As Integer
+        Get
+            Return m_intNumButtons
+        End Get
+        Set(value As Integer)
+            m_intNumButtons = value
+        End Set
+    End Property
+
+    Public Property ButtonNames As String()
+        Get
+            Return m_strButtonNames
+        End Get
+        Set(value As String())
+            m_strButtonNames = value
+        End Set
+    End Property
+
+    Public Property FieldValues As Dictionary(Of String, String)
+        Get
+            Return m_dictFieldValues
+        End Get
+        Set(value As Dictionary(Of String, String))
+            m_dictFieldValues = value
+        End Set
+    End Property
+
+    Public Property ButtonCodeNames As String()
+        Get
+            Return m_strButtonCodeNames
+        End Get
+        Set(value As String())
+            m_strButtonCodeNames = value
+        End Set
+    End Property
+
+    Public Property TextBoxes As TextBox()
+        Get
+            Return m_txtTextBoxes
+        End Get
+        Set(value As TextBox())
+            m_txtTextBoxes = value
+        End Set
+    End Property
 
     Public Property Multiple() As Boolean
         Get
@@ -41,7 +96,7 @@ Public Class frmTableView
     End Property
 
     Public Sub New(ByVal table As String, ByVal intCurrentSpatialVariable As Integer, ByVal intNumButtons As Integer, ByVal strButtonNames As String(), ByRef dictFieldValues As Dictionary(Of String, String), ByVal strButtonCodeNames As String(), ByRef txtTextBoxes As TextBox())
-        ' This call is required by the Windows Form Designer.
+        ' This is required by the Windows Form Designer.
         InitializeComponent()
         table_name = table
 
@@ -64,13 +119,10 @@ Public Class frmTableView
 
     Private Sub TableViewForm_FormClosed(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
         Me.UserClosedForm = True
-        myFormLibrary.frmTableView = Nothing
     End Sub
 
 
     Private Sub TableViewForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-
-        myFormLibrary.frmTableView = Me
         Me.Text = strSelectedButtonName
 
         m_UserClosedForm = False
@@ -130,8 +182,7 @@ Public Class frmTableView
     End Sub
 
     Private Sub btnClear_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnClear.Click
-
-        myFormLibrary.frmVideoMiner.ClearSpatial(strSelectedButtonName, m_intNumButtons, m_strButtonNames, m_dictFieldValues, m_strButtonCodeNames, m_txtTextBoxes)
+        RaiseEvent ClearSpatialInformationEvent()
         blCleared = True
         Me.Close()
 
@@ -159,8 +210,9 @@ Public Class frmTableView
     End Sub
 
     Private Sub cmdScreenCapture_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdScreenCapture.Click
-        myFormLibrary.frmVideoMiner.blScreenCaptureCalled = True
-        Call myFormLibrary.frmVideoMiner.mnuCapScr_Click(sender, e)
-        myFormLibrary.frmVideoMiner.blScreenCaptureCalled = False
+        'CJG
+        'myFormLibrary.frmVideoMiner.blScreenCaptureCalled = True
+        'myFormLibrary.frmVideoMiner.mnuCapScr_Click(sender, e)
+        'myFormLibrary.frmVideoMiner.blScreenCaptureCalled = False
     End Sub
 End Class

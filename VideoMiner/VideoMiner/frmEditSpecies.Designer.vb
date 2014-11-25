@@ -19,259 +19,259 @@ Partial Class frmEditSpecies
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.Label1 = New System.Windows.Forms.Label
-        Me.Label2 = New System.Windows.Forms.Label
-        Me.txtSpeciesCode = New System.Windows.Forms.TextBox
-        Me.cmdOk = New System.Windows.Forms.Button
-        Me.cmdCancel = New System.Windows.Forms.Button
-        Me.cboCommonName = New System.Windows.Forms.ComboBox
-        Me.cboScientificName = New System.Windows.Forms.ComboBox
-        Me.cboLatinName = New System.Windows.Forms.ComboBox
-        Me.radCommonName = New System.Windows.Forms.RadioButton
-        Me.radScientificName = New System.Windows.Forms.RadioButton
-        Me.radLatinName = New System.Windows.Forms.RadioButton
-        Me.lblSpeciesBtnTxt = New System.Windows.Forms.Label
-        Me.txtSpeciesBtnTxt = New System.Windows.Forms.TextBox
-        Me.cboButtonColors = New System.Windows.Forms.ComboBox
-        Me.lblButtonColor = New System.Windows.Forms.Label
-        Me.lblTaxonomicLevel = New System.Windows.Forms.Label
-        Me.txtTaxonomicLevel = New System.Windows.Forms.TextBox
-        Me.txtKeyboardShortcut = New System.Windows.Forms.TextBox
-        Me.lblKeyboardShortcut = New System.Windows.Forms.Label
-        Me.cmdChange = New System.Windows.Forms.Button
-        Me.SuspendLayout()
+        Label1 = New System.Windows.Forms.Label
+        Label2 = New System.Windows.Forms.Label
+        txtSpeciesCode = New System.Windows.Forms.TextBox
+        cmdOk = New System.Windows.Forms.Button
+        cmdCancel = New System.Windows.Forms.Button
+        cboCommonName = New System.Windows.Forms.ComboBox
+        cboScientificName = New System.Windows.Forms.ComboBox
+        cboLatinName = New System.Windows.Forms.ComboBox
+        radCommonName = New System.Windows.Forms.RadioButton
+        radScientificName = New System.Windows.Forms.RadioButton
+        radLatinName = New System.Windows.Forms.RadioButton
+        lblSpeciesBtnTxt = New System.Windows.Forms.Label
+        txtSpeciesBtnTxt = New System.Windows.Forms.TextBox
+        cboButtonColors = New System.Windows.Forms.ComboBox
+        lblButtonColor = New System.Windows.Forms.Label
+        lblTaxonomicLevel = New System.Windows.Forms.Label
+        txtTaxonomicLevel = New System.Windows.Forms.TextBox
+        txtKeyboardShortcut = New System.Windows.Forms.TextBox
+        lblKeyboardShortcut = New System.Windows.Forms.Label
+        cmdChange = New System.Windows.Forms.Button
+        SuspendLayout()
         '
         'Label1
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(81, 61)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(0, 13)
-        Me.Label1.TabIndex = 0
+        Label1.AutoSize = True
+        Label1.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Label1.Location = New System.Drawing.Point(81, 61)
+        Label1.Name = "Label1"
+        Label1.Size = New System.Drawing.Size(0, 13)
+        Label1.TabIndex = 0
         '
         'Label2
         '
-        Me.Label2.AutoSize = True
-        Me.Label2.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(14, 153)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(84, 13)
-        Me.Label2.TabIndex = 2
-        Me.Label2.Text = "Species Code:"
+        Label2.AutoSize = True
+        Label2.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Label2.Location = New System.Drawing.Point(14, 153)
+        Label2.Name = "Label2"
+        Label2.Size = New System.Drawing.Size(84, 13)
+        Label2.TabIndex = 2
+        Label2.Text = "Species Code:"
         '
         'txtSpeciesCode
         '
-        Me.txtSpeciesCode.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtSpeciesCode.Location = New System.Drawing.Point(16, 170)
-        Me.txtSpeciesCode.MaxLength = 50
-        Me.txtSpeciesCode.Name = "txtSpeciesCode"
-        Me.txtSpeciesCode.ReadOnly = True
-        Me.txtSpeciesCode.Size = New System.Drawing.Size(85, 21)
-        Me.txtSpeciesCode.TabIndex = 3
-        Me.txtSpeciesCode.TabStop = False
-        Me.txtSpeciesCode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        txtSpeciesCode.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        txtSpeciesCode.Location = New System.Drawing.Point(16, 170)
+        txtSpeciesCode.MaxLength = 50
+        txtSpeciesCode.Name = "txtSpeciesCode"
+        txtSpeciesCode.ReadOnly = True
+        txtSpeciesCode.Size = New System.Drawing.Size(85, 21)
+        txtSpeciesCode.TabIndex = 3
+        txtSpeciesCode.TabStop = False
+        txtSpeciesCode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'cmdOk
         '
-        Me.cmdOk.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdOk.Location = New System.Drawing.Point(136, 281)
-        Me.cmdOk.Name = "cmdOk"
-        Me.cmdOk.Size = New System.Drawing.Size(87, 23)
-        Me.cmdOk.TabIndex = 4
-        Me.cmdOk.Text = "OK"
-        Me.cmdOk.UseVisualStyleBackColor = True
+        cmdOk.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        cmdOk.Location = New System.Drawing.Point(136, 281)
+        cmdOk.Name = "cmdOk"
+        cmdOk.Size = New System.Drawing.Size(87, 23)
+        cmdOk.TabIndex = 4
+        cmdOk.Text = "OK"
+        cmdOk.UseVisualStyleBackColor = True
         '
         'cmdCancel
         '
-        Me.cmdCancel.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdCancel.Location = New System.Drawing.Point(229, 281)
-        Me.cmdCancel.Name = "cmdCancel"
-        Me.cmdCancel.Size = New System.Drawing.Size(87, 23)
-        Me.cmdCancel.TabIndex = 5
-        Me.cmdCancel.Text = "Cancel"
-        Me.cmdCancel.UseVisualStyleBackColor = True
+        cmdCancel.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        cmdCancel.Location = New System.Drawing.Point(229, 281)
+        cmdCancel.Name = "cmdCancel"
+        cmdCancel.Size = New System.Drawing.Size(87, 23)
+        cmdCancel.TabIndex = 5
+        cmdCancel.Text = "Cancel"
+        cmdCancel.UseVisualStyleBackColor = True
         '
         'cboCommonName
         '
-        Me.cboCommonName.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cboCommonName.FormattingEnabled = True
-        Me.cboCommonName.Location = New System.Drawing.Point(17, 77)
-        Me.cboCommonName.Name = "cboCommonName"
-        Me.cboCommonName.Size = New System.Drawing.Size(411, 21)
-        Me.cboCommonName.TabIndex = 6
+        cboCommonName.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        cboCommonName.FormattingEnabled = True
+        cboCommonName.Location = New System.Drawing.Point(17, 77)
+        cboCommonName.Name = "cboCommonName"
+        cboCommonName.Size = New System.Drawing.Size(411, 21)
+        cboCommonName.TabIndex = 6
         '
         'cboScientificName
         '
-        Me.cboScientificName.Enabled = False
-        Me.cboScientificName.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cboScientificName.FormattingEnabled = True
-        Me.cboScientificName.Location = New System.Drawing.Point(17, 129)
-        Me.cboScientificName.Name = "cboScientificName"
-        Me.cboScientificName.Size = New System.Drawing.Size(411, 21)
-        Me.cboScientificName.TabIndex = 8
+        cboScientificName.Enabled = False
+        cboScientificName.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        cboScientificName.FormattingEnabled = True
+        cboScientificName.Location = New System.Drawing.Point(17, 129)
+        cboScientificName.Name = "cboScientificName"
+        cboScientificName.Size = New System.Drawing.Size(411, 21)
+        cboScientificName.TabIndex = 8
         '
         'cboLatinName
         '
-        Me.cboLatinName.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cboLatinName.FormattingEnabled = True
-        Me.cboLatinName.Location = New System.Drawing.Point(17, 129)
-        Me.cboLatinName.Name = "cboLatinName"
-        Me.cboLatinName.Size = New System.Drawing.Size(411, 21)
-        Me.cboLatinName.TabIndex = 10
-        Me.cboLatinName.Visible = False
+        cboLatinName.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        cboLatinName.FormattingEnabled = True
+        cboLatinName.Location = New System.Drawing.Point(17, 129)
+        cboLatinName.Name = "cboLatinName"
+        cboLatinName.Size = New System.Drawing.Size(411, 21)
+        cboLatinName.TabIndex = 10
+        cboLatinName.Visible = False
         '
         'radCommonName
         '
-        Me.radCommonName.AutoSize = True
-        Me.radCommonName.Checked = True
-        Me.radCommonName.Location = New System.Drawing.Point(17, 59)
-        Me.radCommonName.Name = "radCommonName"
-        Me.radCommonName.Size = New System.Drawing.Size(159, 17)
-        Me.radCommonName.TabIndex = 11
-        Me.radCommonName.TabStop = True
-        Me.radCommonName.Text = "Species Common Name:"
-        Me.radCommonName.UseVisualStyleBackColor = True
+        radCommonName.AutoSize = True
+        radCommonName.Checked = True
+        radCommonName.Location = New System.Drawing.Point(17, 59)
+        radCommonName.Name = "radCommonName"
+        radCommonName.Size = New System.Drawing.Size(159, 17)
+        radCommonName.TabIndex = 11
+        radCommonName.TabStop = True
+        radCommonName.Text = "Species Common Name:"
+        radCommonName.UseVisualStyleBackColor = True
         '
         'radScientificName
         '
-        Me.radScientificName.AutoSize = True
-        Me.radScientificName.Location = New System.Drawing.Point(17, 109)
-        Me.radScientificName.Name = "radScientificName"
-        Me.radScientificName.Size = New System.Drawing.Size(160, 17)
-        Me.radScientificName.TabIndex = 12
-        Me.radScientificName.Text = "Species Scientific Name:"
-        Me.radScientificName.UseVisualStyleBackColor = True
+        radScientificName.AutoSize = True
+        radScientificName.Location = New System.Drawing.Point(17, 109)
+        radScientificName.Name = "radScientificName"
+        radScientificName.Size = New System.Drawing.Size(160, 17)
+        radScientificName.TabIndex = 12
+        radScientificName.Text = "Species Scientific Name:"
+        radScientificName.UseVisualStyleBackColor = True
         '
         'radLatinName
         '
-        Me.radLatinName.AutoSize = True
-        Me.radLatinName.Enabled = False
-        Me.radLatinName.Location = New System.Drawing.Point(17, 109)
-        Me.radLatinName.Name = "radLatinName"
-        Me.radLatinName.Size = New System.Drawing.Size(137, 17)
-        Me.radLatinName.TabIndex = 13
-        Me.radLatinName.Text = "Species Latin Name:" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10)
-        Me.radLatinName.UseVisualStyleBackColor = True
-        Me.radLatinName.Visible = False
+        radLatinName.AutoSize = True
+        radLatinName.Enabled = False
+        radLatinName.Location = New System.Drawing.Point(17, 109)
+        radLatinName.Name = "radLatinName"
+        radLatinName.Size = New System.Drawing.Size(137, 17)
+        radLatinName.TabIndex = 13
+        radLatinName.Text = "Species Latin Name:" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10)
+        radLatinName.UseVisualStyleBackColor = True
+        radLatinName.Visible = False
         '
         'lblSpeciesBtnTxt
         '
-        Me.lblSpeciesBtnTxt.AutoSize = True
-        Me.lblSpeciesBtnTxt.Location = New System.Drawing.Point(13, 13)
-        Me.lblSpeciesBtnTxt.Name = "lblSpeciesBtnTxt"
-        Me.lblSpeciesBtnTxt.Size = New System.Drawing.Size(77, 13)
-        Me.lblSpeciesBtnTxt.TabIndex = 14
-        Me.lblSpeciesBtnTxt.Text = "Button Text:"
+        lblSpeciesBtnTxt.AutoSize = True
+        lblSpeciesBtnTxt.Location = New System.Drawing.Point(13, 13)
+        lblSpeciesBtnTxt.Name = "lblSpeciesBtnTxt"
+        lblSpeciesBtnTxt.Size = New System.Drawing.Size(77, 13)
+        lblSpeciesBtnTxt.TabIndex = 14
+        lblSpeciesBtnTxt.Text = "Button Text:"
         '
         'txtSpeciesBtnTxt
         '
-        Me.txtSpeciesBtnTxt.Location = New System.Drawing.Point(17, 29)
-        Me.txtSpeciesBtnTxt.MaxLength = 50
-        Me.txtSpeciesBtnTxt.Name = "txtSpeciesBtnTxt"
-        Me.txtSpeciesBtnTxt.Size = New System.Drawing.Size(411, 21)
-        Me.txtSpeciesBtnTxt.TabIndex = 15
+        txtSpeciesBtnTxt.Location = New System.Drawing.Point(17, 29)
+        txtSpeciesBtnTxt.MaxLength = 50
+        txtSpeciesBtnTxt.Name = "txtSpeciesBtnTxt"
+        txtSpeciesBtnTxt.Size = New System.Drawing.Size(411, 21)
+        txtSpeciesBtnTxt.TabIndex = 15
         '
         'cboButtonColors
         '
-        Me.cboButtonColors.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
-        Me.cboButtonColors.FormattingEnabled = True
-        Me.cboButtonColors.Location = New System.Drawing.Point(122, 169)
-        Me.cboButtonColors.Name = "cboButtonColors"
-        Me.cboButtonColors.Size = New System.Drawing.Size(121, 22)
-        Me.cboButtonColors.TabIndex = 16
+        cboButtonColors.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
+        cboButtonColors.FormattingEnabled = True
+        cboButtonColors.Location = New System.Drawing.Point(122, 169)
+        cboButtonColors.Name = "cboButtonColors"
+        cboButtonColors.Size = New System.Drawing.Size(121, 22)
+        cboButtonColors.TabIndex = 16
         '
         'lblButtonColor
         '
-        Me.lblButtonColor.AutoSize = True
-        Me.lblButtonColor.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblButtonColor.Location = New System.Drawing.Point(119, 153)
-        Me.lblButtonColor.Name = "lblButtonColor"
-        Me.lblButtonColor.Size = New System.Drawing.Size(80, 13)
-        Me.lblButtonColor.TabIndex = 2
-        Me.lblButtonColor.Text = "Button Color:"
+        lblButtonColor.AutoSize = True
+        lblButtonColor.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblButtonColor.Location = New System.Drawing.Point(119, 153)
+        lblButtonColor.Name = "lblButtonColor"
+        lblButtonColor.Size = New System.Drawing.Size(80, 13)
+        lblButtonColor.TabIndex = 2
+        lblButtonColor.Text = "Button Color:"
         '
         'lblTaxonomicLevel
         '
-        Me.lblTaxonomicLevel.AutoSize = True
-        Me.lblTaxonomicLevel.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTaxonomicLevel.Location = New System.Drawing.Point(262, 153)
-        Me.lblTaxonomicLevel.Name = "lblTaxonomicLevel"
-        Me.lblTaxonomicLevel.Size = New System.Drawing.Size(105, 13)
-        Me.lblTaxonomicLevel.TabIndex = 2
-        Me.lblTaxonomicLevel.Text = "Taxonomic Level:"
+        lblTaxonomicLevel.AutoSize = True
+        lblTaxonomicLevel.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lblTaxonomicLevel.Location = New System.Drawing.Point(262, 153)
+        lblTaxonomicLevel.Name = "lblTaxonomicLevel"
+        lblTaxonomicLevel.Size = New System.Drawing.Size(105, 13)
+        lblTaxonomicLevel.TabIndex = 2
+        lblTaxonomicLevel.Text = "Taxonomic Level:"
         '
         'txtTaxonomicLevel
         '
-        Me.txtTaxonomicLevel.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtTaxonomicLevel.Location = New System.Drawing.Point(265, 170)
-        Me.txtTaxonomicLevel.MaxLength = 50
-        Me.txtTaxonomicLevel.Name = "txtTaxonomicLevel"
-        Me.txtTaxonomicLevel.ReadOnly = True
-        Me.txtTaxonomicLevel.Size = New System.Drawing.Size(85, 21)
-        Me.txtTaxonomicLevel.TabIndex = 3
-        Me.txtTaxonomicLevel.TabStop = False
-        Me.txtTaxonomicLevel.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        txtTaxonomicLevel.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        txtTaxonomicLevel.Location = New System.Drawing.Point(265, 170)
+        txtTaxonomicLevel.MaxLength = 50
+        txtTaxonomicLevel.Name = "txtTaxonomicLevel"
+        txtTaxonomicLevel.ReadOnly = True
+        txtTaxonomicLevel.Size = New System.Drawing.Size(85, 21)
+        txtTaxonomicLevel.TabIndex = 3
+        txtTaxonomicLevel.TabStop = False
+        txtTaxonomicLevel.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'txtKeyboardShortcut
         '
-        Me.txtKeyboardShortcut.Location = New System.Drawing.Point(17, 223)
-        Me.txtKeyboardShortcut.Name = "txtKeyboardShortcut"
-        Me.txtKeyboardShortcut.ReadOnly = True
-        Me.txtKeyboardShortcut.Size = New System.Drawing.Size(100, 21)
-        Me.txtKeyboardShortcut.TabIndex = 17
+        txtKeyboardShortcut.Location = New System.Drawing.Point(17, 223)
+        txtKeyboardShortcut.Name = "txtKeyboardShortcut"
+        txtKeyboardShortcut.ReadOnly = True
+        txtKeyboardShortcut.Size = New System.Drawing.Size(100, 21)
+        txtKeyboardShortcut.TabIndex = 17
         '
         'lblKeyboardShortcut
         '
-        Me.lblKeyboardShortcut.AutoSize = True
-        Me.lblKeyboardShortcut.Location = New System.Drawing.Point(14, 207)
-        Me.lblKeyboardShortcut.Name = "lblKeyboardShortcut"
-        Me.lblKeyboardShortcut.Size = New System.Drawing.Size(113, 13)
-        Me.lblKeyboardShortcut.TabIndex = 18
-        Me.lblKeyboardShortcut.Text = "Keyboard Shortcut"
+        lblKeyboardShortcut.AutoSize = True
+        lblKeyboardShortcut.Location = New System.Drawing.Point(14, 207)
+        lblKeyboardShortcut.Name = "lblKeyboardShortcut"
+        lblKeyboardShortcut.Size = New System.Drawing.Size(113, 13)
+        lblKeyboardShortcut.TabIndex = 18
+        lblKeyboardShortcut.Text = "Keyboard Shortcut"
         '
         'cmdChange
         '
-        Me.cmdChange.Location = New System.Drawing.Point(123, 221)
-        Me.cmdChange.Name = "cmdChange"
-        Me.cmdChange.Size = New System.Drawing.Size(75, 23)
-        Me.cmdChange.TabIndex = 19
-        Me.cmdChange.Text = "Change"
-        Me.cmdChange.UseVisualStyleBackColor = True
+        cmdChange.Location = New System.Drawing.Point(123, 221)
+        cmdChange.Name = "cmdChange"
+        cmdChange.Size = New System.Drawing.Size(75, 23)
+        cmdChange.TabIndex = 19
+        cmdChange.Text = "Change"
+        cmdChange.UseVisualStyleBackColor = True
         '
         'frmEditSpecies
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 13.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(440, 326)
-        Me.Controls.Add(Me.cmdChange)
-        Me.Controls.Add(Me.lblKeyboardShortcut)
-        Me.Controls.Add(Me.txtKeyboardShortcut)
-        Me.Controls.Add(Me.cboButtonColors)
-        Me.Controls.Add(Me.txtSpeciesBtnTxt)
-        Me.Controls.Add(Me.lblSpeciesBtnTxt)
-        Me.Controls.Add(Me.radLatinName)
-        Me.Controls.Add(Me.radScientificName)
-        Me.Controls.Add(Me.radCommonName)
-        Me.Controls.Add(Me.cboLatinName)
-        Me.Controls.Add(Me.cboScientificName)
-        Me.Controls.Add(Me.cboCommonName)
-        Me.Controls.Add(Me.cmdCancel)
-        Me.Controls.Add(Me.cmdOk)
-        Me.Controls.Add(Me.txtTaxonomicLevel)
-        Me.Controls.Add(Me.txtSpeciesCode)
-        Me.Controls.Add(Me.lblButtonColor)
-        Me.Controls.Add(Me.lblTaxonomicLevel)
-        Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.Label1)
-        Me.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
-        Me.MaximizeBox = False
-        Me.MinimizeBox = False
-        Me.Name = "frmEditSpecies"
-        Me.Text = "Edit Species"
-        Me.ResumeLayout(False)
-        Me.PerformLayout()
+        AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 13.0!)
+        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        ClientSize = New System.Drawing.Size(440, 326)
+        Controls.Add(cmdChange)
+        Controls.Add(lblKeyboardShortcut)
+        Controls.Add(txtKeyboardShortcut)
+        Controls.Add(cboButtonColors)
+        Controls.Add(txtSpeciesBtnTxt)
+        Controls.Add(lblSpeciesBtnTxt)
+        Controls.Add(radLatinName)
+        Controls.Add(radScientificName)
+        Controls.Add(radCommonName)
+        Controls.Add(cboLatinName)
+        Controls.Add(cboScientificName)
+        Controls.Add(cboCommonName)
+        Controls.Add(cmdCancel)
+        Controls.Add(cmdOk)
+        Controls.Add(txtTaxonomicLevel)
+        Controls.Add(txtSpeciesCode)
+        Controls.Add(lblButtonColor)
+        Controls.Add(lblTaxonomicLevel)
+        Controls.Add(Label2)
+        Controls.Add(Label1)
+        Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        MaximizeBox = False
+        MinimizeBox = False
+        Name = "frmEditSpecies"
+        Text = "Edit Species"
+        ResumeLayout(False)
+        PerformLayout()
 
     End Sub
     Friend WithEvents Label1 As System.Windows.Forms.Label

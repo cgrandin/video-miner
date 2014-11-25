@@ -247,8 +247,8 @@ Public Class frmAddNewTable
 
         tblSchema = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, New Object() {Nothing, Nothing, Nothing, Nothing})
 
-
-        myFormLibrary.frmAddButton.cboTables.Items.Clear()
+        'CJG
+        'myFormLibrary.frmAddButton.cboTables.Items.Clear()
 
         For i = 0 To tblSchema.Rows.Count - 1
 
@@ -259,21 +259,18 @@ Public Class frmAddNewTable
 
                 If strTableName.Substring(0, 3) = "lu_" Then
 
-                    myFormLibrary.frmAddButton.cboTables.Items.Add(strTableName)
+                    'CJG Need to fix
+                    'myFormLibrary.frmAddButton.cboTables.Items.Add(strTableName)
                 End If
 
             End If
         Next
 
-
-        myFormLibrary.frmAddButton.cboTables.SelectedItem = Me.TableName
+        'CJG need to fix
+        'myFormLibrary.frmAddButton.cboTables.SelectedItem = Me.TableName
 
         Me.Close()
 
-    End Sub
-
-    Private Sub frmAddNewTable_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        myFormLibrary.frmAddNewTable = Nothing
     End Sub
 
     Private Sub Cancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Cancel.Click
@@ -281,7 +278,7 @@ Public Class frmAddNewTable
     End Sub
 
     Private Sub txtID_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs)
-        Call numericTextboxValidation(e)
+        numericTextboxValidation(e)
     End Sub
 
     Private Sub cmdDeleteRecord_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDeleteRecord.Click
