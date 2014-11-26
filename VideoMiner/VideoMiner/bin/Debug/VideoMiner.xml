@@ -11,6 +11,15 @@ VideoMiner
  Default format for the time labels
  </summary>
 	<remarks></remarks>
+</member><member name="F:VideoMiner.frmVideoPlayer.FRAMES_TO_SKIP">
+	<summary>
+ Default number of frames to skip when incrementally stepping through the frames
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.frmVideoPlayer.m_strVideoTimeFormat">
+	<summary>
+ Member variable to hold the time format to show on the video labels and in CurrentVideoTimeFormatted property
+ </summary>
 </member><member name="F:VideoMiner.frmVideoPlayer.m_tsDurationTime">
 	<summary>
  Member variable to hold the video's duration or length.
@@ -51,22 +60,21 @@ VideoMiner
 	<summary>
  Member variable to hold the media (video file)
  </summary>
+</member><member name="F:VideoMiner.frmVideoPlayer.m_intFramesToSkip">
+	<summary>
+ The number of frames to skip when incrementally stepping forward through frames
+ </summary>
 </member><member name="F:VideoMiner.frmVideoPlayer.m_pnlTransparentPanel">
 	<summary>
  Member variable to hold the transparent panel used to overlay the Vlc.DotNet control so that the user
  can click on the video to toggle play/pause
  </summary>
-</member><member name="F:VideoMiner.frmVideoPlayer.m_strLabelFormat">
-	<summary>
- The format of the time labels for the current time and the duration of the video
- </summary>
-	<remarks></remarks>
-</member><member name="M:VideoMiner.frmVideoPlayer.#ctor">
+</member><member name="M:VideoMiner.frmVideoPlayer.#ctor(System.String,System.Int32)">
 	<summary>
  Default constructor. The label time format will be the default. Current time and Duration are set to zero.
  </summary>
 	<remarks></remarks>
-</member><member name="M:VideoMiner.frmVideoPlayer.#ctor(System.String)">
+</member><member name="M:VideoMiner.frmVideoPlayer.#ctor(System.String,System.String,System.Int32)">
 	<summary>
  Constructor with custom time format string. Should look something like this: "{0:D2}:{1:D2}:{2:D2}.{3:D2}"
  Current time and Duration are set to zero.
@@ -139,6 +147,10 @@ VideoMiner
 	<summary>
  This event is triggered when the user plays the video from within this form.
  </summary>
+</member><member name="E:VideoMiner.frmVideoPlayer.StopEvent">
+	<summary>
+ This event is triggered when the user stops the video from within this
+ </summary>
 </member><member name="E:VideoMiner.frmVideoPlayer.VideoEndedEvent">
 	<summary>
  This event is triggered when the video has ended.
@@ -152,6 +164,11 @@ VideoMiner
  This event is triggered when the timer ticks. It is used to send a signal so that
  the parent will always have access to the correct data (current time) from the video.
  </summary>
+</member><member name="E:VideoMiner.frmVideoPlayer.RightArrowPressedEvent">
+	<summary>
+ If the Right arrow key is pressed inside this form, this event will be raised
+ </summary>
+	<remarks></remarks>
 </member><member name="M:VideoMiner.frmVideoPlayer.frmVideoPlayer_Load(System.Object,System.EventArgs)">
 	<summary>
  Loads the fmrVideoPlayer form. All member variables are initialized, and the video file is opened as a new Vlc.DotNet.Core.Medias.PathMedia object.
@@ -190,6 +207,13 @@ VideoMiner
 	<param name="sender">System.Object</param>
 	<param name="e">System.EventArgs</param>
 	<remarks>On the first tick, adds a transparent panel to allow user clicks on the video, since the Vlc.DotNet control does not allow it.</remarks>
+</member><member name="M:VideoMiner.frmVideoPlayer.stepForward(System.Object)">
+	<summary>
+ Step forward a number of frames in the video and adjust player controls accordingly
+ </summary>
+	<param name="intFramesToSkip">Number of frames to skip, typically between 50 and 1000</param>
+	<returns>Boolean if the stepping succeeded</returns>
+	<remarks>This is highly dependent on the Vlc.DotNet control and can be buggy depending on the filetype</remarks>
 </member><member name="M:VideoMiner.frmVideoPlayer.getCurrentTime">
 	<summary>
  Get the current time from the Position property and the duration of the video.
@@ -262,12 +286,117 @@ VideoMiner
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks>Works in tandem with lblDuration_TextChanged(sender As System.Object, e As System.EventArgs) Handles lblDuration.TextChanged</remarks>
+</member><member name="M:VideoMiner.frmVideoPlayer.ProcessCmdKey(System.Windows.Forms.Message@,System.Windows.Forms.Keys)">
+	<summary>
+ Required to override the default behaviour of the arrow keypresses in the form
+ </summary>
+	<param name="msg"></param>
+	<param name="keyData"></param>
+	<returns>True if the right arrow was pressed</returns>
+	<remarks>Raises the RightArrowPressedEvent</remarks>
 </member><member name="T:VideoMiner.frmVideoPlayer">
 	<summary>
  The frmVideoPlayer class provides a form with an instance of the VLC.dotnet control, a trackbar to show the position of the video, a label for the current position,
  a label for the duration of the video clip, and a picturebox which shows what is currently happening with the video (playing, stopped, paused).
  </summary>
 	<remarks></remarks>
+</member><member name="F:VideoMiner.frmSetTime.m_tsUserTime">
+	<summary>
+ Stores the Timespan object representing the user time
+ </summary>
+</member><member name="P:VideoMiner.frmSetTime.UserTime">
+	<summary>
+ UserTime is a TimeSpan property representing the user time
+ </summary>
+	<value>TimeSpan</value>
+	<returns>TimeSpan</returns>
+</member><member name="E:VideoMiner.frmSetTime.TimeChanged">
+	<summary>
+ When the user clicks the 'OK' button this event is raised
+ </summary>
+</member><member name="E:VideoMiner.frmSetTime.UseGPSTime">
+	<summary>
+ When the user clicks the 'Use GPS Time and Date' button this event is raised
+ </summary>
+	<remarks></remarks>
+</member><member name="E:VideoMiner.frmSetTime.UseComputerTime">
+	<summary>
+ When the user clicks the 'Use Computer Time and Date' button this event is raised
+ </summary>
+	<remarks></remarks>
+</member><member name="E:VideoMiner.frmSetTime.UseElapsedTime">
+	<summary>
+ When the user clicks the 'Use Elapsed Time' button this event is raised
+ </summary>
+	<remarks></remarks>
+</member><member name="E:VideoMiner.frmSetTime.UseContinueTime">
+	<summary>
+ When the user clicks the 'Continue from Last Clip' button this event is raised
+ </summary>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmSetTime.#ctor">
+	<summary>
+ Default constructor
+ </summary>
+	<remarks>Sets the UserTime property to TimeSpan.Zero</remarks>
+</member><member name="M:VideoMiner.frmSetTime.#ctor(System.TimeSpan)">
+	<summary>
+ Constructor
+ </summary>
+	<param name="tsUserTime">Sets the UserTime property in the constructor to tsUserTime</param>
+</member><member name="M:VideoMiner.frmSetTime.frmSetTime_Load(System.Object,System.EventArgs)">
+	<summary>
+ Load the form, set the time textbox up to show the current user time.
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+</member><member name="M:VideoMiner.frmSetTime.cmdOk_Click(System.Object,System.EventArgs)">
+	<summary>
+ Handles when the user clicks the 'OK' button.
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks>Raises the TimeChanged Event before closing the form</remarks>
+</member><member name="M:VideoMiner.frmSetTime.setGPSInfo">
+	<summary>
+ Set the textbox to show GPS as the user time source
+ </summary>
+</member><member name="M:VideoMiner.frmSetTime.pad0(System.Int32)">
+	<summary>
+ Pad a string of length 1 with a zero. Used to make things like hours=0 into hours="00"
+ </summary>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmSetTime.setSourceText(System.String)">
+	<summary>
+ Set the source text to reflect which is being used. Also set the textbox background and font
+ </summary>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmSetTime.cmdUseComputerTimeDate_Click(System.Object,System.EventArgs)">
+	<summary>
+ Handle the click of the button to use the current computer time and date as the user time
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmSetTime.cmdUseElapsedTime_Click(System.Object,System.EventArgs)">
+	<summary>
+ Handle the click of the button to use the elapsed time and date as the user time
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+</member><member name="M:VideoMiner.frmSetTime.cmdContinueFromLastClip_Click(System.Object,System.EventArgs)">
+	<summary>
+ Handle the click of the button to use the time and date at the end of the last video clip as the user time
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+</member><member name="M:VideoMiner.frmSetTime.cmdFromGps_Click(System.Object,System.EventArgs)">
+	<summary>
+ Handle the click of the button to use the GPS time and date as the user time
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
 </member><member name="P:VideoMiner.My.Resources.Resources.ResourceManager">
 	<summary>
   Returns the cached ResourceManager instance used by this class.
@@ -463,11 +592,22 @@ VideoMiner
 </member><member name="F:VideoMiner.VideoMiner.m_strVideoPath">
 	<summary>
  Holds the last known video file path as entered by the user in the OpenFileDialog
+ Does not hold the filename itself
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_strVideoFile">
+	<summary>
+ Hold the currently loaded video's filename without path information
  </summary>
 	<remarks></remarks>
 </member><member name="F:VideoMiner.VideoMiner.m_strSessionPath">
 	<summary>
  Holds the path of the last known session's path as entered by the user in the OpenFileDialog
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_tsUserTime">
+	<summary>
+ Holds the user time as set by the frmSetTime form
  </summary>
 	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.frmVideoMiner_Load(System.Object,System.EventArgs)">
@@ -550,6 +690,13 @@ VideoMiner
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.cmdShowSetTimecode_Click(System.Object,System.EventArgs)">
+	<summary>
+ Ask user to input time that is shown on the video. This synchronizes the program with the video, and sets the label to the correct time.
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.openSession">
 	<summary>
  Open a session which has saved the previous state of the program in VideoMiner Session file (*.xml)
@@ -568,15 +715,37 @@ VideoMiner
 	<param name="strValue"></param>
 	<returns></returns>
 	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.mnuOpenFile_Click(System.Object,System.EventArgs)">
+	<summary>
+ Handles the menu click event for the opening of a video file
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
 </member><member name="M:VideoMiner.VideoMiner.openVideo">
 	<summary>
- Open a video file. Will create a new instance of frmVideoPlayer
+ Open a video file. Creates a new instance of frmVideoPlayer
  </summary>
 	<returns>Boolean representing success</returns>
-	<remarks>Returns True if the user chose a file to play, False is they pressed cancel or clicked the 'X'</remarks>
+	<remarks>Returns True if the user chose an existing file to play, False is they pressed cancel or clicked the 'X'</remarks>
+</member><member name="M:VideoMiner.VideoMiner.timerTick">
+	<summary>
+ Updates the time text on the form everytime the timer tick event is issued by the frmVideoPlayer form
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.setTimes">
+	<summary>
+ Set the User time (txtTime) textbox and source time (txtTimeSource) to show
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.unsetTimes">
+	<summary>
+ Set the user time (txtTime) textbox and source time textbox (txtTimeSource) to dissappear
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.time_changed">
+	<summary>
+ Gets the new user defined time from the set time form and call setUserTime to apply
+ </summary>
 </member><member name="T:VideoMiner.VideoMiner">
 	<summary>
- This is the main form for the program
+ This is the main form for the program, and instantiates most of the other forms.
  </summary>
 </member>
 </members>

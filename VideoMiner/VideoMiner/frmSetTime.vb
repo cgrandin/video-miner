@@ -1,133 +1,196 @@
+Imports System.TimeSpan
+
 Public Class frmSetTime
 
-    Private m_strUserTime As String
+    ''' <summary>
+    ''' Stores the Timespan object representing the user time
+    ''' </summary>
+    Private m_tsUserTime As TimeSpan
 
-    Public Property UserTime As String
+    ''' <summary>
+    ''' UserTime is a TimeSpan property representing the user time
+    ''' </summary>
+    ''' <value>TimeSpan</value>
+    ''' <returns>TimeSpan</returns>
+    Public Property UserTime As TimeSpan
         Get
-            Return m_strUserTime.Substring(0, 2) & ":" & m_strUserTime.Substring(2, 2) & ":" & m_strUserTime.Substring(4, 2)
+            Return m_tsUserTime
         End Get
-        Set(value As String)
-            m_strUserTime = value
+        Set(value As TimeSpan)
+            m_tsUserTime = value
         End Set
     End Property
 
+    ''' <summary>
+    ''' When the user clicks the 'OK' button this event is raised
+    ''' </summary>
     Event TimeChanged()
+    ''' <summary>
+    ''' When the user clicks the 'Use GPS Time and Date' button this event is raised
+    ''' </summary>
+    ''' <remarks></remarks>
     Event UseGPSTime()
+    ''' <summary>
+    ''' When the user clicks the 'Use Computer Time and Date' button this event is raised
+    ''' </summary>
+    ''' <remarks></remarks>
     Event UseComputerTime()
+    ''' <summary>
+    ''' When the user clicks the 'Use Elapsed Time' button this event is raised
+    ''' </summary>
+    ''' <remarks></remarks>
     Event UseElapsedTime()
+    ''' <summary>
+    ''' When the user clicks the 'Continue from Last Clip' button this event is raised
+    ''' </summary>
+    ''' <remarks></remarks>
     Event UseContinueTime()
 
+    ''' <summary>
+    ''' Default constructor
+    ''' </summary>
+    ''' <remarks>Sets the UserTime property to TimeSpan.Zero</remarks>
+    Public Sub New()
+        InitializeComponent()
+        m_tsUserTime = Zero
+        cmdContinueFromLastClip.Enabled = False
+        cmdUseElapsedTime.Enabled = False
+        cmdNext.Enabled = False
+        cmdPlayPause.Enabled = False
+        cmdPrevious.Enabled = False
+        cmdStop.Enabled = False
+        TopLevel = True
+        setSourceText("MANUAL")
+    End Sub
+
+    ''' <summary>
+    ''' Constructor
+    ''' </summary>
+    ''' <param name="tsUserTime">Sets the UserTime property in the constructor to tsUserTime</param>
+    Public Sub New(tsUserTime As TimeSpan)
+        InitializeComponent()
+        m_tsUserTime = tsUserTime
+        cmdContinueFromLastClip.Enabled = False
+        cmdUseElapsedTime.Enabled = False
+        cmdNext.Enabled = False
+        cmdPlayPause.Enabled = False
+        cmdPrevious.Enabled = False
+        cmdStop.Enabled = False
+        TopLevel = True
+        setSourceText("MANUAL")
+    End Sub
+
+    ''' <summary>
+    ''' Load the form, set the time textbox up to show the current user time.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub frmSetTime_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        txtSetTime.Text = pad0(m_tsUserTime.Hours) & pad0(m_tsUserTime.Minutes) & pad0(m_tsUserTime.Seconds) & pad0(m_tsUserTime.Milliseconds)
+    End Sub
+
+    ''' <summary>
+    ''' Handles when the user clicks the 'OK' button.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks>Raises the TimeChanged Event before closing the form</remarks>
     Private Sub cmdOk_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOk.Click
         Try
-            m_strUserTime = Me.txtSetTime.Text
-            m_strUserTime = m_strUserTime.Replace(":", "")
-            'dtUserTime = New DateTime(Now().Year, Now().Month, Now().Day, CType(strUserTime.Substring(0, 2), Integer), CType(strUserTime.Substring(2, 2), Integer), CType(strUserTime.Substring(4, 2), Integer))
+            ' Extract the string version of the time in the textbox and convert it to a Timespan object
+            m_tsUserTime = New TimeSpan(0, CInt(Strings.Left(txtSetTime.Text, 2)), CInt(Strings.Mid(txtSetTime.Text, 3, 2)), CInt(Strings.Mid(txtSetTime.Text, 5, 2)), CInt(Strings.Mid(txtSetTime.Text, 7, 2)))
             RaiseEvent TimeChanged()
-            If Not booUseExternalVideo Then
-                'dblVideoTimeUserSet = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition
-            End If
+            'If Not booUseExternalVideo Then
+            'dblVideoTimeUserSet = myFormLibrary.frmVideoPlayer.plyrVideoPlayer.Ctlcontrols.currentPosition
+            'End If
             Me.Close()
         Catch ex As Exception
-            MsgBox("The time entered is invalid, please try again")
+            MessageBox.Show("The time entered is invalid, please try again", "Invalid time", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
-
     End Sub
 
+    ''' <summary>
+    ''' Set the textbox to show GPS as the user time source
+    ''' </summary>
     Public Sub setGPSInfo()
-        Me.txtTimeSource.Text = "GPS"
-        Me.txtTimeSource.Font = New Font("", 10, FontStyle.Bold)
-        Me.txtTimeSource.BackColor = Color.LightGray
-        Me.txtTimeSource.ForeColor = Color.LimeGreen
-        Me.txtTimeSource.TextAlign = HorizontalAlignment.Center
+        setSourceText("GPS")
     End Sub
 
-    Private Sub cmdFromGps_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUseGPSTimeDate.Click
-        booUseGPSTimeCodes = True
-        RaiseEvent UseGPSTime()
-    End Sub
-
-    Private Sub frmSetTime_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
-
-        If e.KeyCode = Keys.Enter Then
-            cmdOk_Click(Nothing, Nothing)
+    ''' <summary>
+    ''' Pad a string of length 1 with a zero. Used to make things like hours=0 into hours="00"
+    ''' </summary>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Private Function pad0(intValue As Integer) As String
+        Dim strRep As String = CStr(intValue)
+        If strRep.Length = 0 Then
+            strRep = "00"
+        ElseIf strRep.Length = 1 Then
+            strRep = "0" & strRep
         End If
+        Return strRep
+    End Function
 
+    ''' <summary>
+    ''' Set the source text to reflect which is being used. Also set the textbox background and font
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private Sub setSourceText(strSource As String)
+        txtTimeSource.Text = strSource
+        txtTimeSource.Font = New Font("", 10, FontStyle.Bold)
+        txtTimeSource.BackColor = Color.LightGray
+        txtTimeSource.ForeColor = Color.LimeGreen
+        txtTimeSource.TextAlign = HorizontalAlignment.Center
     End Sub
 
-    Private Sub frmSetTime_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Me.TopMost = True
-        Me.BringToFront()
-        If strUserTime = "" Then
-            Me.txtSetTime.Text = "00000000"
-        Else
-            Me.txtSetTime.Text = strUserTime
-        End If
-    End Sub
-
+    ''' <summary>
+    ''' Handle the click of the button to use the current computer time and date as the user time
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub cmdUseComputerTimeDate_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUseComputerTimeDate.Click
-        Dim strTime As String = ""
-        If Now.Hour >= 10 Then
-            strTime = CStr(Now.Hour)
-        Else
-            strTime = "0" & CStr(Now.Hour)
-        End If
-        If Now.Minute >= 10 Then
-            strTime = strTime & ":" & CStr(Now.Minute)
-        Else
-            strTime = strTime & ":0" & CStr(Now.Minute)
-        End If
-        If Now.Second >= 10 Then
-            strTime = strTime & ":" & CStr(Now.Second)
-        Else
-            strTime = strTime & ":0" & CStr(Now.Second)
-        End If
-
-        Dim strDate As String = ""
-        If Now.Day >= 10 Then
-            strDate = CStr(Now.Day)
-        Else
-            strDate = "0" & CStr(Now.Day)
-        End If
-        If Now.Month >= 10 Then
-            strDate = strDate & "/" & CStr(Now.Month)
-        Else
-            strDate = strDate & "/0" & CStr(Now.Month)
-        End If
-
-        If Now.Year >= 10 Then
-            strDate = strDate & "/" & CStr(Now.Year)
-        Else
-            strDate = strDate & "/0" & CStr(Now.Year)
-        End If
-
-        txtSetTime.Text = strTime
-
-        Me.txtTimeSource.Text = "COMPUTER"
-        Me.txtTimeSource.Font = New Font("", 10, FontStyle.Bold)
-        Me.txtTimeSource.BackColor = Color.LightGray
-        Me.txtTimeSource.ForeColor = Color.LimeGreen
-        Me.txtTimeSource.TextAlign = HorizontalAlignment.Center
-
+        Dim dtNow As DateTime = Now
+        txtSetTime.Text = pad0(dtNow.Hour) & pad0(dtNow.Minute) & pad0(dtNow.Second) & pad0(dtNow.Millisecond)
+        setSourceText("COMPUTER")
     End Sub
 
+    ''' <summary>
+    ''' Handle the click of the button to use the elapsed time and date as the user time
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub cmdUseElapsedTime_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUseElapsedTime.Click
         RaiseEvent UseElapsedTime()
-        Me.txtTimeSource.Text = "ELAPSED"
-        Me.txtTimeSource.Font = New Font("", 10, FontStyle.Bold)
-        Me.txtTimeSource.BackColor = Color.LightGray
-        Me.txtTimeSource.ForeColor = Color.LimeGreen
-        Me.txtTimeSource.TextAlign = HorizontalAlignment.Center
-        'Me.txtSetTime.Text = frmVideoPlayer.lblCurrentTime.Text
+        setSourceText("ELAPSED")
     End Sub
 
+    ''' <summary>
+    ''' Handle the click of the button to use the time and date at the end of the last video clip as the user time
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub cmdContinueFromLastClip_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdContinueFromLastClip.Click
         RaiseEvent UseContinueTime()
-        Me.txtTimeSource.Text = "VIDEO"
-        Me.txtTimeSource.Font = New Font("", 10, FontStyle.Bold)
-        Me.txtTimeSource.BackColor = Color.LightGray
-        Me.txtTimeSource.ForeColor = Color.LimeGreen
-        Me.txtTimeSource.TextAlign = HorizontalAlignment.Center
+        setSourceText("VIDEO")
     End Sub
+
+    ''' <summary>
+    ''' Handle the click of the button to use the GPS time and date as the user time
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub cmdFromGps_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUseGPSTimeDate.Click
+        RaiseEvent UseGPSTime()
+        setSourceText("GPS")
+    End Sub
+
+
+    'Private Sub frmSetTime_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
+    '    If e.KeyCode = Keys.Enter Then
+    '        cmdOk_Click(Nothing, Nothing)
+    '    End If
+    'End Sub
 
     'Private Sub txtSetTime_KeyUp(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles txtSetTime.KeyUp
     '    If myFormLibrary.frmVideoMiner.tmrComputerTime.Enabled Then
@@ -162,4 +225,5 @@ Public Class frmSetTime
     '    myFormLibrary.frmVideoMiner.txtDateSource.ForeColor = Color.LimeGreen
     '    myFormLibrary.frmVideoMiner.txtDateSource.TextAlign = HorizontalAlignment.Center
     'End Sub
+
 End Class

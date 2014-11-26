@@ -17,6 +17,15 @@ Public Class frmVideoPlayer
     ''' <remarks></remarks>
     Private Shadows Const VIDEO_TIME_FORMAT As String = "{0:D2}:{1:D2}:{2:D2}.{3:D4}" ' D4 = 4 decimal places
     ''' <summary>
+    ''' Default number of frames to skip when incrementally stepping through the frames
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private Const FRAMES_TO_SKIP As Integer = 1000
+    ''' <summary>
+    ''' Member variable to hold the time format to show on the video labels and in CurrentVideoTimeFormatted property
+    ''' </summary>
+    Private m_strVideoTimeFormat As String
+    ''' <summary>
     ''' Member variable to hold the video's duration or length.
     ''' </summary>
     Private m_tsDurationTime As TimeSpan
@@ -57,25 +66,26 @@ Public Class frmVideoPlayer
     ''' </summary>
     Private m_mbMedia As MediaBase
     ''' <summary>
+    ''' The number of frames to skip when incrementally stepping forward through frames
+    ''' </summary>
+    Private m_intFramesToSkip As Integer
+    ''' <summary>
     ''' Member variable to hold the transparent panel used to overlay the Vlc.DotNet control so that the user
     ''' can click on the video to toggle play/pause
     ''' </summary>
     Private WithEvents m_pnlTransparentPanel As TransparentPanel
-    ''' <summary>
-    ''' The format of the time labels for the current time and the duration of the video
-    ''' </summary>
-    ''' <remarks></remarks>
-    Private m_strLabelFormat As String
 
     ''' <summary>
     ''' Default constructor. The label time format will be the default. Current time and Duration are set to zero.
     ''' </summary>
     ''' <remarks></remarks>
-    Sub New()
+    Sub New(strFilename As String, Optional intFramesToSkip As Integer = FRAMES_TO_SKIP)
         InitializeComponent()
-        m_strLabelFormat = VIDEO_TIME_FORMAT
+        m_strFilename = strFilename
+        m_strVideoTimeFormat = VIDEO_TIME_FORMAT
         m_tsCurrentVideoTime = Zero
         m_tsDurationTime = Zero
+        m_intFramesToSkip = intFramesToSkip
     End Sub
 
     ''' <summary>
@@ -84,11 +94,13 @@ Public Class frmVideoPlayer
     ''' </summary>
     ''' <param name="videoTimeFormat"></param>
     ''' <remarks></remarks>
-    Sub New(ByVal videoTimeFormat As String)
+    Sub New(strFilename As String, ByVal videoTimeFormat As String, Optional intFramesToSkip As Integer = FRAMES_TO_SKIP)
         InitializeComponent()
-        m_strLabelFormat = videoTimeFormat
+        m_strFilename = strFilename
+        m_strVideoTimeFormat = videoTimeFormat
         m_tsCurrentVideoTime = Zero
         m_tsDurationTime = Zero
+        m_intFramesToSkip = intFramesToSkip
     End Sub
 
     ''' <summary>
@@ -226,8 +238,6 @@ Public Class frmVideoPlayer
     ''' <summary>
     ''' This event is triggered when the user stops the video from within this
     ''' </summary>
-    ''' <param name="sender">System.Object</param>
-    ''' <param name="e">System.EventArgs</param>
     Event StopEvent()
     ''' <summary>
     ''' This event is triggered when the video has ended.
@@ -242,6 +252,11 @@ Public Class frmVideoPlayer
     ''' the parent will always have access to the correct data (current time) from the video.
     ''' </summary>
     Event TimerTickEvent()
+    ''' <summary>
+    ''' If the Right arrow key is pressed inside this form, this event will be raised
+    ''' </summary>
+    ''' <remarks></remarks>
+    Event RightArrowPressedEvent()
 
     ''' <summary>
     ''' Loads the fmrVideoPlayer form. All member variables are initialized, and the video file is opened as a new Vlc.DotNet.Core.Medias.PathMedia object.
@@ -250,6 +265,8 @@ Public Class frmVideoPlayer
     ''' <param name="sender">System.Object</param>
     ''' <param name="e">System.EventArgs</param>
     Public Sub frmVideoPlayer_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        ' So that the form receives the key events before the child controls
+        KeyPreview = True
         Text = m_strFilename
         m_tsDurationTime = Zero
         m_tsCurrentVideoTime = Zero
@@ -259,7 +276,7 @@ Public Class frmVideoPlayer
         m_blIsEndOfVideo = False
         m_dblRate = 1.0
         Try
-            m_mbMedia = New PathMedia(strVideoFilePath)
+            m_mbMedia = New PathMedia(m_strFilename)
         Catch ex As Exception
             m_mbMedia = Nothing
             MessageBox.Show(ex.Message)
@@ -315,7 +332,7 @@ Public Class frmVideoPlayer
             pctVideoStatus.BackgroundImage = My.Resources.Play_Icon_Inverse
             RaiseEvent PlayEvent()
         Catch ex As Exception
-            MessageBox.Show(ex.Message)
+            MessageBox.Show("Error in Vlc.DotNet while calling Play(" & m_strFilename & ") - " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
         End Try
         Return True
@@ -397,6 +414,27 @@ Public Class frmVideoPlayer
     End Sub
 
     ''' <summary>
+    ''' Step forward a number of frames in the video and adjust player controls accordingly
+    ''' </summary>
+    ''' <param name="intFramesToSkip">Number of frames to skip, typically between 50 and 1000</param>
+    ''' <returns>Boolean if the stepping succeeded</returns>
+    ''' <remarks>This is highly dependent on the Vlc.DotNet control and can be buggy depending on the filetype</remarks>
+    Public Function stepForward(intFramesToSkip) As Boolean
+        m_intFramesToSkip = intFramesToSkip
+        pauseVideo()
+        If IsStopped Then Return False
+        For i As Integer = 0 To m_intFramesToSkip
+            plyrVideoPlayer.NextFrame()
+            plyrVideoPlayer.Refresh()
+            m_tsCurrentVideoTime = getCurrentTime()
+            lblCurrentTime.Text = getFormattedCurrentVideoTimeString()
+            ' Don't try to update the trackbar, it won't work after using the NextFrame method of Vlc.DotNet
+            RaiseEvent TimerTickEvent()
+        Next
+        Return True
+    End Function
+
+    ''' <summary>
     ''' Get the current time from the Position property and the duration of the video.
     ''' </summary>
     ''' <returns>A new System.Timespan object</returns>
@@ -427,7 +465,7 @@ Public Class frmVideoPlayer
             trkCurrentPosition.Value = Convert.ToInt32(dblValue)
             plyrVideoPlayer.Position = trkCurrentPosition.Value / 100.0
             ' There is a problem with the vlc control. You cannot get the time after setting the position. You need to do a play() and pause() which causes
-            ' other issues, including returning zero times much of the ti The alternative is to simply multiply the duration by the trackbar location, which is
+            ' other issues, including returning zero times much of the time. The alternative is to simply multiply the duration by the trackbar location, which is
             ' between 0 and 1, and set the time to that proportion. Not exact, but it makes it nicer and more user-friendly.
             'tsMediaTime = plyrVideoPlayer.Time ' This is the trouble line, plyrVideoPlayer.Time returns 00:00:00.00 after the position has been changed.
             plyrVideoPlayer.Refresh()
@@ -450,6 +488,8 @@ Public Class frmVideoPlayer
     ''' <param name="sender">System.Object</param>
     ''' <param name="e">System.Windows.Forms.MouseEventArgs</param>
     Private Sub trkCurrentPosition_MouseUp(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles trkCurrentPosition.MouseUp
+        plyrVideoPlayer.Position = trkCurrentPosition.Value / 100.0
+        plyrVideoPlayer.Refresh()
         pauseVideo()
     End Sub
 
@@ -522,7 +562,7 @@ Public Class frmVideoPlayer
     ''' <remarks></remarks>
     Private Function getFormattedCurrentVideoTimeString() As String
         Try
-            Return String.Format(m_strLabelFormat, m_tsCurrentVideoTime.Hours, m_tsCurrentVideoTime.Minutes, m_tsCurrentVideoTime.Seconds, m_tsCurrentVideoTime.Milliseconds)
+            Return String.Format(m_strVideoTimeFormat, m_tsCurrentVideoTime.Hours, m_tsCurrentVideoTime.Minutes, m_tsCurrentVideoTime.Seconds, m_tsCurrentVideoTime.Milliseconds)
         Catch ex As Exception
             Return m_tsCurrentVideoTime.ToString()
         End Try
@@ -535,7 +575,7 @@ Public Class frmVideoPlayer
     ''' <remarks></remarks>
     Private Function getFormattedDurationString() As String
         Try
-            Return String.Format(m_strLabelFormat, m_tsDurationTime.Hours, m_tsDurationTime.Minutes, m_tsDurationTime.Seconds, m_tsDurationTime.Milliseconds)
+            Return String.Format(m_strVideoTimeFormat, m_tsDurationTime.Hours, m_tsDurationTime.Minutes, m_tsDurationTime.Seconds, m_tsDurationTime.Milliseconds)
         Catch ex As Exception
             Return m_tsDurationTime.ToString()
         End Try
@@ -564,4 +604,22 @@ Public Class frmVideoPlayer
         TempSize = DirectCast(lblDuration.Tag, Size)
         lblDuration.Location = New System.Drawing.Point(lblDuration.Location.X - (lblDuration.Size.Width - TempSize.Width), lblDuration.Location.Y)
     End Sub
+
+    ''' <summary>
+    ''' Required to override the default behaviour of the arrow keypresses in the form
+    ''' </summary>
+    ''' <param name="msg"></param>
+    ''' <param name="keyData"></param>
+    ''' <returns>True if the right arrow was pressed</returns>
+    ''' <remarks>Raises the RightArrowPressedEvent</remarks>
+    Protected Overrides Function ProcessCmdKey(ByRef msg As System.Windows.Forms.Message, ByVal keyData As System.Windows.Forms.Keys) As Boolean
+        Select Case keyData
+            Case Keys.Right
+                RaiseEvent RightArrowPressedEvent()
+                Return True
+        End Select
+        Return MyBase.ProcessCmdKey(msg, keyData)
+    End Function
+
+
 End Class

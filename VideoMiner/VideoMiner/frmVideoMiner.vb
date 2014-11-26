@@ -1,8 +1,8 @@
-
 ' The following 3 imports are necessary for using ADO.NET, which permits database access.
 Imports System.Data
 Imports System.Data.OleDb
 Imports System.Data.SqlClient
+' All times are stored as TimeSpan objects
 Imports System.TimeSpan
 Imports Microsoft.VisualBasic
 Imports System.IO.Ports
@@ -16,9 +16,268 @@ Imports System.Reflection
 Imports System.Threading
 
 ''' <summary>
-''' This is the main form for the program
+''' This is the main form for the program, and instantiates most of the other forms.
 ''' </summary>
 Public Class VideoMiner
+
+#Region "Constants"
+    Private Const VIDEO_TIME_FORMAT As String = "{0:D2}:{1:D2}:{2:D2}.{3:D3}" ' D3 = 3 decimal places
+    Public Const DB_ADO_CONN_STRING_1 As String = "Data Source="
+    Public Const DB_ADO_CONN_STRING_2 As String = ";Initial Catalog=data"
+    Public Const BAD_ID As Long = -1
+    Public Const OPEN_DB_TITLE As String = "Open Database"
+    Public Const OPEN_VID_TITLE As String = "Open Video"
+    Public Const OPEN_EXT_VID As String = "Use External Video"
+    Public Const DB_FILE_FILTER As String = "MS Access files (*.mdb)|*.mdb"
+    Public Const DB_FILE_STATUS_LOADED As String = "Database '"
+    Public Const VIDEO_FILE_STATUS_LOADED As String = "Video file is open"
+    Public Const DB_FILE_STATUS_UNLOADED As String = "No database open"
+    Public Const VIDEO_FILE_STATUS_UNLOADED As String = "No video file open"
+    Public Const STATUS_FONT_SIZE As Integer = 10
+    Public Const DIR_SEP As String = "\"
+    Public Const NULL_STRING As String = ""
+    Public Const UNNAMED_TRANSECT As String = "Unnamed Transect"
+    Public Const NO_TRANSECT As String = "No Transect"
+    Public Const NO_SUBSTRATE As String = "No Substrate"
+    Public Const NO_BIOCOVER As String = "No Biocover"
+    Public Const NO_RELIEF As String = "No Relief"
+    Public Const NO_COMPLEXITY As String = "No Complexity"
+    Public Const OFF_BOTTOM_STRING As String = "Off bottom"
+    Public Const ON_BOTTOM_STRING As String = "On bottom"
+#End Region
+
+#Region "Variables"
+    ' These are the forms which this form creates and they report directly to this form only
+    Private WithEvents frmSpeciesList As frmSpeciesList
+    Private WithEvents frmSetTime As frmSetTime
+    Private WithEvents frmImage As frmImage
+    Private WithEvents frmGpsSettings As frmGpsSettings
+    Private WithEvents frmEditSpecies As frmEditSpecies
+    Private WithEvents frmConfigureSpecies As frmConfigureSpecies
+    Private WithEvents frmSpeciesEvent As frmSpeciesEvent
+    Private WithEvents frmTableView As frmTableView
+    Private WithEvents frmAbundanceTableView As frmAbundanceTableView
+    Private WithEvents frmRareSpeciesLookup As frmRareSpeciesLookup
+    Private WithEvents frmRelayConfiguration As frmRelayConfiguration
+    Private WithEvents frmKeyboardCommands As frmKeyboardCommands
+    Private WithEvents frmAddNewTable As frmAddNewTable
+    Private WithEvents frmConfigureButtons As frmConfigureButtons
+    Private WithEvents frmVideoPlayer As frmVideoPlayer
+    Private WithEvents frmProjectNames As frmProjectNames
+    Private WithEvents frmDataCodes As frmDataCodes
+    Private WithEvents frmDeviceControl As frmDeviceControl
+    Private WithEvents frmConfigureButtonFormat As frmConfigureButtonFormat
+    Private WithEvents frmAddValue As frmAddValue
+    Private WithEvents frmEditLookupTable As frmEditLookupTable
+
+    ''' <summary>
+    ''' The working directory of the software
+    ''' </summary>
+    Private m_strWorkingPath As String
+    ''' <summary>
+    ''' The configuration directory for the software
+    ''' </summary>
+    ''' <remarks>This will be the directory given by (m_strWorkingPath)\Config</remarks>
+    Private m_strConfigFilePath As String
+    ''' <summary>
+    ''' The full path for the configuration file
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_strConfigFile As String
+    ''' <summary>
+    ''' Holds the last known database path as entered by the user in the OpenFileDialog
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_strDatabasePath As String
+    ''' <summary>
+    ''' Holds the last known video file path as entered by the user in the OpenFileDialog
+    ''' Does not hold the filename itself
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_strVideoPath As String
+    ''' <summary>
+    ''' Hold the currently loaded video's filename without path information
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_strVideoFile As String
+    ''' <summary>
+    ''' Holds the path of the last known session's path as entered by the user in the OpenFileDialog
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_strSessionPath As String
+    ''' <summary>
+    ''' Holds the user time as set by the frmSetTime form
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_tsUserTime As TimeSpan
+
+    Private ttToolTip As ToolTip
+    Public strMilliseconds As String = "00"
+    Public video_file_open As Boolean
+    Private select_string As String
+    Private insert_string As String
+    Private transect_name As String
+    Private project_name As String = ""
+    Private transect_date As String = ""
+    Private substrate_name As String
+    Private substrate_code As String
+
+    Public strKeyboardShortcut As String = ""
+    Public strCurrentKey As String = ""
+    Private value As Array = [Enum].GetValues(GetType(Keys))
+
+    Public image_open As Boolean = False
+    Public image_prefix As String
+    Public fileNames() As String
+    Private relief_name As String
+    Private relief_code As String
+    Private is_on_bottom As Integer
+    Private curr_code As String
+    Private curr_name As String
+    Private blHandled As Boolean = False
+
+    ' Variables to store form values
+    Public strWidth As String
+    Public strComment As String
+    Private strSide As String
+    Private strRange As String
+    Private strLength As String
+    Private strHeight As String
+    Private strAbundance As String
+    Private strIdConfidence As String
+    Private strSpeciesCount As String
+    Private strSpeciesCode As String
+    Public blSpeciesValuesSet As Boolean = False
+
+    Private intVideoSeconds As Integer = 0
+    Private intPreviousVideoSeconds As Integer = 0
+    Private intGPSSeconds As Integer = 0
+    Private intPreviousGPSSeconds As Integer = 0
+    Private blFirstTime As Boolean = False
+    Private blGPSFirstTime As Boolean = False
+
+    ' Variables to store Play for Seconds variables
+    Private dblPlaySecondsTC As Double = 0
+    Private strPlaySecondsVideoTime As String = VIDEO_TIME_LABEL
+    Private intPlayForSeconds As Integer
+    Private intPlayForSecondsTimerCount As Integer = 0
+    Private intStartPlaySeconds As Integer
+    Private intCurrentPlaySeconds As Integer
+    Private intEndPlaySeconds As Integer = 0
+    Private dblVideoRate As Double = 1
+
+    ' Comparison value for reord every second functionality    
+    Public intLastVideoSecond As Integer = 0
+    Public intLastVideoMinute As Integer = 0
+    Public intLastVideoHour As Integer = 0
+    Public intVideoStopCounter As Integer = 0
+    Public blSpeciesCancelled As Boolean = False
+    Private blIsDuplicateTime As Boolean = False
+
+    ' Database variables
+    Public db_filename As String
+    Public db_file_open As Boolean
+    Private db_id_num As Long
+    Private data_cmd As OleDbCommand
+    Private data_adapter As OleDbDataAdapter
+    Private data_set As DataSet
+    Private data_table As DataTable
+    Private data_binding As BindingSource
+    Private data_command_builder As OleDbCommandBuilder
+    Private last_data_row As DataRow
+
+    ' User buttons
+    Dim button_height As Integer = 44
+    Dim button_width As Integer = 154
+
+    ' For the habitat variables
+    Public textboxes() As TextBox
+    Public strHabitatButtonCodeNames() As String ' name of the fields where the data came from when user clicks a user button
+    Private buttons() As Button
+    Private intHabitatButtonCodes() As Integer
+    Private strHabitatButtonTables() As String
+    Private strHabitatButtonUserCodeChoice() As String
+    Private strHabitatButtonUserNameChoice() As String
+    Private strHabitatButtonColors() As String
+    Private intNumHabitatButtons As Integer
+
+    ' Transect variables
+    Public Transect_Textboxes() As TextBox
+    Public strTransectButtonCodeNames() As String
+    Private Transect_Buttons() As Button
+    Private intTransectButtonCodes() As Integer
+    Private strTransectButtonTables() As String
+    Private strTransectButtonUserCodeChoice() As String
+    Private strTransectButtonUserNameChoice() As String
+    Private strTransectButtonColors() As String
+    Private intNumTransectButtons As Integer
+
+    ' for the species variables
+    Public speciesButtons() As Button
+    Private strSpeciesButtonCodes() As String ' species codes
+    Private strSpeciesButtonNames() As String
+    Private strSpeciesButtonCodeNames() As String ' name of the fields where the data came from when user clicks a user button
+    Private intSpeciesButtonUserCodeChoice() As Integer
+    Private strSpeciesButtonUserNameChoice() As String
+    Private strSpeciesButtonColors() As String
+    Private intNumSpeciesButtons As Integer
+
+    ' Collection and dictionaries to handle dynamically updating the habitat species values
+    Private colTableFields As Collection
+    Private colTransectFields As Collection
+
+    'Private frmImageForm As frmImage
+    Private lastImageIndex As Integer = 0
+    Public image_index As Integer = 0
+
+    ' The name of the current image including the path
+    Private currentImage As String
+    Private strFileType As String
+    Private intCurrentZoom As Integer
+    Private blSizeChanged As Boolean = False
+
+    Private intNumberDisplayRecords As Integer = 0
+    Private intDefaultNumberDisplayRecords As Integer = 15
+    Private strQuickEntryCount As String = ""
+    Private strDefaultQuickEntryCount As String = "1"
+
+    Private blVideoWasPlaying As Boolean = False
+
+    Public imageFilesList As List(Of String)
+    Public imagePath As String = ""
+
+    Public WithEvents aSerialPort As IO.Ports.SerialPort = m_PublicSerialPort
+    Public m_SerialPort As IO.Ports.SerialPort
+    Public tryCount As Integer = 0
+    Public aquiredTryCount As Integer = 0
+    Public strPreviousGPSTime As String = ""
+    Public dblGPSExpiry As Double = 0
+
+    Public strTimeDateSource As String = "ELAPSED"
+    Public strPreviousClipTime As String = VIDEO_TIME_DECIMAL_LABEL
+    Public blUseGPSTime As Boolean = False
+    Public blUseComputerTime As Boolean = False
+    Public blUseElapsedTime As Boolean = False
+    Public blUseVideoTime As Boolean = False
+    Public intTimeSource As Integer = 1
+    Public blImageWarning As Boolean = True
+    Public blScreenCaptureCalled As Boolean = False
+    Public blOpenDatabase As Boolean = False
+    Public blCloseDatabase As Boolean = False
+    Public dblVideoStartPosition As Double = 0
+    'Public txtNMEAStringData As String = ""
+
+    Public dataColumns As Collection
+    Public blupdateColumns As Boolean = True
+
+    Private frmAbout As AboutBox1
+    Private strAbout As String
+
+#End Region
+
+#Region "Delegate Function Declarations"
+    Private Delegate Sub myDelegate()
+#End Region
 
 #Region "Fields"
 #Region "VideoMiner Fields"
@@ -35,7 +294,6 @@ Public Class VideoMiner
     Private m_SpeciesCode As String
     Private m_SpeciesName As String
 
-    Private m_FileName As String
     Private m_ScreenCaptureName As String
     Private m_ElapsedTime As String
 
@@ -67,6 +325,7 @@ Public Class VideoMiner
     Private m_ButtonTextSize As Integer
     Private m_ButtonFont As String
 #End Region
+
 #Region "Relay Configuration"
     Private m_ConfigurationSet As Boolean
     Private m_RelaySetup As String
@@ -115,10 +374,16 @@ Public Class VideoMiner
 
     Public Property FileName() As String
         Get
-            Return m_FileName
+            If m_strVideoPath = "" And m_strVideoFile = "" Then
+                Return "External Video"
+            Else
+                Return m_strVideoPath & "/" & m_strVideoFile
+            End If
         End Get
-        Set(ByVal value As String)
-            m_FileName = value
+        Set(value As String)
+            ' Only set for external video
+            m_strVideoPath = ""
+            m_strVideoFile = ""
         End Set
     End Property
 
@@ -568,272 +833,6 @@ Public Class VideoMiner
 #End Region
 #End Region
 
-#Region "Constants"
-    Public Const DB_ADO_CONN_STRING_1 As String = "Data Source="
-    Public Const DB_ADO_CONN_STRING_2 As String = ";Initial Catalog=data"
-    Public Const BAD_ID As Long = -1
-    Public Const OPEN_DB_TITLE As String = "Open Database"
-    Public Const OPEN_VID_TITLE As String = "Open Video"
-    Public Const OPEN_EXT_VID As String = "Use External Video"
-    Public Const DB_FILE_FILTER As String = "MS Access files (*.mdb)|*.mdb"
-    Public Const DB_FILE_STATUS_LOADED As String = "Database '"
-    Public Const VIDEO_FILE_STATUS_LOADED As String = "Video file is open"
-    Public Const DB_FILE_STATUS_UNLOADED As String = "No database open"
-    Public Const VIDEO_FILE_STATUS_UNLOADED As String = "No video file open"
-    Public Const STATUS_FONT_SIZE As Integer = 10
-    Public Const DIR_SEP As String = "\"
-    Public Const NULL_STRING As String = ""
-    Public Const UNNAMED_TRANSECT As String = "Unnamed Transect"
-    Public Const NO_TRANSECT As String = "No Transect"
-    Public Const NO_SUBSTRATE As String = "No Substrate"
-    Public Const NO_BIOCOVER As String = "No Biocover"
-    Public Const NO_RELIEF As String = "No Relief"
-    Public Const NO_COMPLEXITY As String = "No Complexity"
-    Public Const OFF_BOTTOM_STRING As String = "Off bottom"
-    Public Const ON_BOTTOM_STRING As String = "On bottom"
-#End Region
-
-#Region "Variables"
-    ' These are the forms which this form creates and they report directly to this form only
-    Private WithEvents frmSpeciesList As frmSpeciesList
-    Private WithEvents frmSetTime As frmSetTime
-    Private WithEvents frmImage As frmImage
-    Private WithEvents frmGpsSettings As frmGpsSettings
-    Private WithEvents frmEditSpecies As frmEditSpecies
-    Private WithEvents frmConfigureSpecies As frmConfigureSpecies
-    Private WithEvents frmSpeciesEvent As frmSpeciesEvent
-    Private WithEvents frmTableView As frmTableView
-    Private WithEvents frmAbundanceTableView As frmAbundanceTableView
-    Private WithEvents frmRareSpeciesLookup As frmRareSpeciesLookup
-    Private WithEvents frmRelayConfiguration As frmRelayConfiguration
-    Private WithEvents frmKeyboardCommands As frmKeyboardCommands
-    Private WithEvents frmAddNewTable As frmAddNewTable
-    Private WithEvents frmConfigureButtons As frmConfigureButtons
-    Private WithEvents frmVideoPlayer As frmVideoPlayer
-    Private WithEvents frmProjectNames As frmProjectNames
-    Private WithEvents frmDataCodes As frmDataCodes
-    Private WithEvents frmDeviceControl As frmDeviceControl
-    Private WithEvents frmConfigureButtonFormat As frmConfigureButtonFormat
-    Private WithEvents frmAddValue As frmAddValue
-    Private WithEvents frmEditLookupTable As frmEditLookupTable
-
-    ''' <summary>
-    ''' The working directory of the software
-    ''' </summary>
-    Private m_strWorkingPath As String
-    ''' <summary>
-    ''' The configuration directory for the software
-    ''' </summary>
-    ''' <remarks>This will be the directory given by (m_strWorkingPath)\Config</remarks>
-    Private m_strConfigFilePath As String
-    ''' <summary>
-    ''' The full path for the configuration file
-    ''' </summary>
-    ''' <remarks></remarks>
-    Private m_strConfigFile As String
-    ''' <summary>
-    ''' Holds the last known database path as entered by the user in the OpenFileDialog
-    ''' </summary>
-    ''' <remarks></remarks>
-    Private m_strDatabasePath As String
-    ''' <summary>
-    ''' Holds the last known video file path as entered by the user in the OpenFileDialog
-    ''' </summary>
-    ''' <remarks></remarks>
-    Private m_strVideoPath As String
-    ''' <summary>
-    ''' Holds the path of the last known session's path as entered by the user in the OpenFileDialog
-    ''' </summary>
-    ''' <remarks></remarks>
-    Private m_strSessionPath As String
-    'Public current_directory As String
-    Public strMilliseconds As String = "00"
-    Public video_file_open As Boolean
-    Private select_string As String
-    Private insert_string As String
-    Private transect_name As String
-    Private project_name As String = ""
-    Private transect_date As String = ""
-    Private substrate_name As String
-    Private substrate_code As String
-
-    Public strKeyboardShortcut As String = ""
-    Public strCurrentKey As String = ""
-    Private value As Array = [Enum].GetValues(GetType(Keys))
-
-    Public image_open As Boolean = False
-    Public image_prefix As String
-    Public fileNames() As String
-    Private relief_name As String
-    Private relief_code As String
-    Private is_on_bottom As Integer
-    Private curr_code As String
-    Private curr_name As String
-    Private blHandled As Boolean = False
-
-    ' Variables to store form values
-    Public strWidth As String
-    Public strComment As String
-    Private strSide As String
-    Private strRange As String
-    Private strLength As String
-    Private strHeight As String
-    Private strAbundance As String
-    Private strIdConfidence As String
-    Private strSpeciesCount As String
-    Private strSpeciesCode As String
-    Public blSpeciesValuesSet As Boolean = False
-
-    Private intVideoSeconds As Integer = 0
-    Private intPreviousVideoSeconds As Integer = 0
-    Private intGPSSeconds As Integer = 0
-    Private intPreviousGPSSeconds As Integer = 0
-    Private blFirstTime As Boolean = False
-    Private blGPSFirstTime As Boolean = False
-
-    ' Variables to store Play for Seconds variables
-    Private dblPlaySecondsTC As Double = 0
-    Private strPlaySecondsVideoTime As String = VIDEO_TIME_LABEL
-    Private intPlayForSeconds As Integer
-    Private intPlayForSecondsTimerCount As Integer = 0
-    Private intStartPlaySeconds As Integer
-    Private intCurrentPlaySeconds As Integer
-    Private intEndPlaySeconds As Integer = 0
-    Private dblVideoRate As Double = 1
-
-    ' Comparison value for reord every second functionality    
-    Public intLastVideoSecond As Integer = 0
-    Public intLastVideoMinute As Integer = 0
-    Public intLastVideoHour As Integer = 0
-    Public intVideoStopCounter As Integer = 0
-    Public blSpeciesCancelled As Boolean = False
-    Private blIsDuplicateTime As Boolean = False
-
-    ' Database variables
-    Public db_filename As String
-    Public db_file_open As Boolean
-    Private db_id_num As Long
-    Private data_cmd As OleDbCommand
-    Private data_adapter As OleDbDataAdapter
-    Private data_set As DataSet
-    Private data_table As DataTable
-    Private data_binding As BindingSource
-    Private data_command_builder As OleDbCommandBuilder
-    Private last_data_row As DataRow
-
-    ' User buttons
-    Dim button_height As Integer = 44
-    Dim button_width As Integer = 154
-
-    ' For the habitat variables
-    Public textboxes() As TextBox
-    Public strHabitatButtonCodeNames() As String ' name of the fields where the data came from when user clicks a user button
-    Private buttons() As Button
-    Private intHabitatButtonCodes() As Integer
-    Private strHabitatButtonTables() As String
-    Private strHabitatButtonUserCodeChoice() As String
-    Private strHabitatButtonUserNameChoice() As String
-    Private strHabitatButtonColors() As String
-    Private intNumHabitatButtons As Integer
-
-    ' Transect variables
-    Public Transect_Textboxes() As TextBox
-    Public strTransectButtonCodeNames() As String
-    Private Transect_Buttons() As Button
-    Private intTransectButtonCodes() As Integer
-    Private strTransectButtonTables() As String
-    Private strTransectButtonUserCodeChoice() As String
-    Private strTransectButtonUserNameChoice() As String
-    Private strTransectButtonColors() As String
-    Private intNumTransectButtons As Integer
-
-    ' for the species variables
-    Public speciesButtons() As Button
-    Private strSpeciesButtonCodes() As String ' species codes
-    Private strSpeciesButtonNames() As String
-    Private strSpeciesButtonCodeNames() As String ' name of the fields where the data came from when user clicks a user button
-    Private intSpeciesButtonUserCodeChoice() As Integer
-    Private strSpeciesButtonUserNameChoice() As String
-    Private strSpeciesButtonColors() As String
-    Private intNumSpeciesButtons As Integer
-
-    ' Collection and dictionaries to handle dynamically updating the habitat species values
-    Private colTableFields As Collection
-    Private colTransectFields As Collection
-
-    'Private frmImageForm As frmImage
-    Private lastImageIndex As Integer = 0
-    Public image_index As Integer = 0
-
-    ' The name of the current image including the path
-    Private currentImage As String
-    Private strFileType As String
-    Private intCurrentZoom As Integer
-    Private blSizeChanged As Boolean = False
-
-    Private intNumberDisplayRecords As Integer = 0
-    Private intDefaultNumberDisplayRecords As Integer = 15
-    Private strQuickEntryCount As String = ""
-    Private strDefaultQuickEntryCount As String = "1"
-
-    Private blVideoWasPlaying As Boolean = False
-
-    Public imageFilesList As List(Of String)
-    Public imagePath As String = ""
-
-    Public WithEvents aSerialPort As IO.Ports.SerialPort = m_PublicSerialPort
-    Public m_SerialPort As IO.Ports.SerialPort
-    Public tryCount As Integer = 0
-    Public aquiredTryCount As Integer = 0
-    Public strPreviousGPSTime As String = ""
-    Public dblGPSExpiry As Double = 0
-
-    Public strTimeDateSource As String = "ELAPSED"
-    Public strPreviousClipTime As String = VIDEO_TIME_DECIMAL_LABEL
-    Public blUseGPSTime As Boolean = False
-    Public blUseComputerTime As Boolean = False
-    Public blUseElapsedTime As Boolean = False
-    Public blUseVideoTime As Boolean = False
-    Public intTimeSource As Integer = 1
-    Public blImageWarning As Boolean = True
-    Public blScreenCaptureCalled As Boolean = False
-    Public blOpenDatabase As Boolean = False
-    Public blCloseDatabase As Boolean = False
-    Public dblVideoStartPosition As Double = 0
-    'Public txtNMEAStringData As String = ""
-
-    Public dataColumns As Collection
-    Public blupdateColumns As Boolean = True
-
-    Private frmAbout As AboutBox1
-    Private strAbout As String
-
-#End Region
-
-#Region "Delegate Function Declarations"
-    Private Delegate Sub myDelegate()
-
-    'CJG now using Vlc.DotNet so no need for these
-    ' Delegates for ActiveX object
-    ' Do not remove the following 10 lines, they are required for access to the VideoMinerPlayer activex object's functions
-    'Public Delegate Function InvokeOpenFile() As Integer
-    'Public Delegate Function InvokeOpenDV() As Integer
-    'Public Delegate Sub InvokePlay()
-    'Public Delegate Sub InvokeStepRev()
-    'Public Delegate Sub InvokeStepFwd()
-    'Public Delegate Sub InvokePause()
-    'Public Delegate Sub InvokeStop()
-    'Public Delegate Sub InvokeToggleMenuVisibility()
-    'Public Delegate Sub InvokeOpenSession()
-    'Public Delegate Sub InvokeSaveSession()
-    'Public Delegate Sub InvokeSaveSessionAs()
-    ''Public Declare Unicode Sub InvokeScrCap Lib "DVTapeControllerLib.dll" Alias "_readFile@4" (ByVal strFileName As String)
-    'Public Delegate Sub InvokeScrCap(ByVal strFileName As String)
-    'Public Delegate Function InvokeGetTimeCode() As String
-    'Public Delegate Function InvokeSetTimeCode(ByVal x As String) As Integer
-    'Private Delegate Sub updateTextBoxCallback()
-#End Region
-
 #Region "Video Miner Controls"
 
     Public Sub New()
@@ -1004,6 +1003,14 @@ Public Class VideoMiner
         End If
         Me.txtTransectDate.Text = strDate
         transect_date = strDate
+        m_tsUserTime = Zero
+
+        ttToolTip = New ToolTip()
+        ' Always show is required because the video window gets the focus
+        ttToolTip.ShowAlways = True
+        ttToolTip.InitialDelay = 500
+        ttToolTip.AutoPopDelay = 5000
+        ttToolTip.ReshowDelay = 500
 
     End Sub
 
@@ -1272,25 +1279,25 @@ Public Class VideoMiner
         strCurrentKey = ""
     End Sub
 
-    Public Sub VideoMiner_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
-        If strCurrentKey <> CStr(e.KeyValue) Then
-            strCurrentKey = CStr(e.KeyValue)
-            Dim key As Object
-            For Each key In value
-                If e.KeyValue = key Then
-                    If strKeyboardShortcut = "" Then
-                        strKeyboardShortcut = key.ToString
-                    Else
-                        strKeyboardShortcut = strKeyboardShortcut & "+" & key.ToString
-                    End If
-                    If e.KeyValue = Keys.Alt Then
-                        e.SuppressKeyPress = True
-                    End If
-                End If
+    'Public Sub VideoMiner_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
+    '    If strCurrentKey <> CStr(e.KeyValue) Then
+    '        strCurrentKey = CStr(e.KeyValue)
+    '        Dim key As Object
+    '        For Each key In value
+    '            If e.KeyValue = key Then
+    '                If strKeyboardShortcut = "" Then
+    '                    strKeyboardShortcut = key.ToString
+    '                Else
+    '                    strKeyboardShortcut = strKeyboardShortcut & "+" & key.ToString
+    '                End If
+    '                If e.KeyValue = Keys.Alt Then
+    '                    e.SuppressKeyPress = True
+    '                End If
+    '            End If
 
-            Next
-        End If
-    End Sub
+    '        Next
+    '    End If
+    'End Sub
 
     ''' <summary>
     ''' When user selects "Open Session" from the file menu, sub openSession() and open a dialogue
@@ -1463,17 +1470,10 @@ Public Class VideoMiner
 
             Me.FileName = "External Video"
 
-            frmSetTime = New frmSetTime
-            frmSetTime.cmdContinueFromLastClip.Enabled = False
-            frmSetTime.cmdUseElapsedTime.Enabled = False
-            frmSetTime.cmdNext.Enabled = False
-            frmSetTime.cmdPlayPause.Enabled = False
-            frmSetTime.cmdPrevious.Enabled = False
-            frmSetTime.cmdStop.Enabled = False
-
-            frmSetTime.TopLevel = True
-            frmSetTime.BringToFront()
+            frmSetTime = New frmSetTime(m_tsUserTime)
             frmSetTime.ShowDialog()
+            frmSetTime.BringToFront()
+
         Else
 
             'Me.mnuPlay.Enabled = True
@@ -1599,45 +1599,20 @@ Public Class VideoMiner
 
     End Sub
 
+    ''' <summary>
+    ''' Ask user to input time that is shown on the video. This synchronizes the program with the video, and sets the label to the correct time.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub cmdShowSetTimecode_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdShowSetTimecode.Click
-        '================================================================================================================================
-        ' Name: vidShowSetTimecode_Click
-        ' Description: This event is called when the user clicks on the "Set Time" button.
-        '              1) Pause Video
-        '              2) Store time code for Video Control
-        '              2) Ask user to input time that is shown on the video. This synchronizes the program with the video.
-        '              3) Ensure that the time entered is in the correct format.
-        '================================================================================================================================
-
         If frmVideoPlayer Is Nothing Then
             MessageBox.Show("Please open a video file before setting the time.", "Video File Not Open", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
-
-        ' Pause Video
         pauseVideo()
-
-        ' Get the time code from the video control
-        Dim strTimeCode As String = getTimeCode()
-        Dim arrTimeCode() As String = strTimeCode.Split(":")
-
-        frmSetTime = New frmSetTime
-        frmSetTime.TopLevel = True
-        frmSetTime.BringToFront()
+        frmSetTime = New frmSetTime(m_tsUserTime)
         frmSetTime.ShowDialog()
-
-        ' Take the user entered time and create a datetime object from it
-        'dtUserTime = New DateTime(Now().Year, Now().Month, Now().Day, CType(strUserTime.Substring(0, 2), Integer), CType(strUserTime.Substring(2, 2), Integer), CType(strUserTime.Substring(4, 2), Integer))
-
-        'Get the number of seconds from the dtTimeCode
-        'Dim ts As TimeSpan = CDate(CDate(DateTime.Today & " " & strTimeCode)).Subtract(CDate(DateTime.Today))
-        'Dim dblSeconds As Double = ((ts.Hours * 60) + ts.Minutes) * 60 + ts.Seconds
-
-        'Dim dtPointTime As New DateTime
-        'dtPointTime = dtUserTime.AddSeconds(strTimeCode)
-
-        'dtUserTime = dtPointTime
-
     End Sub
 
     Private Sub TransectStart_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdTransectStart.Click
@@ -3249,7 +3224,7 @@ Public Class VideoMiner
                 strVideoFilePath = strVideoFileName
                 Me.FileName = strVideoFilePath.Substring(strVideoFilePath.LastIndexOf("\") + 1, strVideoFilePath.Length - strVideoFilePath.LastIndexOf("\") - 1)
                 If frmVideoPlayer Is Nothing Then
-                    frmVideoPlayer = New frmVideoPlayer
+                    frmVideoPlayer = New frmVideoPlayer(FileName, VIDEO_TIME_FORMAT)
                     frmVideoPlayer.pnlHideVideo.Visible = True
                     Dim intX As Integer = 0
                     Dim intY As Integer = 0
@@ -4499,8 +4474,12 @@ Public Class VideoMiner
 
 #Region "Video Functions"
 
+    ''' <summary>
+    ''' Handles the menu click event for the opening of a video file
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub mnuOpenFile_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuOpenFile.Click
-        ' Handles the opening of a video file.
         Me.strPreviousClipTime = Me.txtTime.Text
         If Not frmImage Is Nothing Then
             Dim intAnswer As Integer = MessageBox.Show("The image file '" & Me.FileName & "' is currently open. In order to open a video, the image will be closed. Do you want to continue?", "Image File Open", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
@@ -4521,49 +4500,37 @@ Public Class VideoMiner
         End If
 
         If openVideo() Then
-            ' Disable the open video menu selection
             enableDisableVideoMenu(False)
             playVideo()
             cmdShowSetTimecode.Enabled = True
         End If
-
-        'If video_file_open Then
-        ' frmSetTime = New frmSetTime
-        ' frmSetTime.TopLevel = True
-        ' frmSetTime.BringToFront()
-        ' frmSetTime.ShowDialog()
-        ' End If
-
     End Sub
 
     ''' <summary>
-    ''' Open a video file. Will create a new instance of frmVideoPlayer
+    ''' Open a video file. Creates a new instance of frmVideoPlayer
     ''' </summary>
     ''' <returns>Boolean representing success</returns>
-    ''' <remarks>Returns True if the user chose a file to play, False is they pressed cancel or clicked the 'X'</remarks>
+    ''' <remarks>Returns True if the user chose an existing file to play, False is they pressed cancel or clicked the 'X'</remarks>
     Private Function openVideo() As Boolean
         Dim ofd As OpenFileDialog = New OpenFileDialog
-        Dim strFilename As String
-
         ofd.Title = OPEN_VID_TITLE
         ofd.InitialDirectory = m_strVideoPath
         ofd.Filter = "Media Files (*.mpg,*.mpeg,*.avi,*.wma,*.wav,*.wmv,*.qt)|*.mpg;*.mpeg;*.avi;*.wma;*.wav;*.wmv;*.qt|All Files (*.*)|*.*"
         ofd.FilterIndex = 1
         ofd.RestoreDirectory = True
         ofd.Multiselect = False
-
         If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
             m_strVideoPath = Path.GetDirectoryName(ofd.FileName)
+            ' Store the new video path in XML file each time a video is opened
             SaveConfiguration("/VideoPath", m_strVideoPath)
-            strFilename = Path.GetFileName(ofd.FileName)
+            m_strVideoFile = Path.GetFileName(ofd.FileName)
         Else
             Return False
         End If
 
         If frmVideoPlayer Is Nothing Then
             Try
-                frmVideoPlayer = New frmVideoPlayer
-                frmVideoPlayer.Filename = strFilename
+                frmVideoPlayer = New frmVideoPlayer(FileName, VIDEO_TIME_FORMAT)
             Catch ex As Exception
                 MessageBox.Show(ex.Message)
             End Try
@@ -4589,6 +4556,7 @@ Public Class VideoMiner
                 frmVideoPlayer.WindowState = FormWindowState.Normal
                 frmVideoPlayer.TopMost = True
             Else
+                ' CJG need to fix back to 2 monitors
                 'aPoint.X = intX + priMon.Bounds.Width
                 'aPoint.Y = intY / 2
                 aPoint.X = intX + priMon.Bounds.Width / 3
@@ -4599,7 +4567,6 @@ Public Class VideoMiner
             End If
             Me.VideoTime = Zero
             frmVideoPlayer.Show()
-            'dblVideoTimeUserSet = 0
         Else
             frmVideoPlayer.frmVideoPlayer_Load(Me, New System.EventArgs)
             Me.VideoTime = frmVideoPlayer.CurrentVideoTime
@@ -4653,19 +4620,22 @@ Public Class VideoMiner
     End Sub
 
     Public Sub video_file_unload()
-        ' Dispose of the instance of the frmVideoPlayer, if it exists
         If Not frmVideoPlayer Is Nothing Then
             frmVideoPlayer.Dispose()
             frmVideoPlayer = Nothing
         End If
         lblVideo.Text = VIDEO_FILE_STATUS_UNLOADED
-        Me.txtTimeSource.Text = ""
+        pnlVideoControls.Visible = False
+        enableDisableVideoMenu(True)
+        unsetTimes()
+        cmdShowSetTimecode.Enabled = False
         video_file_open = False
     End Sub
 
     Private Sub playVideo()
         frmVideoPlayer.Rate = dblVideoRate
         If frmVideoPlayer.playVideo() Then
+            setTimes()
             FfwdCount = 0
             RwndCOunt = 0
         End If
@@ -4686,6 +4656,7 @@ Public Class VideoMiner
         ' Me.tmrRecordPerSecond.Stop()
         ' End If
         If frmVideoPlayer.stopVideo() Then
+            setTimes()
             FfwdCount = 0
             RwndCOunt = 0
         End If
@@ -4710,10 +4681,15 @@ Public Class VideoMiner
         Me.txtTimeSource.Text = frmVideoPlayer.CurrentVideoTimeFormatted
     End Sub
 
+    ''' <summary>
+    ''' Updates the time text on the form everytime the timer tick event is issued by the frmVideoPlayer form
+    ''' </summary>
     Public Sub timerTick() Handles frmVideoPlayer.TimerTickEvent
-        ' This is used to maintain current time from the video player so we can update this main form.
-        ' every time its internal timer ticks.
         Me.txtTimeSource.Text = frmVideoPlayer.CurrentVideoTimeFormatted
+        If frmVideoPlayer.IsPlaying Or frmVideoPlayer.IsPaused Then
+            Dim tsNewTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
+            txtTime.Text = String.Format(VIDEO_TIME_FORMAT, tsNewTime.Hours, tsNewTime.Minutes, tsNewTime.Seconds, tsNewTime.Milliseconds)
+        End If
     End Sub
 
     Public Sub videoEnded() Handles frmVideoPlayer.VideoEndedEvent
@@ -4721,14 +4697,16 @@ Public Class VideoMiner
         ' it is added as a handler and an event raised from the frmVideoPlayer class
         cmdPlayPause.BackgroundImage = My.Resources.Play_Icon
         Me.txtTimeSource.Text = frmVideoPlayer.CurrentVideoTimeFormatted
+        If m_tsUserTime <> Zero Then
+            Dim tsNewTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
+            txtTime.Text = String.Format(VIDEO_TIME_FORMAT, tsNewTime.Hours, tsNewTime.Minutes, tsNewTime.Seconds, tsNewTime.Milliseconds)
+            'txtTime.
+        End If
     End Sub
 
     Public Sub playerClosing() Handles frmVideoPlayer.ClosingEvent
         ' This is used to sense when the video player is closed (i.e. press the topright 'X' button)
         ' it is added as a handler and an event raised from the frmVideoPlayer class
-        video_file_open = False
-        pnlVideoControls.Visible = False
-        enableDisableVideoMenu(True)
         video_file_unload()
     End Sub
 
@@ -4755,7 +4733,7 @@ Public Class VideoMiner
     End Sub
 
     Private Sub Stepforward()
-        ' This function steps forward the video by 10% based on where the video is currently and the duration of the video
+        frmVideoPlayer.stepForward(CInt(txtFramesToSkip.Text))
     End Sub
 
     'Private Sub StepForward()
@@ -4894,48 +4872,48 @@ Public Class VideoMiner
     '    frmVideoPlayer.lblDuration.Text = strDurationTime
     'End Sub
 
-    Private Function FormatTimeCode(ByVal str As String) As String
+    'Private Function FormatTimeCode(ByVal str As String) As String
 
-        Dim strTime As String = ""
-        Dim dr As DialogResult
+    '    Dim strTime As String = ""
+    '    Dim dr As DialogResult
 
-        If (str.Length <> 8) Then
-            dr = MessageBox.Show("The time code must be 8 digits in length (HHMMSSmm).", "Time Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-            Return strTime
-        End If
+    '    If (str.Length <> 8) Then
+    '        dr = MessageBox.Show("The time code must be 8 digits in length (HHMMSSmm).", "Time Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
+    '        Return strTime
+    '    End If
 
-        Dim strHour As String = str.Substring(0, 2)
-        Dim intHour As Integer = CType(strHour, Integer)
-        If (intHour < 0) Or (intHour > 23) Then
-            dr = MessageBox.Show("You have entered a hour value of: " & strHour & ", which is invalid.", "Time Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-            Return strTime
-        End If
+    '    Dim strHour As String = str.Substring(0, 2)
+    '    Dim intHour As Integer = CType(strHour, Integer)
+    '    If (intHour < 0) Or (intHour > 23) Then
+    '        dr = MessageBox.Show("You have entered a hour value of: " & strHour & ", which is invalid.", "Time Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
+    '        Return strTime
+    '    End If
 
-        Dim strMinute As String = str.Substring(2, 2)
-        Dim intMinute As Integer = CType(strMinute, Integer)
-        If (intMinute < 0) Or (intMinute > 59) Then
-            dr = MessageBox.Show("You have entered a minute value of: " & strMinute & ", which is invalid.", "Time Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-            Return strTime
-        End If
+    '    Dim strMinute As String = str.Substring(2, 2)
+    '    Dim intMinute As Integer = CType(strMinute, Integer)
+    '    If (intMinute < 0) Or (intMinute > 59) Then
+    '        dr = MessageBox.Show("You have entered a minute value of: " & strMinute & ", which is invalid.", "Time Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
+    '        Return strTime
+    '    End If
 
-        Dim strSecond As String = str.Substring(4, 2)
-        Dim intSecond As Integer = CType(strSecond, Integer)
-        If (intSecond < 0) Or (intSecond > 59) Then
-            dr = MessageBox.Show("You have entered a second value of: " & strSecond & ", which is invalid.", "Time Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-            Return strTime
-        End If
+    '    Dim strSecond As String = str.Substring(4, 2)
+    '    Dim intSecond As Integer = CType(strSecond, Integer)
+    '    If (intSecond < 0) Or (intSecond > 59) Then
+    '        dr = MessageBox.Show("You have entered a second value of: " & strSecond & ", which is invalid.", "Time Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
+    '        Return strTime
+    '    End If
 
-        Dim strMilliseconds As String = str.Substring(6, 2)
-        Dim intMilliseconds As Integer = CType(strMilliseconds, Integer)
-        If (intMilliseconds < 0) Or (intMilliseconds > 99) Then
-            dr = MessageBox.Show("You have entered a milli-second value of: " & strMilliseconds & ", which is invalid.", "Time Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-            Return strTime
-        End If
+    '    Dim strMilliseconds As String = str.Substring(6, 2)
+    '    Dim intMilliseconds As Integer = CType(strMilliseconds, Integer)
+    '    If (intMilliseconds < 0) Or (intMilliseconds > 99) Then
+    '        dr = MessageBox.Show("You have entered a milli-second value of: " & strMilliseconds & ", which is invalid.", "Time Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
+    '        Return strTime
+    '    End If
 
-        strTime = strHour & ":" & strMinute & ":" & strSecond & "." & strMilliseconds
-        Return strTime
+    '    strTime = strHour & ":" & strMinute & ":" & strSecond & "." & strMilliseconds
+    '    Return strTime
 
-    End Function
+    'End Function
 
 #End Region
 
@@ -7081,8 +7059,12 @@ SkipInsertComma:
         Stepforward()
     End Sub
 
-    Public Sub cmdPrevious_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPrevious.Click
-        'StepBackward()
+    Public Sub cmdPrevious_MouseHover(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPrevious.MouseHover
+        ttToolTip.Show("Vlc.DotNet control does not support reverse frame stepping", Me)
+    End Sub
+
+    Public Sub cmdPrevious_MouseLeave(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPrevious.MouseLeave
+        ttToolTip.Hide(Me)
     End Sub
 
     'Private Sub chkResumeVideo_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkResumeVideo.CheckedChanged
@@ -7604,12 +7586,37 @@ SkipInsertComma:
         End If
     End Sub
 
-    Private Sub time_changed() Handles frmSetTime.TimeChanged
-        txtTime.Text = frmSetTime.UserTime
+    ''' <summary>
+    ''' Set the User time (txtTime) textbox and source time (txtTimeSource) to show
+    ''' </summary>
+    Private Sub setTimes()
+        Dim tsNewTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
+        ' Format the time according to the VIDEO_TIME_FORMAT
+        txtTime.Text = String.Format(VIDEO_TIME_FORMAT, tsNewTime.Hours, tsNewTime.Minutes, tsNewTime.Seconds, tsNewTime.Milliseconds)
         txtTime.Font = New Font("", 10, FontStyle.Bold)
         txtTime.BackColor = Color.LightGray
         txtTime.ForeColor = Color.LimeGreen
         txtTime.TextAlign = HorizontalAlignment.Center
+        txtTime.Visible = True
+        txtTimeSource.Visible = True
+    End Sub
+
+    ''' <summary>
+    ''' Set the user time (txtTime) textbox and source time textbox (txtTimeSource) to dissappear
+    ''' </summary>
+    Private Sub unsetTimes()
+        txtTime.Visible = False
+        txtTime.Text = ""
+        txtTimeSource.Visible = False
+        txtTimeSource.Text = ""
+    End Sub
+
+    ''' <summary>
+    ''' Gets the new user defined time from the set time form and call setUserTime to apply
+    ''' </summary>
+    Private Sub time_changed() Handles frmSetTime.TimeChanged
+        m_tsUserTime = frmSetTime.UserTime
+        setTimes()
     End Sub
 
     Private Sub use_gps_time() Handles frmSetTime.UseGPSTime
@@ -7629,7 +7636,8 @@ SkipInsertComma:
         End If
 
         If m_SerialPort.IsOpen Then
-            frmSetTime.UserTime = txtTime.Text
+            'CJG
+            'frmSetTime.UserTime = txtTime.Text
             frmSetTime.setGPSInfo()
         End If
     End Sub
@@ -7706,7 +7714,8 @@ SkipInsertComma:
         txtTimeSource.BackColor = Color.LightGray
         txtTimeSource.ForeColor = Color.LimeGreen
         txtTimeSource.TextAlign = HorizontalAlignment.Center
-        frmSetTime.UserTime = strPreviousClipTime
+        'CJG
+        'frmSetTime.UserTime = strPreviousClipTime
     End Sub
 
     Private Sub species_configuration_update() Handles frmConfigureSpecies.SpeciesConfigurationUpdate
@@ -7827,4 +7836,46 @@ SkipInsertComma:
             ClearSpatial(.SelectedButtonName, .NumButtons, .ButtonNames, .FieldValues, .ButtonCodeNames, .TextBoxes)
         End With
     End Sub
+
+    Private Sub right_arrow_pressed() Handles frmVideoPlayer.RightArrowPressedEvent
+        If frmVideoPlayer.IsPlaying Then
+            pauseVideo()
+        ElseIf frmVideoPlayer.IsPaused Then
+            Stepforward()
+        End If
+    End Sub
+
+    Private Sub frmVideoMiner_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown, frmVideoPlayer.KeyDown
+        Select Case e.KeyCode
+            Case Keys.Left
+                e.Handled = True
+            Case Keys.Right
+                If frmVideoPlayer.IsPlaying Then
+                    pauseVideo()
+                ElseIf frmVideoPlayer.IsPaused Then
+                    Stepforward()
+                End If
+                e.Handled = True
+            Case Keys.Space
+                If frmVideoPlayer.IsPlaying Then
+                    pauseVideo()
+                ElseIf frmVideoPlayer.IsPaused Then
+                    playVideo()
+                ElseIf frmVideoPlayer.IsStopped Then
+                    playVideo()
+                End If
+                e.Handled = True
+        End Select
+    End Sub
+
+    Private Sub txtFramesToSkip_MouseHover(sender As Object, e As EventArgs) Handles txtFramesToSkip.MouseHover
+        ttToolTip.Show("Number of frames to skip for frame stepping", Me)
+    End Sub
+
+    Private Sub txtFramesToSkip_MouseLeave(sender As Object, e As EventArgs) Handles txtFramesToSkip.MouseLeave
+        ttToolTip.Hide(Me)
+    End Sub
+
+
+
 End Class
