@@ -531,11 +531,148 @@ VideoMiner
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks></remarks>
-</member><member name="M:VideoMiner.frmGpsSettings.#ctor(System.IO.Ports.SerialPort)">
+</member><member name="F:VideoMiner.frmGpsSettings.TIMEOUT_DEFAULT">
 	<summary>
- Create a new instance of the GPS settings form.
+ Value in seconds
  </summary>
-	<param name="serialPort">A serial port object, could be Nothing, Closed, or Open</param>
+	<remarks></remarks>
+</member><member name="P:VideoMiner.frmGpsSettings.SerialPort">
+	<summary>
+ Exposes the SerialPort Object
+ </summary>
+	<returns>SerialPort</returns>
+</member><member name="P:VideoMiner.frmGpsSettings.ComPort">
+	<summary>
+ The name of the ComPort, eg "COM1", "COM2", ...
+ </summary>
+	<value>String</value>
+	<returns>String</returns>
+</member><member name="P:VideoMiner.frmGpsSettings.NMEAStringType">
+	<summary>
+ NMEA (National Marine Electronics Association) String type
+ </summary>
+	<value>String</value>
+	<returns>String</returns>
+	<remarks>This String will be like "GPGGA", "GPRMC", ...</remarks>
+</member><member name="P:VideoMiner.frmGpsSettings.BaudRate">
+	<summary>
+ Baud rate for the serial port connection
+ </summary>
+	<value>Integer</value>
+	<returns>Integer</returns>
+</member><member name="P:VideoMiner.frmGpsSettings.Parity">
+	<summary>
+ Parity value for the serial port connection
+ </summary>
+	<value>Integer</value>
+	<returns>Integer</returns>
+</member><member name="P:VideoMiner.frmGpsSettings.ParityEnumVal">
+	<summary>
+ Parity enumeration value for the serial port connection
+ </summary>
+	<value>Parity</value>
+	<returns>Parity</returns>
+</member><member name="P:VideoMiner.frmGpsSettings.StopBits">
+	<summary>
+ Stop bits value for the serial port connection
+ </summary>
+	<value>Integer</value>
+	<returns>Integer</returns>
+</member><member name="P:VideoMiner.frmGpsSettings.StopBitsEnumVal">
+	<summary>
+ Stop bits enumeration for the serial port connection
+ </summary>
+</member><member name="P:VideoMiner.frmGpsSettings.DataBits">
+	<summary>
+ Data bits value for the serial port connection
+ </summary>
+	<value>Integer</value>
+	<returns>Integer</returns>
+</member><member name="P:VideoMiner.frmGpsSettings.Timeout">
+	<summary>
+ Length of time in seconds to timeout the connection operation
+ </summary>
+</member><member name="P:VideoMiner.frmGpsSettings.IsConnected">
+	<summary>
+ True if the serial port is connected, false otherwise
+ </summary>
+</member><member name="P:VideoMiner.frmGpsSettings.IsOpen">
+	<summary>
+ True if the Serial port is open
+ </summary>
+	<value></value>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="E:VideoMiner.frmGpsSettings.GPSConnectedEvent">
+	<summary>
+ Used to signal that the class needs to be populated with serial port variables
+ </summary>
+	<remarks>The properties to be set are: ComPort, GPSStringType, BaudRate, Parity, StopBits, and DataBits</remarks>
+</member><member name="M:VideoMiner.frmGpsSettings.#ctor(System.String,System.String,System.Int32,System.String,System.Double,System.Int32,System.Int32)">
+	<summary>
+ Creates a new instance of the GPS settings form.
+ Adds ComboBox choices for COM Port, Baud rate, Parity, Stop bits, and Data bits
+ </summary>
+</member><member name="M:VideoMiner.frmGpsSettings.ConnectSerialPort">
+	<summary>
+ Try to connect the serial port with the currently selected values on the textbox
+ </summary>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmGpsSettings.SetSerialPortVariables">
+	<summary>
+ Set the member variables to be what are in the form selections controls.
+ </summary>
+	<remarks>Closes the serial port if it is open, and sets it to Nothing</remarks>
+</member><member name="M:VideoMiner.frmGpsSettings.RefreshStatus">
+	<summary>
+ Refresh all window controls based on connectivity of the serial port object
+ </summary>
+</member><member name="M:VideoMiner.frmGpsSettings.ClosePortThread">
+	<summary>
+ Creates a new thread to close the port because of an issue with the method
+ </summary>
+</member><member name="M:VideoMiner.frmGpsSettings.CloseSerialPort">
+	<summary>
+ Close the serial port and reset form member variables to reflect change
+ </summary>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmGpsSettings.GetData">
+	<summary>
+ Get the data fields out from the current data string on the serial port
+ and populate the form labels to reflect this
+ </summary>
+	<remarks>Assumes that whichever NMEA string is checked on the form is the
+ one being given here, i.e. CheckData calls this function so run that one
+ </remarks>
+</member><member name="M:VideoMiner.frmGpsSettings.CheckData(System.String)">
+	<summary>
+ Checks the current data string for compliance with the chosen NMEA string
+ If it is correct, m_blConnected will be set to true, the timer stopped
+ and the data will be extracted by the GetData subroutine
+ </summary>
+</member><member name="M:VideoMiner.frmGpsSettings.SerialPort_DataReceived(System.Object,System.IO.Ports.SerialDataReceivedEventArgs)">
+	<summary>
+ Handles data coming in on the serial port. The first time this happens, the port
+ will be officially "connected"
+ </summary>
+</member><member name="M:VideoMiner.frmGpsSettings.txtDataBits_KeyPress(System.Object,System.Windows.Forms.KeyPressEventArgs)">
+	<summary>
+ Prevent non-digits from being entered in DataBits textbox
+ </summary>
+</member><member name="M:VideoMiner.frmGpsSettings.txtTimeout_KeyPress(System.Object,System.Windows.Forms.KeyPressEventArgs)">
+	<summary>
+  Prevent non-digits from being entered in Timeout textbox
+ </summary>
+</member><member name="M:VideoMiner.frmGpsSettings.DisableAll">
+	<summary>
+ Disables all controls on the form except the Cancel button.
+ Useful when there are no com ports available
+ </summary>
+</member><member name="M:VideoMiner.frmGpsSettings.pad0(System.Int32)">
+	<summary>
+ Pad a string of length 1 with a zero. Used to make things like hours=0 into hours="00"
+ </summary>
+	<returns></returns>
 	<remarks></remarks>
 </member><member name="M:VideoMiner.modGlobals.SingleQuote(System.String)">
 	<summary>
@@ -617,12 +754,12 @@ VideoMiner
 	<param name="sender">System.Object</param>
 	<param name="e">System.EventArgs</param>
 	<remarks>Get version name from assembly, read and process the Config file, and setup the form controls for an unloaded state.</remarks>
-</member><member name="M:VideoMiner.VideoMiner.GetDeviceSettingsFromFile(System.String)">
+</member><member name="M:VideoMiner.VideoMiner.loadConfigurationFile">
 	<summary>
- Retrieve the configuration settings from the XML configuration file
+ Load the metadata found in the VideoMiner configuration file into member variables.
+ If the configuration file is not found, defaults will be assigned for GPS and the path variables
  </summary>
-	<param name="m_strConfigFile"></param>
-	<remarks></remarks>
+	<returns>True if all member variables were populated. False if an exceptioon was thrown or the file does not exist</returns>
 </member><member name="M:VideoMiner.VideoMiner.SaveConfiguration(System.String,System.String)">
 	<summary>
  Save a single variable's value to the XML configuration file. If the variable does not exist,
@@ -742,6 +879,10 @@ VideoMiner
 </member><member name="M:VideoMiner.VideoMiner.time_changed">
 	<summary>
  Gets the new user defined time from the set time form and call setUserTime to apply
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.save_GPS_configuration">
+	<summary>
+ Updates all GPS member variables and saves the configuration for all of them (xml file)
  </summary>
 </member><member name="T:VideoMiner.VideoMiner">
 	<summary>

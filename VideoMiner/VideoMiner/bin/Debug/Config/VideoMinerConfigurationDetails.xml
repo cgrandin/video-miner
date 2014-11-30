@@ -88,6 +88,15 @@
     </RelayNames>
   </DeviceControl>
   <DatabasePath>C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug</DatabasePath>
-  <VideoPath>G:\Video Clips</VideoPath>
+  <VideoPath>C:\wxWidgets-2.8.12\build-debug\samples\splash</VideoPath>
   <SessionPath>C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug</SessionPath>
+  <GPS>
+    <ComPort>COM3</ComPort>
+    <NMEA>GPRMC</NMEA>
+    <BaudRate>110</BaudRate>
+    <Parity>NONE</Parity>
+    <StopBits>1</StopBits>
+    <DataBits>8</DataBits>
+    <Timeout>5</Timeout>
+  </GPS>
 </VideoMinerConfigurationDetails>

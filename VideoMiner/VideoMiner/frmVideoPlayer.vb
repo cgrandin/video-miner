@@ -519,6 +519,19 @@ Public Class frmVideoPlayer
         End If
     End Sub
 
+    ' ''' <summary>
+    ' ''' Toggles maximized/normal window state if user double clicks the mouse on the video
+    ' ''' </summary>
+    ' ''' <param name="sender"></param>
+    ' ''' <param name="e"></param>
+    'Private Sub m_pnlTransparentPanel_MouseDoubleClick(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles m_pnlTransparentPanel.DoubleClick
+    '    If Me.WindowState <> FormWindowState.Maximized Then
+    '        Me.WindowState = FormWindowState.Maximized
+    '    Else
+    '        Me.WindowState = FormWindowState.Normal
+    '    End If
+    'End Sub
+
     ''' <summary>
     ''' This is the help dialog that appears when the user clicks the right mouse button in the video window.
     ''' </summary>
@@ -528,7 +541,12 @@ Public Class frmVideoPlayer
         '    Dim item = CType(sender, ToolStripMenuItem)
         '    Dim selection = CInt(item.Tag)
         pauseVideo()
-        MessageBox.Show("The Videominer player window contains the video you loaded with a trackbar for seeking and an icon showing you the current state of the video (playing, paused, stopped). You can left-click the video to toggle between playing and paused. To close the video simply click the 'X' on the top right of the player window.", _
+        MessageBox.Show("The Videominer player window contains the video you loaded with a trackbar for seeking and an icon showing you" & _
+                        "the current state of the video (playing, paused, stopped)." & vbCrLf & vbCrLf & _
+                        "Left-click the video to toggle between Pause/Play." & vbCrLf & _
+                        "Close the video by clicking the 'X' on the top right of the player window." & vbCrLf & _
+                        "Press Right arrow to do frame stepping" & vbCrLf & _
+                        "Press Spacebar to toggle Pause/Play", _
                         "Videominer Player Help", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 

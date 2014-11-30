@@ -21,6 +21,70 @@ Imports System.Threading
 Public Class VideoMiner
 
 #Region "Constants"
+    Private Const XPATH_DATABASE_PATH As String = "/DatabasePath"
+    Private Const XPATH_SESSION_PATH As String = "/SessionPath"
+    Private Const XPATH_VIDEO_PATH As String = "/VideoPath"
+
+    Private Const XPATH_GPS_COM_PORT As String = "/GPS/ComPort"
+    Private Const XPATH_GPS_NMEA_STRING As String = "/GPS/NMEA"
+    Private Const XPATH_GPS_BAUD_RATE As String = "/GPS/BaudRate"
+    Private Const XPATH_GPS_PARITY As String = "/GPS/Parity"
+    Private Const XPATH_GPS_STOP_BITS As String = "/GPS/StopBits"
+    Private Const XPATH_GPS_DATA_BITS As String = "/GPS/DataBits"
+    Private Const XPATH_GPS_TIMEOUT As String = "/GPS/Timeout"
+
+    Private Const XPATH_BUTTON_HEIGHT As String = "/ButtonFormat/ButtonSize/Height"
+    Private Const XPATH_BUTTON_WIDTH As String = "/ButtonFormat/ButtonSize/Width"
+    Private Const XPATH_BUTTON_TEXTSIZE As String = "/ButtonFormat/ButtonText/TextSize"
+    Private Const XPATH_BUTTON_FONT As String = "/ButtonFormat/ButtonText/Font"
+
+    Private Const XPATH_DATABASE_NAME As String = "/Database/Configuration/DatabaseName"
+    Private Const XPATH_DATABASE_COLUMNS As String = "/Database/Configuration/Columns"
+
+    Private Const XPATH_DEVICE_CONFIGURATION_SET As String = "/DeviceControl/ConfigurationSet"
+    Private Const XPATH_DEVICE_SETUP As String = "/DeviceControl/Setup"
+    Private Const XPATH_DEVICE_PARALLEL_COM_PORT As String = "/DeviceControl/Parallel/ComPort"
+    Private Const XPATH_DEVICE_PARALLEL_BAUD_RATE As String = "/DeviceControl/Parallel/BaudRate"
+    Private Const XPATH_DEVICE_TWOPORTS_DEVICE1_COM_PORT As String = "/DeviceControl/TwoPorts/Device1/ComPort"
+    Private Const XPATH_DEVICE_TWOPORTS_DEVICE1_BAUD_RATE As String = "/DeviceControl/TwoPorts/Device1/BaudRate"
+    Private Const XPATH_DEVICE_TWOPORTS_DEVICE2_COM_PORT As String = "/DeviceControl/TwoPorts/Device2/ComPort"
+    Private Const XPATH_DEVICE_TWOPORTS_DEVICE2_BAUD_RATE As String = "/DeviceControl/TwoPorts/Device2/BaudRate"
+    Private Const XPATH_DEVICE_RELAY_DEVICE1_RELAY1 As String = "/DeviceControl/RelayNames/Device1/Relay1"
+    Private Const XPATH_DEVICE_RELAY_DEVICE1_RELAY2 As String = "/DeviceControl/RelayNames/Device1/Relay2"
+    Private Const XPATH_DEVICE_RELAY_DEVICE1_RELAY3 As String = "/DeviceControl/RelayNames/Device1/Relay3"
+    Private Const XPATH_DEVICE_RELAY_DEVICE1_RELAY4 As String = "/DeviceControl/RelayNames/Device1/Relay4"
+    Private Const XPATH_DEVICE_RELAY_DEVICE2_RELAY1 As String = "/DeviceControl/RelayNames/Device2/Relay1"
+    Private Const XPATH_DEVICE_RELAY_DEVICE2_RELAY2 As String = "/DeviceControl/RelayNames/Device2/Relay2"
+    Private Const XPATH_DEVICE_RELAY_DEVICE2_RELAY3 As String = "/DeviceControl/RelayNames/Device2/Relay3"
+    Private Const XPATH_DEVICE_RELAY_DEVICE2_RELAY4 As String = "/DeviceControl/RelayNames/Device2/Relay4"
+
+
+    Private Const XPATH_RANGE_DISPLAY As String = "/DetailedSpeciesEventConfiguration/Range/Displayed"
+    Private Const XPATH_IDCONFIDENCE_DISPLAY As String = "/DetailedSpeciesEventConfiguration/IDConfidence/Displayed"
+    Private Const XPATH_ABUNDANCE_DISPLAY As String = "/DetailedSpeciesEventConfiguration/Abundance/Displayed"
+    Private Const XPATH_COUNT_DISPLAY As String = "/DetailedSpeciesEventConfiguration/Count/Displayed"
+    Private Const XPATH_HEIGHT_DISPLAY As String = "/DetailedSpeciesEventConfiguration/Height/Displayed"
+    Private Const XPATH_WIDTH_DISPLAY As String = "/DetailedSpeciesEventConfiguration/Width/Displayed"
+    Private Const XPATH_LENGTH_DISPLAY As String = "/DetailedSpeciesEventConfiguration/Length/Displayed"
+    Private Const XPATH_COMMENTS_DISPLAY As String = "/DetailedSpeciesEventConfiguration/Comments/Displayed"
+
+    Private Const XPATH_RANGE_DEFAULT_VALUE As String = "/DetailedSpeciesEventConfiguration/Range/DefaultValue"
+    Private Const XPATH_IDCONFIDENCE_DEFAULT_VALUE As String = "/DetailedSpeciesEventConfiguration/IDConfidence/DefaultValue"
+    Private Const XPATH_ABUNDANCE_DEFAULT_VALUE As String = "/DetailedSpeciesEventConfiguration/Abundance/DefaultValue"
+    Private Const XPATH_COUNT_DEFAULT_VALUE As String = "/DetailedSpeciesEventConfiguration/Count/DefaultValue"
+    Private Const XPATH_HEIGHT_DEFAULT_VALUE As String = "/DetailedSpeciesEventConfiguration/Height/DefaultValue"
+    Private Const XPATH_WIDTH_DEFAULT_VALUE As String = "/DetailedSpeciesEventConfiguration/Width/DefaultValue"
+    Private Const XPATH_LENGTH_DEFAULT_VALUE As String = "/DetailedSpeciesEventConfiguration/Length/DefaultValue"
+    Private Const XPATH_COMMENTS_DEFAULT_VALUE As String = "/DetailedSpeciesEventConfiguration/Comments/DefaultValue"
+
+    Private Const GPS_COM_PORT_DEFAULT As String = "COM10"
+    Private Const GPS_NMEA_DEFAULT As String = "GPGGA"
+    Private Const GPS_BAUD_RATE_DEFAULT As Integer = 4800
+    Private Const GPS_PARITY_DEFAULT As String = "NONE"
+    Private Const GPS_STOP_BITS_DEFAULT As Integer = 1
+    Private Const GPS_DATA_BITS_DEFAULT As Integer = 8
+    Private Const GPS_TIMEOUT_DEFAULT As Integer = 5
+
     Private Const VIDEO_TIME_FORMAT As String = "{0:D2}:{1:D2}:{2:D2}.{3:D3}" ' D3 = 3 decimal places
     Public Const DB_ADO_CONN_STRING_1 As String = "Data Source="
     Public Const DB_ADO_CONN_STRING_2 As String = ";Initial Catalog=data"
@@ -110,6 +174,17 @@ Public Class VideoMiner
     ''' </summary>
     ''' <remarks></remarks>
     Private m_tsUserTime As TimeSpan
+
+    Private m_strComPort As String
+    Private m_strNMEAStringType As String
+    Private m_strParity As String
+    Private m_intBaudRate As Integer
+    Private m_dblStopBits As Double
+    Private m_intDataBits As Integer
+    Private m_intTimeout As Integer
+
+    Private m_strDatabaseName As String
+    Private m_strDatabaseColumns As String
 
     Private ttToolTip As ToolTip
     Public strMilliseconds As String = "00"
@@ -246,8 +321,6 @@ Public Class VideoMiner
     Public imageFilesList As List(Of String)
     Public imagePath As String = ""
 
-    Public WithEvents aSerialPort As IO.Ports.SerialPort = m_PublicSerialPort
-    Public m_SerialPort As IO.Ports.SerialPort
     Public tryCount As Integer = 0
     Public aquiredTryCount As Integer = 0
     Public strPreviousGPSTime As String = ""
@@ -893,13 +966,9 @@ Public Class VideoMiner
         ' Enable Key preview so that video player hotkeys can be instantiated from this forms event handler.
         Me.KeyPreview = True
 
-        Dim aPort As SerialPort
-        aPort = New SerialPort
-        myPortLibrary.aPort = aPort
-
         Dim intX As Integer = Screen.PrimaryScreen.Bounds.Width
         Dim intY As Integer = Screen.PrimaryScreen.Bounds.Height
-        Console.WriteLine(intX & ":" & intY)
+        'Console.WriteLine(intX & ":" & intY)
 
         Dim aPoint As System.Drawing.Point
         aPoint.X = intX
@@ -909,31 +978,10 @@ Public Class VideoMiner
         m_strConfigFilePath = Path.Combine(m_strWorkingPath, "Config")
         m_strConfigFile = Path.Combine(m_strConfigFilePath, VIDEOMINER_CONFIG_FILE_NAME)
 
-        If File.Exists(m_strConfigFile) Then
-            Me.ButtonHeight = CInt(GetConfiguration("/ButtonFormat/ButtonSize/Height"))
-            Me.ButtonWidth = CInt(GetConfiguration("/ButtonFormat/ButtonSize/Width"))
-            Me.ButtonTextSize = CInt(GetConfiguration("/ButtonFormat/ButtonText/TextSize"))
-            Me.ButtonFont = GetConfiguration("/ButtonFormat/ButtonText/Font")
-            m_strDatabasePath = GetConfiguration("/DatabasePath")
-            m_strVideoPath = GetConfiguration("/VideoPath")
-            m_strSessionPath = GetConfiguration("/SessionPath")
-        Else
-            Dim strWarning As String = "The configuration file " & m_strConfigFile & " does not exist. Closing VideoMiner."
+        If Not loadConfigurationFile() Then
+            Dim strWarning As String = "There was an error while loading the configuration file " & m_strConfigFile & ". Closing VideoMiner."
             MessageBox.Show(strWarning, "No configuration file", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Me.Close()
-        End If
-        ' If any of the paths were not present in the XML file, set them to the working directory
-        If m_strDatabasePath = "" Then
-            m_strDatabasePath = m_strWorkingPath
-            SaveConfiguration("/DatabasePath", m_strDatabasePath)
-        End If
-        If m_strVideoPath = "" Then
-            m_strVideoPath = m_strWorkingPath
-            SaveConfiguration("/VideoPath", m_strVideoPath)
-        End If
-        If m_strSessionPath = "" Then
-            m_strSessionPath = m_strWorkingPath
-            SaveConfiguration("/SessionPath", m_strSessionPath)
         End If
 
         db_file_open = False
@@ -968,15 +1016,6 @@ Public Class VideoMiner
 
         Me.VideoTime = Zero
 
-        ' Get the device control settings from the configuration file
-        If File.Exists(m_strConfigFile) Then
-            GetDeviceSettingsFromFile(m_strConfigFile)
-        Else
-            Dim strWarning As String = "The configuration file " & m_strConfigFile & " does not exist. Closing VideoMiner."
-            MessageBox.Show(strWarning, "No configuration file", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Me.Close()
-        End If
-
         ' Enable the Device Control menu based on if the configuration has been set
         ' This makes sure that the devices are not accessed until the configuration has been set
         'If Me.ConfigurationSet = False Then
@@ -1006,38 +1045,121 @@ Public Class VideoMiner
         m_tsUserTime = Zero
 
         ttToolTip = New ToolTip()
-        ' Always show is required because the video window gets the focus
+        ' Always show is required because the video window gets the focus if it's open.
         ttToolTip.ShowAlways = True
         ttToolTip.InitialDelay = 500
         ttToolTip.AutoPopDelay = 5000
         ttToolTip.ReshowDelay = 500
 
+        frmGpsSettings = New frmGpsSettings(m_strComPort, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
+        If frmGpsSettings IsNot Nothing Then
+            frmGpsSettings.ShowDialog()
+        End If
     End Sub
 
     ''' <summary>
-    ''' Retrieve the configuration settings from the XML configuration file
+    ''' Load the metadata found in the VideoMiner configuration file into member variables.
+    ''' If the configuration file is not found, defaults will be assigned for GPS and the path variables
     ''' </summary>
-    ''' <param name="m_strConfigFile"></param>
-    ''' <remarks></remarks>
-    Public Sub GetDeviceSettingsFromFile(m_strConfigFile As String)
-        Me.ConfigurationSet = GetConfiguration("/DeviceControl/ConfigurationSet")
-        Me.RelaySetup = GetConfiguration("/DeviceControl/Setup")
-        Me.ParallelCom = GetConfiguration("/DeviceControl/Parallel/ComPort")
-        Me.ParallelBaud = GetConfiguration("/DeviceControl/Parallel/BaudRate")
-        Me.PortOneCom = GetConfiguration("/DeviceControl/TwoPorts/Device1/ComPort")
-        Me.PortOneBaud = GetConfiguration("/DeviceControl/TwoPorts/Device1/BaudRate")
-        Me.PortTwoCom = GetConfiguration("/DeviceControl/TwoPorts/Device2/ComPort")
-        Me.PortTwoBaud = GetConfiguration("/DeviceControl/TwoPorts/Device2/BaudRate")
-
-        Me.DeviceOneRelayOne = GetConfiguration("/DeviceControl/RelayNames/Device1/Relay1")
-        Me.DeviceOneRelayTwo = GetConfiguration("/DeviceControl/RelayNames/Device1/Relay2")
-        Me.DeviceOneRelayThree = GetConfiguration("/DeviceControl/RelayNames/Device1/Relay3")
-        Me.DeviceOneRelayFour = GetConfiguration("/DeviceControl/RelayNames/Device1/Relay4")
-        Me.DeviceTwoRelayOne = GetConfiguration("/DeviceControl/RelayNames/Device2/Relay1")
-        Me.DeviceTwoRelayTwo = GetConfiguration("/DeviceControl/RelayNames/Device2/Relay2")
-        Me.DeviceTwoRelayThree = GetConfiguration("/DeviceControl/RelayNames/Device2/Relay3")
-        Me.DeviceTwoRelayFour = GetConfiguration("/DeviceControl/RelayNames/Device2/Relay4")
-    End Sub
+    ''' <returns>True if all member variables were populated. False if an exceptioon was thrown or the file does not exist</returns>
+    Private Function loadConfigurationFile() As Boolean
+        Dim strTmp As String
+        Try
+            If File.Exists(m_strConfigFile) Then
+                ' Button settings
+                m_ButtonHeight = CInt(GetConfiguration(XPATH_BUTTON_HEIGHT))
+                m_ButtonWidth = CInt(GetConfiguration(XPATH_BUTTON_WIDTH))
+                m_ButtonTextSize = CInt(GetConfiguration(XPATH_BUTTON_TEXTSIZE))
+                m_ButtonFont = GetConfiguration(XPATH_BUTTON_FONT)
+                ' GPS settings
+                m_strComPort = GetConfiguration(XPATH_GPS_COM_PORT)
+                If m_strComPort = "" Then
+                    m_strComPort = GPS_COM_PORT_DEFAULT
+                    SaveConfiguration(XPATH_GPS_COM_PORT, m_strComPort)
+                End If
+                m_strNMEAStringType = GetConfiguration(XPATH_GPS_NMEA_STRING)
+                If m_strNMEAStringType = "" Then
+                    m_strNMEAStringType = GPS_NMEA_DEFAULT
+                    SaveConfiguration(XPATH_GPS_NMEA_STRING, m_strNMEAStringType)
+                End If
+                strTmp = GetConfiguration(XPATH_GPS_BAUD_RATE)
+                If strTmp = "" Then
+                    m_intBaudRate = GPS_BAUD_RATE_DEFAULT
+                    SaveConfiguration(XPATH_GPS_BAUD_RATE, CStr(m_intBaudRate))
+                Else
+                    m_intBaudRate = CInt(strTmp)
+                End If
+                m_strParity = GetConfiguration(XPATH_GPS_PARITY)
+                If m_strParity = "" Then
+                    m_strParity = GPS_PARITY_DEFAULT
+                    SaveConfiguration(XPATH_GPS_PARITY, m_strParity)
+                End If
+                strTmp = GetConfiguration(XPATH_GPS_STOP_BITS)
+                If strTmp = "" Then
+                    m_dblStopBits = GPS_STOP_BITS_DEFAULT
+                    SaveConfiguration(XPATH_GPS_STOP_BITS, CStr(m_dblStopBits))
+                Else
+                    m_dblStopBits = CInt(strTmp)
+                End If
+                strTmp = GetConfiguration(XPATH_GPS_DATA_BITS)
+                If strTmp = "" Then
+                    m_intDataBits = GPS_DATA_BITS_DEFAULT
+                    SaveConfiguration(XPATH_GPS_DATA_BITS, CStr(m_intDataBits))
+                Else
+                    m_intDataBits = CInt(strTmp)
+                End If
+                strTmp = GetConfiguration(XPATH_GPS_TIMEOUT)
+                If strTmp = "" Then
+                    m_intTimeout = GPS_TIMEOUT_DEFAULT
+                    SaveConfiguration(XPATH_GPS_TIMEOUT, CStr(m_intTimeout))
+                Else
+                    m_intTimeout = CInt(strTmp)
+                End If
+                ' Database settings
+                m_strDatabaseName = GetConfiguration(XPATH_DATABASE_NAME)
+                m_strDatabaseColumns = GetConfiguration(XPATH_DATABASE_COLUMNS)
+                'Relay settings
+                m_ConfigurationSet = CBool(GetConfiguration(XPATH_DEVICE_CONFIGURATION_SET))
+                m_RelaySetup = GetConfiguration(XPATH_DEVICE_SETUP)
+                m_ParallelCom = GetConfiguration(XPATH_DEVICE_PARALLEL_COM_PORT)
+                m_ParallelBaud = CInt(GetConfiguration(XPATH_DEVICE_PARALLEL_BAUD_RATE))
+                PortOneCom = GetConfiguration(XPATH_DEVICE_TWOPORTS_DEVICE1_COM_PORT)
+                m_PortOneBaud = CInt(GetConfiguration(XPATH_DEVICE_TWOPORTS_DEVICE1_BAUD_RATE))
+                m_PortTwoCom = GetConfiguration(XPATH_DEVICE_TWOPORTS_DEVICE2_COM_PORT)
+                m_PortTwoBaud = CInt(GetConfiguration(XPATH_DEVICE_TWOPORTS_DEVICE2_BAUD_RATE))
+                m_DeviceOneRelayOne = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE1_RELAY1)
+                m_DeviceOneRelayTwo = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE1_RELAY2)
+                m_DeviceOneRelayThree = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE1_RELAY3)
+                m_DeviceOneRelayFour = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE1_RELAY4)
+                m_DeviceTwoRelayOne = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE2_RELAY1)
+                m_DeviceTwoRelayTwo = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE2_RELAY2)
+                m_DeviceTwoRelayThree = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE2_RELAY3)
+                m_DeviceTwoRelayFour = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE2_RELAY4)
+                ' Paths
+                m_strDatabasePath = GetConfiguration(XPATH_DATABASE_PATH)
+                m_strVideoPath = GetConfiguration(XPATH_VIDEO_PATH)
+                m_strSessionPath = GetConfiguration(XPATH_SESSION_PATH)
+                ' If any of the three paths were not present in the XML file, set them to the working directory
+                ' which is determined at program startup, not via XML file.
+                If m_strDatabasePath = "" Then
+                    m_strDatabasePath = m_strWorkingPath
+                    SaveConfiguration(XPATH_DATABASE_PATH, m_strDatabasePath)
+                End If
+                If m_strVideoPath = "" Then
+                    m_strVideoPath = m_strWorkingPath
+                    SaveConfiguration(XPATH_VIDEO_PATH, m_strVideoPath)
+                End If
+                If m_strSessionPath = "" Then
+                    m_strSessionPath = m_strWorkingPath
+                    SaveConfiguration(XPATH_SESSION_PATH, m_strSessionPath)
+                End If
+                Return True
+            End If
+        Catch ex As Exception
+            Return False
+        End Try
+        Return False
+    End Function
 
     ''' <summary>
     ''' Save a single variable's value to the XML configuration file. If the variable does not exist,
@@ -1449,7 +1571,7 @@ Public Class VideoMiner
 
     Private Sub GPSSettingsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuGPSSettings.Click
         If frmGpsSettings Is Nothing Then
-            frmGpsSettings = New frmGpsSettings(m_SerialPort)
+            frmGpsSettings = New frmGpsSettings(m_strComPort, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
         End If
         frmGpsSettings.ShowDialog()
     End Sub
@@ -1487,115 +1609,115 @@ Public Class VideoMiner
 
         End If
     End Sub
-    Public Sub CloseSerialPort()
-        Try
-            m_SerialPort.Close()
-            If Not Me.m_SerialPort.IsOpen Then     ' If the port is closed then reset the GPS elements
-                Me.tryCount = 0
-                Me.lblGPSConnectionValue.Text = "NO GPS FIX"
-                Me.lblGPSConnectionValue.ForeColor = Color.Red
-                Me.lblGPSPortValue.Text = "CLOSED"
-                Me.lblGPSPortValue.ForeColor = Color.Red
-                Me.txtNMEA.Text = ""
-                Me.lblXValue.Text = ""
-                Me.lblYValue.Text = ""
-                Me.lblZValue.Text = ""
-                Me.txtTime.ForeColor = Color.Red
-                Me.txtTimeSource.ForeColor = Color.Red
-                Me.txtDateSource.ForeColor = Color.Red
-                booUseGPSTimeCodes = False
-                Me.mnuUseGPSTimeCodes.Checked = False
-                Me.lblGPSConnection.Visible = False
-                Me.lblGPSConnectionValue.Visible = False
-                Me.lblGPSPort.Visible = False
-                Me.lblGPSPortValue.Visible = False
-                Me.lblGPSLocation.Visible = False
-                Me.lblX.Visible = False
-                Me.lblXValue.Visible = False
-                Me.lblY.Visible = False
-                Me.lblYValue.Visible = False
-                Me.lblZ.Visible = False
-                Me.lblZValue.Visible = False
-            End If
-            m_SerialPort = Nothing
-        Catch ex As Exception
-            MsgBox(ex.Message)
-        End Try
-    End Sub
+    'Public Sub CloseSerialPort()
+    '    Try
+    '        m_SerialPort.Close()
+    '        If Not Me.m_SerialPort.IsOpen Then     ' If the port is closed then reset the GPS elements
+    '            Me.tryCount = 0
+    '            Me.lblGPSConnectionValue.Text = "NO GPS FIX"
+    '            Me.lblGPSConnectionValue.ForeColor = Color.Red
+    '            Me.lblGPSPortValue.Text = "CLOSED"
+    '            Me.lblGPSPortValue.ForeColor = Color.Red
+    '            Me.txtNMEA.Text = ""
+    '            Me.lblXValue.Text = ""
+    '            Me.lblYValue.Text = ""
+    '            Me.lblZValue.Text = ""
+    '            Me.txtTime.ForeColor = Color.Red
+    '            Me.txtTimeSource.ForeColor = Color.Red
+    '            Me.txtDateSource.ForeColor = Color.Red
+    '            booUseGPSTimeCodes = False
+    '            Me.mnuUseGPSTimeCodes.Checked = False
+    '            Me.lblGPSConnection.Visible = False
+    '            Me.lblGPSConnectionValue.Visible = False
+    '            Me.lblGPSPort.Visible = False
+    '            Me.lblGPSPortValue.Visible = False
+    '            Me.lblGPSLocation.Visible = False
+    '            Me.lblX.Visible = False
+    '            Me.lblXValue.Visible = False
+    '            Me.lblY.Visible = False
+    '            Me.lblYValue.Visible = False
+    '            Me.lblZ.Visible = False
+    '            Me.lblZValue.Visible = False
+    '        End If
+    '        m_SerialPort = Nothing
+    '    Catch ex As Exception
+    '        MsgBox(ex.Message)
+    '    End Try
+    'End Sub
 
     Public Sub mnuUseGPSTimeCodes_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuUseGPSTimeCodes.Click
-        If Me.mnuUseGPSTimeCodes.Checked Then
-            Me.lblGPSConnection.Visible = True
-            Me.lblGPSConnectionValue.Visible = True
-            Me.lblGPSPort.Visible = True
-            Me.lblGPSPortValue.Visible = True
-            Me.lblGPSLocation.Visible = True
-            Me.lblGPSLocation.Text = "GPS Location"
-            Me.lblX.Visible = True
-            Me.lblXValue.Visible = True
-            Me.lblY.Visible = True
-            Me.lblYValue.Visible = True
-            Me.lblZ.Visible = True
-            Me.lblZValue.Visible = True
-            If frmGpsSettings Is Nothing Then
-                frmGpsSettings = New frmGpsSettings
-            End If
-            frmGpsSettings.TopMost = True
-            frmGpsSettings.BringToFront()
-            frmGpsSettings.ShowDialog()
-            If Not Me.m_SerialPort Is Nothing Then
-                If Not Me.m_SerialPort.IsOpen Then
-                    booUseGPSTimeCodes = False
-                    Me.mnuUseGPSTimeCodes.Checked = False
-                    Me.mnuUseGPSTimeCodes.Checked = False
-                    Me.lblGPSConnection.Visible = False
-                    Me.lblGPSConnectionValue.Visible = False
-                    Me.lblGPSPort.Visible = False
-                    Me.lblGPSPortValue.Visible = False
-                    Me.lblGPSLocation.Visible = False
-                    Me.lblX.Visible = False
-                    Me.lblXValue.Visible = False
-                    Me.lblY.Visible = False
-                    Me.lblYValue.Visible = False
-                    Me.lblZ.Visible = False
-                    Me.lblZValue.Visible = False
-                    Exit Sub
-                End If
-                booUseGPSTimeCodes = True
+        'If Me.mnuUseGPSTimeCodes.Checked Then
+        '    If frmGpsSettings Is Nothing Then
+        '        frmGpsSettings = New frmGpsSettings(m_strComPort, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
+        '    Else
+        '        frmGpsSettings.TopMost = True
+        '        frmGpsSettings.BringToFront()
+        '        frmGpsSettings.ShowDialog()
+        '    End If
+        '    lblGPSConnection.Visible = True
+        '    lblGPSConnectionValue.Visible = True
+        '    lblGPSPort.Visible = True
+        '    lblGPSPortValue.Visible = True
+        '    lblGPSLocation.Visible = True
+        '    lblGPSLocation.Text = "GPS Location"
+        '    lblX.Visible = True
+        '    lblXValue.Visible = True
+        '    lblY.Visible = True
+        '    lblYValue.Visible = True
+        '    lblZ.Visible = True
+        '    lblZValue.Visible = True
+        '    If Not frmGpsSettings.SerialPort Is Nothing Then
+        '        If Not Me.m_SerialPort.IsOpen Then
+        '            booUseGPSTimeCodes = False
+        '            Me.mnuUseGPSTimeCodes.Checked = False
+        '            Me.mnuUseGPSTimeCodes.Checked = False
+        '            Me.lblGPSConnection.Visible = False
+        '            Me.lblGPSConnectionValue.Visible = False
+        '            Me.lblGPSPort.Visible = False
+        '            Me.lblGPSPortValue.Visible = False
+        '            Me.lblGPSLocation.Visible = False
+        '            Me.lblX.Visible = False
+        '            Me.lblXValue.Visible = False
+        '            Me.lblY.Visible = False
+        '            Me.lblYValue.Visible = False
+        '            Me.lblZ.Visible = False
+        '            Me.lblZValue.Visible = False
+        '            Exit Sub
+        '        End If
+        '        booUseGPSTimeCodes = True
+        '    Else
+        '        booUseGPSTimeCodes = False
+        '        Me.mnuUseGPSTimeCodes.Checked = False
+        '        Me.lblGPSConnection.Visible = False
+        '        Me.lblGPSConnectionValue.Visible = False
+        '        Me.lblGPSPort.Visible = False
+        '        Me.lblGPSPortValue.Visible = False
+        '        Me.lblGPSLocation.Visible = False
+        '        Me.lblX.Visible = False
+        '        Me.lblXValue.Visible = False
+        '        Me.lblY.Visible = False
+        '        Me.lblYValue.Visible = False
+        '        Me.lblZ.Visible = False
+        '        Me.lblZValue.Visible = False
+        '    End If
+        'Else
+        '    If Me.m_SerialPort.IsOpen Then
+        '        Dim closePort As Thread
+        '        closePort = New Thread(New ThreadStart(AddressOf CloseSerialPort))
+        '        closePort.Start()
+        '    End If
+        '    If tmrGPSExpiry.Enabled Then
+        '        tmrGPSExpiry.Stop()
+        '    End If
+        '    If Not frmGpsSettings Is Nothing Then
+        '        frmGpsSettings.Close()
+        '    End If
+        '    'frmVideoMiner.m_SerialPort.Close()                ' Close the port
+        '    'If frmGpsSettings.tmrGPSTimeout.Enabled Then
+        '    '    frmGpsSettings.tmrGPSTimeout.Stop()
+        '    'End If
 
-            Else
-                booUseGPSTimeCodes = False
-                Me.mnuUseGPSTimeCodes.Checked = False
-                Me.lblGPSConnection.Visible = False
-                Me.lblGPSConnectionValue.Visible = False
-                Me.lblGPSPort.Visible = False
-                Me.lblGPSPortValue.Visible = False
-                Me.lblGPSLocation.Visible = False
-                Me.lblX.Visible = False
-                Me.lblXValue.Visible = False
-                Me.lblY.Visible = False
-                Me.lblYValue.Visible = False
-                Me.lblZ.Visible = False
-                Me.lblZValue.Visible = False
-            End If
-        Else
-            If Me.m_SerialPort.IsOpen Then
-                Dim closePort As Thread
-                closePort = New Thread(New ThreadStart(AddressOf CloseSerialPort))
-                closePort.Start()
-            End If
-            If tmrGPSExpiry.Enabled Then
-                tmrGPSExpiry.Stop()
-            End If
-            If Not frmGpsSettings Is Nothing Then
-                frmGpsSettings.Close()
-            End If
-            'frmVideoMiner.m_SerialPort.Close()                ' Close the port
-            'If frmGpsSettings.tmrGPSTimeout.Enabled Then
-            '    frmGpsSettings.tmrGPSTimeout.Stop()
-            'End If
-
-        End If
+        'End If
 
     End Sub
 
@@ -3114,6 +3236,7 @@ Public Class VideoMiner
             Dim strVideoTime As String
             Dim strNumberRecordsShown As String
 
+            'CJG need to fix getconfiguration to take a config filename for this
             blVideoOpen = GetConfiguration("SessionConfiguration/Video/Open")
             strVideoFileName = GetConfiguration("SessionConfiguration/Video/FileName")
             strVideoTime = GetConfiguration("SessionConfiguration/Video/Position")
@@ -4480,24 +4603,24 @@ Public Class VideoMiner
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub mnuOpenFile_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuOpenFile.Click
-        Me.strPreviousClipTime = Me.txtTime.Text
-        If Not frmImage Is Nothing Then
-            Dim intAnswer As Integer = MessageBox.Show("The image file '" & Me.FileName & "' is currently open. In order to open a video, the image will be closed. Do you want to continue?", "Image File Open", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-            If intAnswer = vbNo Then
-                Exit Sub
-            Else
-                frmImage.Close()
-                If m_SerialPort Is Nothing Then
-                    lblGPSLocation.Visible = False
-                    lblX.Visible = False
-                    lblXValue.Visible = False
-                    lblY.Visible = False
-                    lblYValue.Visible = False
-                    lblZ.Visible = False
-                    lblZValue.Visible = False
-                End If
-            End If
-        End If
+        'Me.strPreviousClipTime = Me.txtTime.Text
+        'If Not frmImage Is Nothing Then
+        '    Dim intAnswer As Integer = MessageBox.Show("The image file '" & Me.FileName & "' is currently open. In order to open a video, the image will be closed. Do you want to continue?", "Image File Open", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+        '    If intAnswer = vbNo Then
+        '        Exit Sub
+        '    Else
+        '        frmImage.Close()
+        '        If m_SerialPort Is Nothing Then
+        '            lblGPSLocation.Visible = False
+        '            lblX.Visible = False
+        '            lblXValue.Visible = False
+        '            lblY.Visible = False
+        '            lblYValue.Visible = False
+        '            lblZ.Visible = False
+        '            lblZValue.Visible = False
+        '        End If
+        '    End If
+        'End If
 
         If openVideo() Then
             enableDisableVideoMenu(False)
@@ -5236,10 +5359,7 @@ Public Class VideoMiner
         End If
         insert_string = insert_string & ") "
 
-        Dim strConfigFile As String = strConfigFilePath & "\VideoMinerConfigurationDetails.xml"
-        Dim strDatabaseName As String = GetConfiguration("/Database/Configuration/DatabaseName")
-        Dim strColumns As String = GetConfiguration("/Database/Configuration/Columns")
-        Dim strColumnArray() As String = strColumns.Split(",")
+        Dim strColumnArray() As String = m_strDatabaseColumns.Split(",")
         dataColumns = New Collection
         For i = 0 To strColumnArray.Count - 1
             dataColumns.Add(strColumnArray(i))
@@ -5260,7 +5380,7 @@ Public Class VideoMiner
             'data_binding.DataSource = data_set.Tables(DB_DATA_TABLE)
             data_table = data_set.Tables(DB_DATA_TABLE)
             Dim j As Integer
-            If strDatabaseName = db_filename Then
+            If m_strDatabaseName = db_filename Then
                 For j = 1 To dataColumns.Count
                     Dim strItem As String = dataColumns.Item(j)
                     Dim strColumn() As String = strItem.Split(":")
@@ -6624,7 +6744,6 @@ SkipInsertComma:
 
 
                     If Me.radDetailedEntry.Checked Then
-                        GetSettingsFromFile()
                         frmSpeciesEvent = New frmSpeciesEvent(RangeChecked, IDConfidenceChecked, AbundanceChecked, CountChecked, HeightChecked, WidthChecked, LengthChecked, CommentsChecked, _
                                                               Range, Side, IDConfidence, Abundance, Count, Height, Width, Length, Comments)
 
@@ -6785,7 +6904,6 @@ SkipInsertComma:
                 End If
             End If
             strVideoTextTime = strVideoTime
-            GetSettingsFromFile()
             frmSpeciesEvent = New frmSpeciesEvent(RangeChecked, IDConfidenceChecked, AbundanceChecked, CountChecked, HeightChecked, WidthChecked, LengthChecked, CommentsChecked, _
                                                   Range, Side, IDConfidence, Abundance, Count, Height, Width, Length, Comments)
             frmSpeciesEvent.Location = New System.Drawing.Point(btn.Location.X, btn.Location.Y)
@@ -6862,26 +6980,26 @@ SkipInsertComma:
         End If
     End Sub
 
-    Public Sub GetSettingsFromFile()
-        RangeChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Range/Displayed")
-        IDConfidenceChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/IDConfidence/Displayed")
-        AbundanceChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Abundance/Displayed")
-        CountChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Count/Displayed")
-        HeightChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Height/Displayed")
-        WidthChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Width/Displayed")
-        LengthChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Length/Displayed")
-        CommentsChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Comments/Displayed")
+    'Public Sub GetSettingsFromFile()
+    '    RangeChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Range/Displayed")
+    '    IDConfidenceChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/IDConfidence/Displayed")
+    '    AbundanceChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Abundance/Displayed")
+    '    CountChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Count/Displayed")
+    '    HeightChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Height/Displayed")
+    '    WidthChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Width/Displayed")
+    '    LengthChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Length/Displayed")
+    '    CommentsChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Comments/Displayed")
 
-        Range = GetConfiguration("/DetailedSpeciesEventConfiguration/Range/DefaultValue")
-        Side = GetConfiguration("/DetailedSpeciesEventConfiguration/Side/DefaultValue")
-        IDConfidence = GetConfiguration("/DetailedSpeciesEventConfiguration/IDConfidence/DefaultValue")
-        Abundance = GetConfiguration("/DetailedSpeciesEventConfiguration/Abundance/DefaultValue")
-        Count = GetConfiguration("/DetailedSpeciesEventConfiguration/Count/DefaultValue")
-        SpeciesHeight = GetConfiguration("/DetailedSpeciesEventConfiguration/Height/DefaultValue")
-        SpeciesWidth = GetConfiguration("/DetailedSpeciesEventConfiguration/Width/DefaultValue")
-        Length = GetConfiguration("/DetailedSpeciesEventConfiguration/Length/DefaultValue")
-        Comments = GetConfiguration("/DetailedSpeciesEventConfiguration/Comments/DefaultValue")
-    End Sub
+    '    Range = GetConfiguration("/DetailedSpeciesEventConfiguration/Range/DefaultValue")
+    '    Side = GetConfiguration("/DetailedSpeciesEventConfiguration/Side/DefaultValue")
+    '    IDConfidence = GetConfiguration("/DetailedSpeciesEventConfiguration/IDConfidence/DefaultValue")
+    '    Abundance = GetConfiguration("/DetailedSpeciesEventConfiguration/Abundance/DefaultValue")
+    '    Count = GetConfiguration("/DetailedSpeciesEventConfiguration/Count/DefaultValue")
+    '    SpeciesHeight = GetConfiguration("/DetailedSpeciesEventConfiguration/Height/DefaultValue")
+    '    SpeciesWidth = GetConfiguration("/DetailedSpeciesEventConfiguration/Width/DefaultValue")
+    '    Length = GetConfiguration("/DetailedSpeciesEventConfiguration/Length/DefaultValue")
+    '    Comments = GetConfiguration("/DetailedSpeciesEventConfiguration/Comments/DefaultValue")
+    'End Sub
 
 #End Region
 
@@ -7110,155 +7228,155 @@ SkipInsertComma:
     End Sub
 
     ' Handles data being received from the serial port
-    Private Sub DataRecieved(ByVal sender As System.Object, ByVal e As System.IO.Ports.SerialDataReceivedEventArgs) Handles aSerialPort.DataReceived
-        'If Not frmGpsSettings Is Nothing Then
-        ' Set the delegate for the invokation
-        Dim del As myDelegate
-        del = New myDelegate(AddressOf updateTextBox)
+    'Private Sub DataRecieved(ByVal sender As System.Object, ByVal e As System.IO.Ports.SerialDataReceivedEventArgs) Handles aSerialPort.DataReceived
+    '    'If Not frmGpsSettings Is Nothing Then
+    '    ' Set the delegate for the invokation
+    '    Dim del As myDelegate
+    '    del = New myDelegate(AddressOf updateTextBox)
 
-        Try
-            txtNMEA.Invoke(del)  ' Invoke the method to update the NMEA text box
-        Catch ex As Exception
+    '    Try
+    '        txtNMEA.Invoke(del)  ' Invoke the method to update the NMEA text box
+    '    Catch ex As Exception
 
-        End Try
-        'End If
-    End Sub
+    '    End Try
+    '    'End If
+    'End Sub
 
     ' Handles updating the NMEA text box
     Public Sub updateTextBox()
 
-        Try
-            strTimeDateSource = "GPS"
-            intTimeSource = 4
-            Dim blAquiredFix As Boolean = False
-            Dim m_CurrentPoint As Point
-            'If Me.txtNMEA.InvokeRequired Then
-            'Dim d As New updateTextBoxCallback(AddressOf updateTextBox)
-            'Me.BeginInvoke(d)
-            'Else
-            ' Read the data from the serial port
-            'MsgBox(Me.txtNMEA.InvokeRequired)
+        'Try
+        '    strTimeDateSource = "GPS"
+        '    intTimeSource = 4
+        '    Dim blAquiredFix As Boolean = False
+        '    Dim m_CurrentPoint As Point
+        '    'If Me.txtNMEA.InvokeRequired Then
+        '    'Dim d As New updateTextBoxCallback(AddressOf updateTextBox)
+        '    'Me.BeginInvoke(d)
+        '    'Else
+        '    ' Read the data from the serial port
+        '    'MsgBox(Me.txtNMEA.InvokeRequired)
 
-            With txtNMEA
-                .Text &= aSerialPort.ReadExisting
-                .WordWrap = False
-                .ScrollToCaret()
-            End With
-            'CJG
-            'searchingCounter = 0
-            'MsgBox(frmVideoMiner.txtNMEA.Text)
-            'aSerialPort.DiscardInBuffer()
+        '    With txtNMEA
+        '        .Text &= aSerialPort.ReadExisting
+        '        .WordWrap = False
+        '        .ScrollToCaret()
+        '    End With
+        '    'CJG
+        '    'searchingCounter = 0
+        '    'MsgBox(frmVideoMiner.txtNMEA.Text)
+        '    'aSerialPort.DiscardInBuffer()
 
-            'If Not frmGpsSettings Is Nothing Then
-            If Not frmGpsSettings Is Nothing Then
-                frmGpsSettings.cmdConnection.Enabled = True
-                frmGpsSettings.cmdConnection.Text = "Close GPS Connection"
-            End If
-            ' Create a new point object and populate it with the location from the NMEA string
+        '    'If Not frmGpsSettings Is Nothing Then
+        '    If Not frmGpsSettings Is Nothing Then
+        '        frmGpsSettings.cmdConnection.Enabled = True
+        '        frmGpsSettings.cmdConnection.Text = "Close GPS Connection"
+        '    End If
+        '    ' Create a new point object and populate it with the location from the NMEA string
 
-            m_CurrentPoint = New Point
-            With m_CurrentPoint
-                .NMEA = txtNMEA.Text
-                blAquiredFix = .GetPoint     ' Returns true if there is a valid location
-                If blAquiredFix Then
-                    GPS_X = .X
-                    GPS_Y = .Y
-                    GPS_Z = .Z
-                    GPSUserTime = m_CurrentPoint.GpsUserTime
-                    GPSDateTime = m_CurrentPoint.GpsDateTime
-                    GPSDate = m_CurrentPoint.GpsDate
-                End If
-            End With
-            tryCount += 1       ' Increment the try counter
-            Dim strCaption As String = ""
+        '    m_CurrentPoint = New Point
+        '    With m_CurrentPoint
+        '        .NMEA = txtNMEA.Text
+        '        blAquiredFix = .GetPoint     ' Returns true if there is a valid location
+        '        If blAquiredFix Then
+        '            GPS_X = .X
+        '            GPS_Y = .Y
+        '            GPS_Z = .Z
+        '            GPSUserTime = m_CurrentPoint.GpsUserTime
+        '            GPSDateTime = m_CurrentPoint.GpsDateTime
+        '            GPSDate = m_CurrentPoint.GpsDate
+        '        End If
+        '    End With
+        '    tryCount += 1       ' Increment the try counter
+        '    Dim strCaption As String = ""
 
-            ' If there is not a GPS fix then exit the sub routine
-            If Not blAquiredFix Then
-                If Not frmGpsSettings Is Nothing Then
-                    frmGpsSettings.lblGPSMessage.Text = "SEARCHING. . ."
-                    frmGpsSettings.lblGPSMessage.ForeColor = Color.Blue
-                End If
-                Me.lblGPSConnectionValue.Text = "SEARCHING. . ."
-                Me.lblGPSConnectionValue.ForeColor = Color.Blue
-                Exit Sub
-            End If
-            Me.txtTimeSource.ForeColor = Color.LimeGreen
-            Me.txtTime.ForeColor = Color.LimeGreen
-            Me.txtDateSource.ForeColor = Color.LimeGreen
-            Me.tmrGPSExpiry.Stop()
-            Me.dblGPSExpiry = 0
-            Me.tmrGPSExpiry.Start()
-            aquiredTryCount = 0
-            strCaption = "GPS FIX"
-            If Not frmGpsSettings Is Nothing Then
-                frmGpsSettings.lblGPSMessage.Text = strCaption
-                frmGpsSettings.lblGPSMessage.ForeColor = Color.LimeGreen
-            End If
-            Me.lblGPSConnectionValue.Text = strCaption
-            Me.lblGPSConnectionValue.ForeColor = Color.LimeGreen
-            Me.lblYValue.ForeColor = Color.LimeGreen
-            Me.lblXValue.ForeColor = Color.LimeGreen
-            Me.lblZValue.ForeColor = Color.LimeGreen
+        '    ' If there is not a GPS fix then exit the sub routine
+        '    If Not blAquiredFix Then
+        '        If Not frmGpsSettings Is Nothing Then
+        '            frmGpsSettings.lblGPSMessage.Text = "SEARCHING. . ."
+        '            frmGpsSettings.lblGPSMessage.ForeColor = Color.Blue
+        '        End If
+        '        Me.lblGPSConnectionValue.Text = "SEARCHING. . ."
+        '        Me.lblGPSConnectionValue.ForeColor = Color.Blue
+        '        Exit Sub
+        '    End If
+        '    Me.txtTimeSource.ForeColor = Color.LimeGreen
+        '    Me.txtTime.ForeColor = Color.LimeGreen
+        '    Me.txtDateSource.ForeColor = Color.LimeGreen
+        '    Me.tmrGPSExpiry.Stop()
+        '    Me.dblGPSExpiry = 0
+        '    Me.tmrGPSExpiry.Start()
+        '    aquiredTryCount = 0
+        '    strCaption = "GPS FIX"
+        '    If Not frmGpsSettings Is Nothing Then
+        '        frmGpsSettings.lblGPSMessage.Text = strCaption
+        '        frmGpsSettings.lblGPSMessage.ForeColor = Color.LimeGreen
+        '    End If
+        '    Me.lblGPSConnectionValue.Text = strCaption
+        '    Me.lblGPSConnectionValue.ForeColor = Color.LimeGreen
+        '    Me.lblYValue.ForeColor = Color.LimeGreen
+        '    Me.lblXValue.ForeColor = Color.LimeGreen
+        '    Me.lblZValue.ForeColor = Color.LimeGreen
 
-            ' Change the value of X from positive to negative if necessary
-            If Me.GPS_X > 0 Then
-                Me.GPS_X *= -1
-            End If
+        '    ' Change the value of X from positive to negative if necessary
+        '    If Me.GPS_X > 0 Then
+        '        Me.GPS_X *= -1
+        '    End If
 
-            ' Format the values to include 5 decimal places
-            If Not frmGpsSettings Is Nothing Then
-                frmGpsSettings.lblCurrentYValue.Text = FormatNumber(Me.GPS_Y, 5)
-                frmGpsSettings.lblCurrentXValue.Text = FormatNumber(Me.GPS_X, 5)
-                frmGpsSettings.lblCurrentZValue.Text = FormatNumber(Me.GPS_Z, 2)
-                frmGpsSettings.lblCurrentDateValue.Text = Me.GPSDate
-                frmGpsSettings.lblCurrentTimeValue.Text = Me.GPSDateTime
-            End If
-            If Not frmSetTime Is Nothing Then
-                frmSetTime.txtSetTime.Text = Me.GPSDateTime
-            End If
-            Me.lblYValue.Text = FormatNumber(Me.GPS_Y, 5)
-            Me.lblXValue.Text = FormatNumber(Me.GPS_X, 5)
-            Me.lblZValue.Text = FormatNumber(Me.GPS_Z, 2)
+        '    ' Format the values to include 5 decimal places
+        '    If Not frmGpsSettings Is Nothing Then
+        '        frmGpsSettings.lblCurrentYValue.Text = FormatNumber(Me.GPS_Y, 5)
+        '        frmGpsSettings.lblCurrentXValue.Text = FormatNumber(Me.GPS_X, 5)
+        '        frmGpsSettings.lblCurrentZValue.Text = FormatNumber(Me.GPS_Z, 2)
+        '        frmGpsSettings.lblCurrentDateValue.Text = Me.GPSDate
+        '        frmGpsSettings.lblCurrentTimeValue.Text = Me.GPSDateTime
+        '    End If
+        '    If Not frmSetTime Is Nothing Then
+        '        frmSetTime.txtSetTime.Text = Me.GPSDateTime
+        '    End If
+        '    Me.lblYValue.Text = FormatNumber(Me.GPS_Y, 5)
+        '    Me.lblXValue.Text = FormatNumber(Me.GPS_X, 5)
+        '    Me.lblZValue.Text = FormatNumber(Me.GPS_Z, 2)
 
-            Me.txtTimeSource.Text = strTimeDateSource
-            Me.txtTimeSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-            Me.txtTimeSource.BackColor = Color.LightGray
+        '    Me.txtTimeSource.Text = strTimeDateSource
+        '    Me.txtTimeSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+        '    Me.txtTimeSource.BackColor = Color.LightGray
 
-            Me.txtTimeSource.TextAlign = HorizontalAlignment.Center
-            Me.txtTime.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-            Me.txtTime.BackColor = Color.LightGray
+        '    Me.txtTimeSource.TextAlign = HorizontalAlignment.Center
+        '    Me.txtTime.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+        '    Me.txtTime.BackColor = Color.LightGray
 
-            Me.txtTime.TextAlign = HorizontalAlignment.Center
-            Me.txtTime.Text = Me.GPSDateTime
+        '    Me.txtTime.TextAlign = HorizontalAlignment.Center
+        '    Me.txtTime.Text = Me.GPSDateTime
 
-            Me.txtTransectDate.Text = Me.GPSDate
-            Me.txtDateSource.Text = strTimeDateSource
-            Me.txtDateSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-            Me.txtDateSource.BackColor = Color.LightGray
-            '
-            Me.txtDateSource.TextAlign = HorizontalAlignment.Center
-            'If dblGPSExpiry < 1 Then
-            '    Me.txtTimeSource.ForeColor = Color.LimeGreen
-            '    Me.txtTime.ForeColor = Color.LimeGreen
-            '    Me.txtTime.Text = Me.GPSDateTime
-            '    Me.txtDateSource.ForeColor = Color.LimeGreen
-            'Else
-            '    Me.txtTimeSource.ForeColor = Color.Red
-            '    Me.txtTime.ForeColor = Color.Red
-            '    Me.txtTime.Text = Me.GPSDateTime
-            '    Me.txtDateSource.ForeColor = Color.Red
-            'End If
-            'frmGpsSettings.lblCurrentTimeValue.Text = Me.GPSDateTime
-            'End If
-            '     End If
-        Catch ex As Exception
-            'Dim st As New StackTrace(ex, True)
-            'Dim frame As StackFrame
-            'frame = st.GetFrame(0)
-            'Dim line As Integer
-            'line = frame.GetFileLineNumber
-            'MsgBox("At line " & line & " " & ex.Message & " Stack trace: " & st.ToString)
-        End Try
+        '    Me.txtTransectDate.Text = Me.GPSDate
+        '    Me.txtDateSource.Text = strTimeDateSource
+        '    Me.txtDateSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+        '    Me.txtDateSource.BackColor = Color.LightGray
+        '    '
+        '    Me.txtDateSource.TextAlign = HorizontalAlignment.Center
+        '    'If dblGPSExpiry < 1 Then
+        '    '    Me.txtTimeSource.ForeColor = Color.LimeGreen
+        '    '    Me.txtTime.ForeColor = Color.LimeGreen
+        '    '    Me.txtTime.Text = Me.GPSDateTime
+        '    '    Me.txtDateSource.ForeColor = Color.LimeGreen
+        '    'Else
+        '    '    Me.txtTimeSource.ForeColor = Color.Red
+        '    '    Me.txtTime.ForeColor = Color.Red
+        '    '    Me.txtTime.Text = Me.GPSDateTime
+        '    '    Me.txtDateSource.ForeColor = Color.Red
+        '    'End If
+        '    'frmGpsSettings.lblCurrentTimeValue.Text = Me.GPSDateTime
+        '    'End If
+        '    '     End If
+        'Catch ex As Exception
+        '    'Dim st As New StackTrace(ex, True)
+        '    'Dim frame As StackFrame
+        '    'frame = st.GetFrame(0)
+        '    'Dim line As Integer
+        '    'line = frame.GetFileLineNumber
+        '    'MsgBox("At line " & line & " " & ex.Message & " Stack trace: " & st.ToString)
+        'End Try
 
     End Sub
 
@@ -7620,35 +7738,33 @@ SkipInsertComma:
     End Sub
 
     Private Sub use_gps_time() Handles frmSetTime.UseGPSTime
-        blUseGPSTime = True
-        blUseComputerTime = False
-        blUseElapsedTime = False
-        blUseVideoTime = False
-        mnuUseGPSTimeCodes.Checked = True
+        'blUseGPSTime = True
+        'blUseComputerTime = False
+        'blUseElapsedTime = False
+        'blUseVideoTime = False
+        'mnuUseGPSTimeCodes.Checked = True
 
-        If tmrComputerTime.Enabled Then
-            tmrComputerTime.Stop()
-        End If
+        'If tmrComputerTime.Enabled Then
+        '    tmrComputerTime.Stop()
+        'End If
 
-        mnuUseGPSTimeCodes_Click(Me, Nothing)
-        If m_SerialPort Is Nothing Then
-            frmSetTime.Close()
-        End If
+        'mnuUseGPSTimeCodes_Click(Me, Nothing)
+        'If m_SerialPort Is Nothing Then
+        '    frmSetTime.Close()
+        'End If
 
-        If m_SerialPort.IsOpen Then
-            'CJG
-            'frmSetTime.UserTime = txtTime.Text
-            frmSetTime.setGPSInfo()
-        End If
+        'If m_SerialPort.IsOpen Then
+        '    frmSetTime.setGPSInfo()
+        'End If
     End Sub
 
     Private Sub use_computer_time() Handles frmSetTime.UseComputerTime
-        If Not m_SerialPort Is Nothing Then
-            If m_SerialPort.IsOpen Then
-                Dim closePort As Thread = New Thread(New ThreadStart(AddressOf CloseSerialPort))
-                closePort.Start()
-            End If
-        End If
+        'If Not m_SerialPort Is Nothing Then
+        '    If m_SerialPort.IsOpen Then
+        '        Dim closePort As Thread = New Thread(New ThreadStart(AddressOf CloseSerialPort))
+        '        closePort.Start()
+        '    End If
+        'End If
         If tmrGPSExpiry.Enabled Then
             tmrGPSExpiry.Stop()
         End If
@@ -7682,12 +7798,12 @@ SkipInsertComma:
         If tmrComputerTime.Enabled Then
             tmrComputerTime.Stop()
         End If
-        If Not m_SerialPort Is Nothing Then
-            If m_SerialPort.IsOpen Then
-                Dim closePort As Thread = New Thread(New ThreadStart(AddressOf CloseSerialPort))
-                closePort.Start()
-            End If
-        End If
+        'If Not m_SerialPort Is Nothing Then
+        '    If m_SerialPort.IsOpen Then
+        '        Dim closePort As Thread = New Thread(New ThreadStart(AddressOf CloseSerialPort))
+        '        closePort.Start()
+        '    End If
+        'End If
         strTimeDateSource = "ELAPSED"
         intTimeSource = 1
         blUseGPSTime = False
@@ -7784,10 +7900,10 @@ SkipInsertComma:
     End Sub
 
     Private Sub close_serial_port() Handles frmGpsSettings.CloseSerialPortEvent
-        Try
-            m_SerialPort.Close()
-        Catch ex As Exception
-        End Try
+        'Try
+        '    m_SerialPort.Close()
+        'Catch ex As Exception
+        'End Try
     End Sub
 
     Private Sub image_form_closing() Handles frmImage.ImageFormClosingEvent
@@ -7874,6 +7990,26 @@ SkipInsertComma:
 
     Private Sub txtFramesToSkip_MouseLeave(sender As Object, e As EventArgs) Handles txtFramesToSkip.MouseLeave
         ttToolTip.Hide(Me)
+    End Sub
+
+    ''' <summary>
+    ''' Updates all GPS member variables and saves the configuration for all of them (xml file)
+    ''' </summary>
+    Private Sub save_GPS_configuration() Handles frmGpsSettings.GPSVariablesChangedEvent
+        m_strComPort = frmGpsSettings.ComPort
+        m_intBaudRate = frmGpsSettings.BaudRate
+        m_strNMEAStringType = frmGpsSettings.NMEAStringType
+        m_strParity = frmGpsSettings.Parity
+        m_dblStopBits = frmGpsSettings.StopBits
+        m_intDataBits = frmGpsSettings.DataBits
+
+        SaveConfiguration(XPATH_GPS_COM_PORT, m_strComPort)
+        SaveConfiguration(XPATH_GPS_BAUD_RATE, CStr(m_intBaudRate))
+        SaveConfiguration(XPATH_GPS_NMEA_STRING, m_strNMEAStringType)
+        SaveConfiguration(XPATH_GPS_PARITY, m_strParity)
+        SaveConfiguration(XPATH_GPS_STOP_BITS, CStr(m_dblStopBits))
+        SaveConfiguration(XPATH_GPS_DATA_BITS, CStr(m_intDataBits))
+        SaveConfiguration(XPATH_GPS_TIMEOUT, CStr(m_intTimeout))
     End Sub
 
 

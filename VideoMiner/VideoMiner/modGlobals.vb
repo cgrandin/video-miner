@@ -10,10 +10,6 @@ Imports System.IO
 ''' remain object-oriented as much as possible and adding things here will likely break that</remarks>
 Module modGlobals
 
-    Public Class myPortLibrary
-        Public Shared aPort As SerialPort
-    End Class
-
     Public Const VMCD = "VideoMinerConfigurationDetails"
     Public Const VIDEOMINER_CONFIG_FILE_NAME = VMCD & ".xml"
     Public Const DB_DATA_TABLE As String = "data"
