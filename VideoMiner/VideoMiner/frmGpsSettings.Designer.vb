@@ -33,17 +33,10 @@ Partial Class frmGpsSettings
         Me.cmdOK = New System.Windows.Forms.Button()
         Me.lblGPSPortMessage = New System.Windows.Forms.Label()
         Me.cmdConnection = New System.Windows.Forms.Button()
-        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
-        Me.ToolStripStatusLabelX = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.ToolStripStatusLabelY = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.ToolStripStatusLabelZ = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.ToolStripStatusLabelTime = New System.Windows.Forms.ToolStripStatusLabel()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.radGPGGA = New System.Windows.Forms.RadioButton()
         Me.radGPRMC = New System.Windows.Forms.RadioButton()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
-        Me.txtTimeout = New System.Windows.Forms.TextBox()
-        Me.lblTimeout = New System.Windows.Forms.Label()
         Me.cmdViewPortData = New System.Windows.Forms.Button()
         Me.lblCurrentTime = New System.Windows.Forms.Label()
         Me.lblCurrentTimeValue = New System.Windows.Forms.Label()
@@ -60,9 +53,10 @@ Partial Class frmGpsSettings
         Me.lblGPSConnection = New System.Windows.Forms.Label()
         Me.lblGPSMessage = New System.Windows.Forms.Label()
         Me.lblGPSPort = New System.Windows.Forms.Label()
+        Me.txtTimeout = New System.Windows.Forms.TextBox()
+        Me.lblTimeout = New System.Windows.Forms.Label()
         Me.tmrGPSTimeout = New System.Windows.Forms.Timer(Me.components)
         Me.cmdCancel = New System.Windows.Forms.Button()
-        Me.StatusStrip1.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -160,7 +154,7 @@ Partial Class frmGpsSettings
         '
         'cmdOK
         '
-        Me.cmdOK.Location = New System.Drawing.Point(78, 351)
+        Me.cmdOK.Location = New System.Drawing.Point(82, 366)
         Me.cmdOK.Name = "cmdOK"
         Me.cmdOK.Size = New System.Drawing.Size(75, 32)
         Me.cmdOK.TabIndex = 10
@@ -172,7 +166,7 @@ Partial Class frmGpsSettings
         Me.lblGPSPortMessage.AutoSize = True
         Me.lblGPSPortMessage.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblGPSPortMessage.ForeColor = System.Drawing.Color.Red
-        Me.lblGPSPortMessage.Location = New System.Drawing.Point(155, 82)
+        Me.lblGPSPortMessage.Location = New System.Drawing.Point(164, 73)
         Me.lblGPSPortMessage.Name = "lblGPSPortMessage"
         Me.lblGPSPortMessage.Size = New System.Drawing.Size(56, 16)
         Me.lblGPSPortMessage.TabIndex = 13
@@ -181,41 +175,12 @@ Partial Class frmGpsSettings
         '
         'cmdConnection
         '
-        Me.cmdConnection.Location = New System.Drawing.Point(0, 14)
+        Me.cmdConnection.Location = New System.Drawing.Point(2, 20)
         Me.cmdConnection.Name = "cmdConnection"
         Me.cmdConnection.Size = New System.Drawing.Size(121, 39)
         Me.cmdConnection.TabIndex = 14
         Me.cmdConnection.Text = "Open GPS Connection"
         Me.cmdConnection.UseVisualStyleBackColor = True
-        '
-        'StatusStrip1
-        '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripStatusLabelX, Me.ToolStripStatusLabelY, Me.ToolStripStatusLabelZ, Me.ToolStripStatusLabelTime})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 389)
-        Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(304, 22)
-        Me.StatusStrip1.TabIndex = 16
-        Me.StatusStrip1.Text = "StatusStrip1"
-        '
-        'ToolStripStatusLabelX
-        '
-        Me.ToolStripStatusLabelX.Name = "ToolStripStatusLabelX"
-        Me.ToolStripStatusLabelX.Size = New System.Drawing.Size(0, 17)
-        '
-        'ToolStripStatusLabelY
-        '
-        Me.ToolStripStatusLabelY.Name = "ToolStripStatusLabelY"
-        Me.ToolStripStatusLabelY.Size = New System.Drawing.Size(0, 17)
-        '
-        'ToolStripStatusLabelZ
-        '
-        Me.ToolStripStatusLabelZ.Name = "ToolStripStatusLabelZ"
-        Me.ToolStripStatusLabelZ.Size = New System.Drawing.Size(0, 17)
-        '
-        'ToolStripStatusLabelTime
-        '
-        Me.ToolStripStatusLabelTime.Name = "ToolStripStatusLabelTime"
-        Me.ToolStripStatusLabelTime.Size = New System.Drawing.Size(0, 17)
         '
         'Label7
         '
@@ -251,8 +216,6 @@ Partial Class frmGpsSettings
         '
         'GroupBox1
         '
-        Me.GroupBox1.Controls.Add(Me.txtTimeout)
-        Me.GroupBox1.Controls.Add(Me.lblTimeout)
         Me.GroupBox1.Controls.Add(Me.cmdViewPortData)
         Me.GroupBox1.Controls.Add(Me.lblCurrentTime)
         Me.GroupBox1.Controls.Add(Me.lblCurrentTimeValue)
@@ -271,31 +234,15 @@ Partial Class frmGpsSettings
         Me.GroupBox1.Controls.Add(Me.lblGPSPort)
         Me.GroupBox1.Controls.Add(Me.lblGPSPortMessage)
         Me.GroupBox1.Controls.Add(Me.cmdConnection)
-        Me.GroupBox1.Location = New System.Drawing.Point(12, 132)
+        Me.GroupBox1.Location = New System.Drawing.Point(12, 155)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(279, 213)
+        Me.GroupBox1.Size = New System.Drawing.Size(279, 204)
         Me.GroupBox1.TabIndex = 20
         Me.GroupBox1.TabStop = False
         '
-        'txtTimeout
-        '
-        Me.txtTimeout.Location = New System.Drawing.Point(158, 59)
-        Me.txtTimeout.Name = "txtTimeout"
-        Me.txtTimeout.Size = New System.Drawing.Size(100, 21)
-        Me.txtTimeout.TabIndex = 17
-        '
-        'lblTimeout
-        '
-        Me.lblTimeout.AutoSize = True
-        Me.lblTimeout.Location = New System.Drawing.Point(3, 63)
-        Me.lblTimeout.Name = "lblTimeout"
-        Me.lblTimeout.Size = New System.Drawing.Size(95, 13)
-        Me.lblTimeout.TabIndex = 16
-        Me.lblTimeout.Text = "Timeout (secs):"
-        '
         'cmdViewPortData
         '
-        Me.cmdViewPortData.Location = New System.Drawing.Point(158, 14)
+        Me.cmdViewPortData.Location = New System.Drawing.Point(160, 20)
         Me.cmdViewPortData.Name = "cmdViewPortData"
         Me.cmdViewPortData.Size = New System.Drawing.Size(115, 39)
         Me.cmdViewPortData.TabIndex = 15
@@ -306,7 +253,7 @@ Partial Class frmGpsSettings
         '
         Me.lblCurrentTime.AutoSize = True
         Me.lblCurrentTime.Font = New System.Drawing.Font("Arial Rounded MT Bold", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrentTime.Location = New System.Drawing.Point(155, 162)
+        Me.lblCurrentTime.Location = New System.Drawing.Point(164, 153)
         Me.lblCurrentTime.Name = "lblCurrentTime"
         Me.lblCurrentTime.Size = New System.Drawing.Size(82, 15)
         Me.lblCurrentTime.TabIndex = 12
@@ -334,7 +281,7 @@ Partial Class frmGpsSettings
         '
         Me.lblCurrentDate.AutoSize = True
         Me.lblCurrentDate.Font = New System.Drawing.Font("Arial Rounded MT Bold", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrentDate.Location = New System.Drawing.Point(155, 142)
+        Me.lblCurrentDate.Location = New System.Drawing.Point(164, 133)
         Me.lblCurrentDate.Name = "lblCurrentDate"
         Me.lblCurrentDate.Size = New System.Drawing.Size(42, 15)
         Me.lblCurrentDate.TabIndex = 12
@@ -353,7 +300,7 @@ Partial Class frmGpsSettings
         '
         Me.lblCurrentZ.AutoSize = True
         Me.lblCurrentZ.Font = New System.Drawing.Font("Arial Rounded MT Bold", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrentZ.Location = New System.Drawing.Point(6, 182)
+        Me.lblCurrentZ.Location = New System.Drawing.Point(15, 173)
         Me.lblCurrentZ.Name = "lblCurrentZ"
         Me.lblCurrentZ.Size = New System.Drawing.Size(19, 15)
         Me.lblCurrentZ.TabIndex = 12
@@ -372,7 +319,7 @@ Partial Class frmGpsSettings
         '
         Me.lblCurrentY.AutoSize = True
         Me.lblCurrentY.Font = New System.Drawing.Font("Arial Rounded MT Bold", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrentY.Location = New System.Drawing.Point(6, 161)
+        Me.lblCurrentY.Location = New System.Drawing.Point(15, 152)
         Me.lblCurrentY.Name = "lblCurrentY"
         Me.lblCurrentY.Size = New System.Drawing.Size(19, 15)
         Me.lblCurrentY.TabIndex = 12
@@ -391,7 +338,7 @@ Partial Class frmGpsSettings
         '
         Me.lblCurrentX.AutoSize = True
         Me.lblCurrentX.Font = New System.Drawing.Font("Arial Rounded MT Bold", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurrentX.Location = New System.Drawing.Point(6, 140)
+        Me.lblCurrentX.Location = New System.Drawing.Point(15, 131)
         Me.lblCurrentX.Name = "lblCurrentX"
         Me.lblCurrentX.Size = New System.Drawing.Size(19, 15)
         Me.lblCurrentX.TabIndex = 12
@@ -400,7 +347,7 @@ Partial Class frmGpsSettings
         'lblDateTime
         '
         Me.lblDateTime.AutoSize = True
-        Me.lblDateTime.Location = New System.Drawing.Point(155, 124)
+        Me.lblDateTime.Location = New System.Drawing.Point(164, 115)
         Me.lblDateTime.Name = "lblDateTime"
         Me.lblDateTime.Size = New System.Drawing.Size(114, 13)
         Me.lblDateTime.TabIndex = 12
@@ -409,7 +356,7 @@ Partial Class frmGpsSettings
         'lblCurrentLocation
         '
         Me.lblCurrentLocation.AutoSize = True
-        Me.lblCurrentLocation.Location = New System.Drawing.Point(3, 124)
+        Me.lblCurrentLocation.Location = New System.Drawing.Point(12, 115)
         Me.lblCurrentLocation.Name = "lblCurrentLocation"
         Me.lblCurrentLocation.Size = New System.Drawing.Size(80, 13)
         Me.lblCurrentLocation.TabIndex = 12
@@ -418,7 +365,7 @@ Partial Class frmGpsSettings
         'lblGPSConnection
         '
         Me.lblGPSConnection.AutoSize = True
-        Me.lblGPSConnection.Location = New System.Drawing.Point(3, 104)
+        Me.lblGPSConnection.Location = New System.Drawing.Point(12, 95)
         Me.lblGPSConnection.Name = "lblGPSConnection"
         Me.lblGPSConnection.Size = New System.Drawing.Size(98, 13)
         Me.lblGPSConnection.TabIndex = 12
@@ -429,7 +376,7 @@ Partial Class frmGpsSettings
         Me.lblGPSMessage.AutoSize = True
         Me.lblGPSMessage.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblGPSMessage.ForeColor = System.Drawing.Color.Red
-        Me.lblGPSMessage.Location = New System.Drawing.Point(155, 101)
+        Me.lblGPSMessage.Location = New System.Drawing.Point(164, 92)
         Me.lblGPSMessage.Name = "lblGPSMessage"
         Me.lblGPSMessage.Size = New System.Drawing.Size(77, 16)
         Me.lblGPSMessage.TabIndex = 13
@@ -439,11 +386,27 @@ Partial Class frmGpsSettings
         'lblGPSPort
         '
         Me.lblGPSPort.AutoSize = True
-        Me.lblGPSPort.Location = New System.Drawing.Point(3, 83)
+        Me.lblGPSPort.Location = New System.Drawing.Point(12, 74)
         Me.lblGPSPort.Name = "lblGPSPort"
         Me.lblGPSPort.Size = New System.Drawing.Size(69, 13)
         Me.lblGPSPort.TabIndex = 12
         Me.lblGPSPort.Text = "Serial Port:"
+        '
+        'txtTimeout
+        '
+        Me.txtTimeout.Location = New System.Drawing.Point(169, 135)
+        Me.txtTimeout.Name = "txtTimeout"
+        Me.txtTimeout.Size = New System.Drawing.Size(121, 21)
+        Me.txtTimeout.TabIndex = 17
+        '
+        'lblTimeout
+        '
+        Me.lblTimeout.AutoSize = True
+        Me.lblTimeout.Location = New System.Drawing.Point(14, 139)
+        Me.lblTimeout.Name = "lblTimeout"
+        Me.lblTimeout.Size = New System.Drawing.Size(95, 13)
+        Me.lblTimeout.TabIndex = 16
+        Me.lblTimeout.Text = "Timeout (secs):"
         '
         'tmrGPSTimeout
         '
@@ -451,7 +414,7 @@ Partial Class frmGpsSettings
         '
         'cmdCancel
         '
-        Me.cmdCancel.Location = New System.Drawing.Point(159, 351)
+        Me.cmdCancel.Location = New System.Drawing.Point(163, 366)
         Me.cmdCancel.Name = "cmdCancel"
         Me.cmdCancel.Size = New System.Drawing.Size(75, 32)
         Me.cmdCancel.TabIndex = 21
@@ -462,14 +425,15 @@ Partial Class frmGpsSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(304, 411)
+        Me.ClientSize = New System.Drawing.Size(304, 407)
         Me.ControlBox = False
+        Me.Controls.Add(Me.txtTimeout)
+        Me.Controls.Add(Me.lblTimeout)
         Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.radGPRMC)
         Me.Controls.Add(Me.radGPGGA)
         Me.Controls.Add(Me.Label7)
-        Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.cmdOK)
         Me.Controls.Add(Me.cboStopBits)
         Me.Controls.Add(Me.Label5)
@@ -488,8 +452,6 @@ Partial Class frmGpsSettings
         Me.Name = "frmGpsSettings"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "GPS Settings"
-        Me.StatusStrip1.ResumeLayout(False)
-        Me.StatusStrip1.PerformLayout()
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
         Me.ResumeLayout(False)
@@ -509,11 +471,6 @@ Partial Class frmGpsSettings
     Friend WithEvents cmdOK As System.Windows.Forms.Button
     Friend WithEvents lblGPSPortMessage As System.Windows.Forms.Label
     Friend WithEvents cmdConnection As System.Windows.Forms.Button
-    Friend WithEvents StatusStrip1 As System.Windows.Forms.StatusStrip
-    Friend WithEvents ToolStripStatusLabelX As System.Windows.Forms.ToolStripStatusLabel
-    Friend WithEvents ToolStripStatusLabelY As System.Windows.Forms.ToolStripStatusLabel
-    Friend WithEvents ToolStripStatusLabelTime As System.Windows.Forms.ToolStripStatusLabel
-    Friend WithEvents ToolStripStatusLabelZ As System.Windows.Forms.ToolStripStatusLabel
     Friend WithEvents Label7 As System.Windows.Forms.Label
     Friend WithEvents radGPGGA As System.Windows.Forms.RadioButton
     Friend WithEvents radGPRMC As System.Windows.Forms.RadioButton

@@ -533,7 +533,28 @@ VideoMiner
 	<remarks></remarks>
 </member><member name="F:VideoMiner.frmGpsSettings.TIMEOUT_DEFAULT">
 	<summary>
- Value in seconds
+ Value of default connection and read timeout in seconds
+ </summary>
+</member><member name="F:VideoMiner.frmGpsSettings.m_intSearchingCounter">
+	<summary>
+ Counter to keep track of timer ticks during connection attempt. Connection timeout counter.
+ </summary>
+</member><member name="F:VideoMiner.frmGpsSettings.m_lngConnectedCounter">
+	<summary>
+ Counter to keep track of timer ticks for data received, used to make sure the data keep coming in once a connectioin is established
+ </summary>
+</member><member name="F:VideoMiner.frmGpsSettings.m_dtLastTimeDataReceived">
+	<summary>
+ The date and time of the last data received. Used with m_lngConnectedCounter to figure out if the connection has been terminated.
+ </summary>
+</member><member name="F:VideoMiner.frmGpsSettings.m_tmrTimerItem">
+	<summary>
+ Timer for the check to make sure connectivity is maintained.
+ </summary>
+	<remarks>Had to be a system threading timer due to SerialPort.DataReceived being in another thread</remarks>
+</member><member name="F:VideoMiner.frmGpsSettings.m_tmrcbTimerDelegate">
+	<summary>
+ Callback delegate for m_tmrTimerItem
  </summary>
 	<remarks></remarks>
 </member><member name="P:VideoMiner.frmGpsSettings.SerialPort">
@@ -613,19 +634,23 @@ VideoMiner
  Creates a new instance of the GPS settings form.
  Adds ComboBox choices for COM Port, Baud rate, Parity, Stop bits, and Data bits
  </summary>
-</member><member name="M:VideoMiner.frmGpsSettings.ConnectSerialPort">
-	<summary>
- Try to connect the serial port with the currently selected values on the textbox
- </summary>
-	<remarks></remarks>
 </member><member name="M:VideoMiner.frmGpsSettings.SetSerialPortVariables">
 	<summary>
  Set the member variables to be what are in the form selections controls.
  </summary>
 	<remarks>Closes the serial port if it is open, and sets it to Nothing</remarks>
+</member><member name="M:VideoMiner.frmGpsSettings.ConnectSerialPort">
+	<summary>
+ Try to connect the serial port with the currently selected values on the textbox
+ </summary>
+	<remarks></remarks>
 </member><member name="M:VideoMiner.frmGpsSettings.RefreshStatus">
 	<summary>
  Refresh all window controls based on connectivity of the serial port object
+ </summary>
+</member><member name="M:VideoMiner.frmGpsSettings.cmdConnection_Click(System.Object,System.EventArgs)">
+	<summary>
+ Toogle to connect or disconnect the serial port
  </summary>
 </member><member name="M:VideoMiner.frmGpsSettings.ClosePortThread">
 	<summary>
@@ -635,20 +660,23 @@ VideoMiner
 	<summary>
  Close the serial port and reset form member variables to reflect change
  </summary>
-	<remarks></remarks>
-</member><member name="M:VideoMiner.frmGpsSettings.GetData">
+</member><member name="M:VideoMiner.frmGpsSettings.tmrGPSTimeout_Tick(System.Object,System.EventArgs)">
 	<summary>
- Get the data fields out from the current data string on the serial port
- and populate the form labels to reflect this
+ Handles the connection timeout timer. If timeout period has expired, a ReadLine is done on the stream and
+ if it is unsuccessful the port will be closed and a message issued. If it succeeds then the connection is
+ assumed good.
  </summary>
-	<remarks>Assumes that whichever NMEA string is checked on the form is the
- one being given here, i.e. CheckData calls this function so run that one
- </remarks>
-</member><member name="M:VideoMiner.frmGpsSettings.CheckData(System.String)">
+</member><member name="M:VideoMiner.frmGpsSettings.GetData(System.String)">
 	<summary>
  Checks the current data string for compliance with the chosen NMEA string
- If it is correct, m_blConnected will be set to true, the timer stopped
- and the data will be extracted by the GetData subroutine
+ If it is correct, the connected property will be set to true, 
+ the connection timeout timer will be stopped and the data will be extracted.
+ If any of the key fields (time, lat, long, elevation) are empty strings then
+ set the data as bad and exit.
+ </summary>
+</member><member name="T:VideoMiner.frmGpsSettings.StateObjClass">
+	<summary>
+ Used to hold parameters for calls to TimerTask. 
  </summary>
 </member><member name="M:VideoMiner.frmGpsSettings.SerialPort_DataReceived(System.Object,System.IO.Ports.SerialDataReceivedEventArgs)">
 	<summary>

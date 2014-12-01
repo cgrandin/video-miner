@@ -93,7 +93,7 @@
   <GPS>
     <ComPort>COM3</ComPort>
     <NMEA>GPRMC</NMEA>
-    <BaudRate>110</BaudRate>
+    <BaudRate>4800</BaudRate>
     <Parity>NONE</Parity>
     <StopBits>1</StopBits>
     <DataBits>8</DataBits>
