@@ -92,7 +92,7 @@
   <SessionPath>C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug</SessionPath>
   <GPS>
     <ComPort>COM3</ComPort>
-    <NMEA>GPRMC</NMEA>
+    <NMEA>GPGGA</NMEA>
     <BaudRate>4800</BaudRate>
     <Parity>NONE</Parity>
     <StopBits>1</StopBits>

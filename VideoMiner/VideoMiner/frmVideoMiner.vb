@@ -7889,7 +7889,7 @@ SkipInsertComma:
 
     End Sub
 
-    Private Sub gps_connecting() Handles frmGpsSettings.ConnectingPortEvent
+    Private Sub gps_connecting() Handles frmGpsSettings.ConnectingSerialPortEvent
         lblGPSConnectionValue.Text = "SEARCHING. . ."
         lblGPSConnectionValue.ForeColor = Color.Blue
         lblXValue.ForeColor = Color.Red
@@ -7899,12 +7899,12 @@ SkipInsertComma:
         txtDateSource.ForeColor = Color.Red
     End Sub
 
-    Private Sub close_serial_port() Handles frmGpsSettings.CloseSerialPortEvent
-        'Try
-        '    m_SerialPort.Close()
-        'Catch ex As Exception
-        'End Try
-    End Sub
+    'Private Sub close_serial_port() Handles frmGpsSettings.CloseSerialPortEvent
+    '    'Try
+    '    '    m_SerialPort.Close()
+    '    'Catch ex As Exception
+    '    'End Try
+    'End Sub
 
     Private Sub image_form_closing() Handles frmImage.ImageFormClosingEvent
         pnlImageControls.Visible = False

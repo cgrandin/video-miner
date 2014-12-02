@@ -56,7 +56,6 @@ Partial Class frmGpsSettings
         Me.txtTimeout = New System.Windows.Forms.TextBox()
         Me.lblTimeout = New System.Windows.Forms.Label()
         Me.tmrGPSTimeout = New System.Windows.Forms.Timer(Me.components)
-        Me.cmdCancel = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -154,9 +153,9 @@ Partial Class frmGpsSettings
         '
         'cmdOK
         '
-        Me.cmdOK.Location = New System.Drawing.Point(82, 366)
+        Me.cmdOK.Location = New System.Drawing.Point(65, 366)
         Me.cmdOK.Name = "cmdOK"
-        Me.cmdOK.Size = New System.Drawing.Size(75, 32)
+        Me.cmdOK.Size = New System.Drawing.Size(171, 32)
         Me.cmdOK.TabIndex = 10
         Me.cmdOK.Text = "OK"
         Me.cmdOK.UseVisualStyleBackColor = True
@@ -242,6 +241,7 @@ Partial Class frmGpsSettings
         '
         'cmdViewPortData
         '
+        Me.cmdViewPortData.Enabled = False
         Me.cmdViewPortData.Location = New System.Drawing.Point(160, 20)
         Me.cmdViewPortData.Name = "cmdViewPortData"
         Me.cmdViewPortData.Size = New System.Drawing.Size(115, 39)
@@ -412,15 +412,6 @@ Partial Class frmGpsSettings
         '
         Me.tmrGPSTimeout.Interval = 1000
         '
-        'cmdCancel
-        '
-        Me.cmdCancel.Location = New System.Drawing.Point(163, 366)
-        Me.cmdCancel.Name = "cmdCancel"
-        Me.cmdCancel.Size = New System.Drawing.Size(75, 32)
-        Me.cmdCancel.TabIndex = 21
-        Me.cmdCancel.Text = "Cancel"
-        Me.cmdCancel.UseVisualStyleBackColor = True
-        '
         'frmGpsSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 13.0!)
@@ -429,7 +420,6 @@ Partial Class frmGpsSettings
         Me.ControlBox = False
         Me.Controls.Add(Me.txtTimeout)
         Me.Controls.Add(Me.lblTimeout)
-        Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.radGPRMC)
         Me.Controls.Add(Me.radGPGGA)
@@ -491,7 +481,6 @@ Partial Class frmGpsSettings
     Friend WithEvents lblCurrentYValue As System.Windows.Forms.Label
     Friend WithEvents lblCurrentXValue As System.Windows.Forms.Label
     Friend WithEvents tmrGPSTimeout As System.Windows.Forms.Timer
-    Friend WithEvents cmdCancel As System.Windows.Forms.Button
     Friend WithEvents cmdViewPortData As System.Windows.Forms.Button
     Friend WithEvents lblTimeout As System.Windows.Forms.Label
     Friend WithEvents txtTimeout As System.Windows.Forms.TextBox
