@@ -72,6 +72,13 @@ Public Class frmGpsSettings
     ''' If true, only the chosen NMEA strings will be sent to the data viewer form. If false, all incoming NMEA strings will be sent.
     ''' </summary>
     Private m_blSendChosenStringsOnly As Boolean
+    ''' <summary>
+    ''' Because the connected variable is set everytime good data are received, this is required to keep track of the
+    ''' first time it is connected. This allows the form to raise a GPSConnected event one time only,
+    ''' upon connection.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_blFirstTimeConnected As Boolean
 
     ' Connection variables
     ''' <summary>
@@ -470,6 +477,7 @@ Public Class frmGpsSettings
     Public Sub New(strComPort As String, strNMEAString As String, intBaudRate As Integer, strParity As String, dblStopBits As Double, intDataBits As Integer, Optional intTimeout As Integer = TIMEOUT_DEFAULT)
         InitializeComponent()
         m_blConnected = False
+        m_blFirstTimeConnected = False
         m_strComPort = strComPort
         m_strNMEAStringType = strNMEAString
         m_intBaudRate = intBaudRate
@@ -602,6 +610,7 @@ Public Class frmGpsSettings
             ' The 1000 is to convert seconds to ms for the ReadTimeout property of SerialPort
             m_spSerialPort.ReadTimeout = m_intTimeout * 1000
             m_blConnected = False
+            m_blFirstTimeConnected = False
         End If
         If Not IsOpen Then
             Try
@@ -676,7 +685,10 @@ Public Class frmGpsSettings
             lblCurrentTime.Text = "Time: " & GPSHours & ":" & GPSMinutes & ":" & GPSSeconds
             ' This would normally be a RaiseEvent() call but this function (RefreshStatus) might be called from SerialPort.DataReceived which is
             ' on a different thread, so this marshals the raising of the event between threads
-            InvokeAction(AddressOf GPSConnected, New EventArgs())
+            If Not m_blFirstTimeConnected Then
+                m_blFirstTimeConnected = True
+                InvokeAction(AddressOf GPSConnected, New EventArgs())
+            End If
         Else
             lblGPSMessage.Text = "NO GPS FIX"
             lblGPSMessage.ForeColor = Color.Red
@@ -686,6 +698,7 @@ Public Class frmGpsSettings
             lblCurrentTime.Text = "Time: "
             ' This would normally be a RaiseEvent() call but this function (RefreshStatus) might be called from SerialPort.DataReceived which is
             ' on a different thread, so this marshals the raising of the event between threads
+            m_blFirstTimeConnected = False
             InvokeAction(AddressOf GPSDisconnected, New EventArgs())
         End If
         If m_frmStringDataViewer IsNot Nothing Then
@@ -751,6 +764,7 @@ Public Class frmGpsSettings
         End Try
         m_spSerialPort = Nothing
         m_blConnected = False
+        m_blFirstTimeConnected = False
         InvokeAction(AddressOf GPSDisconnected, New EventArgs())
     End Sub
 
@@ -810,7 +824,10 @@ Public Class frmGpsSettings
                 m_strCurrData = strData
             End If
             m_blConnected = True
-            InvokeAction(AddressOf GPSConnected, New EventArgs())
+            If Not m_blFirstTimeConnected Then
+                m_blFirstTimeConnected = True
+                InvokeAction(AddressOf GPSConnected, New EventArgs())
+            End If
             m_blDataGood = True
             Dim s() As String = Strings.Split(m_strCurrData, ",")
             If radGPGGA.Checked Then
@@ -832,6 +849,7 @@ Public Class frmGpsSettings
                 '(14)	"*43 "
                 If s(1) = "" Or s(2) = "" Or s(3) = "" Or s(4) = "" Or s(5) = "" Or s(9) = "" Then
                     m_blConnected = False
+                    m_blFirstTimeConnected = False
                     InvokeAction(AddressOf GPSDisconnected, New EventArgs())
                     m_blDataGood = False
                     Exit Sub
@@ -848,6 +866,7 @@ Public Class frmGpsSettings
                     ' There was a problem assigning the data, this can be due to a corruption in the stream
                     ' so that s(2) for example will be "49.923.345" which cannot be converted into a double
                     m_blConnected = False
+                    m_blFirstTimeConnected = False
                     InvokeAction(AddressOf GPSDisconnected, New EventArgs())
                     m_blDataGood = False
                     Exit Sub
@@ -869,6 +888,7 @@ Public Class frmGpsSettings
                 '(12)	"S*38 "
                 If s(1) = "" Or s(3) = "" Or s(5) = "" Or s(6) = "" Then
                     m_blConnected = False
+                    m_blFirstTimeConnected = False
                     InvokeAction(AddressOf GPSDisconnected, New EventArgs())
                     m_blDataGood = False
                     Exit Sub
@@ -885,6 +905,7 @@ Public Class frmGpsSettings
                     ' There was a problem assigneing the data, this can be due to a corruption in the stream
                     ' so that s(3) for example will be "49.923.345" which cannot be converted into a double
                     m_blConnected = False
+                    m_blFirstTimeConnected = False
                     InvokeAction(AddressOf GPSDisconnected, New EventArgs())
                     m_blDataGood = False
                     Exit Sub
@@ -928,6 +949,7 @@ Public Class frmGpsSettings
             If tsTimeDifference.Seconds > m_intTimeout Then
                 System.Diagnostics.Debug.WriteLine("Warning, gps connection suddenly lost!")
                 m_blConnected = False
+                m_blFirstTimeConnected = False
                 InvokeAction(AddressOf GPSDisconnected, New EventArgs())
                 m_blDataGood = False
                 If InvokeRequired Then
@@ -959,6 +981,7 @@ Public Class frmGpsSettings
                 MessageBox.Show("Warning: There is data received but it is likely that the baud rate is set too high. Please check connection settings, and make sure the GPS unit is turned on and is transimitting data then try again.", "GPS Connection", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1)
             End If
             m_blConnected = False
+            m_blFirstTimeConnected = False
             InvokeAction(AddressOf GPSDisconnected, New EventArgs())
             If InvokeRequired Then
                 Me.BeginInvoke(marshalCloseSerialPort)
@@ -967,6 +990,7 @@ Public Class frmGpsSettings
             End If
         Catch ex As Exception
             m_blConnected = False
+            m_blFirstTimeConnected = False
             InvokeAction(AddressOf GPSDisconnected, New EventArgs())
             If InvokeRequired Then
                 Me.BeginInvoke(marshalCloseSerialPort)

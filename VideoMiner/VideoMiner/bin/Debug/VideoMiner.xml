@@ -359,7 +359,7 @@ VideoMiner
  Handles when the user clicks the 'OK' button.
  </summary>
 	<remarks></remarks>
-</member><member name="M:VideoMiner.frmSetTime.changeSource(VideoMiner.frmSetTime.WhichTimeEnum)">
+</member><member name="M:VideoMiner.frmSetTime.ChangeSource(VideoMiner.frmSetTime.WhichTimeEnum)">
 	<summary>
  Change the time source type. Also set the textbox background, font, and value
  </summary>
@@ -371,29 +371,29 @@ VideoMiner
 	<summary>
  Stores the text time as written in the TextBox into a member variable stored as a Timespan object.
  </summary>
-</member><member name="M:VideoMiner.frmSetTime.rbManualTime_CheckedChanged(System.Object,System.EventArgs)">
+</member><member name="M:VideoMiner.frmSetTime.rbManualTime_Click(System.Object,System.EventArgs)">
 	<summary>
  Handle the click of the radiobutton to allow the user to manually set the time
  </summary>
-</member><member name="M:VideoMiner.frmSetTime.rbVideoTime_CheckedChanged(System.Object,System.EventArgs)">
+</member><member name="M:VideoMiner.frmSetTime.rbVideoTime_Click(System.Object,System.EventArgs)">
 	<summary>
  Handle the click of the button to set the time to zero
  </summary>
-</member><member name="M:VideoMiner.frmSetTime.rbComputerTime_CheckedChanged(System.Object,System.EventArgs)">
+</member><member name="M:VideoMiner.frmSetTime.rbComputerTime_Click(System.Object,System.EventArgs)">
 	<summary>
  Handle the click of the button to set the time to the current time on this computer
  </summary>
-</member><member name="M:VideoMiner.frmSetTime.rbGPSTime_CheckedChanged(System.Object,System.EventArgs)">
+</member><member name="M:VideoMiner.frmSetTime.rbGPSTime_Click(System.Object,System.EventArgs)">
 	<summary>
  Handle the click of the button to set the time to the GPS connection's time
  </summary>
-</member><member name="M:VideoMiner.frmSetTime.rbContinueTime_CheckedChanged(System.Object,System.EventArgs)">
+</member><member name="M:VideoMiner.frmSetTime.rbContinueTime_Click(System.Object,System.EventArgs)">
 	<summary>
  Handle the click of the button to set the time to the GPS connection's time
  </summary>
 </member><member name="M:VideoMiner.frmSetTime.validateTimeEntry">
 	<summary>
- Check the user input to make sure it is a valid time. Returns True is vaslid, False otherwise
+ Check the user input to make sure it is a valid time. Returns True if valid, False otherwise
  </summary>
 </member><member name="M:VideoMiner.frmSetTime.processOK">
 	<summary>
@@ -607,6 +607,13 @@ VideoMiner
 	<summary>
  If true, only the chosen NMEA strings will be sent to the data viewer form. If false, all incoming NMEA strings will be sent.
  </summary>
+</member><member name="F:VideoMiner.frmGpsSettings.m_blFirstTimeConnected">
+	<summary>
+ Because the connected variable is set everytime good data are received, this is required to keep track of the
+ first time it is connected. This allows the form to raise a GPSConnected event one time only,
+ upon connection.
+ </summary>
+	<remarks></remarks>
 </member><member name="F:VideoMiner.frmGpsSettings.m_blConnected">
 	<summary>
  True if the GPS data of the given NMEA string are being received, false otherwise
@@ -1088,9 +1095,21 @@ VideoMiner
 	<summary>
  Updates all GPS member variables and saves the configuration for all of them (xml file)
  </summary>
+</member><member name="M:VideoMiner.VideoMiner.frmSetTime_RequestGPS">
+	<summary>
+ The Set Time form will request GPS time, and this function handles that
+ </summary>
 </member><member name="M:VideoMiner.VideoMiner.frmSetTime_TimeSourceChanged">
 	<summary>
  Handles an event to grab the time from the frmSetTime form.
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.UnHandledHandler(System.Object,System.UnhandledExceptionEventArgs)">
+	<summary>
+ Handle everything not handled by .NET handlers. This will catch crossthread exceptions as well.
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.Me_Closing(System.Object,System.Windows.Forms.FormClosingEventArgs)">
+	<summary>
+ When the user clicks the X to close the application, this handles that and closes any open forms and sets them up for garbage collection
  </summary>
 </member><member name="T:VideoMiner.VideoMiner">
 	<summary>

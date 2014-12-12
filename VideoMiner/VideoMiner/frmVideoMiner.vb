@@ -7494,6 +7494,10 @@ SkipInsertComma:
         lblGPSPortValue.ForeColor = Color.LimeGreen
         lblGPSConnectionValue.Text = "CONNECTED"
         lblGPSConnectionValue.ForeColor = Color.Blue
+
+        frmSetTime.UserTime = m_GPSUserTime
+        frmSetTime.ChangeSource(Global.VideoMiner.frmSetTime.WhichTimeEnum.GPS)
+
     End Sub
 
     Private Sub gps_disconnected() Handles frmGpsSettings.GPSDisconnectedEvent
@@ -7528,13 +7532,6 @@ SkipInsertComma:
         txtTransectDate.ForeColor = Color.Red
         txtDateSource.ForeColor = Color.Red
     End Sub
-
-    'Private Sub close_serial_port() Handles frmGpsSettings.CloseSerialPortEvent
-    '    'Try
-    '    '    m_SerialPort.Close()
-    '    'Catch ex As Exception
-    '    'End Try
-    'End Sub
 
     Private Sub image_form_closing() Handles frmImage.ImageFormClosingEvent
         pnlImageControls.Visible = False
@@ -7680,19 +7677,24 @@ SkipInsertComma:
     End Sub
 
     ''' <summary>
+    ''' The Set Time form will request GPS time, and this function handles that
+    ''' </summary>
+    Private Sub frmSetTime_RequestGPS() Handles frmSetTime.RequestGPSTime
+        If frmGpsSettings.IsConnected Then
+            If mnuUseGPSTimeCodes.Checked Then
+                frmSetTime.UserTime = m_GPSUserTime
+                frmSetTime.ChangeSource(frmSetTime.WhichTimeEnum.GPS)
+            End If
+        Else
+            frmGpsSettings.ShowDialog()
+        End If
+    End Sub
+
+
+    ''' <summary>
     ''' Handles an event to grab the time from the frmSetTime form.
     ''' </summary>
     Private Sub frmSetTime_TimeSourceChanged() Handles frmSetTime.TimeSourceChange
-        If frmSetTime.WhichTime = frmSetTime.WhichTimeEnum.GPS Then
-            If frmGpsSettings.IsConnected Then
-                If mnuUseGPSTimeCodes.Checked Then
-                    frmSetTime.UserTime = m_GPSUserTime
-                End If
-            Else
-                frmGpsSettings.ShowDialog()
-            End If
-        End If
-        RefreshGPSStatus()
     End Sub
 
     Private Sub frmGpsSettings_DataChanged() Handles frmGpsSettings.DataChangedEvent
@@ -7703,6 +7705,9 @@ SkipInsertComma:
         End If
     End Sub
 
+    ''' <summary>
+    ''' Handle everything not handled by .NET handlers. This will catch crossthread exceptions as well.
+    ''' </summary>
     Sub UnHandledHandler(ByVal sender As Object, ByVal args As System.UnhandledExceptionEventArgs)
         Dim e As Exception = DirectCast(args.ExceptionObject, Exception)
 
@@ -7718,4 +7723,28 @@ SkipInsertComma:
 
     End Sub
 
+    ''' <summary>
+    ''' When the user clicks the X to close the application, this handles that and closes any open forms and sets them up for garbage collection
+    ''' </summary>
+    Private Sub Me_Closing(sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+        If MessageBox.Show("Are you sure you want to completely close VideoMiner?", "Close VideoMiner?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.No Then
+            e.Cancel = True
+        Else
+            If e.CloseReason = CloseReason.UserClosing Then
+                If frmVideoPlayer IsNot Nothing Then
+                    frmVideoPlayer.Close()
+                    frmVideoPlayer = Nothing
+                End If
+                If frmGpsSettings IsNot Nothing Then
+                    frmGpsSettings.Close()
+                    frmGpsSettings = Nothing
+                End If
+                If frmSetTime IsNot Nothing Then
+                    frmSetTime.Close()
+                    frmSetTime = Nothing
+                End If
+                e.Cancel = False
+            End If
+        End If
+    End Sub
 End Class

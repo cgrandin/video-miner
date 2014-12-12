@@ -20,13 +20,13 @@ Partial Class frmSetTime
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.txtSetTime = New WaterMarkTextBox()
         Me.cmdOk = New System.Windows.Forms.Button()
         Me.rbVideoTime = New System.Windows.Forms.RadioButton()
         Me.rbComputerTime = New System.Windows.Forms.RadioButton()
         Me.rbGPSTime = New System.Windows.Forms.RadioButton()
         Me.rbContinueTime = New System.Windows.Forms.RadioButton()
         Me.rbManualTime = New System.Windows.Forms.RadioButton()
+        Me.txtSetTime = New WaterMarkTextBox()
         Me.SuspendLayout()
         '
         'Label1
@@ -37,16 +37,6 @@ Partial Class frmSetTime
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(0, 15)
         Me.Label1.TabIndex = 0
-        '
-        'txtSetTime
-        '
-        Me.txtSetTime.Font = New System.Drawing.Font("Arial Rounded MT Bold", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtSetTime.Location = New System.Drawing.Point(12, 7)
-        Me.txtSetTime.Name = "txtSetTime"
-        Me.txtSetTime.Size = New System.Drawing.Size(150, 26)
-        Me.txtSetTime.TabIndex = 1
-        Me.txtSetTime.WaterMarkColor = System.Drawing.Color.Gray
-        Me.txtSetTime.WaterMarkText = "Water Mark"
         '
         'cmdOk
         '
@@ -112,6 +102,16 @@ Partial Class frmSetTime
         Me.rbManualTime.TabStop = True
         Me.rbManualTime.Text = "Manual time"
         Me.rbManualTime.UseVisualStyleBackColor = True
+        '
+        'txtSetTime
+        '
+        Me.txtSetTime.Font = New System.Drawing.Font("Arial Rounded MT Bold", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtSetTime.Location = New System.Drawing.Point(12, 7)
+        Me.txtSetTime.Name = "txtSetTime"
+        Me.txtSetTime.Size = New System.Drawing.Size(150, 26)
+        Me.txtSetTime.TabIndex = 1
+        Me.txtSetTime.WaterMarkColor = System.Drawing.Color.Gray
+        Me.txtSetTime.WaterMarkText = "Water Mark"
         '
         'frmSetTime
         '

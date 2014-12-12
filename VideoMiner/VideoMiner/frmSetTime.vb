@@ -57,7 +57,7 @@ Public Class frmSetTime
             Return m_enumWhichTime
         End Get
         Set(value As WhichTimeEnum)
-            changeSource(value)
+            ChangeSource(value)
         End Set
     End Property
 
@@ -104,7 +104,7 @@ Public Class frmSetTime
     Private Sub frmSetTime_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         rbManualTime.Checked = True
         m_enumWhichTime = WhichTimeEnum.Manual
-        changeSource(m_enumWhichTime)
+        ChangeSource(m_enumWhichTime)
     End Sub
 
     ''' <summary>
@@ -118,7 +118,7 @@ Public Class frmSetTime
     ''' <summary>
     ''' Change the time source type. Also set the textbox background, font, and value
     ''' </summary>
-    Private Sub changeSource(enumWhichSource As WhichTimeEnum)
+    Public Sub ChangeSource(enumWhichSource As WhichTimeEnum)
         m_enumWhichTime = enumWhichSource
 
         If m_enumWhichTime = WhichTimeEnum.Manual Then
@@ -138,15 +138,16 @@ Public Class frmSetTime
             txtSetTime.Enabled = False
             setTextTime()
         End If
+        If m_enumWhichTime = WhichTimeEnum.GPS Then
+            ' Tell calling form to populate the text field
+            txtSetTime.Enabled = False
+            setTextTime()
+        End If
         If m_enumWhichTime = WhichTimeEnum.Cont Then
             ' Tell calling form to populate the text field
             txtSetTime.Enabled = False
         End If
-        If m_enumWhichTime = WhichTimeEnum.GPS Then
-            ' Tell calling form to populate the text field
-            txtSetTime.Enabled = False
-        End If
-
+        Me.Refresh()
     End Sub
 
     ''' <summary>
@@ -168,45 +169,40 @@ Public Class frmSetTime
     ''' <summary>
     ''' Handle the click of the radiobutton to allow the user to manually set the time
     ''' </summary>
-    Private Sub rbManualTime_CheckedChanged(sender As Object, e As EventArgs) Handles rbManualTime.CheckedChanged
-        changeSource(WhichTimeEnum.Manual)
-        RaiseEvent TimeSourceChange()
+    Private Sub rbManualTime_Click(sender As Object, e As EventArgs) Handles rbManualTime.Click
+        ChangeSource(WhichTimeEnum.Manual)
     End Sub
 
     ''' <summary>
     ''' Handle the click of the button to set the time to zero
     ''' </summary>
-    Private Sub rbVideoTime_CheckedChanged(sender As Object, e As EventArgs) Handles rbVideoTime.CheckedChanged
-        changeSource(WhichTimeEnum.Video)
-        RaiseEvent TimeSourceChange()
+    Private Sub rbVideoTime_Click(sender As Object, e As EventArgs) Handles rbVideoTime.Click
+        ChangeSource(WhichTimeEnum.Video)
     End Sub
 
     ''' <summary>
     ''' Handle the click of the button to set the time to the current time on this computer
     ''' </summary>
-    Private Sub rbComputerTime_CheckedChanged(sender As Object, e As EventArgs) Handles rbComputerTime.CheckedChanged
-        changeSource(WhichTimeEnum.Computer)
-        RaiseEvent TimeSourceChange()
+    Private Sub rbComputerTime_Click(sender As Object, e As EventArgs) Handles rbComputerTime.Click
+        ChangeSource(WhichTimeEnum.Computer)
     End Sub
 
     ''' <summary>
     ''' Handle the click of the button to set the time to the GPS connection's time
     ''' </summary>
-    Private Sub rbGPSTime_CheckedChanged(sender As Object, e As EventArgs) Handles rbGPSTime.CheckedChanged
-        changeSource(WhichTimeEnum.GPS)
-        RaiseEvent TimeSourceChange()
+    Private Sub rbGPSTime_Click(sender As Object, e As EventArgs) Handles rbGPSTime.Click
+        RaiseEvent RequestGPSTime()
     End Sub
 
     ''' <summary>
     ''' Handle the click of the button to set the time to the GPS connection's time
     ''' </summary>
-    Private Sub rbContinueTime_CheckedChanged(sender As Object, e As EventArgs) Handles rbContinueTime.CheckedChanged
-        changeSource(WhichTimeEnum.Cont)
-        RaiseEvent TimeSourceChange()
+    Private Sub rbContinueTime_Click(sender As Object, e As EventArgs) Handles rbContinueTime.Click
+        RaiseEvent RequestContinueTime()
     End Sub
 
     ''' <summary>
-    ''' Check the user input to make sure it is a valid time. Returns True is vaslid, False otherwise
+    ''' Check the user input to make sure it is a valid time. Returns True if valid, False otherwise
     ''' </summary>
     Private Function validateTimeEntry() As Boolean
         Dim c As Char() = txtSetTime.Text.ToCharArray()
@@ -214,10 +210,9 @@ Public Class frmSetTime
             MessageBox.Show("Error in time entry. You must use exactly 8 digits, leading zeroes are required. No other characters are allowed.", "Time Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
         End If
-        ' Here we know that it is a string of 8 digits. Now to make sure it is a real time
-        ' Convert the cahr array to an array of integers
+        ' At this point, we know that it is a string of 8 digits. Now to make sure it is a real time
+        ' Convert the char array to an array of integers
         Dim i() As Integer = Array.ConvertAll(c, Function(x) Int32.Parse(x))
-
         If i(0) > 2 Then
             MessageBox.Show("Error in time entry. The first hours digit must not exceed 2. You entered " & i(0) & ".", "Time Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
