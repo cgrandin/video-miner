@@ -139,6 +139,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Release\Vlc.DotNet.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -345,6 +346,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ValueDescriptionPair.vb" />
+    <Compile Include="WaterMarkTextBox.vb">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AboutBox1.resx">

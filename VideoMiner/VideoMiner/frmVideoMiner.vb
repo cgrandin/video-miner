@@ -86,6 +86,7 @@ Public Class VideoMiner
     Private Const GPS_TIMEOUT_DEFAULT As Integer = 5
 
     Private Const VIDEO_TIME_FORMAT As String = "{0:D2}:{1:D2}:{2:D2}.{3:D3}" ' D3 = 3 decimal places
+    Private Const VIDEO_FRAME_STEP_DEFAULT As Integer = 500
     Public Const DB_ADO_CONN_STRING_1 As String = "Data Source="
     Public Const DB_ADO_CONN_STRING_2 As String = ";Initial Catalog=data"
     Public Const BAD_ID As Long = -1
@@ -175,6 +176,7 @@ Public Class VideoMiner
     ''' <remarks></remarks>
     Private m_tsUserTime As TimeSpan
 
+    ' GPS connection settings to initialize frmGpsSettings form with
     Private m_strComPort As String
     Private m_strNMEAStringType As String
     Private m_strParity As String
@@ -386,9 +388,7 @@ Public Class VideoMiner
     Private m_VideoTime As TimeSpan
     Private m_SessionName As String
 
-    Private m_GPSDate As String
-    Private m_GPSDateTime As String
-    Private m_GPSUserTime As String
+    Private m_GPSUserTime As TimeSpan
     Private m_GPS_X As Double
     Private m_GPS_Y As Double
     Private m_GPS_Z As Double
@@ -667,33 +667,6 @@ Public Class VideoMiner
         End Set
     End Property
 
-    Public Property GPSDate() As String
-        Get
-            Return m_GPSDate
-        End Get
-        Set(ByVal value As String)
-            m_GPSDate = value
-        End Set
-    End Property
-
-    Public Property GPSDateTime() As String
-        Get
-            Return m_GPSDateTime
-        End Get
-        Set(ByVal value As String)
-            m_GPSDateTime = value
-        End Set
-    End Property
-
-    Public Property GPSUserTime() As String
-        Get
-            Return m_GPSUserTime
-        End Get
-        Set(ByVal value As String)
-            m_GPSUserTime = value
-        End Set
-    End Property
-
     Public Property GPS_X() As Double
         Get
             Return m_GPS_X
@@ -938,7 +911,9 @@ Public Class VideoMiner
         ' it often leads to unpredictable results. A common invalid thread activity is a call on the wrong thread that accesses
         ' the Control 's Handle property. Set CheckForIllegalCrossThreadCalls to true to find and diagnose this thread activity
         ' more easily while debugging. 
-        Windows.Forms.Control.CheckForIllegalCrossThreadCalls = False
+        Dim currentDomain As AppDomain = AppDomain.CurrentDomain
+        AddHandler currentDomain.UnhandledException, AddressOf UnHandledHandler
+        Windows.Forms.Control.CheckForIllegalCrossThreadCalls = True
 
         Dim asType As Type = MyBase.GetType
         Dim assembly As System.Reflection.Assembly = System.Reflection.Assembly.GetAssembly(asType)
@@ -947,28 +922,11 @@ Public Class VideoMiner
         m_strVersion = aVersionInfo.ToString
         Text = Name & " - " & Version
 
-        ' CJG scrapped the registry stuff for now, seems pointless to me and just confuses things.
-        'Dim strRegFilePath As String = Registry.GetValue("HKEY_CURRENT_USER\VideoMiner", "FilePath", Nothing)
-        'Dim strRegFilePath = ""
-        'Dim strConfigFilePath As String
-        'If strRegFilePath = "" Then
-        'Registry key not available
-        'Dim strCurrDir As String = Directory.GetCurrentDirectory()
-        'Else
-        'Use registry key if available, otherwise use the current working directory
-        'strConfigFilePath = Path.Combine(strRegFilePath, "Config")
-        'End If
-
-        'Dim regKey As RegistryKey
-        'regKey = Registry.CurrentUser.CreateSubKey("Software\VideoMiner")
-        'regKey.SetValue("GPSStringType", "GPGGA")
-
         ' Enable Key preview so that video player hotkeys can be instantiated from this forms event handler.
         Me.KeyPreview = True
 
         Dim intX As Integer = Screen.PrimaryScreen.Bounds.Width
         Dim intY As Integer = Screen.PrimaryScreen.Bounds.Height
-        'Console.WriteLine(intX & ":" & intY)
 
         Dim aPoint As System.Drawing.Point
         aPoint.X = intX
@@ -1051,10 +1009,11 @@ Public Class VideoMiner
         ttToolTip.AutoPopDelay = 5000
         ttToolTip.ReshowDelay = 500
 
+        ' Need to create some form instances here. These forms will remain hidden throughout the session, and ShowDialog will be called to show them
         frmGpsSettings = New frmGpsSettings(m_strComPort, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
-        If frmGpsSettings IsNot Nothing Then
-            frmGpsSettings.ShowDialog()
-        End If
+        'frmGpsSettings.ShowDialog()
+        frmSetTime = New frmSetTime(m_tsUserTime)
+
     End Sub
 
     ''' <summary>
@@ -1570,9 +1529,9 @@ Public Class VideoMiner
     End Sub
 
     Private Sub GPSSettingsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuGPSSettings.Click
-        If frmGpsSettings Is Nothing Then
-            frmGpsSettings = New frmGpsSettings(m_strComPort, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
-        End If
+        'If frmGpsSettings Is Nothing Then
+        '    frmGpsSettings = New frmGpsSettings(m_strComPort, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
+        'End If
         frmGpsSettings.ShowDialog()
     End Sub
 
@@ -1591,13 +1550,9 @@ Public Class VideoMiner
             End If
 
             Me.FileName = "External Video"
-
-            frmSetTime = New frmSetTime(m_tsUserTime)
-            frmSetTime.ShowDialog()
+            frmSetTime.Show()
             frmSetTime.BringToFront()
-
         Else
-
             'Me.mnuPlay.Enabled = True
             'Me.mnuStop.Enabled = True
             'Me.mnuPause.Enabled = True
@@ -1733,8 +1688,7 @@ Public Class VideoMiner
             Exit Sub
         End If
         pauseVideo()
-        frmSetTime = New frmSetTime(m_tsUserTime)
-        frmSetTime.ShowDialog()
+        frmSetTime.Show()
     End Sub
 
     Private Sub TransectStart_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdTransectStart.Click
@@ -3369,13 +3323,13 @@ Public Class VideoMiner
                         aPoint.Y = intY / 2
                         frmVideoPlayer.Location = aPoint
                         frmVideoPlayer.WindowState = FormWindowState.Normal
-                        frmVideoPlayer.TopMost = True
+                        'frmVideoPlayer.TopMost = True
                     Else
                         aPoint.X = intX + priMon.Bounds.Width
                         aPoint.Y = intY / 2
                         frmVideoPlayer.Location = aPoint
                         frmVideoPlayer.WindowState = FormWindowState.Maximized
-                        frmVideoPlayer.TopMost = True
+                        'frmVideoPlayer.TopMost = True
                     End If
                     Me.VideoTime = Parse(strVideoTime)
                     frmVideoPlayer.Show()
@@ -4004,8 +3958,8 @@ Public Class VideoMiner
         strX = Me.lblXValue.Text
         strY = Me.lblYValue.Text
         strZ = Me.lblZValue.Text
-        transect_date = Me.GPSDate
-        strVideoTime = Me.GPSDateTime
+        'transect_date = Me.GPSDate
+        'strVideoTime = Me.GPSDateTime
         strVideoDecimalTime = strVideoTime & ".00"
         Return True
 
@@ -4677,7 +4631,7 @@ Public Class VideoMiner
                 aPoint.Y = intY / 2
                 frmVideoPlayer.Location = aPoint
                 frmVideoPlayer.WindowState = FormWindowState.Normal
-                frmVideoPlayer.TopMost = True
+                'frmVideoPlayer.TopMost = True
             Else
                 ' CJG need to fix back to 2 monitors
                 'aPoint.X = intX + priMon.Bounds.Width
@@ -4686,7 +4640,7 @@ Public Class VideoMiner
                 aPoint.Y = intY / 4
                 frmVideoPlayer.Location = aPoint
                 'frmVideoPlayer.WindowState = FormWindowState.Maximized
-                frmVideoPlayer.TopMost = True
+                'frmVideoPlayer.TopMost = True
             End If
             Me.VideoTime = Zero
             frmVideoPlayer.Show()
@@ -4734,7 +4688,7 @@ Public Class VideoMiner
             playVideo()
             If Me.chkRecordEachSecond.Checked = True Then
                 blFirstTime = True
-                Me.tmrRecordPerSecond.Start()
+                'Me.tmrRecordPerSecond.Start()
             End If
         Else
             ' If it is already playing then pause it.
@@ -4856,187 +4810,12 @@ Public Class VideoMiner
     End Sub
 
     Private Sub Stepforward()
-        frmVideoPlayer.stepForward(CInt(txtFramesToSkip.Text))
+        If txtFramesToSkip.Text = "" Then
+            frmVideoPlayer.stepForward(VIDEO_FRAME_STEP_DEFAULT)
+        Else
+            frmVideoPlayer.stepForward(CInt(txtFramesToSkip.Text))
+        End If
     End Sub
-
-    'Private Sub StepForward()
-    '    ' This function steps forward the video by 10% based on where the video is currently and the duration of the video
-    '    ' I am going to try to make this button a frame stepper, using keyframes.
-    '    Dim dblDurationSeconds As Double = 0
-    '    Dim dblCurrentSeconds As Double = 0
-
-    '    dblCurrentSeconds = frmVideoPlayer.Position
-    '    dblDurationSeconds = frmVideoPlayer.dblDuration
-
-    '    Dim dblDuration As Double
-    '    dblDuration = frmVideoPlayer.dblDuration
-    '    'dblDuration = frmVideoPlayer.currentMedia.duration
-    '    Dim intValue As Integer
-
-    '    intValue = CInt((dblCurrentSeconds / dblDuration) * 100)
-    '    Select Case intValue
-
-    '        Case Is < 10
-    '            intValue = 10
-    '        Case Is < 20
-    '            intValue = 20
-    '        Case Is < 30
-    '            intValue = 30
-    '        Case Is < 40
-    '            intValue = 40
-    '        Case Is < 50
-    '            intValue = 50
-    '        Case Is < 60
-    '            intValue = 60
-    '        Case Is < 70
-    '            intValue = 70
-    '        Case Is < 80
-    '            intValue = 80
-    '        Case Is < 90
-    '            intValue = 90
-    '        Case Is < 100
-    '            intValue = 100
-    '        Case Else
-    '            Exit Sub
-    '    End Select
-
-    '    frmVideoPlayer.blChapter = True
-    '    frmVideoPlayer.trkCurrentPosition.Value = intValue
-
-
-    '    'plyrVideoPlayer.Ctlcontrols.currentPosition = dblValue * plyrVideoPlayer.currentMedia.duration
-
-    '    Dim strCurrentTime As String = ""
-    '    Dim strDurationTime As String = ""
-
-
-    '    'dblCurrentSeconds = plyrVideoPlayer.Ctlcontrols.currentPosition
-    '    'dblDurationSeconds = plyrVideoPlayer.currentMedia.duration - dblCurrentSeconds
-
-
-
-    '    frmVideoPlayer.Position = frmVideoPlayer.dblDuration * (intValue / 100)
-    '    'strCurrentTime = createTimeString(frmVideoPlayer.Position)
-    '    'strDurationTime = createTimeString(dblDurationSeconds)
-    '    frmVideoPlayer.lblCurrentTime.Text = strCurrentTime
-    '    frmVideoPlayer.lblDuration.Text = strDurationTime
-
-    '    'If frmVideoPlayer.input.state = 2 Then
-    '    '    MsgBox("Buffering")
-    '    'Else
-    '    '    MsgBox("Playing")
-    '    'End If
-
-    'End Sub
-
-    'Private Sub StepBackward()
-    '    Dim dblDurationSeconds As Double = 0
-    '    Dim dblCurrentSeconds As Double = 0
-
-    '    dblCurrentSeconds = frmVideoPlayer.Position
-    '    dblDurationSeconds = frmVideoPlayer.dblDuration
-
-    '    'dblCurrentSeconds = frmVideoPlayer.Ctlcontrols.currentPosition
-    '    'dblDurationSeconds = frmVideoPlayer.currentMedia.duration
-
-    '    Dim dblDuration As Double
-    '    dblDuration = frmVideoPlayer.dblDuration
-    '    'dblDuration = frmVideoPlayer.currentMedia.duration
-    '    Dim intValue As Integer
-
-    '    intValue = CInt((dblCurrentSeconds / dblDuration) * 100)
-
-
-    '    Select Case intValue
-    '        Case Is > 90
-    '            intValue = 90
-    '        Case Is > 80
-    '            intValue = 80
-    '        Case Is > 70
-    '            intValue = 70
-    '        Case Is > 60
-    '            intValue = 60
-    '        Case Is > 50
-    '            intValue = 50
-    '        Case Is > 40
-    '            intValue = 40
-    '        Case Is > 30
-    '            intValue = 30
-    '        Case Is > 20
-    '            intValue = 20
-    '        Case Is > 10
-    '            intValue = 10
-    '        Case Is > 0
-    '            intValue = 0
-    '            dblCurrentSeconds = 0
-    '        Case Else
-    '            Exit Sub
-    '    End Select
-
-    '    frmVideoPlayer.blChapter = True
-    '    frmVideoPlayer.trkCurrentPosition.Value = intValue
-
-
-    '    'plyrVideoPlayer.Ctlcontrols.currentPosition = dblValue * plyrVideoPlayer.currentMedia.duration
-
-    '    Dim strCurrentTime As String = ""
-    '    Dim strDurationTime As String = ""
-
-
-    '    'dblCurrentSeconds = plyrVideoPlayer.Ctlcontrols.currentPosition
-    '    'dblDurationSeconds = plyrVideoPlayer.currentMedia.duration - dblCurrentSeconds
-
-
-
-    '    frmVideoPlayer.Position = frmVideoPlayer.dblDuration * (intValue / 100)
-    '    'strCurrentTime = createTimeString(frmVideoPlayer.Position)
-    '    'strDurationTime = createTimeString(dblDurationSeconds)
-    '    frmVideoPlayer.lblCurrentTime.Text = strCurrentTime
-    '    frmVideoPlayer.lblDuration.Text = strDurationTime
-    'End Sub
-
-    'Private Function FormatTimeCode(ByVal str As String) As String
-
-    '    Dim strTime As String = ""
-    '    Dim dr As DialogResult
-
-    '    If (str.Length <> 8) Then
-    '        dr = MessageBox.Show("The time code must be 8 digits in length (HHMMSSmm).", "Time Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-    '        Return strTime
-    '    End If
-
-    '    Dim strHour As String = str.Substring(0, 2)
-    '    Dim intHour As Integer = CType(strHour, Integer)
-    '    If (intHour < 0) Or (intHour > 23) Then
-    '        dr = MessageBox.Show("You have entered a hour value of: " & strHour & ", which is invalid.", "Time Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-    '        Return strTime
-    '    End If
-
-    '    Dim strMinute As String = str.Substring(2, 2)
-    '    Dim intMinute As Integer = CType(strMinute, Integer)
-    '    If (intMinute < 0) Or (intMinute > 59) Then
-    '        dr = MessageBox.Show("You have entered a minute value of: " & strMinute & ", which is invalid.", "Time Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-    '        Return strTime
-    '    End If
-
-    '    Dim strSecond As String = str.Substring(4, 2)
-    '    Dim intSecond As Integer = CType(strSecond, Integer)
-    '    If (intSecond < 0) Or (intSecond > 59) Then
-    '        dr = MessageBox.Show("You have entered a second value of: " & strSecond & ", which is invalid.", "Time Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-    '        Return strTime
-    '    End If
-
-    '    Dim strMilliseconds As String = str.Substring(6, 2)
-    '    Dim intMilliseconds As Integer = CType(strMilliseconds, Integer)
-    '    If (intMilliseconds < 0) Or (intMilliseconds > 99) Then
-    '        dr = MessageBox.Show("You have entered a milli-second value of: " & strMilliseconds & ", which is invalid.", "Time Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-    '        Return strTime
-    '    End If
-
-    '    strTime = strHour & ":" & strMinute & ":" & strSecond & "." & strMilliseconds
-    '    Return strTime
-
-    'End Function
 
 #End Region
 
@@ -7091,82 +6870,43 @@ SkipInsertComma:
     End Sub
 
     Private Sub cmdIncreaseRate_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdIncreaseRate.Click
-
         increaseRate()
-        'If frmVideoPlayer.settings.isAvailable("rate") Then
-        ' increaseRate()
-        'Else
-        'If frmVideoPlayer.Ctlcontrols.isAvailable("FastForward") And frmVideoPlayer.playState <> WMPLib.WMPPlayState.wmppsScanForward Then
-        ' frmVideoPlayer.Ctlcontrols.fastForward()
-        ' Me.LblRate.Text = "5.0 X"
-        ' End If
-
-        'End If
-
-
     End Sub
 
     Private Sub cmdDecreaseRate_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDecreaseRate.Click
-
         decreaseRate()
-        'If frmVideoPlayer.settings.isAvailable("rate") Then
-        ' decreaseRate()
-        'Else
-        'If frmVideoPlayer.Ctlcontrols.isAvailable("FastForward") And frmVideoPlayer.playState = WMPLib.WMPPlayState.wmppsScanForward Then
-        'frmVideoPlayer.Ctlcontrols.play()
-        'Me.LblRate.Text = "1.0 X"
-        'End If
-        'End If
-
-
     End Sub
 
     Private Sub mnuImageZoom25_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuImageZoom25.Click
-
         Me.cboZoom.SelectedItem = "25%"
-
     End Sub
 
     Private Sub mnuImageZoom50_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuImageZoom50.Click
-
         Me.cboZoom.SelectedItem = "50%"
-
     End Sub
 
     Private Sub mnuImageZoom75_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuImageZoom75.Click
-
         Me.cboZoom.SelectedItem = "75%"
-
     End Sub
 
     Private Sub mnuImageZoom100_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuImageZoom100.Click
-
         Me.cboZoom.SelectedItem = "100%"
-
     End Sub
 
     Private Sub mnuImageZoom200_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuImageZoom200.Click
-
         Me.cboZoom.SelectedItem = "200%"
-
     End Sub
 
     Private Sub NextImageToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles NextImageToolStripMenuItem.Click
-
         cmdNextImage_Click(sender, e)
-
     End Sub
 
     Private Sub PreviousImageToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PreviousImageToolStripMenuItem.Click
-
         cmdPreviousImage_Click(sender, e)
-
     End Sub
 
     Private Sub CloseImageFileToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CloseImageFileToolStripMenuItem.Click
-
         frmImage.Close()
-
     End Sub
 
     Private Sub CloseVideoFileToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
@@ -7184,14 +6924,6 @@ SkipInsertComma:
     Public Sub cmdPrevious_MouseLeave(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPrevious.MouseLeave
         ttToolTip.Hide(Me)
     End Sub
-
-    'Private Sub chkResumeVideo_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkResumeVideo.CheckedChanged
-    '    If chkResumeVideo.Checked = True Then
-    '        booResumeVideo = True
-    '    Else
-    '        booResumeVideo = False
-    '    End If
-    'End Sub
 
     Private Sub DataCodeAssignmentsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DataCodeAssignmentsToolStripMenuItem.Click
         frmDataCodes = New frmDataCodes
@@ -7227,24 +6959,8 @@ SkipInsertComma:
         frmRelayConfiguration.ShowDialog()
     End Sub
 
-    ' Handles data being received from the serial port
-    'Private Sub DataRecieved(ByVal sender As System.Object, ByVal e As System.IO.Ports.SerialDataReceivedEventArgs) Handles aSerialPort.DataReceived
-    '    'If Not frmGpsSettings Is Nothing Then
-    '    ' Set the delegate for the invokation
-    '    Dim del As myDelegate
-    '    del = New myDelegate(AddressOf updateTextBox)
-
-    '    Try
-    '        txtNMEA.Invoke(del)  ' Invoke the method to update the NMEA text box
-    '    Catch ex As Exception
-
-    '    End Try
-    '    'End If
-    'End Sub
-
     ' Handles updating the NMEA text box
     Public Sub updateTextBox()
-
         'Try
         '    strTimeDateSource = "GPS"
         '    intTimeSource = 4
@@ -7445,7 +7161,7 @@ SkipInsertComma:
         Me.mnuCapScr_Click(sender, e)
     End Sub
 
-    Private Sub tmrGPSExpiry_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrGPSExpiry.Tick
+    Private Sub tmrGPSExpiry_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs)
         If Me.txtTime.Text <> strPreviousGPSTime Then
             strPreviousGPSTime = Me.txtTime.Text
             Me.txtTimeSource.ForeColor = Color.LimeGreen
@@ -7506,9 +7222,6 @@ SkipInsertComma:
 
         transect_date = strDate
         Me.txtTransectDate.Text = transect_date
-        If Not frmSetTime Is Nothing Then
-            frmSetTime.txtSetTime.Text = strTime
-        End If
 
     End Sub
 
@@ -7708,7 +7421,12 @@ SkipInsertComma:
     ''' Set the User time (txtTime) textbox and source time (txtTimeSource) to show
     ''' </summary>
     Private Sub setTimes()
-        Dim tsNewTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
+        Dim tsNewTime As TimeSpan
+        If frmVideoPlayer IsNot Nothing Then
+            tsNewTime = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
+        Else
+            tsNewTime = m_tsUserTime
+        End If
         ' Format the time according to the VIDEO_TIME_FORMAT
         txtTime.Text = String.Format(VIDEO_TIME_FORMAT, tsNewTime.Hours, tsNewTime.Minutes, tsNewTime.Seconds, tsNewTime.Milliseconds)
         txtTime.Font = New Font("", 10, FontStyle.Bold)
@@ -7735,103 +7453,6 @@ SkipInsertComma:
     Private Sub time_changed() Handles frmSetTime.TimeChanged
         m_tsUserTime = frmSetTime.UserTime
         setTimes()
-    End Sub
-
-    Private Sub use_gps_time() Handles frmSetTime.UseGPSTime
-        'blUseGPSTime = True
-        'blUseComputerTime = False
-        'blUseElapsedTime = False
-        'blUseVideoTime = False
-        'mnuUseGPSTimeCodes.Checked = True
-
-        'If tmrComputerTime.Enabled Then
-        '    tmrComputerTime.Stop()
-        'End If
-
-        'mnuUseGPSTimeCodes_Click(Me, Nothing)
-        'If m_SerialPort Is Nothing Then
-        '    frmSetTime.Close()
-        'End If
-
-        'If m_SerialPort.IsOpen Then
-        '    frmSetTime.setGPSInfo()
-        'End If
-    End Sub
-
-    Private Sub use_computer_time() Handles frmSetTime.UseComputerTime
-        'If Not m_SerialPort Is Nothing Then
-        '    If m_SerialPort.IsOpen Then
-        '        Dim closePort As Thread = New Thread(New ThreadStart(AddressOf CloseSerialPort))
-        '        closePort.Start()
-        '    End If
-        'End If
-        If tmrGPSExpiry.Enabled Then
-            tmrGPSExpiry.Stop()
-        End If
-        strTimeDateSource = "COMPUTER"
-        intTimeSource = 5
-
-        blUseGPSTime = False
-        blUseComputerTime = True
-        blUseElapsedTime = False
-        blUseVideoTime = False
-
-        txtTime.Font = New Font("", 10, FontStyle.Bold)
-        txtTime.BackColor = Color.LightGray
-        txtTime.ForeColor = Color.LimeGreen
-        txtTime.TextAlign = HorizontalAlignment.Center
-
-        txtTimeSource.Text = strTimeDateSource
-        txtTimeSource.Font = New Font("", 10, FontStyle.Bold)
-        txtTimeSource.BackColor = Color.LightGray
-        txtTimeSource.ForeColor = Color.LimeGreen
-        txtTimeSource.TextAlign = HorizontalAlignment.Center
-        txtDateSource.Text = strTimeDateSource
-        txtDateSource.Font = New Font("", 10, FontStyle.Bold)
-        txtDateSource.BackColor = Color.LightGray
-        txtDateSource.ForeColor = Color.LimeGreen
-        txtDateSource.TextAlign = HorizontalAlignment.Center
-        tmrComputerTime.Start()
-    End Sub
-
-    Private Sub use_elapsed_time() Handles frmSetTime.UseElapsedTime
-        If tmrComputerTime.Enabled Then
-            tmrComputerTime.Stop()
-        End If
-        'If Not m_SerialPort Is Nothing Then
-        '    If m_SerialPort.IsOpen Then
-        '        Dim closePort As Thread = New Thread(New ThreadStart(AddressOf CloseSerialPort))
-        '        closePort.Start()
-        '    End If
-        'End If
-        strTimeDateSource = "ELAPSED"
-        intTimeSource = 1
-        blUseGPSTime = False
-        blUseComputerTime = False
-        blUseElapsedTime = True
-        blUseVideoTime = False
-
-        txtTimeSource.Text = strTimeDateSource
-        txtTimeSource.Font = New Font("", 10, FontStyle.Bold)
-        txtTimeSource.BackColor = Color.LightGray
-        txtTimeSource.ForeColor = Color.LimeGreen
-        txtTimeSource.TextAlign = HorizontalAlignment.Center
-        txtDateSource.Text = strTimeDateSource
-        txtDateSource.Font = New Font("", 10, FontStyle.Bold)
-        txtDateSource.BackColor = Color.LightGray
-        txtDateSource.ForeColor = Color.LimeGreen
-        txtDateSource.TextAlign = HorizontalAlignment.Center
-
-    End Sub
-
-    Private Sub use_continue_time() Handles frmSetTime.UseContinueTime
-        txtTimeSource.Text = strTimeDateSource
-        txtTimeSource.Font = New Font("", 10, FontStyle.Bold)
-        txtTimeSource.BackColor = Color.LightGray
-        txtTimeSource.ForeColor = Color.LimeGreen
-        txtTimeSource.TextAlign = HorizontalAlignment.Center
-        'CJG
-        'frmSetTime.UserTime = strPreviousClipTime
     End Sub
 
     Private Sub species_configuration_update() Handles frmConfigureSpecies.SpeciesConfigurationUpdate
@@ -7871,7 +7492,7 @@ SkipInsertComma:
     Private Sub gps_connected() Handles frmGpsSettings.GPSConnectedEvent
         lblGPSPortValue.Text = "OPEN"
         lblGPSPortValue.ForeColor = Color.LimeGreen
-        lblGPSConnectionValue.Text = "SEARCHING. . ."
+        lblGPSConnectionValue.Text = "CONNECTED"
         lblGPSConnectionValue.ForeColor = Color.Blue
     End Sub
 
@@ -7887,6 +7508,15 @@ SkipInsertComma:
         txtTimeSource.ForeColor = Color.Red
         txtDateSource.ForeColor = Color.Red
 
+        txtNMEA.Text = ""
+        txtNMEA.Visible = False
+        lblGPSLocation.Visible = False
+        lblX.Visible = False
+        lblY.Visible = False
+        lblZ.Visible = False
+
+        mnuUseGPSTimeCodes.Checked = False
+        frmSetTime.TimeSource = Global.VideoMiner.frmSetTime.WhichTimeEnum.Video
     End Sub
 
     Private Sub gps_connecting() Handles frmGpsSettings.ConnectingSerialPortEvent
@@ -8012,6 +7642,80 @@ SkipInsertComma:
         SaveConfiguration(XPATH_GPS_TIMEOUT, CStr(m_intTimeout))
     End Sub
 
+    Private Delegate Sub RefreshGPSStatusDelegate()
+    Private marshalRefreshGPSStatus As RefreshGPSStatusDelegate = New RefreshGPSStatusDelegate(AddressOf RefreshGPSStatus)
 
+    Private Sub RefreshGPSStatus()
+        If frmGpsSettings.IsConnected Then
+            m_GPSUserTime = frmGpsSettings.GPSTime
+            m_tsUserTime = frmGpsSettings.GPSTime
+            lblXValue.Text = frmGpsSettings.LatitudeDegrees & Chr(&HB0) & "  " & frmGpsSettings.LatitudeMinutes & "'"
+            lblYValue.Text = frmGpsSettings.LongitudeDegrees & Chr(&HB0) & "  " & frmGpsSettings.LongitudeMinutes & "'"
+            lblZValue.Text = frmGpsSettings.Elevation & "m"
+            txtNMEA.Text = frmGpsSettings.NMEAString
+            lblX.Visible = True
+            lblY.Visible = True
+            lblZ.Visible = True
+            lblXValue.Visible = True
+            lblYValue.Visible = True
+            lblZValue.Visible = True
+            lblGPSLocation.Visible = True
+            txtNMEA.Visible = True
+            mnuUseGPSTimeCodes.Checked = True
+            mnuUseGPSTimeCodes_Click(Me, Nothing)
+        Else
+            lblX.Visible = False
+            lblY.Visible = False
+            lblZ.Visible = False
+            lblXValue.Visible = False
+            lblYValue.Visible = False
+            lblZValue.Visible = False
+            txtNMEA.Visible = False
+            lblGPSLocation.Visible = False
+            m_tsUserTime = frmSetTime.UserTime
+            mnuUseGPSTimeCodes.Checked = False
+        End If
+        Dim ts As TimeSpan = m_tsUserTime + m_VideoTime
+        txtTime.Text = pad0(ts.Hours) & ":" & pad0(ts.Minutes) & ":" & pad0(ts.Seconds)
+    End Sub
+
+    ''' <summary>
+    ''' Handles an event to grab the time from the frmSetTime form.
+    ''' </summary>
+    Private Sub frmSetTime_TimeSourceChanged() Handles frmSetTime.TimeSourceChange
+        If frmSetTime.WhichTime = frmSetTime.WhichTimeEnum.GPS Then
+            If frmGpsSettings.IsConnected Then
+                If mnuUseGPSTimeCodes.Checked Then
+                    frmSetTime.UserTime = m_GPSUserTime
+                End If
+            Else
+                frmGpsSettings.ShowDialog()
+            End If
+        End If
+        RefreshGPSStatus()
+    End Sub
+
+    Private Sub frmGpsSettings_DataChanged() Handles frmGpsSettings.DataChangedEvent
+        If Me.InvokeRequired Then
+            Me.Invoke(marshalRefreshGPSStatus)
+        Else
+            RefreshGPSStatus()
+        End If
+    End Sub
+
+    Sub UnHandledHandler(ByVal sender As Object, ByVal args As System.UnhandledExceptionEventArgs)
+        Dim e As Exception = DirectCast(args.ExceptionObject, Exception)
+
+        Console.WriteLine("MyHandler caught : " + e.Message)
+        Console.WriteLine("Runtime terminating: {0}", args.IsTerminating)
+
+        Dim st As New StackTrace(e, True)
+        Dim frame As StackFrame
+        frame = st.GetFrame(0)
+        Dim line As Integer
+        line = frame.GetFileLineNumber
+        MsgBox("At line " & line & " " & e.Message & ". The stack trace is as folows: " & e.StackTrace)
+
+    End Sub
 
 End Class

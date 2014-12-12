@@ -33,7 +33,7 @@ Public Class frmGpsSettings
     ''' <summary>
     ''' The date and time of the last data received. Used with m_lngConnectedCounter to figure out if the connection has been terminated.
     ''' </summary>
-    Private m_dtLastTimeDataReceived As DateTime
+    Private m_tsLastTimeDataReceived As TimeSpan
 
     ' Serial port connection variables
     ''' <summary>
@@ -68,6 +68,10 @@ Public Class frmGpsSettings
     ''' Timeout in seconds for the serial port connection
     ''' </summary>
     Private m_intTimeout As Integer
+    ''' <summary>
+    ''' If true, only the chosen NMEA strings will be sent to the data viewer form. If false, all incoming NMEA strings will be sent.
+    ''' </summary>
+    Private m_blSendChosenStringsOnly As Boolean
 
     ' Connection variables
     ''' <summary>
@@ -96,9 +100,9 @@ Public Class frmGpsSettings
     ''' <remarks>H=Hour, M=Minute, S=Second</remarks>
     Private m_dblGPSTime As Double
     ''' <summary>
-    ''' GPS time value as a DateTime object
+    ''' GPS time value as a TimeSpan object
     ''' </summary>
-    Private m_dtGPSTime As DateTime
+    Private m_tsGPSTime As TimeSpan
     ''' <summary>
     ''' A string which holds the most recent good data, which means data that matched the NMEA string requested
     ''' </summary>
@@ -127,6 +131,18 @@ Public Class frmGpsSettings
     ''' </summary>
     Dim m_tmrcbTimerDelegate As Threading.TimerCallback
 
+    ' Delegates and associated marshaller objects
+    Delegate Sub RefreshStatusDelegate()
+    Private marshalRefreshStatus As RefreshStatusDelegate = New RefreshStatusDelegate(AddressOf RefreshStatus)
+    Delegate Sub AppendStringDelegate(strCurrData As String)
+    Private marshalAppendString As AppendStringDelegate = New AppendStringDelegate(AddressOf frmStringDataViewer.AppendString)
+    Delegate Sub GetDataDelegate(strData As String)
+    Private marshalGetData As GetDataDelegate = New GetDataDelegate(AddressOf GetData)
+    Delegate Sub CloseSerialPortDelegate()
+    Private marshalCloseSerialPort As CloseSerialPortDelegate = New CloseSerialPortDelegate(AddressOf CloseSerialPort)
+
+    Delegate Sub HideDelegate()
+    Private marshalHide As HideDelegate = New HideDelegate(AddressOf Me.Hide)
 #End Region
 
 #Region "Properties"
@@ -368,13 +384,9 @@ Public Class frmGpsSettings
         End Get
     End Property
 
-    Public ReadOnly Property GPSTime As DateTime
+    Public ReadOnly Property GPSTime As TimeSpan
         Get
-            Dim hours As Integer = m_dblGPSTime \ 10000
-            Dim minutes As Integer = (m_dblGPSTime - hours) \ 100
-            Dim seconds As Integer = (m_dblGPSTime - hours) Mod 100
-            m_dtGPSTime = New DateTime(0, 0, 0, hours, minutes, seconds)
-            Return m_dtGPSTime
+            Return m_tsGPSTime
         End Get
     End Property
 
@@ -395,6 +407,13 @@ Public Class frmGpsSettings
             Return pad0((m_dblGPSTime - GPSHours * 10000) Mod 100)
         End Get
     End Property
+
+    Public ReadOnly Property NMEAString As String
+        Get
+            Return m_strCurrData
+        End Get
+    End Property
+
 #End Region
 
 #Region "Events"
@@ -408,20 +427,40 @@ Public Class frmGpsSettings
     ''' </summary>
     Event GPSConnectedEvent()
     ''' <summary>
+    ''' Required for InvokeAction calls
+    ''' </summary>
+    Protected Overridable Sub GPSConnected()
+        RaiseEvent GPSConnectedEvent()
+    End Sub
+    ''' <summary>
     ''' Used to signal that the serial port is not connected, so the data are not available
     ''' </summary>
     Event GPSDisconnectedEvent()
-    'Event SerialPortClosedEvent()
-    'Event SerialPortOpenEvent()
+    ''' <summary>
+    ''' Required for InvokeAction calls
+    ''' </summary>
+    Protected Overridable Sub GPSDisconnected()
+        RaiseEvent GPSDisconnectedEvent()
+    End Sub
     ''' <summary>
     ''' Signal that the form is currently trying to connect to the serial port
     ''' </summary>
     Event ConnectingSerialPortEvent()
     ''' <summary>
+    ''' Signals that there are new good data ready to be retrieved
+    ''' </summary>
+    Event DataChangedEvent()
+    ''' <summary>
+    ''' Required for InvokeAction calls
+    ''' </summary>
+    Protected Overridable Sub DataChanged()
+        RaiseEvent DataChangedEvent()
+    End Sub
+    ''' <summary>
     ''' Signals that there are no COM ports available on this machine
     ''' </summary>
     ''' <remarks></remarks>
-    'Event NoCOMPortsEvent()
+    Event NoCOMPortsEvent()
 #End Region
 
     ''' <summary>
@@ -444,6 +483,7 @@ Public Class frmGpsSettings
         m_dblGPSTime = 0.0
         m_strCurrData = ""
         m_blDataGood = False
+        m_blSendChosenStringsOnly = True
 
         With Me.cboComPort
             If My.Computer.Ports.SerialPortNames.Count > 0 Then
@@ -496,6 +536,7 @@ Public Class frmGpsSettings
                 .SelectedIndex = 0
             End If
         End With
+        m_frmStringDataViewer = New frmStringDataViewer()
     End Sub
 
     Private Sub frmGpsSettings_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
@@ -504,7 +545,9 @@ Public Class frmGpsSettings
         ' it often leads to unpredictable results. A common invalid thread activity is a call on the wrong thread that accesses
         ' the Control 's Handle property. Set CheckForIllegalCrossThreadCalls to true to find and diagnose this thread activity
         ' more easily while debugging. 
-        Windows.Forms.Control.CheckForIllegalCrossThreadCalls = False
+        Dim currentDomain As AppDomain = AppDomain.CurrentDomain
+        AddHandler currentDomain.UnhandledException, AddressOf UnHandledHandler
+        Windows.Forms.Control.CheckForIllegalCrossThreadCalls = True
 
         If My.Computer.Ports.SerialPortNames.Count = 0 Then
             Me.Text = "NO COM PORTS FOUND"
@@ -523,12 +566,12 @@ Public Class frmGpsSettings
         cboStopBits.Text = CStr(m_dblStopBits)
         txtDataBits.Text = CStr(m_intDataBits)
         txtTimeout.Text = CStr(m_intTimeout)
+        RefreshStatus()
     End Sub
 
     ''' <summary>
     ''' Set the member variables to be what they currently are in the form selections controls.
     ''' </summary>
-    ''' <remarks>Closes the serial port if it is open, and sets it to Nothing</remarks>
     Private Sub SetSerialPortVariables()
         m_strComPort = Me.cboComPort.Text
         If Me.radGPGGA.Checked Then
@@ -583,18 +626,15 @@ Public Class frmGpsSettings
             lblGPSMessage.Text = "SEARCHING. . ."
             lblGPSMessage.ForeColor = Color.Blue
             tmrGPSTimeout.Start()
-
-            'CJG commented while removing myformlibrary
-            'If myFormLibrary.frmVideoMiner.tmrGPSExpiry.Enabled Then
-            ' myFormLibrary.frmVideoMiner.tmrGPSExpiry.Stop()
-            'End If
         End If
     End Sub
 
     ''' <summary>
     ''' Refresh all window controls based on connectivity of the serial port object.
-    ''' Raises the connected event
+    ''' Raises the connected event. Also append the newest good data line to the
+    ''' port data viewer form.
     ''' </summary>
+    ''' <remarks>This subroutine is thread safe. Raises the GPSConnected or GPSDisconnected events via a delegate</remarks>
     Private Sub RefreshStatus()
         If IsOpen Then
             cmdConnection.Enabled = True
@@ -634,7 +674,9 @@ Public Class frmGpsSettings
             lblCurrentY.Text = "Lon: " & LongitudeDegrees & Chr(&HB0) & "  " & LongitudeMinutes & "'"
             lblCurrentZ.Text = "Elev: " & CStr(m_dblGPSZ) & "m"
             lblCurrentTime.Text = "Time: " & GPSHours & ":" & GPSMinutes & ":" & GPSSeconds
-            RaiseEvent GPSConnectedEvent()
+            ' This would normally be a RaiseEvent() call but this function (RefreshStatus) might be called from SerialPort.DataReceived which is
+            ' on a different thread, so this marshals the raising of the event between threads
+            InvokeAction(AddressOf GPSConnected, New EventArgs())
         Else
             lblGPSMessage.Text = "NO GPS FIX"
             lblGPSMessage.ForeColor = Color.Red
@@ -642,7 +684,16 @@ Public Class frmGpsSettings
             lblCurrentY.Text = "Lon: "
             lblCurrentZ.Text = "Elev: "
             lblCurrentTime.Text = "Time: "
-            RaiseEvent GPSDisconnectedEvent()
+            ' This would normally be a RaiseEvent() call but this function (RefreshStatus) might be called from SerialPort.DataReceived which is
+            ' on a different thread, so this marshals the raising of the event between threads
+            InvokeAction(AddressOf GPSDisconnected, New EventArgs())
+        End If
+        If m_frmStringDataViewer IsNot Nothing Then
+            If Me.InvokeRequired Then
+                Me.BeginInvoke(marshalAppendString, New Object() {m_strCurrData})
+            Else
+                m_frmStringDataViewer.AppendString(m_strCurrData)
+            End If
         End If
     End Sub
 
@@ -650,7 +701,12 @@ Public Class frmGpsSettings
     ''' Clicking the OK button just hides the form so the connection, if working, will remain for the caller to access
     ''' </summary>
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
-        Me.Hide()
+        If InvokeRequired Then
+            Me.BeginInvoke(marshalHide)
+        Else
+            Me.Hide()
+
+        End If
     End Sub
 
     ''' <summary>
@@ -658,7 +714,11 @@ Public Class frmGpsSettings
     ''' </summary>
     Private Sub cmdConnection_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdConnection.Click
         If m_blConnected Then
-            CloseSerialPort()
+            If InvokeRequired Then
+                Me.BeginInvoke(marshalCloseSerialPort)
+            Else
+                CloseSerialPort()
+            End If
         Else
             SetSerialPortVariables()
             ConnectSerialPort()
@@ -670,8 +730,6 @@ Public Class frmGpsSettings
     ''' Creates a new thread to close the port because of an issue with the method
     ''' </summary>
     Private Sub ClosePortThread()
-        Application.DoEvents()
-        System.Threading.Thread.Sleep(2000)
         If Not m_spSerialPort Is Nothing Then
             m_spSerialPort.Close()
         End If
@@ -686,14 +744,14 @@ Public Class frmGpsSettings
             cmdConnection.Text = "Disconnecting..."
             Dim closePort As Thread = New Thread(New ThreadStart(AddressOf ClosePortThread))
             closePort.Start()
-            ' It only seems to work with this extra .Close() included
-            m_spSerialPort.Close()
-            'm_spSerialPort.DiscardInBuffer() ' This throws an exception: Port closed
+            Application.DoEvents()
+            System.Threading.Thread.Sleep(2000)
         Catch ex As Exception
-            MsgBox("Debug: Exception in CloseSerialPort: " & ex.Message)
+            'MsgBox("Debug: Exception in CloseSerialPort: " & ex.Message)
         End Try
         m_spSerialPort = Nothing
         m_blConnected = False
+        InvokeAction(AddressOf GPSDisconnected, New EventArgs())
     End Sub
 
     ''' <summary>
@@ -714,7 +772,11 @@ Public Class frmGpsSettings
             End Try
             m_intSearchingCounter = 0
             If IsOpen Then
-                CloseSerialPort()
+                If InvokeRequired Then
+                    Me.BeginInvoke(marshalCloseSerialPort)
+                Else
+                    CloseSerialPort()
+                End If
             End If
             RefreshStatus()
         End If
@@ -728,8 +790,11 @@ Public Class frmGpsSettings
     ''' set the data as bad and exit.
     ''' </summary>
     Private Sub GetData(strData As String)
+        If Not m_blSendChosenStringsOnly Then
+            m_strCurrData = strData
+        End If
         m_blDataGood = False
-        ' Ensure the string *begins with* $GPGGA, if there is garbage before the string it will not be accepted
+        ' Ensure the string *begins with* $GPGGA, by using ^. If there is garbage before the string it will not be accepted.
         Dim pattern As String = "^\$GPGGA.*"
         Dim myregex As Regex
         Dim mymatch As Match
@@ -741,9 +806,12 @@ Public Class frmGpsSettings
         myregex = New Regex(pattern)
         mymatch = myregex.Match(strData)
         If mymatch.Success Then
+            If m_blSendChosenStringsOnly Then
+                m_strCurrData = strData
+            End If
             m_blConnected = True
+            InvokeAction(AddressOf GPSConnected, New EventArgs())
             m_blDataGood = True
-            m_strCurrData = strData
             Dim s() As String = Strings.Split(m_strCurrData, ",")
             If radGPGGA.Checked Then
                 ' This is an example of the structure of a GPRMC message
@@ -764,17 +832,26 @@ Public Class frmGpsSettings
                 '(14)	"*43 "
                 If s(1) = "" Or s(2) = "" Or s(3) = "" Or s(4) = "" Or s(5) = "" Or s(9) = "" Then
                     m_blConnected = False
+                    InvokeAction(AddressOf GPSDisconnected, New EventArgs())
                     m_blDataGood = False
-                    'MessageBox.Show("Warning: There is data received but the $GPGGA NMEA string was not found in the data. Please check connection settings, and make sure the GPS unit is turned on and is transimitting data then try again.", "GPS Connection", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1)
                     Exit Sub
                 End If
-                m_dblGPSTime = s(1)
-                m_dblGPSX = s(2)
-                m_dblGPSY = s(4)
-                If s(3) = "W" Then
-                    m_dblGPSY *= -1
-                End If
-                m_dblGPSZ = s(9)
+                Try
+                    m_dblGPSTime = s(1)
+                    m_dblGPSX = s(2)
+                    m_dblGPSY = s(4)
+                    If s(3) = "W" Then
+                        m_dblGPSY *= -1
+                    End If
+                    m_dblGPSZ = s(9)
+                Catch ex As Exception
+                    ' There was a problem assigning the data, this can be due to a corruption in the stream
+                    ' so that s(2) for example will be "49.923.345" which cannot be converted into a double
+                    m_blConnected = False
+                    InvokeAction(AddressOf GPSDisconnected, New EventArgs())
+                    m_blDataGood = False
+                    Exit Sub
+                End Try
             ElseIf radGPRMC.Checked Then
                 ' This is an example of the structure of a GPRMC message
                 '(0)	"$GPRMC"
@@ -792,18 +869,33 @@ Public Class frmGpsSettings
                 '(12)	"S*38 "
                 If s(1) = "" Or s(3) = "" Or s(5) = "" Or s(6) = "" Then
                     m_blConnected = False
+                    InvokeAction(AddressOf GPSDisconnected, New EventArgs())
                     m_blDataGood = False
-                    'MessageBox.Show("Warning: There is data received but the $GPRMC NMEA string was not found in the data. Please check connection settings, and make sure the GPS unit is turned on and is transimitting data then try again.", "GPS Connection", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1)
                     Exit Sub
                 End If
-                m_dblGPSTime = s(1)
-                m_dblGPSX = s(3)
-                m_dblGPSY = s(5)
-                If s(6) = "W" Then
-                    m_dblGPSY *= -1
-                End If
-                m_dblGPSZ = 0.0
+                Try
+                    m_dblGPSTime = s(1)
+                    m_dblGPSX = s(3)
+                    m_dblGPSY = s(5)
+                    If s(6) = "W" Then
+                        m_dblGPSY *= -1
+                    End If
+                    m_dblGPSZ = 0.0
+                Catch ex As Exception
+                    ' There was a problem assigneing the data, this can be due to a corruption in the stream
+                    ' so that s(3) for example will be "49.923.345" which cannot be converted into a double
+                    m_blConnected = False
+                    InvokeAction(AddressOf GPSDisconnected, New EventArgs())
+                    m_blDataGood = False
+                    Exit Sub
+                End Try
             End If
+            ' Create the TimeSpan object
+            Dim hours As Integer = m_dblGPSTime \ 10000
+            Dim minutes As Integer = (m_dblGPSTime - hours * 10000.0) \ 100
+            Dim seconds As Integer = (m_dblGPSTime - hours * 10000.0) Mod 100
+            m_tsGPSTime = New TimeSpan(hours, minutes, seconds)
+            InvokeAction(AddressOf DataChanged, New EventArgs())
         End If
     End Sub
 
@@ -832,12 +924,17 @@ Public Class frmGpsSettings
             System.Diagnostics.Debug.WriteLine("Done  " & Now)
         End If
         If m_blConnected Then
-            Dim tsTimeDifference As TimeSpan = Now.Subtract(m_dtLastTimeDataReceived)
+            Dim tsTimeDifference As TimeSpan = Now.TimeOfDay - m_tsLastTimeDataReceived
             If tsTimeDifference.Seconds > m_intTimeout Then
                 System.Diagnostics.Debug.WriteLine("Warning, gps connection suddenly lost!")
                 m_blConnected = False
+                InvokeAction(AddressOf GPSDisconnected, New EventArgs())
                 m_blDataGood = False
-                CloseSerialPort()
+                If InvokeRequired Then
+                    Me.BeginInvoke(marshalCloseSerialPort)
+                Else
+                    CloseSerialPort()
+                End If
             End If
             RefreshStatus()
         End If
@@ -845,12 +942,15 @@ Public Class frmGpsSettings
 
     ''' <summary>
     ''' Handles data coming in on the serial port. The first time this happens, the port
-    ''' will be officially "connected"
+    ''' will be officially "connected".
     ''' </summary>
+    ''' <remarks>The serial port launches this event on another thread, which is why there are all the marshalled BeginInvokes in this function,
+    ''' all UI updating must be marshalled in this way or there will be unspecified behaviour (freezing/deadlocks)</remarks>
     Private Sub SerialPort_DataReceived(sender As Object, e As SerialDataReceivedEventArgs) Handles m_spSerialPort.DataReceived
         Dim strData As String = ""
         Try
             strData = m_spSerialPort.ReadLine
+            'Me.BeginInvoke(marshalAppendString, New Object() {strData})
         Catch ex As TimeoutException
             ' Handles the situation where the connection was working but then the device on the COM port was unplugged or stopped transmitting data.
             If m_blConnected Then
@@ -859,17 +959,31 @@ Public Class frmGpsSettings
                 MessageBox.Show("Warning: There is data received but it is likely that the baud rate is set too high. Please check connection settings, and make sure the GPS unit is turned on and is transimitting data then try again.", "GPS Connection", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1)
             End If
             m_blConnected = False
-            CloseSerialPort()
+            InvokeAction(AddressOf GPSDisconnected, New EventArgs())
+            If InvokeRequired Then
+                Me.BeginInvoke(marshalCloseSerialPort)
+            Else
+                CloseSerialPort()
+            End If
         Catch ex As Exception
             m_blConnected = False
-            CloseSerialPort()
+            InvokeAction(AddressOf GPSDisconnected, New EventArgs())
+            If InvokeRequired Then
+                Me.BeginInvoke(marshalCloseSerialPort)
+            Else
+                CloseSerialPort()
+            End If
         End Try
 
-        GetData(strData) ' GetData sets m_blDataGood and m_blConnected so it must be called first here
+        If InvokeRequired Then
+            Me.BeginInvoke(marshalGetData, New Object() {strData})
+        Else
+            GetData(strData) ' GetData sets m_blDataGood and m_blConnected so it must be called first here
+        End If
 
         If m_blConnected And m_blDataGood Then
             tmrGPSTimeout.Stop()
-            m_dtLastTimeDataReceived = DateTime.Now
+            m_tsLastTimeDataReceived = Now.TimeOfDay
             If m_tmrcbTimerDelegate Is Nothing Then
                 m_tmrcbTimerDelegate = New Threading.TimerCallback(AddressOf TimerTask)
             End If
@@ -885,22 +999,26 @@ Public Class frmGpsSettings
                 StateObj.TimerCanceled = True
             End If
         End If
-        If m_frmStringDataViewer IsNot Nothing Then
-            m_frmStringDataViewer.AppendString(m_strCurrData)
+        If Me.InvokeRequired Then
+            BeginInvoke(marshalRefreshStatus)
+        Else
+            RefreshStatus()
         End If
-
-        RefreshStatus()
     End Sub
 
+    Private Sub frmStringDataViewer_ShowChosenStringsOnly() Handles m_frmStringDataViewer.ShowChosenStringOnlyEvent
+        m_blSendChosenStringsOnly = True
+    End Sub
+
+    Private Sub frmStringDataViewer_ShowAllStrings() Handles m_frmStringDataViewer.ShowAllStringsEvent
+        m_blSendChosenStringsOnly = False
+    End Sub
+
+    ''' <summary>
+    ''' Opens a port data viewing form (frmStringDataViewer)
+    ''' </summary>
     Private Sub cmdViewPortData_Click(sender As Object, e As EventArgs) Handles cmdViewPortData.Click
-        If m_frmStringDataViewer Is Nothing Then
-            m_frmStringDataViewer = New frmStringDataViewer()
-        End If
         m_frmStringDataViewer.ShowDialog()
-    End Sub
-
-    Private Sub StringDataForm_Closing() Handles m_frmStringDataViewer.ClosingEvent
-        m_frmStringDataViewer = Nothing
     End Sub
 
     ''' <summary>
@@ -975,40 +1093,24 @@ Public Class frmGpsSettings
 
     End Sub
 
-    ''' <summary>
-    ''' Pad a string of length 1 with a zero. Used to make things like hours=0 into hours="00"
-    ''' </summary>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
-    Private Function pad0(intValue As Integer) As String
-        Dim strRep As String = CStr(intValue)
-        If strRep.Length = 0 Then
-            strRep = "00"
-        ElseIf strRep.Length = 1 Then
-            strRep = "0" & strRep
-        End If
-        Return strRep
-    End Function
-
-
-    ' The function 'UnHandledHandler' is old. I have kept just in case I need to debug unhandled errors in the future.
-    ' To call it from a function, add these two lines to the beginning of the function:
+    ' The function 'UnHandledHandler'. I have kept just in case I need to debug crossthread errors in the future.
+    ' To use it in a class, add these  3lines to the beginning of the form_load function:
     'Dim currentDomain As AppDomain = AppDomain.CurrentDomain
     'AddHandler currentDomain.UnhandledException, AddressOf UnHandledHandler
+    'Windows.Forms.Control.CheckForIllegalCrossThreadCalls = True
+    Sub UnHandledHandler(ByVal sender As Object, ByVal args As UnhandledExceptionEventArgs)
+        Dim e As Exception = DirectCast(args.ExceptionObject, Exception)
 
-    'Sub UnHandledHandler(ByVal sender As Object, ByVal args As UnhandledExceptionEventArgs)
-    '    Dim e As Exception = DirectCast(args.ExceptionObject, Exception)
+        Console.WriteLine("MyHandler caught : " + e.Message)
+        Console.WriteLine("Runtime terminating: {0}", args.IsTerminating)
 
-    '    Console.WriteLine("MyHandler caught : " + e.Message)
-    '    Console.WriteLine("Runtime terminating: {0}", args.IsTerminating)
+        Dim st As New StackTrace(e, True)
+        Dim frame As StackFrame
+        frame = st.GetFrame(0)
+        Dim line As Integer
+        line = frame.GetFileLineNumber
+        MsgBox("At line " & line & " " & e.Message & ". The stack trace is as folows: " & e.StackTrace)
 
-    '    Dim st As New StackTrace(e, True)
-    '    Dim frame As StackFrame
-    '    frame = st.GetFrame(0)
-    '    Dim line As Integer
-    '    line = frame.GetFileLineNumber
-    '    MsgBox("At line " & line & " " & e.Message & ". The stack trace is as folows: " & e.StackTrace)
-
-    'End Sub
+    End Sub
 
 End Class

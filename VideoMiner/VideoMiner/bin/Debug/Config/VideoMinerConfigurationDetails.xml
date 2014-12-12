@@ -88,7 +88,7 @@
     </RelayNames>
   </DeviceControl>
   <DatabasePath>C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug</DatabasePath>
-  <VideoPath>C:\wxWidgets-2.8.12\build-debug\samples\splash</VideoPath>
+  <VideoPath>G:\Video Clips</VideoPath>
   <SessionPath>C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug</SessionPath>
   <GPS>
     <ComPort>COM3</ComPort>

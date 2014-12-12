@@ -300,40 +300,46 @@ VideoMiner
  a label for the duration of the video clip, and a picturebox which shows what is currently happening with the video (playing, stopped, paused).
  </summary>
 	<remarks></remarks>
+</member><member name="T:VideoMiner.frmSetTime.WhichTimeEnum">
+	<summary>
+ Used to keep track of which time the m_tsUserTime variable is set to
+ </summary>
+</member><member name="F:VideoMiner.frmSetTime.m_enumWhichTime">
+	<summary>
+ Keeps track of which time the m_tsUserTime variabel is set to
+ </summary>
 </member><member name="F:VideoMiner.frmSetTime.m_tsUserTime">
 	<summary>
  Stores the Timespan object representing the user time
+ </summary>
+</member><member name="P:VideoMiner.frmSetTime.WhichTime">
+	<summary>
+ One of the WhichTimeEnum enumeration values, representing which type of time is currently in use
  </summary>
 </member><member name="P:VideoMiner.frmSetTime.UserTime">
 	<summary>
  UserTime is a TimeSpan property representing the user time
  </summary>
-	<value>TimeSpan</value>
-	<returns>TimeSpan</returns>
+</member><member name="P:VideoMiner.frmSetTime.TimeSource">
+	<summary>
+ The Timesource in use, one of the values in the WhichTimeEnum enumerationm
+ </summary>
 </member><member name="E:VideoMiner.frmSetTime.TimeChanged">
 	<summary>
  When the user clicks the 'OK' button this event is raised
  </summary>
-</member><member name="E:VideoMiner.frmSetTime.UseGPSTime">
+</member><member name="E:VideoMiner.frmSetTime.TimeSourceChange">
 	<summary>
- When the user clicks the 'Use GPS Time and Date' button this event is raised
+ Signal that the user has requested a time source change, eg. from COMPUTER to GPS
  </summary>
-	<remarks></remarks>
-</member><member name="E:VideoMiner.frmSetTime.UseComputerTime">
+</member><member name="E:VideoMiner.frmSetTime.RequestGPSTime">
 	<summary>
- When the user clicks the 'Use Computer Time and Date' button this event is raised
+ When the user clicks the 'GPS Time' radiobutton this event is raised
  </summary>
-	<remarks></remarks>
-</member><member name="E:VideoMiner.frmSetTime.UseElapsedTime">
+</member><member name="E:VideoMiner.frmSetTime.RequestContinueTime">
 	<summary>
- When the user clicks the 'Use Elapsed Time' button this event is raised
+ When the user clicks the 'Continue from Last Clip' radiobutton this event is raised
  </summary>
-	<remarks></remarks>
-</member><member name="E:VideoMiner.frmSetTime.UseContinueTime">
-	<summary>
- When the user clicks the 'Continue from Last Clip' button this event is raised
- </summary>
-	<remarks></remarks>
 </member><member name="M:VideoMiner.frmSetTime.#ctor">
 	<summary>
  Default constructor
@@ -348,55 +354,51 @@ VideoMiner
 	<summary>
  Load the form, set the time textbox up to show the current user time.
  </summary>
-	<param name="sender"></param>
-	<param name="e"></param>
 </member><member name="M:VideoMiner.frmSetTime.cmdOk_Click(System.Object,System.EventArgs)">
 	<summary>
  Handles when the user clicks the 'OK' button.
  </summary>
-	<param name="sender"></param>
-	<param name="e"></param>
-	<remarks>Raises the TimeChanged Event before closing the form</remarks>
-</member><member name="M:VideoMiner.frmSetTime.setGPSInfo">
-	<summary>
- Set the textbox to show GPS as the user time source
- </summary>
-</member><member name="M:VideoMiner.frmSetTime.pad0(System.Int32)">
-	<summary>
- Pad a string of length 1 with a zero. Used to make things like hours=0 into hours="00"
- </summary>
-	<returns></returns>
 	<remarks></remarks>
-</member><member name="M:VideoMiner.frmSetTime.setSourceText(System.String)">
+</member><member name="M:VideoMiner.frmSetTime.changeSource(VideoMiner.frmSetTime.WhichTimeEnum)">
 	<summary>
- Set the source text to reflect which is being used. Also set the textbox background and font
+ Change the time source type. Also set the textbox background, font, and value
  </summary>
-	<remarks></remarks>
-</member><member name="M:VideoMiner.frmSetTime.cmdUseComputerTimeDate_Click(System.Object,System.EventArgs)">
+</member><member name="M:VideoMiner.frmSetTime.setTextTime">
 	<summary>
- Handle the click of the button to use the current computer time and date as the user time
+ Set the text in the Time TextBox to be the hours, minutes, seconds, and milliseconds (rounded to 2 decimal places) of the current time
  </summary>
-	<param name="sender"></param>
-	<param name="e"></param>
-	<remarks></remarks>
-</member><member name="M:VideoMiner.frmSetTime.cmdUseElapsedTime_Click(System.Object,System.EventArgs)">
+</member><member name="M:VideoMiner.frmSetTime.getTextTime">
 	<summary>
- Handle the click of the button to use the elapsed time and date as the user time
+ Stores the text time as written in the TextBox into a member variable stored as a Timespan object.
  </summary>
-	<param name="sender"></param>
-	<param name="e"></param>
-</member><member name="M:VideoMiner.frmSetTime.cmdContinueFromLastClip_Click(System.Object,System.EventArgs)">
+</member><member name="M:VideoMiner.frmSetTime.rbManualTime_CheckedChanged(System.Object,System.EventArgs)">
 	<summary>
- Handle the click of the button to use the time and date at the end of the last video clip as the user time
+ Handle the click of the radiobutton to allow the user to manually set the time
  </summary>
-	<param name="sender"></param>
-	<param name="e"></param>
-</member><member name="M:VideoMiner.frmSetTime.cmdFromGps_Click(System.Object,System.EventArgs)">
+</member><member name="M:VideoMiner.frmSetTime.rbVideoTime_CheckedChanged(System.Object,System.EventArgs)">
 	<summary>
- Handle the click of the button to use the GPS time and date as the user time
+ Handle the click of the button to set the time to zero
  </summary>
-	<param name="sender"></param>
-	<param name="e"></param>
+</member><member name="M:VideoMiner.frmSetTime.rbComputerTime_CheckedChanged(System.Object,System.EventArgs)">
+	<summary>
+ Handle the click of the button to set the time to the current time on this computer
+ </summary>
+</member><member name="M:VideoMiner.frmSetTime.rbGPSTime_CheckedChanged(System.Object,System.EventArgs)">
+	<summary>
+ Handle the click of the button to set the time to the GPS connection's time
+ </summary>
+</member><member name="M:VideoMiner.frmSetTime.rbContinueTime_CheckedChanged(System.Object,System.EventArgs)">
+	<summary>
+ Handle the click of the button to set the time to the GPS connection's time
+ </summary>
+</member><member name="M:VideoMiner.frmSetTime.validateTimeEntry">
+	<summary>
+ Check the user input to make sure it is a valid time. Returns True is vaslid, False otherwise
+ </summary>
+</member><member name="M:VideoMiner.frmSetTime.processOK">
+	<summary>
+ Processes a click of the OK button or when the Enter key is pressed. Verifies that the time in the textbox it of correct format and if so, Raises the TimeChanged Event before hiding the form.
+ </summary>
 </member><member name="P:VideoMiner.My.Resources.Resources.ResourceManager">
 	<summary>
   Returns the cached ResourceManager instance used by this class.
@@ -494,6 +496,24 @@ VideoMiner
 	<summary>
   A strongly-typed resource class, for looking up localized strings, etc.
 </summary>
+</member><member name="E:VideoMiner.frmStringDataViewer.ShowChosenStringOnlyEvent">
+	<summary>
+ Signal the calling class that you want to only be sent data for whatever string was chosen in that class.
+ </summary>
+</member><member name="E:VideoMiner.frmStringDataViewer.ShowAllStringsEvent">
+	<summary>
+ Signal the calling class that you want to be sent data for all incoming NMEA strings.
+ </summary>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmStringDataViewer.ClearText">
+	<summary>
+ Clear the textbox of all data.
+ </summary>
+</member><member name="M:VideoMiner.frmStringDataViewer.AppendString(System.String)">
+	<summary>
+ Append the string to the textbox
+ </summary>
+	<remarks>Only appends if the form is visible and not "paused"</remarks>
 </member><member name="M:VideoMiner.Point.GetPoint">
 	<summary>
  Get a point location from a NMEA string
@@ -547,7 +567,7 @@ VideoMiner
 	<summary>
  Counter to keep track of timer ticks for data received, used to make sure the data keep coming in once a connectioin is established
  </summary>
-</member><member name="F:VideoMiner.frmGpsSettings.m_dtLastTimeDataReceived">
+</member><member name="F:VideoMiner.frmGpsSettings.m_tsLastTimeDataReceived">
 	<summary>
  The date and time of the last data received. Used with m_lngConnectedCounter to figure out if the connection has been terminated.
  </summary>
@@ -583,6 +603,10 @@ VideoMiner
 	<summary>
  Timeout in seconds for the serial port connection
  </summary>
+</member><member name="F:VideoMiner.frmGpsSettings.m_blSendChosenStringsOnly">
+	<summary>
+ If true, only the chosen NMEA strings will be sent to the data viewer form. If false, all incoming NMEA strings will be sent.
+ </summary>
 </member><member name="F:VideoMiner.frmGpsSettings.m_blConnected">
 	<summary>
  True if the GPS data of the given NMEA string are being received, false otherwise
@@ -606,9 +630,9 @@ VideoMiner
  GPS time value in the format HHMMSS
  </summary>
 	<remarks>H=Hour, M=Minute, S=Second</remarks>
-</member><member name="F:VideoMiner.frmGpsSettings.m_dtGPSTime">
+</member><member name="F:VideoMiner.frmGpsSettings.m_tsGPSTime">
 	<summary>
- GPS time value as a DateTime object
+ GPS time value as a TimeSpan object
  </summary>
 </member><member name="F:VideoMiner.frmGpsSettings.m_strCurrData">
 	<summary>
@@ -709,14 +733,35 @@ VideoMiner
 	<summary>
  Used to signal that the serial port is connected and receiveing data for the MNEA string selected
  </summary>
+</member><member name="M:VideoMiner.frmGpsSettings.GPSConnected">
+	<summary>
+ Required for InvokeAction calls
+ </summary>
 </member><member name="E:VideoMiner.frmGpsSettings.GPSDisconnectedEvent">
 	<summary>
  Used to signal that the serial port is not connected, so the data are not available
+ </summary>
+</member><member name="M:VideoMiner.frmGpsSettings.GPSDisconnected">
+	<summary>
+ Required for InvokeAction calls
  </summary>
 </member><member name="E:VideoMiner.frmGpsSettings.ConnectingSerialPortEvent">
 	<summary>
  Signal that the form is currently trying to connect to the serial port
  </summary>
+</member><member name="E:VideoMiner.frmGpsSettings.DataChangedEvent">
+	<summary>
+ Signals that there are new good data ready to be retrieved
+ </summary>
+</member><member name="M:VideoMiner.frmGpsSettings.DataChanged">
+	<summary>
+ Required for InvokeAction calls
+ </summary>
+</member><member name="E:VideoMiner.frmGpsSettings.NoCOMPortsEvent">
+	<summary>
+ Signals that there are no COM ports available on this machine
+ </summary>
+	<remarks></remarks>
 </member><member name="M:VideoMiner.frmGpsSettings.#ctor(System.String,System.String,System.Int32,System.String,System.Double,System.Int32,System.Int32)">
 	<summary>
  Creates a new instance of the GPS settings form.
@@ -726,7 +771,6 @@ VideoMiner
 	<summary>
  Set the member variables to be what they currently are in the form selections controls.
  </summary>
-	<remarks>Closes the serial port if it is open, and sets it to Nothing</remarks>
 </member><member name="M:VideoMiner.frmGpsSettings.ConnectSerialPort">
 	<summary>
  Try to connect the serial port with the currently selected values on the textbox
@@ -735,8 +779,10 @@ VideoMiner
 </member><member name="M:VideoMiner.frmGpsSettings.RefreshStatus">
 	<summary>
  Refresh all window controls based on connectivity of the serial port object.
- Raises the connected event
+ Raises the connected event. Also append the newest good data line to the
+ port data viewer form.
  </summary>
+	<remarks>This subroutine is thread safe. Raises the GPSConnected or GPSDisconnected events via a delegate</remarks>
 </member><member name="M:VideoMiner.frmGpsSettings.cmdOK_Click(System.Object,System.EventArgs)">
 	<summary>
  Clicking the OK button just hides the form so the connection, if working, will remain for the caller to access
@@ -780,7 +826,13 @@ VideoMiner
 </member><member name="M:VideoMiner.frmGpsSettings.SerialPort_DataReceived(System.Object,System.IO.Ports.SerialDataReceivedEventArgs)">
 	<summary>
  Handles data coming in on the serial port. The first time this happens, the port
- will be officially "connected"
+ will be officially "connected".
+ </summary>
+	<remarks>The serial port launches this event on another thread, which is why there are all the marshalled BeginInvokes in this function,
+ all UI updating must be marshalled in this way or there will be unspecified behaviour (freezing/deadlocks)</remarks>
+</member><member name="M:VideoMiner.frmGpsSettings.cmdViewPortData_Click(System.Object,System.EventArgs)">
+	<summary>
+ Opens a port data viewing form (frmStringDataViewer)
  </summary>
 </member><member name="M:VideoMiner.frmGpsSettings.txtDataBits_KeyPress(System.Object,System.Windows.Forms.KeyPressEventArgs)">
 	<summary>
@@ -795,12 +847,6 @@ VideoMiner
  Disables all controls on the form except the Cancel button.
  Useful when there are no com ports available
  </summary>
-</member><member name="M:VideoMiner.frmGpsSettings.pad0(System.Int32)">
-	<summary>
- Pad a string of length 1 with a zero. Used to make things like hours=0 into hours="00"
- </summary>
-	<returns></returns>
-	<remarks></remarks>
 </member><member name="T:VideoMiner.frmGpsSettings">
 	<summary>
  Form for connecting a GPS device to a serial port.
@@ -836,6 +882,29 @@ VideoMiner
 	<param name="dtRealTime">DateTime</param>
 	<returns>String representing the time in 24-hour format</returns>
 	<remarks>If the number of milliseconds in the time is greater than 500, the seconds will be rounded up by one</remarks>
+</member><member name="M:VideoMiner.modGlobals.pad0(System.Int32)">
+	<summary>
+ Pad a string of length 1 with a zero. Used to make things like hours=0 into hours="00"
+ </summary>
+</member><member name="M:VideoMiner.modGlobals.InvokeAction``1(System.Action{``0},``0,System.Boolean)">
+	<summary>
+ Will raise an event across threads
+ </summary>
+	<typeparam name="T"></typeparam>
+	<param name="anAction"></param>
+	<param name="Arg"></param>
+	<param name="ThrowMainFormMissingError"></param>
+	<remarks>Used to raise events from a side-thread to the UI thread by marshaling the call
+ Example:
+ Write a subroutine to raise the event
+ Protected Overridable Sub GPSConnected()
+    RaiseEvent GPSConnectedEvent()
+ End Sub
+ Then invoke it like this:
+   InvokeAction(AddressOf GPSConnected, New EventArgs())
+ Code from:
+ http://www.codeproject.com/Articles/21168/Raising-Events-from-Other-Threads
+ </remarks>
 </member><member name="T:VideoMiner.modGlobals">
 	<summary>
  This module defines 'Global' variables and functions.
@@ -1018,6 +1087,10 @@ VideoMiner
 </member><member name="M:VideoMiner.VideoMiner.save_GPS_configuration">
 	<summary>
  Updates all GPS member variables and saves the configuration for all of them (xml file)
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.frmSetTime_TimeSourceChanged">
+	<summary>
+ Handles an event to grab the time from the frmSetTime form.
  </summary>
 </member><member name="T:VideoMiner.VideoMiner">
 	<summary>

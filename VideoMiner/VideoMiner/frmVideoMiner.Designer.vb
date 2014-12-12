@@ -161,7 +161,6 @@ Partial Class VideoMiner
         Me.tmrPlayForSeconds = New System.Windows.Forms.Timer(Me.components)
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
-        Me.tmrGPSExpiry = New System.Windows.Forms.Timer(Me.components)
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
@@ -483,8 +482,7 @@ Partial Class VideoMiner
         '
         Me.mnuGPSSettings.Name = "mnuGPSSettings"
         Me.mnuGPSSettings.Size = New System.Drawing.Size(183, 22)
-        Me.mnuGPSSettings.Text = "GPS Settings"
-        Me.mnuGPSSettings.Visible = False
+        Me.mnuGPSSettings.Text = "GPS Connection"
         '
         'mnuUseGPSTimeCodes
         '
@@ -619,7 +617,7 @@ Partial Class VideoMiner
         '
         Me.lblZValue.AutoSize = True
         Me.lblZValue.ForeColor = System.Drawing.Color.LimeGreen
-        Me.lblZValue.Location = New System.Drawing.Point(426, 16)
+        Me.lblZValue.Location = New System.Drawing.Point(426, 28)
         Me.lblZValue.Name = "lblZValue"
         Me.lblZValue.Size = New System.Drawing.Size(0, 13)
         Me.lblZValue.TabIndex = 60
@@ -629,7 +627,7 @@ Partial Class VideoMiner
         '
         Me.lblYValue.AutoSize = True
         Me.lblYValue.ForeColor = System.Drawing.Color.LimeGreen
-        Me.lblYValue.Location = New System.Drawing.Point(322, 16)
+        Me.lblYValue.Location = New System.Drawing.Point(322, 28)
         Me.lblYValue.Name = "lblYValue"
         Me.lblYValue.Size = New System.Drawing.Size(0, 13)
         Me.lblYValue.TabIndex = 60
@@ -651,7 +649,7 @@ Partial Class VideoMiner
         '
         Me.lblZ.AutoSize = True
         Me.lblZ.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblZ.Location = New System.Drawing.Point(401, 16)
+        Me.lblZ.Location = New System.Drawing.Point(401, 28)
         Me.lblZ.Name = "lblZ"
         Me.lblZ.Size = New System.Drawing.Size(19, 13)
         Me.lblZ.TabIndex = 60
@@ -662,7 +660,7 @@ Partial Class VideoMiner
         '
         Me.lblY.AutoSize = True
         Me.lblY.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblY.Location = New System.Drawing.Point(299, 16)
+        Me.lblY.Location = New System.Drawing.Point(299, 28)
         Me.lblY.Name = "lblY"
         Me.lblY.Size = New System.Drawing.Size(19, 13)
         Me.lblY.TabIndex = 60
@@ -695,7 +693,7 @@ Partial Class VideoMiner
         '
         Me.lblXValue.AutoSize = True
         Me.lblXValue.ForeColor = System.Drawing.Color.LimeGreen
-        Me.lblXValue.Location = New System.Drawing.Point(227, 16)
+        Me.lblXValue.Location = New System.Drawing.Point(227, 28)
         Me.lblXValue.Name = "lblXValue"
         Me.lblXValue.Size = New System.Drawing.Size(0, 13)
         Me.lblXValue.TabIndex = 60
@@ -717,7 +715,7 @@ Partial Class VideoMiner
         '
         Me.lblX.AutoSize = True
         Me.lblX.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblX.Location = New System.Drawing.Point(204, 16)
+        Me.lblX.Location = New System.Drawing.Point(204, 28)
         Me.lblX.Name = "lblX"
         Me.lblX.Size = New System.Drawing.Size(19, 13)
         Me.lblX.TabIndex = 60
@@ -737,9 +735,9 @@ Partial Class VideoMiner
         '
         'txtNMEA
         '
-        Me.txtNMEA.Location = New System.Drawing.Point(387, 3)
+        Me.txtNMEA.Location = New System.Drawing.Point(294, 3)
         Me.txtNMEA.Name = "txtNMEA"
-        Me.txtNMEA.Size = New System.Drawing.Size(100, 20)
+        Me.txtNMEA.Size = New System.Drawing.Size(390, 20)
         Me.txtNMEA.TabIndex = 48
         Me.txtNMEA.Visible = False
         '
@@ -1564,10 +1562,6 @@ Partial Class VideoMiner
         Me.svDlgFileDialogScrCap.Filter = "Jpeg (*.jpg)|*.jpg|Bitmap (*.bmp)|*.bmp"
         Me.svDlgFileDialogScrCap.Title = "Save Screen Capture as..."
         '
-        'tmrGPSExpiry
-        '
-        Me.tmrGPSExpiry.Interval = 750
-        '
         'tmrComputerTime
         '
         Me.tmrComputerTime.Interval = 500
@@ -1777,7 +1771,6 @@ Partial Class VideoMiner
     Friend WithEvents txtDateSource As System.Windows.Forms.TextBox
     Friend WithEvents txtTimeSource As System.Windows.Forms.TextBox
     Friend WithEvents txtTime As System.Windows.Forms.TextBox
-    Friend WithEvents tmrGPSExpiry As System.Windows.Forms.Timer
     Friend WithEvents lblGPSLocation As System.Windows.Forms.Label
     Friend WithEvents tmrComputerTime As System.Windows.Forms.Timer
     Friend WithEvents EditLookupTableToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem

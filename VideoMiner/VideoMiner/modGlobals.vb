@@ -122,4 +122,47 @@ Module modGlobals
         End If
         Return strHour & strTime.Substring(2, 6)
     End Function
+
+    ''' <summary>
+    ''' Pad a string of length 1 with a zero. Used to make things like hours=0 into hours="00"
+    ''' </summary>
+    Public Function pad0(intValue As Integer) As String
+        Dim strRep As String = CStr(intValue)
+        If strRep.Length = 0 Then
+            strRep = "00"
+        ElseIf strRep.Length = 1 Then
+            strRep = "0" & strRep
+        End If
+        Return strRep
+    End Function
+
+    ''' <summary>
+    ''' Will raise an event across threads
+    ''' </summary>
+    ''' <typeparam name="T"></typeparam>
+    ''' <param name="anAction"></param>
+    ''' <param name="Arg"></param>
+    ''' <param name="ThrowMainFormMissingError"></param>
+    ''' <remarks>Used to raise events from a side-thread to the UI thread by marshaling the call
+    ''' Example:
+    ''' Write a subroutine to raise the event
+    ''' Protected Overridable Sub GPSConnected()
+    '''    RaiseEvent GPSConnectedEvent()
+    ''' End Sub
+    ''' Then invoke it like this:
+    '''   InvokeAction(AddressOf GPSConnected, New EventArgs())
+    ''' Code from:
+    ''' http://www.codeproject.com/Articles/21168/Raising-Events-from-Other-Threads
+    ''' </remarks>
+    Public Sub InvokeAction(Of T)(ByVal anAction As System.Action(Of T), ByVal Arg As T, Optional ByVal ThrowMainFormMissingError As Boolean = True)
+        If Not ThrowMainFormMissingError AndAlso Application.OpenForms.Count = 0 Then Return
+        With Application.OpenForms(0)
+            If .InvokeRequired Then
+                .Invoke(anAction, Arg)
+            Else
+                anAction(Arg)
+            End If
+        End With
+    End Sub
+
 End Module

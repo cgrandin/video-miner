@@ -3,15 +3,43 @@
     Private m_blPaused
 
     Event ClosingEvent()
+    ''' <summary>
+    ''' Signal the calling class that you want to only be sent data for whatever string was chosen in that class.
+    ''' </summary>
+    Event ShowChosenStringOnlyEvent()
+    ''' <summary>
+    ''' Signal the calling class that you want to be sent data for all incoming NMEA strings.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Event ShowAllStringsEvent()
 
+    Public Sub New()
+        InitializeComponent()
+        m_blPaused = False
+        m_blCloseAllowed = False
+        txtStringData.AppendText("VideoMiner Serial Port Data viewer" & vbCrLf & "Waiting for data stream..." & vbCrLf & vbCrLf)
+        rbChosenStrings.Select()
+    End Sub
+
+    ''' <summary>
+    ''' Clear the textbox of all data.
+    ''' </summary>
+    Public Sub ClearText()
+        txtStringData.Text = "VideoMiner Serial Port Data viewer" & vbCrLf & "Waiting for data stream..." & vbCrLf & vbCrLf
+    End Sub
+
+    ''' <summary>
+    ''' Append the string to the textbox
+    ''' </summary>
+    ''' <remarks>Only appends if the form is visible and not "paused"</remarks>
     Public Sub AppendString(str As String)
         Dim s As String = str & vbCrLf
         Try
-            If Not m_blPaused Then
+            If Me.Visible And Not m_blPaused Then
                 txtStringData.AppendText(s)
-                txtStringData.Refresh()
             End If
         Catch ex As Exception
+            MsgBox(ex.Message)
             ' Sometimes the AppendString method could be called after the form is dispoed
             ' so catch the exception and ignore it
         End Try
@@ -30,9 +58,6 @@
     End Sub
 
     Private Sub frmStringDataViewer_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        m_blPaused = False
-        m_blCloseAllowed = True
-        txtStringData.AppendText("VideoMiner Serial Port Data viewer" & vbCrLf & "Waiting for data stream..." & vbCrLf)
     End Sub
 
     Private Sub cmdPause_Click(sender As Object, e As EventArgs) Handles cmdPause.Click
@@ -50,5 +75,13 @@
         Else
             Me.WindowState = FormWindowState.Normal
         End If
+    End Sub
+
+    Private Sub rbChosenStrings_CheckedChanged(sender As Object, e As EventArgs) Handles rbChosenStrings.CheckedChanged
+        RaiseEvent ShowChosenStringOnlyEvent()
+    End Sub
+
+    Private Sub rbAllNMEAStrings_CheckedChanged(sender As Object, e As EventArgs) Handles rbAllNMEAStrings.CheckedChanged
+        RaiseEvent ShowAllStringsEvent()
     End Sub
 End Class
