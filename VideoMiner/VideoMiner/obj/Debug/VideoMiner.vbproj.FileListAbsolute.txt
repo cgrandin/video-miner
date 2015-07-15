@@ -80,6 +80,7 @@ C:\F\Crm1335_Video_Miner\Source_Code\VM\VideoMiner\VideoMiner\obj\Debug\VideoMin
 C:\F\Crm1335_Video_Miner\Source_Code\VM\VideoMiner\VideoMiner\obj\Debug\VideoMiner.exe
 C:\F\Crm1335_Video_Miner\Source_Code\VM\VideoMiner\VideoMiner\obj\Debug\VideoMiner.xml
 C:\F\Crm1335_Video_Miner\Source_Code\VM\VideoMiner\VideoMiner\obj\Debug\VideoMiner.pdb
+C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\VideoMiner.exe.config
 C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\VideoMiner.exe
 C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\VideoMiner.pdb
 C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\VideoMiner.xml
@@ -91,11 +92,13 @@ C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\Interop.ADODB.dll
 C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\Interop.ADOX.dll
 C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\Interop.WMPLib.dll
 C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\AxInterop.WMPLib.dll
+C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.vbprojResolveAssemblyReference.cache
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\Interop.ADODB.dll
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\Interop.ADOX.dll
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\Interop.WMPLib.dll
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\AxInterop.WMPLib.dll
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.vbproj.ResolveComReference.cache
+C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.AboutBox1.resources
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmAbundanceTableView.resources
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmAddButton.resources
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmAddNewTable.resources
@@ -109,6 +112,7 @@ C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmRareSpeciesL
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmConfigureSpecies.resources
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmRelayConfiguration.resources
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmRelayNames.resources
+C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmStringDataViewer.resources
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.VideoMiner.resources
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmEditSpecies.resources
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmGpsSettings.resources
@@ -127,6 +131,3 @@ C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.vbproj.Generate
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.exe
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.xml
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.pdb
-C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.vbprojResolveAssemblyReference.cache
-C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.AboutBox1.resources
-C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmStringDataViewer.resources

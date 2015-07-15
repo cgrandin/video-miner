@@ -49,11 +49,14 @@
   </ButtonFormat>
   <Database>
     <Configuration>
-      <DatabaseName>VideoMiner_TemplateDatabase_Version_3_0_6.mdb</DatabaseName>
+      <DatabaseName>VideoMiner_TemplateDatabase_Version_3_1_1_0.mdb</DatabaseName>
       <Columns>ID:0:100,TransectDate:1:100,TimeCode:2:100,TextTime:3:100,TextTimeDecimal:4:100,TimeSource:6:100,ProjectName:7:100,TransectName:5:168,OnBottom:8:100,DominantSubstrate:9:100,DominantPercent:10:100,SubdominantSubstrate:11:100,SubdominantPercent:12:100,SurveyModeID:13:100,ReliefID:14:100,DisturbanceID:15:100,ProtocolID:16:100,ImageQualityID:17:100,ComplexityID:18:100,FieldOfView:19:100,SpeciesName:20:100,SpeciesID:21:100,SpeciesCount:22:100,Side:23:100,Range:24:100,Length:25:100,Height:26:100,Width:27:100,Abundance:28:100,IDConfidence:29:100,Comment:30:100,DataCode:31:100,X:32:100,Y:33:100,Z:34:100,FileName:35:100,ScreenCaptureName:36:100,ElapsedTime:37:100,ReviewDate:38:100,ReviewTime:39:100</Columns>
     </Configuration>
   </Database>
   <PreviousProjects>
+    <ProjectName>test1</ProjectName>
+    <ProjectName>test2</ProjectName>
+    <ProjectName>test3</ProjectName>
   </PreviousProjects>
   <DeviceControl>
     <ConfigurationSet>False</ConfigurationSet>
@@ -87,4 +90,16 @@
       </Device2>
     </RelayNames>
   </DeviceControl>
+  <DatabasePath>C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug</DatabasePath>
+  <VideoPath>G:\Video Clips</VideoPath>
+  <SessionPath>C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug</SessionPath>
+  <GPS>
+    <ComPort>COM1</ComPort>
+    <NMEA>GPGGA</NMEA>
+    <BaudRate>4800</BaudRate>
+    <Parity>NONE</Parity>
+    <StopBits>1</StopBits>
+    <DataBits>8</DataBits>
+    <Timeout>5</Timeout>
+  </GPS>
 </VideoMinerConfigurationDetails>

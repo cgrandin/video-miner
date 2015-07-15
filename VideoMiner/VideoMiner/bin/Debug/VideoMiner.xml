@@ -551,6 +551,28 @@ VideoMiner
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks></remarks>
+</member><member name="M:VideoMiner.frmProjectNames.getProjectName">
+	<summary>
+ Return the name of the currently chosen project name
+ </summary>
+</member><member name="M:VideoMiner.frmProjectNames.getProjectNameToDelete">
+	<summary>
+ Return the name of the currently chosen project name to be deleted
+ </summary>
+</member><member name="M:VideoMiner.frmProjectNames.PopulateProjectList(Microsoft.VisualBasic.Collection)">
+	<summary>
+ Place all names in the supplied list Collection into the ListBox.
+ Refreshes the list everytime it is called, i.e. clears the list and rebuilds
+ it based on the list Collection
+ </summary>
+</member><member name="M:VideoMiner.frmProjectNames.lstProjects_SelectedIndexChanged(System.Object,System.EventArgs)">
+	<summary>
+ Enable or disable the delete button depending on whether or not there is a valid selection
+ </summary>
+</member><member name="M:VideoMiner.frmProjectNames.txtProject_TextChanged(System.Object,System.EventArgs)">
+	<summary>
+ Enable or disable the delete button depending on whether or not there is a valid selection
+ </summary>
 </member><member name="F:VideoMiner.frmGpsSettings.GPS_TIMEOUT">
 	<summary>
  Default timeout value used in form load event
@@ -971,14 +993,24 @@ VideoMiner
  If the configuration file is not found, defaults will be assigned for GPS and the path variables
  </summary>
 	<returns>True if all member variables were populated. False if an exceptioon was thrown or the file does not exist</returns>
-</member><member name="M:VideoMiner.VideoMiner.SaveConfiguration(System.String,System.String)">
+</member><member name="M:VideoMiner.VideoMiner.SaveConfiguration(System.String,System.String,System.Boolean)">
 	<summary>
  Save a single variable's value to the XML configuration file. If the variable does not exist,
- a new node, and any parent nodes which are required will be added to the XML document
+ a new node, and any parent nodes which are required will be added to the XML document.
+ If forceCreate is true, the node will be created even if one with the same name already exists.
+ This makes dynamic lists possible.
  </summary>
 	<param name="xPath">An XPath String representing the XML node name</param>
 	<param name="strValue">The value to save in the node represented by xPath</param>
 	<returns>A Boolean representing success or failure</returns>
+</member><member name="M:VideoMiner.VideoMiner.DeleteXMLNode(System.String,System.String)">
+	<summary>
+ Delete a node and any child nodes represented by the string 'xPath'
+ eg. if xPath = "X/Y/Z", the function will delete the node Z and any children it has.
+ </summary>
+	<param name="xPath">An XPath String representing the node you wish to add</param>
+	<remarks>xPath is a "/" seperated string where "/" represents node breaks.
+ i.e. "X/Y/Z" represents X is parent of Y, Y is parent of Z and Z is the node to delete</remarks>
 </member><member name="M:VideoMiner.VideoMiner.CreateXMLNode(System.Xml.XmlDocument@,System.Xml.XmlElement@,System.String,System.String,System.String)">
 	<summary>
  Recursively create a node and any required parrent nodes represented by the string 'xPath'
@@ -998,6 +1030,12 @@ VideoMiner
  </summary>
 	<param name="xPath">An XPath String representing the XML node name, with children seperated by "/"</param>
 	<returns>A String, the value of the requested XML node</returns>
+</member><member name="M:VideoMiner.VideoMiner.GetConfigurationCollection(System.String)">
+	<summary>
+ Get a collection of variables values for a given node from the XML configuration file.
+ </summary>
+	<param name="xPath">An XPath String representing the XML node name, with children seperated by "/"</param>
+	<returns>A Collection containing the children's values for the requested XML node</returns>
 </member><member name="M:VideoMiner.VideoMiner.mnuOpenSession_Click(System.Object,System.EventArgs)">
 	<summary>
  When user selects "Open Session" from the file menu, sub openSession() and open a dialogue
@@ -1045,6 +1083,18 @@ VideoMiner
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.newProjectName">
+	<summary>
+ Add a new project name to the XML file when the user changes it inside frmProjectNames
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.project_name_changed">
+	<summary>
+ Change the project name to what was chosen in the frmProjectName form.
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.project_name_delete">
+	<summary>
+ Delete the project name currently selected in the frmProjectName form.
+ </summary>
 </member><member name="M:VideoMiner.VideoMiner.openSession">
 	<summary>
  Open a session which has saved the previous state of the program in VideoMiner Session file (*.xml)

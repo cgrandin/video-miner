@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <VideoMinerConfigurationDetails version="1" revision="0">
   <DetailedSpeciesEventConfiguration>
     <Range>
@@ -54,6 +54,9 @@
     </Configuration>
   </Database>
   <PreviousProjects>
+    <ProjectName>test1</ProjectName>
+    <ProjectName>test2</ProjectName>
+    <ProjectName>test3</ProjectName>
   </PreviousProjects>
   <DeviceControl>
     <ConfigurationSet>False</ConfigurationSet>
@@ -91,7 +94,7 @@
   <VideoPath>G:\Video Clips</VideoPath>
   <SessionPath>C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug</SessionPath>
   <GPS>
-    <ComPort>COM3</ComPort>
+    <ComPort>COM1</ComPort>
     <NMEA>GPGGA</NMEA>
     <BaudRate>4800</BaudRate>
     <Parity>NONE</Parity>

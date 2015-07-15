@@ -21,6 +21,8 @@ Imports System.Threading
 Public Class VideoMiner
 
 #Region "Constants"
+    Private Const XPATH_PREVIOUS_PROJECTS As String = "/PreviousProjects"
+
     Private Const XPATH_DATABASE_PATH As String = "/DatabasePath"
     Private Const XPATH_SESSION_PATH As String = "/SessionPath"
     Private Const XPATH_VIDEO_PATH As String = "/VideoPath"
@@ -397,6 +399,8 @@ Public Class VideoMiner
     Private m_ButtonHeight As Integer
     Private m_ButtonTextSize As Integer
     Private m_ButtonFont As String
+
+    Private m_PreviousProjects As Collection
 #End Region
 
 #Region "Relay Configuration"
@@ -1112,6 +1116,9 @@ Public Class VideoMiner
                     m_strSessionPath = m_strWorkingPath
                     SaveConfiguration(XPATH_SESSION_PATH, m_strSessionPath)
                 End If
+
+                ' Previous project names
+                m_PreviousProjects = GetConfigurationCollection(XPATH_PREVIOUS_PROJECTS)
                 Return True
             End If
         Catch ex As Exception
@@ -1122,12 +1129,14 @@ Public Class VideoMiner
 
     ''' <summary>
     ''' Save a single variable's value to the XML configuration file. If the variable does not exist,
-    ''' a new node, and any parent nodes which are required will be added to the XML document
+    ''' a new node, and any parent nodes which are required will be added to the XML document.
+    ''' If forceCreate is true, the node will be created even if one with the same name already exists.
+    ''' This makes dynamic lists possible.
     ''' </summary>
     ''' <param name="xPath">An XPath String representing the XML node name</param>
     ''' <param name="strValue">The value to save in the node represented by xPath</param>
     ''' <returns>A Boolean representing success or failure</returns>
-    Public Function SaveConfiguration(ByVal xPath As String, ByVal strValue As String) As Boolean
+    Public Function SaveConfiguration(ByVal xPath As String, ByVal strValue As String, Optional forceCreate As Boolean = vbFalse) As Boolean
         Dim strPath As String = VMCD & xPath
         If File.Exists(m_strConfigFile) Then
             Dim xmlDoc As New XmlDocument
@@ -1141,7 +1150,7 @@ Public Class VideoMiner
             If nodeList Is Nothing Then
                 Return False
             End If
-            If nodeList.Count = 0 Then
+            If nodeList.Count = 0 Or forceCreate Then
                 ' The variable doesn't exist in the xml file, so create a new node
                 CreateXMLNode(xmlDoc, Nothing, xPath, strValue)
             Else
@@ -1171,7 +1180,59 @@ Public Class VideoMiner
         SaveConfiguration("/X/C/DBP", "Revenge of the Sith")
         SaveConfiguration("/a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p", "A New Hope")
         SaveConfiguration("/a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p", "The Empire Strikes Back")
+        ' Test forcibaly creating the node, even if it has the same name
+        SaveConfiguration("/PreviousProjects/ProjectName", "testSave1", vbTrue)
+        SaveConfiguration("/PreviousProjects/ProjectName", "testSave2", vbTrue)
+        SaveConfiguration("/PreviousProjects/ProjectName", "testSave3", vbTrue)
     End Sub
+
+    ''' <summary>
+    ''' Delete a node and any child nodes represented by the string 'xPath'
+    ''' eg. if xPath = "X/Y/Z", the function will delete the node Z and any children it has.
+    ''' </summary>
+    ''' <param name="xPath">An XPath String representing the node you wish to add</param>
+    ''' <remarks>xPath is a "/" seperated string where "/" represents node breaks.
+    ''' i.e. "X/Y/Z" represents X is parent of Y, Y is parent of Z and Z is the node to delete</remarks>
+    Private Function DeleteXMLNode(xPath As String, ByVal strValue As String) As Boolean
+        Dim strPath As String = VMCD & xPath
+        If File.Exists(m_strConfigFile) Then
+            Dim xmlDoc As New XmlDocument
+            xmlDoc.Load(m_strConfigFile)
+
+            Dim nodeList As XmlNodeList
+            ' Note that SelectNodes method requires the Document name as part of the xPath
+            ' but creating a new one does not, so here is strPath and the CreateXMLNode call
+            ' several lines below uses xPath (without document name)
+            nodeList = xmlDoc.SelectNodes(strPath)
+            If nodeList Is Nothing Then
+                Return False
+            End If
+
+            ' Create the Parent and Child node objects and cycle through the file
+            Dim parentNode As XmlNode
+            Dim childNode As XmlNode
+            For Each parentNode In nodeList
+                If parentNode.HasChildNodes Then
+                    For Each childNode In parentNode.ChildNodes
+                        If childNode IsNot Nothing Then
+                            If childNode.InnerText = strValue Then
+                                parentNode.RemoveChild(childNode)
+                                ' Remove parentNode as well, since it is just an empty declaration now
+                                parentNode.ParentNode.RemoveChild(parentNode)
+                                Exit For
+                            End If
+                            ' Set the XML value
+                        End If
+                    Next
+                End If
+            Next
+            xmlDoc.Save(m_strConfigFile)
+            Return True
+        Else
+            Return False
+        End If
+    End Function
+
     ''' <summary>
     ''' Recursively create a node and any required parrent nodes represented by the string 'xPath'
     ''' eg. if xPath = "X/Y/Z", the function will insert a node with parents if necessary X->Y->Z
@@ -1276,6 +1337,46 @@ Public Class VideoMiner
             Return strString
         Else
             Return ""
+        End If
+
+    End Function
+
+    ''' <summary>
+    ''' Get a collection of variables values for a given node from the XML configuration file.
+    ''' </summary>
+    ''' <param name="xPath">An XPath String representing the XML node name, with children seperated by "/"</param>
+    ''' <returns>A Collection containing the children's values for the requested XML node</returns>
+    Public Function GetConfigurationCollection(ByVal xPath As String) As Collection
+        Dim strPath As String = VMCD & xPath
+        If File.Exists(m_strConfigFile) Then
+            ' Load the config file into the document object
+            Dim xmlDoc As New XmlDocument
+            xmlDoc.Load(m_strConfigFile)
+
+            ' Load the config file nodes into the Node List object
+            Dim nodeList As XmlNodeList = xmlDoc.SelectNodes(strPath)
+            If nodeList Is Nothing Then
+                Return Nothing
+            End If
+
+            ' Create the parent and child node objects and cycle through the file
+            Dim parentNode, childNode As XmlNode
+            m_PreviousProjects = New Collection
+            For Each parentNode In nodeList
+                If parentNode.HasChildNodes Then
+                    For Each childNode In parentNode.ChildNodes
+                        If childNode.ChildNodes.Count > 0 Then
+                            m_PreviousProjects.Add(childNode.InnerXml, childNode.InnerXml)
+                        Else
+                            m_PreviousProjects.Add(childNode.Value, childNode.Value)
+                        End If
+                        'Debug.WriteLine("strString: " & strString)
+                    Next
+                End If
+            Next
+            Return m_PreviousProjects
+        Else
+            Return Nothing
         End If
 
     End Function
@@ -2292,12 +2393,6 @@ Public Class VideoMiner
             'fileNames = Split(cur_folder_files, "|")
             'image_prefix = strFileName.Substring(0, strFileName.LastIndexOf("."))
 
-
-
-
-
-
-
             fldlgOpenFD.Reset()
 
             Me.cmdPreviousImage.Enabled = True
@@ -2310,7 +2405,6 @@ Public Class VideoMiner
             'Me.lblVideoControls.Visible = True
             'Me.lblVideoControls.Text = "Photo Controls"
 
-
             Me.cmdNothingInPhoto.Visible = True
 
             intCurrentZoom = Me.cboZoom.SelectedIndex
@@ -2320,16 +2414,46 @@ Public Class VideoMiner
         End If
     End Sub
 
+    ' ======================================Code by Xida Chen (end)===========================================
+
+    ''' <summary>
+    ''' Add a new project name to the XML file when the user changes it inside frmProjectNames
+    ''' </summary>
+    Private Sub newProjectName() Handles frmProjectNames.NewProjectNameEvent
+        ' Add the new item to the current collection of items and also write it into the XML file
+        Dim name As String = frmProjectNames.getProjectName()
+        m_PreviousProjects.Add(name, name) ' Key and value are identical, needed for removing from the collection which needs the key
+        SaveConfiguration("/PreviousProjects/ProjectName", frmProjectNames.getProjectName(), vbTrue)
+    End Sub
+
+    ''' <summary>
+    ''' Change the project name to what was chosen in the frmProjectName form.
+    ''' </summary>
+    Private Sub project_name_changed() Handles frmProjectNames.ProjectNameChangedEvent
+        txtProjectName.Text = frmProjectNames.getProjectName()
+    End Sub
+
+    ''' <summary>
+    ''' Delete the project name currently selected in the frmProjectName form.
+    ''' </summary>
+    Private Sub project_name_delete() Handles frmProjectNames.DeleteProjectNameEvent
+        ' Delete the name from the XML file and current collection
+        Dim key As String = frmProjectNames.getProjectNameToDelete()
+        m_PreviousProjects.Remove(key)
+        DeleteXMLNode("/PreviousProjects/ProjectName", frmProjectNames.getProjectNameToDelete())
+    End Sub
+
     Private Sub txtProjectName_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtProjectName.Click
-        frmProjectNames = New frmProjectNames
+        If frmProjectNames Is Nothing Then
+            frmProjectNames = New frmProjectNames
+        End If
+        frmProjectNames.PopulateProjectList(m_PreviousProjects)
         frmProjectNames.ShowDialog()
     End Sub
-    ' ======================================Code by Xida Chen (end)===========================================
 
     Private Sub txtProjectName_Leave(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtProjectName.Leave
         project_name = txtProjectName.Text
     End Sub
-
 
     Private Sub txtTransectDate_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtTransectDate.Click
         Me.txtTransectDate.ForeColor = Color.Black
@@ -5729,10 +5853,6 @@ SkipInsertComma:
             Next
             Exit Sub
         End If
-
-
-
-
         ' ======================================Code by Xida Chen (begin)===========================================
         'If they are using the video control then get the time from there.
         ' The time code is set to be VIDEO_TIME_LABEL initially.
@@ -7497,7 +7617,6 @@ SkipInsertComma:
 
         frmSetTime.UserTime = m_GPSUserTime
         frmSetTime.ChangeSource(Global.VideoMiner.frmSetTime.WhichTimeEnum.GPS)
-
     End Sub
 
     Private Sub gps_disconnected() Handles frmGpsSettings.GPSDisconnectedEvent
@@ -7551,10 +7670,6 @@ SkipInsertComma:
             pnlSpeciesData.Controls.Clear()
             blupdateColumns = True
         End With
-    End Sub
-
-    Private Sub project_name_changed() Handles frmProjectNames.ProjectNameChangedEvent
-        txtProjectName.Text = frmProjectNames.txtProject.Text
     End Sub
 
     Private Sub species_code_changed() Handles frmRareSpeciesLookup.SpeciesCodeChangedEvent
@@ -7747,4 +7862,6 @@ SkipInsertComma:
             End If
         End If
     End Sub
+
+
 End Class

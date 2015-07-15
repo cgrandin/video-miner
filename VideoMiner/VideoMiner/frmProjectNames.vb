@@ -3,75 +3,43 @@ Imports System.Xml
 
 Public Class frmProjectNames
 
-    Public strConfigFile As String
-    Private clProjectNames As Collection
+    Private m_ProjectName As String
+    Private m_ProjectNameToDelete As String
 
     Event ProjectNameChangedEvent()
+    Event NewProjectNameEvent()
+    Event DeleteProjectNameEvent()
 
-    Private Sub frmProjectNames_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Dim strPath As String
+    ''' <summary>
+    ''' Return the name of the currently chosen project name
+    ''' </summary>
+    Public Function getProjectName() As String
+        Return m_ProjectName
+    End Function
 
-        strPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly.GetName.CodeBase)
-        If (strPath.StartsWith("file:\")) Then
-            strPath = strPath.Substring(6)    ' Remove unnecessary substring
-        End If
+    ''' <summary>
+    ''' Return the name of the currently chosen project name to be deleted
+    ''' </summary>
+    Public Function getProjectNameToDelete() As String
+        Return m_ProjectNameToDelete
+    End Function
 
-        strConfigFile = strPath & "\VideoMinerConfigurationDetails.xml"
-
-        clProjectNames = New Collection
-
-        GetProjectNames(strConfigFile, VMCD & "/PreviousProjects")
-
+    ''' <summary>
+    ''' Place all names in the supplied list Collection into the ListBox.
+    ''' Refreshes the list everytime it is called, i.e. clears the list and rebuilds
+    ''' it based on the list Collection
+    ''' </summary>
+    Public Function PopulateProjectList(list As Collection) As Boolean
+        lstProjects.Items.Clear()
         Dim i As Integer
-
-        For i = 1 To clProjectNames.Count
-            lstProjects.Items.Add(clProjectNames.Item(i))
-        Next
-
-    End Sub
-
-    ' Function to get the values from an XML config file
-    Public Function GetProjectNames(ByVal strConfigFile As String, ByVal strPath As String) As String
-
-        ' Check if the specified configuration file exists
-        If File.Exists(strConfigFile) Then
-
-            ' Load the config file into the document object
-            Dim xmlDoc As New XmlDocument
-            xmlDoc.Load(strConfigFile)
-
-            ' Load the config file nodes into the Node List object
-            Dim nodeList As XmlNodeList
-            nodeList = xmlDoc.SelectNodes(strPath)
-            If nodeList Is Nothing Then
-                Return ""
-            End If
-
-            ' Create the parent and child node objects and cycle through the file
-            Dim parentNode As XmlNode
-            Dim childNode As XmlNode
-            Dim strString As String = ""
-            For Each parentNode In nodeList
-                If parentNode.HasChildNodes Then
-                    For Each childNode In parentNode.ChildNodes
-                        If childNode.ChildNodes.Count > 0 Then
-                            clProjectNames.Add(childNode.InnerXml)
-                        Else
-                            clProjectNames.Add(childNode.Value)      ' Get the value for the specified child node
-                        End If
-                        'Debug.WriteLine("strString: " & strString)
-                    Next
-                End If
+        Try
+            For i = 1 To list.Count
+                lstProjects.Items.Add(list.Item(i))
             Next
-            If strString.Length > 0 Then
-                strString = strString.Substring(0, strString.Length - 1)
-            End If
-
-            Return strString
-        Else
-            Return ""
-        End If
-
+        Catch ex As Exception
+            Return False
+        End Try
+        Return True
     End Function
 
     Private Function writeProjectName(ByVal strConfigFile As String, ByVal strPath As String, ByVal strItem As String) As Boolean
@@ -107,18 +75,21 @@ Public Class frmProjectNames
         End If
     End Function
 
+    ''' <summary>
+    ''' Enable or disable the delete button depending on whether or not there is a valid selection
+    ''' </summary>
     Private Sub lstProjects_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lstProjects.SelectedIndexChanged
-
         If Me.lstProjects.SelectedItems.Count = 0 Then
             Me.cmdDelete.Enabled = False
         Else
             Me.cmdDelete.Enabled = True
             Me.txtProject.Text = Me.lstProjects.SelectedItem
         End If
-
-
     End Sub
 
+    ''' <summary>
+    ''' Enable or disable the delete button depending on whether or not there is a valid selection
+    ''' </summary>
     Private Sub txtProject_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtProject.TextChanged
         If Me.txtProject.Text.Length <> 0 Then
             Me.cmdOK.Enabled = True
@@ -133,29 +104,33 @@ Public Class frmProjectNames
     End Sub
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
-        Dim i As Integer
-        For i = 1 To clProjectNames.Count
-            If Me.txtProject.Text = clProjectNames.Item(i) Then
-                RaiseEvent ProjectNameChangedEvent()
-                Me.Close()
-                Exit Sub
+        m_ProjectName = txtProject.Text
+        RaiseEvent ProjectNameChangedEvent()
+
+        Dim inList As Boolean = vbFalse
+        For Each item As Object In lstProjects.Items
+            If txtProject.Text = item.ToString Then
+                inList = vbTrue
             End If
         Next
-        writeProjectName(strConfigFile, VMCD & "/PreviousProjects", Me.txtProject.Text)
-        Me.Close()
+        If Not inList Then
+            RaiseEvent NewProjectNameEvent() ' This will tell the handler to write the new name to XML file
+        End If
+
+        Me.Hide()
+        'writeProjectName(strConfigFile, VMCD & "/PreviousProjects", Me.txtProject.Text)
     End Sub
 
     Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-        Me.Close()
+        Me.Hide()
     End Sub
 
     Private Sub cmdDelete_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDelete.Click
-
-        deleteProjectName(strConfigFile, VMCD & "/PreviousProjects", Me.lstProjects.SelectedItem)
-
+        'deleteProjectName(strConfigFile, VMCD & "/PreviousProjects", Me.lstProjects.SelectedItem)
+        m_ProjectNameToDelete = lstProjects.SelectedItem
         Me.lstProjects.Items.Remove(lstProjects.SelectedItem)
         Me.txtProject.Text = ""
-
+        RaiseEvent DeleteProjectNameEvent()
     End Sub
 
     Private Function deleteProjectName(ByVal strConfigFile As String, ByVal strPath As String, ByVal strItem As String) As Boolean
