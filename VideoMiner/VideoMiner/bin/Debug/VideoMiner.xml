@@ -1029,6 +1029,11 @@ VideoMiner
  Are we in a transect currently or not?
  </summary>
 	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_data_table">
+	<summary>
+ Current database table object
+ </summary>
+	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.frmVideoMiner_Load(System.Object,System.EventArgs)">
 	<summary>
  Get version name from assembly, read and process the Config file, and setup the form controls for an unloaded state.
@@ -1216,6 +1221,59 @@ VideoMiner
 	<summary>
  Updates the time text on the form everytime the timer tick event is issued by the frmVideoPlayer form
  </summary>
+</member><member name="M:VideoMiner.VideoMiner.createInsertQuery(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+	<summary>
+ Creates a string which is an 'INSERT INTO' query in access database format.
+ </summary>
+	<param name="strDataCode">Code for the data. This code is found in the lu_data_codes table in the access database</param>
+	<param name="strSpeciesName">Species name as found in the lu_species_code table</param>
+	<param name="strSpeciesCode">Species code as found in the lu_species_code table</param>
+	<param name="strSpeciesCount">Count of the species given by strSpeciesCode and strSpeciesName</param>
+	<param name="strSide">Which side the observation was on given by table lu_observed_side (0=center,1=port,2=starboard)</param>
+	<param name="strRange">Distance of observation from the centerline in cm</param>
+	<param name="strLength">Length in cm of the observed species</param>
+	<param name="strHeight">Height measurement for species where length is not the standard measurement (e.g. Tunicate)</param>
+	<param name="strWidth">Width measurement for species where length is not the standard measurement</param>
+	<param name="strAbundance">Abundance of the species seen (TODO:update this definition)</param>
+	<param name="strIdConfidence">Confidence value for species ID. See table lu_confidence_ids (1=high,2=med,3=low)</param>
+	<param name="strComment">Video reviewer's comments</param>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_CurrentCellDirtyStateChanged(System.Object,System.EventArgs)">
+	<summary>
+ Triggered when any cell value is changed in the grid. Will update a label telling the user that the data is no longer synced with the database.
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_KeyDown(System.Windows.Forms.DataGridView,System.Windows.Forms.KeyEventArgs)">
+	<summary>
+ Captures key presses in the DataGridView. Pressing the 'delete' key will delete rows from the grid view and the database.
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.deleteSelectedRows(System.Object,System.EventArgs)">
+	<summary>
+ Deletes selected rows from the MS access database as well as in the grid view. A confirmation box will verify this.
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_RightClick(System.Windows.Forms.DataGridView,System.Windows.Forms.MouseEventArgs)">
+	<summary>
+ Captures right click in the DataGridView. This will delete rows from the grid view and the database.
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks>If no rows are selected, a message will tell you to select rows and then press delete</remarks>
+</member><member name="M:VideoMiner.VideoMiner.cmdUpdateDatabase_Click(System.Object,System.EventArgs)">
+	<summary>
+ Update the MS Access database table bound to the data adapter. This allows changes made within the DataGridView to be
+ updated inside the actual database.
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.setTimes">
 	<summary>
  Set the User time (txtTime) textbox and source time (txtTimeSource) to show

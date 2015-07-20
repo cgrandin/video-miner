@@ -250,6 +250,24 @@ Public Class VideoMiner
     ''' <remarks></remarks>
     Private m_blInTransect As Boolean = vbFalse
 
+    ''' <summary>
+    ''' Current database table object
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_data_table As DataTable
+    Private m_data_cmd As OleDbCommand
+    Private m_data_adapter As OleDbDataAdapter
+    Private m_data_command_builder As OleDbCommandBuilder
+    Private m_data_set As DataSet
+    Private m_data_binding As BindingSource
+
+    ' Database variables
+    Public db_filename As String
+    Public db_file_open As Boolean
+    Private db_id_num As Long
+    Private last_data_row As DataRow
+
+
     ' GPS connection settings to initialize frmGpsSettings form with
     Private m_strComPort As String
     Private m_strNMEAStringType As String
@@ -311,18 +329,6 @@ Public Class VideoMiner
     Public intVideoStopCounter As Integer = 0
     Public blSpeciesCancelled As Boolean = False
     Private blIsDuplicateTime As Boolean = False
-
-    ' Database variables
-    Public db_filename As String
-    Public db_file_open As Boolean
-    Private db_id_num As Long
-    Private data_cmd As OleDbCommand
-    Private data_adapter As OleDbDataAdapter
-    Private data_set As DataSet
-    Private data_table As DataTable
-    Private data_binding As BindingSource
-    Private data_command_builder As OleDbCommandBuilder
-    Private last_data_row As DataRow
 
     ' User buttons
     Dim button_height As Integer = 44
@@ -1006,6 +1012,8 @@ Public Class VideoMiner
         is_on_bottom = 0
         toggle_bottom(NULL_STRING, NULL_STRING, NULL_STRING & ".00", NS, NS, NS)
 
+        lblDirtyData.Visible = False
+
         Me.cboZoom.Items.Add("25%")
         Me.cboZoom.Items.Add("50%")
         Me.cboZoom.Items.Add("75%")
@@ -1017,7 +1025,6 @@ Public Class VideoMiner
         Me.cmdNextImage.Enabled = False
         Me.cboZoom.Enabled = False
 
-        Me.txtDisplayRecords.Text = intDefaultNumberDisplayRecords
         intNumberDisplayRecords = intDefaultNumberDisplayRecords
 
         Me.txtQuickSpeciesCount.Text = strDefaultQuickEntryCount
@@ -1622,8 +1629,8 @@ Public Class VideoMiner
         blCloseDatabase = True
         conn.Close()
         conn = Nothing
-        data_cmd = Nothing
-        data_adapter = Nothing
+        m_data_cmd = Nothing
+        m_data_adapter = Nothing
         grdVideoMinerDatabase.DataSource = Nothing
         db_file_open = False
         db_file_unload()
@@ -1631,10 +1638,7 @@ Public Class VideoMiner
         Me.cmdDefineAllSpatialVariables.Visible = False
         Me.cmdDefineAllTransectVariables.Visible = False
         Me.cmdAddComment.Visible = False
-        Me.lblDisplayRecords.Visible = False
-        Me.txtDisplayRecords.Visible = False
-        Me.cmdRefreshDatabase.Visible = False
-        Me.cmdDeleteLastRecord.Visible = False
+        Me.cmdUpdateDatabase.Visible = False
 
         cmdShowSetTimecode.Enabled = False
         cmdTransectStart.Enabled = False
@@ -3617,6 +3621,8 @@ Public Class VideoMiner
         cmdShowSetTimecode.Enabled = False
         cmdTransectStart.Enabled = False
         cmdOffBottom.Enabled = False
+        cmdUpdateDatabase.Visible = False
+        lblDirtyData.Visible = False
         'Me.cmdEdit.Enabled = False
     End Sub
 
@@ -3638,10 +3644,8 @@ Public Class VideoMiner
         Me.radDetailedEntry.Visible = True
         Me.radAbundanceEntry.Visible = True
         Me.cmdEdit.Visible = True
-        Me.lblDisplayRecords.Visible = True
-        Me.txtDisplayRecords.Visible = True
-        Me.cmdRefreshDatabase.Visible = True
-        Me.cmdDeleteLastRecord.Visible = True
+        Me.cmdUpdateDatabase.Visible = True
+        Me.lblDirtyData.Visible = True
         Me.cmdRareSpeciesLookup.Visible = True
 
         Me.txtTransectDate.Enabled = True
@@ -4801,203 +4805,35 @@ Public Class VideoMiner
         End Try
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: fetch_data()
-    ' Description: Display the "data" table from database in the DataGridView1 Data grid View.
-    ' 1.) Open a connection to the database.
-    ' 2.) Select all records from the database table "data" in descending order based on id field.
-    ' 3.) Display the selected records from the database in the data grid view DataGridView1.
-    ' ==========================================================================================================
     Private Sub fetch_data()
-        Dim i As Integer
+        Dim query As String = "SELECT * FROM " & DB_DATA_TABLE & " ORDER BY ID DESC;"
 
-        Dim clSelectItems As New Collection
-        blupdateColumns = False
-        select_string = "SELECT TOP " & intNumberDisplayRecords
-        insert_string = "INSERT INTO " & DB_DATA_TABLE & "("
-        For i = 1 To colTableFields.Count
-
-            Select Case colTableFields.Item(i)
-
-                Case "SpeciesID"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "SpeciesName"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "SpeciesCount"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "Side"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "Range"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "Length"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "Height"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "Width"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "Abundance"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "IDConfidence"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "Comment"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "DataCode"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "X"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "Y"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "Z"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "FileName"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "ScreenCaptureName"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "Format(ElapsedTime, 'hh:mm:ss') as ElapsedTime"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "Format(ReviewedDate, 'm/dd/yyyy') as ReviewDate"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case "Format(ReviewedTime, 'hh:mm:ss') as ReviewTime"
-                    clSelectItems.Add(colTableFields.Item(i))
-                Case Else
-                    select_string = select_string & " " & colTableFields.Item(i) & ","
-            End Select
-
-
-            If colTableFields.Item(i) = "Format(TimeCode, 'hh:mm:ss') as TimeCode" Then
-                insert_string = insert_string & "TimeCode"
-            ElseIf colTableFields.Item(i) = "Format(ElapsedTime, 'hh:mm:ss') as ElapsedTime" Then
-                insert_string = insert_string & "ElapsedTime"
-            ElseIf colTableFields.Item(i) <> "Format(ReviewedDate, 'm/dd/yyyy') as ReviewDate" And colTableFields.Item(i) <> "Format(ReviewedTime, 'hh:mm:ss') as ReviewTime" Then
-                insert_string = insert_string & colTableFields.Item(i)
-            End If
-
-            If i <> colTableFields.Count Then
-                If colTableFields.Item(i) <> "Format(ReviewedDate, 'm/dd/yyyy') as ReviewDate" And colTableFields.Item(i) <> "Format(ReviewedTime, 'hh:mm:ss') as ReviewTime" Then
-                    insert_string = insert_string & ","
-                End If
-            End If
-
-        Next
-
-        For i = 1 To clSelectItems.Count
-
-            select_string = select_string & " " & clSelectItems.Item(i)
-
-            If i <> clSelectItems.Count Then
-                select_string = select_string & ","
-            End If
-
-        Next
-
-        select_string = select_string & " FROM " & DB_DATA_TABLE & " ORDER BY ID DESC;"
-
-        If insert_string.Substring(insert_string.Length - 1, 1) = "," Then
-            insert_string = insert_string.Substring(0, insert_string.Length - 1)
-        End If
-        insert_string = insert_string & ") "
-
-        Dim strColumnArray() As String = m_strDatabaseColumns.Split(",")
-        dataColumns = New Collection
-        For i = 0 To strColumnArray.Count - 1
-            dataColumns.Add(strColumnArray(i))
-        Next
-
-        Dim query As String
-        query = select_string
-        data_cmd = New OleDbCommand(query, conn)
-        data_adapter = New OleDbDataAdapter(query, conn)
-        data_set = New DataSet
-        data_table = New DataTable()
-        data_binding = New BindingSource()
+        m_data_cmd = New OleDbCommand(query, conn)
+        m_data_adapter = New OleDbDataAdapter(query, conn)
+        m_data_set = New DataSet()
         Dim intIDColumn As Integer = 0
         Try
-            data_command_builder = New OleDbCommandBuilder(data_adapter)
-            data_adapter.Fill(data_set, DB_DATA_TABLE)
-            AddHandler data_set.Tables(DB_DATA_TABLE).RowDeleted, AddressOf data_rows_deleted
-            'data_binding.DataSource = data_set.Tables(DB_DATA_TABLE)
-            data_table = data_set.Tables(DB_DATA_TABLE)
-            Dim j As Integer
-            If m_strDatabaseName = db_filename Then
-                For j = 1 To dataColumns.Count
-                    Dim strItem As String = dataColumns.Item(j)
-                    Dim strColumn() As String = strItem.Split(":")
-                    If strColumn(0) = "ID" Then
-                        intIDColumn = CInt(strColumn(1))
-                    End If
-                    data_table.Columns(strColumn(0)).SetOrdinal(CInt(strColumn(1)))
-                Next
-            End If
-            data_binding.DataSource = data_table
-            grdVideoMinerDatabase.DataSource = data_binding
-
-            If Not dataColumns Is Nothing Then
-                Dim grdColumn As DataGridViewColumn
-                For j = 1 To dataColumns.Count
-                    Dim strItem As String = dataColumns.Item(j)
-                    Dim strColumn() As String = strItem.Split(":")
-                    For Each grdColumn In grdVideoMinerDatabase.Columns
-                        If grdColumn.Name = strColumn(0) Then
-                            grdColumn.Width = CInt(strColumn(2))
-                            Exit For
-                        End If
-                    Next
-                Next
-            End If
-
-
-
+            m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
+            m_data_command_builder.QuotePrefix = "["
+            m_data_command_builder.QuoteSuffix = "]"
+            m_data_adapter.Fill(m_data_set, DB_DATA_TABLE)
+            m_data_table = m_data_set.Tables(DB_DATA_TABLE)
+            grdVideoMinerDatabase.DataSource = m_data_table
         Catch ex As Exception
             MsgBox("There was an exception thrown while trying to set up the database view. Message and Stack trace:" & vbCrLf & ex.Message() & vbCrLf & ex.StackTrace)
         Finally
-            If data_set.Tables(0).Rows.Count > 0 Then
-                db_id_num = data_table.Rows(0).Item(intIDColumn) + 1 ' retrieve id from database, assumes id ordered descending
+            If m_data_set.Tables(0).Rows.Count > 0 Then
+                db_id_num = m_data_table.Rows(0).Item(intIDColumn) + 1 ' retrieve id from database, assumes id ordered descending
             Else
                 db_id_num = 1
             End If
         End Try
         If Me.grdVideoMinerDatabase.Rows.Count = 0 Then
-            Me.cmdDeleteLastRecord.Enabled = False
+            Me.cmdUpdateDatabase.Enabled = False
         Else
-            Me.cmdDeleteLastRecord.Enabled = True
+            Me.cmdUpdateDatabase.Enabled = True
         End If
         blupdateColumns = True
-    End Sub
-
-    ' ==========================================================================================================
-    ' Name: DataGridView1_CellEndEdit
-    ' Description: Once the user has chosen to delete a record from the database, the rows_deleted()
-    '              function to perform this action.
-    ' ==========================================================================================================
-    Private Sub DataGridView1_CellEndEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs)
-        rows_deleted()
-    End Sub
-
-    ' ==========================================================================================================
-    ' Name: data_rows_deleted
-    ' Description: Once the user has chosen to delete a record from the database, the rows_deleted()
-    '              function to perform this action.
-    ' ==========================================================================================================
-    Private Sub data_rows_deleted(ByVal sender As Object, ByVal e As System.Data.DataRowChangeEventArgs)
-        rows_deleted()
-    End Sub
-
-    ' ==========================================================================================================
-    ' Name: rows_deleted()
-    ' Description: Called when the user deletes a record from the "data" table in the data grid view DataGridView1
-    '   1.) Delete whichever record the user chose in DataGridView1 from the database itself.
-    ' ==========================================================================================================
-    Private Sub rows_deleted()
-        'update the database
-        data_binding.EndEdit()
-        Dim comm_builder As OleDbCommandBuilder = New OleDbCommandBuilder(data_adapter)
-        Try
-            data_adapter.Update(data_set, DB_DATA_TABLE)
-            data_set.AcceptChanges()
-        Catch ex As Exception
-            MsgBox("The value you entered would result in a key violation in the database table '" & DB_DATA_TABLE & "'" & vbCrLf & _
-            "and therefore no changes were made to the database.", MsgBoxStyle.Exclamation, "Key Violation")
-        End Try
     End Sub
 
     ''' <summary>
@@ -5022,8 +4858,11 @@ Public Class VideoMiner
                                        strIdConfidence As String, strComment As String) As String
         Dim i As Integer
         Dim j As Integer
-        Dim strQuery As String
-        strQuery = insert_string & "VALUES ("
+
+        Dim strQuery As String = "INSERT INTO " & DB_DATA_TABLE & "(ID,TransectDate,TimeCode,TextTime,TextTimeDecimal,TimeSource,ProjectName,TransectName,OnBottom," & _
+                                 "DominantSubstrate,DominantPercent,SubdominantSubstrate,SubdominantPercent,SurveyModeID,ReliefID,DisturbanceID,ProtocolID," & _
+                                 "ImageQualityID,SpeciesName,SpeciesID,SpeciesCount,Side,Range,Length,Height,Width,Abundance,IDConfidence,Comment,DataCode," & _
+                                 "X,Y,Z,FileName,ScreenCaptureName,ElapsedTime,ReviewedDate,ReviewedTime,ComplexityID,FieldOfView) VALUES("
 
         If frmVideoPlayer Is Nothing Then
             ElapsedTime = NULL_STRING
@@ -5062,12 +4901,20 @@ Public Class VideoMiner
                     End If
                 Case "TextTime"
                     Dim tsTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
-                    Dim strTextTime As String = pad0(tsTime.Hours) & ":" & pad0(tsTime.Minutes) & ":" & pad0(tsTime.Seconds)
-                    strQuery = strQuery & SingleQuote(strTextTime)
+                    If tsTime = Zero Then
+                        strQuery = strQuery & NS
+                    Else
+                        Dim strTextTime As String = pad0(tsTime.Hours) & ":" & pad0(tsTime.Minutes) & ":" & pad0(tsTime.Seconds)
+                        strQuery = strQuery & SingleQuote(strTextTime)
+                    End If
                 Case "TextTimeDecimal"
                     Dim tsTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
-                    Dim strDecimalTime As String = pad0(tsTime.Hours) & ":" & pad0(tsTime.Minutes) & ":" & pad0(tsTime.Seconds) & "." & pad0(tsTime.Milliseconds)
-                    strQuery = strQuery & SingleQuote(strDecimalTime)
+                    If tsTime = Zero Then
+                        strQuery = strQuery & NS
+                    Else
+                        Dim strDecimalTime As String = pad0(tsTime.Hours) & ":" & pad0(tsTime.Minutes) & ":" & pad0(tsTime.Seconds) & "." & pad0(tsTime.Milliseconds)
+                        strQuery = strQuery & SingleQuote(strDecimalTime)
+                    End If
                 Case "OnBottom"
                     If is_on_bottom = -9999 Then
                         strQuery = strQuery & NS
@@ -5200,7 +5047,6 @@ Public Class VideoMiner
                             GoTo InsertComma
                         End If
                     Next j
-
                     For j = 0 To intNumTransectButtons - 1
                         If strTransectButtonCodeNames(j).ToString = colTableFields.Item(i).ToString Then
                             If dictTransectFieldValues(strTransectButtonCodeNames(j).ToString) <> "-9999" Then
@@ -5223,6 +5069,9 @@ SkipInsertComma:
         If strQuery.Substring(strQuery.Length - 1, 1) = "," Then
             strQuery = strQuery.Substring(0, strQuery.Length - 1)
         End If
+        ' TODO: Fix this, values for ComplexityID and FieldOfView are not being found..
+        strQuery = strQuery & ",NULL,NULL"
+
         strQuery = strQuery & ");"
 
         If Me.chkRepeatVariables.Checked = False Then
@@ -5245,8 +5094,6 @@ SkipInsertComma:
         End If
         Return strQuery
     End Function
-
-
 #End Region
 
 #Region "Habitat Variable Functions"
@@ -6463,47 +6310,12 @@ SkipInsertComma:
 
 #End Region
 
-    Private Sub txtDisplayRecords_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtDisplayRecords.KeyPress
-        If e.KeyChar = Microsoft.VisualBasic.Chr(Keys.Return) Then
-            Me.cmdRefreshDatabase_Click(sender, e)
-        Else
-            modGlobals.numericTextboxValidation(e)
-        End If
-
-    End Sub
-
     Private Sub txtPlaySeconds_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtPlaySeconds.KeyPress
         modGlobals.numericTextboxValidation(e)
     End Sub
 
-    Private Sub cmdRefreshDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdRefreshDatabase.Click
-
-        If Me.txtDisplayRecords.Text = NULL_STRING Then
-            Me.txtDisplayRecords.Text = intDefaultNumberDisplayRecords
-        End If
-
-        intNumberDisplayRecords = CInt(Me.txtDisplayRecords.Text)
-
-        fetch_data()
-
-    End Sub
-
-    Private Sub txtDisplayRecords_LostFocus(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtDisplayRecords.LostFocus
-        If Me.txtDisplayRecords.Text = NULL_STRING Or Me.txtDisplayRecords.Text = 0 Then
-            Me.txtDisplayRecords.Text = intNumberDisplayRecords
-        End If
-    End Sub
-
     Private Sub txtQuickSpeciesCount_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtQuickSpeciesCount.KeyPress
         modGlobals.numericTextboxValidation(e)
-    End Sub
-
-    Private Sub txtQuickSpeciesCount_LostFocus(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtQuickSpeciesCount.LostFocus
-        If Me.txtQuickSpeciesCount.Text = "0" Then
-            Me.txtDisplayRecords.Text = NULL_STRING
-        End If
-
-        strQuickEntryCount = Me.txtQuickSpeciesCount.Text
     End Sub
 
     Private Sub radQuickEntry_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles radQuickEntry.CheckedChanged
@@ -6805,27 +6617,90 @@ SkipInsertComma:
         End If
     End Sub
 
-    Private Sub cmdDeleteLastRecord_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDeleteLastRecord.Click
-        Dim row As DataGridViewRow
-        Dim IDValue As Integer = Me.grdVideoMinerDatabase.Rows.Item(0).Cells("ID").Value
+    Private Sub grdVideoMinerDatabase_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grdVideoMinerDatabase.CellValueChanged
+    End Sub
 
-        For Each row In Me.grdVideoMinerDatabase.Rows
-            If row.Cells("ID").Value >= IDValue Then
-                IDValue = row.Cells("ID").Value
-            End If
-        Next
-
-        Dim intAnswer As Integer
-        intAnswer = MessageBox.Show("Are you sure you want to permanently delete the record with ID as " & IDValue & "?  This action cannot be undone.", "Delete Last Record", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-        If intAnswer = vbYes Then
-            Dim deleteQuery As String
-            deleteQuery = "DELETE FROM " & DB_DATA_TABLE & " WHERE ID = " & IDValue
-            Dim numrows As Integer
-            Dim oComm As OleDbCommand
-            oComm = New OleDbCommand(deleteQuery, conn)
-            numrows = oComm.ExecuteNonQuery()
-            fetch_data()
+    ''' <summary>
+    ''' Triggered when any cell value is changed in the grid. Will update a label telling the user that the data is no longer synced with the database.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub grdVideoMinerDatabase_CurrentCellDirtyStateChanged(sender As Object, e As EventArgs) Handles grdVideoMinerDatabase.CurrentCellDirtyStateChanged
+        If grdVideoMinerDatabase.IsCurrentCellDirty Then
+            lblDirtyData.ForeColor = Color.Red
+            lblDirtyData.Text = "Data unsynced"
+            grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.BackColor = Color.Salmon
+            grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.SelectionBackColor = Color.DarkSalmon
         End If
+    End Sub
+
+    ''' <summary>
+    ''' Captures key presses in the DataGridView. Pressing the 'delete' key will delete rows from the grid view and the database.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub grdVideoMinerDatabase_KeyDown(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.KeyEventArgs) Handles grdVideoMinerDatabase.KeyDown
+        If e.KeyCode = Keys.Delete Then
+            deleteSelectedRows(sender, e)
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Deletes selected rows from the MS access database as well as in the grid view. A confirmation box will verify this.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub deleteSelectedRows(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        If grdVideoMinerDatabase.SelectedRows.Count > 0 Then
+            If MessageBox.Show("Are you sure you want to delete all selected rows from the database? They will be gone forever.", "Delete rows?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = vbYes Then
+                For Each row As DataGridViewRow In grdVideoMinerDatabase.SelectedRows
+                    grdVideoMinerDatabase.Rows.Remove(row)
+                Next
+                cmdUpdateDatabase_Click(sender, e)
+            End If
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Captures right click in the DataGridView. This will delete rows from the grid view and the database.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks>If no rows are selected, a message will tell you to select rows and then press delete</remarks>
+    Private Sub grdVideoMinerDatabase_RightClick(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.MouseEventArgs) Handles grdVideoMinerDatabase.MouseClick
+        If e.Button = Windows.Forms.MouseButtons.Right Then
+            Dim cms As ContextMenuStrip = New ContextMenuStrip
+            Dim item1 As ToolStripItem
+            If grdVideoMinerDatabase.SelectedRows.Count > 0 Then
+                item1 = cms.Items.Add("Delete selected rows (or use delete key)")
+                item1.Tag = 1
+                AddHandler item1.Click, AddressOf deleteSelectedRows
+            Else
+                item1 = cms.Items.Add("Delete rows by selecting them and pressing delete.")
+                item1.Tag = 1
+            End If
+            cms.Show(grdVideoMinerDatabase, e.Location)
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Update the MS Access database table bound to the data adapter. This allows changes made within the DataGridView to be
+    ''' updated inside the actual database.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub cmdUpdateDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUpdateDatabase.Click
+        m_data_adapter.Update(m_data_table)
+        lblDirtyData.ForeColor = Color.LimeGreen
+        lblDirtyData.Text = "Data synced"
+        For i As Integer = 0 To grdVideoMinerDatabase.RowCount - 1
+            grdVideoMinerDatabase.Rows(i).DefaultCellStyle.BackColor = Color.White
+            grdVideoMinerDatabase.Rows(i).DefaultCellStyle.SelectionBackColor = Color.Blue
+        Next
     End Sub
 
     Private Sub ConfigureButtonFormatToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureButtonFormatToolStripMenuItem.Click
@@ -7424,4 +7299,5 @@ SkipInsertComma:
     Private Sub VideoMiner_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
 
     End Sub
+
 End Class

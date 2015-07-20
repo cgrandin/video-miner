@@ -91,13 +91,6 @@ Partial Class VideoMiner
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer3 = New System.Windows.Forms.SplitContainer()
         Me.cmdCloseCalendar = New System.Windows.Forms.Button()
-        Me.mnthCalendar = New System.Windows.Forms.MonthCalendar()
-        Me.pnlImageControls = New System.Windows.Forms.Panel()
-        Me.lblImageControls = New System.Windows.Forms.Label()
-        Me.cmdPreviousImage = New System.Windows.Forms.Button()
-        Me.lblImageSize = New System.Windows.Forms.Label()
-        Me.cmdNextImage = New System.Windows.Forms.Button()
-        Me.cboZoom = New System.Windows.Forms.ComboBox()
         Me.pnlVideoControls = New System.Windows.Forms.Panel()
         Me.txtFramesToSkip = New System.Windows.Forms.TextBox()
         Me.chkDefineAll = New System.Windows.Forms.CheckBox()
@@ -114,6 +107,7 @@ Partial Class VideoMiner
         Me.cmdDecreaseRate = New System.Windows.Forms.Button()
         Me.cmdPlayForSeconds = New System.Windows.Forms.Button()
         Me.txtPlaySeconds = New System.Windows.Forms.TextBox()
+        Me.mnthCalendar = New System.Windows.Forms.MonthCalendar()
         Me.txtTransectDate = New System.Windows.Forms.TextBox()
         Me.chkRecordEachSecond = New System.Windows.Forms.CheckBox()
         Me.txtProjectName = New System.Windows.Forms.TextBox()
@@ -127,6 +121,12 @@ Partial Class VideoMiner
         Me.lblTransectDate = New System.Windows.Forms.Label()
         Me.cmdTransectStart = New System.Windows.Forms.Button()
         Me.cmdShowSetTimecode = New System.Windows.Forms.Button()
+        Me.pnlImageControls = New System.Windows.Forms.Panel()
+        Me.lblImageControls = New System.Windows.Forms.Label()
+        Me.cmdPreviousImage = New System.Windows.Forms.Button()
+        Me.lblImageSize = New System.Windows.Forms.Label()
+        Me.cmdNextImage = New System.Windows.Forms.Button()
+        Me.cboZoom = New System.Windows.Forms.ComboBox()
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer6 = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer7 = New System.Windows.Forms.SplitContainer()
@@ -147,12 +147,11 @@ Partial Class VideoMiner
         Me.txtQuickSpeciesCount = New System.Windows.Forms.TextBox()
         Me.pnlSpeciesData = New System.Windows.Forms.Panel()
         Me.lblSpeciesData = New System.Windows.Forms.Label()
-        Me.cmdNothingInPhoto = New System.Windows.Forms.Button()
-        Me.lblDisplayRecords = New System.Windows.Forms.Label()
-        Me.cmdDeleteLastRecord = New System.Windows.Forms.Button()
-        Me.cmdRefreshDatabase = New System.Windows.Forms.Button()
-        Me.txtDisplayRecords = New System.Windows.Forms.TextBox()
         Me.cmdAddComment = New System.Windows.Forms.Button()
+        Me.cmdNothingInPhoto = New System.Windows.Forms.Button()
+        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.cmdUpdateDatabase = New System.Windows.Forms.Button()
+        Me.lblDirtyData = New System.Windows.Forms.Label()
         Me.grdVideoMinerDatabase = New System.Windows.Forms.DataGridView()
         Me.fldlgOpenFD = New System.Windows.Forms.OpenFileDialog()
         Me.tmrRecordPerSecond = New System.Windows.Forms.Timer(Me.components)
@@ -178,8 +177,8 @@ Partial Class VideoMiner
         Me.SplitContainer3.Panel1.SuspendLayout()
         Me.SplitContainer3.Panel2.SuspendLayout()
         Me.SplitContainer3.SuspendLayout()
-        Me.pnlImageControls.SuspendLayout()
         Me.pnlVideoControls.SuspendLayout()
+        Me.pnlImageControls.SuspendLayout()
         CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer2.Panel1.SuspendLayout()
         Me.SplitContainer2.Panel2.SuspendLayout()
@@ -196,6 +195,7 @@ Partial Class VideoMiner
         Me.pnlHabitatData.SuspendLayout()
         Me.pnlSpeciesEntryControls.SuspendLayout()
         Me.pnlSpeciesData.SuspendLayout()
+        Me.Panel1.SuspendLayout()
         CType(Me.grdVideoMinerDatabase, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -762,6 +762,7 @@ Partial Class VideoMiner
         '
         Me.SplitContainer3.Panel1.Controls.Add(Me.cmdCloseCalendar)
         Me.SplitContainer3.Panel1.Controls.Add(Me.pnlVideoControls)
+        Me.SplitContainer3.Panel1.Controls.Add(Me.mnthCalendar)
         Me.SplitContainer3.Panel1.Controls.Add(Me.txtTransectDate)
         Me.SplitContainer3.Panel1.Controls.Add(Me.chkRecordEachSecond)
         Me.SplitContainer3.Panel1.Controls.Add(Me.txtProjectName)
@@ -795,79 +796,6 @@ Partial Class VideoMiner
         Me.cmdCloseCalendar.TextAlign = System.Drawing.ContentAlignment.TopCenter
         Me.cmdCloseCalendar.UseVisualStyleBackColor = True
         Me.cmdCloseCalendar.Visible = False
-        '
-        'mnthCalendar
-        '
-        Me.mnthCalendar.Location = New System.Drawing.Point(58, 99)
-        Me.mnthCalendar.MaxSelectionCount = 1
-        Me.mnthCalendar.Name = "mnthCalendar"
-        Me.mnthCalendar.ShowToday = False
-        Me.mnthCalendar.ShowTodayCircle = False
-        Me.mnthCalendar.TabIndex = 50
-        Me.mnthCalendar.Visible = False
-        '
-        'pnlImageControls
-        '
-        Me.pnlImageControls.Controls.Add(Me.lblImageControls)
-        Me.pnlImageControls.Controls.Add(Me.cmdPreviousImage)
-        Me.pnlImageControls.Controls.Add(Me.lblImageSize)
-        Me.pnlImageControls.Controls.Add(Me.cmdNextImage)
-        Me.pnlImageControls.Controls.Add(Me.cboZoom)
-        Me.pnlImageControls.Location = New System.Drawing.Point(6, 195)
-        Me.pnlImageControls.Name = "pnlImageControls"
-        Me.pnlImageControls.Size = New System.Drawing.Size(169, 108)
-        Me.pnlImageControls.TabIndex = 38
-        Me.pnlImageControls.Visible = False
-        '
-        'lblImageControls
-        '
-        Me.lblImageControls.AutoSize = True
-        Me.lblImageControls.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblImageControls.Location = New System.Drawing.Point(3, 0)
-        Me.lblImageControls.Name = "lblImageControls"
-        Me.lblImageControls.Size = New System.Drawing.Size(104, 15)
-        Me.lblImageControls.TabIndex = 54
-        Me.lblImageControls.Text = "Image Controls"
-        '
-        'cmdPreviousImage
-        '
-        Me.cmdPreviousImage.Location = New System.Drawing.Point(6, 27)
-        Me.cmdPreviousImage.Name = "cmdPreviousImage"
-        Me.cmdPreviousImage.Size = New System.Drawing.Size(32, 23)
-        Me.cmdPreviousImage.TabIndex = 50
-        Me.cmdPreviousImage.Text = "<"
-        Me.cmdPreviousImage.UseVisualStyleBackColor = True
-        Me.cmdPreviousImage.Visible = False
-        '
-        'lblImageSize
-        '
-        Me.lblImageSize.AutoSize = True
-        Me.lblImageSize.Location = New System.Drawing.Point(7, 60)
-        Me.lblImageSize.Name = "lblImageSize"
-        Me.lblImageSize.Size = New System.Drawing.Size(62, 13)
-        Me.lblImageSize.TabIndex = 53
-        Me.lblImageSize.Text = "Image Size:"
-        Me.lblImageSize.Visible = False
-        '
-        'cmdNextImage
-        '
-        Me.cmdNextImage.Location = New System.Drawing.Point(53, 27)
-        Me.cmdNextImage.Name = "cmdNextImage"
-        Me.cmdNextImage.Size = New System.Drawing.Size(32, 23)
-        Me.cmdNextImage.TabIndex = 51
-        Me.cmdNextImage.Text = ">"
-        Me.cmdNextImage.UseVisualStyleBackColor = True
-        Me.cmdNextImage.Visible = False
-        '
-        'cboZoom
-        '
-        Me.cboZoom.FormattingEnabled = True
-        Me.cboZoom.Location = New System.Drawing.Point(5, 78)
-        Me.cboZoom.MaxLength = 4
-        Me.cboZoom.Name = "cboZoom"
-        Me.cboZoom.Size = New System.Drawing.Size(121, 21)
-        Me.cboZoom.TabIndex = 52
-        Me.cboZoom.Visible = False
         '
         'pnlVideoControls
         '
@@ -1044,6 +972,16 @@ Partial Class VideoMiner
         Me.txtPlaySeconds.Size = New System.Drawing.Size(86, 20)
         Me.txtPlaySeconds.TabIndex = 41
         '
+        'mnthCalendar
+        '
+        Me.mnthCalendar.Location = New System.Drawing.Point(6, 101)
+        Me.mnthCalendar.MaxSelectionCount = 1
+        Me.mnthCalendar.Name = "mnthCalendar"
+        Me.mnthCalendar.ShowToday = False
+        Me.mnthCalendar.ShowTodayCircle = False
+        Me.mnthCalendar.TabIndex = 50
+        Me.mnthCalendar.Visible = False
+        '
         'txtTransectDate
         '
         Me.txtTransectDate.BackColor = System.Drawing.SystemColors.Window
@@ -1182,6 +1120,69 @@ Partial Class VideoMiner
         Me.cmdShowSetTimecode.Text = "Set Time"
         Me.cmdShowSetTimecode.UseVisualStyleBackColor = True
         '
+        'pnlImageControls
+        '
+        Me.pnlImageControls.Controls.Add(Me.lblImageControls)
+        Me.pnlImageControls.Controls.Add(Me.cmdPreviousImage)
+        Me.pnlImageControls.Controls.Add(Me.lblImageSize)
+        Me.pnlImageControls.Controls.Add(Me.cmdNextImage)
+        Me.pnlImageControls.Controls.Add(Me.cboZoom)
+        Me.pnlImageControls.Location = New System.Drawing.Point(6, 195)
+        Me.pnlImageControls.Name = "pnlImageControls"
+        Me.pnlImageControls.Size = New System.Drawing.Size(169, 108)
+        Me.pnlImageControls.TabIndex = 38
+        Me.pnlImageControls.Visible = False
+        '
+        'lblImageControls
+        '
+        Me.lblImageControls.AutoSize = True
+        Me.lblImageControls.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblImageControls.Location = New System.Drawing.Point(3, 0)
+        Me.lblImageControls.Name = "lblImageControls"
+        Me.lblImageControls.Size = New System.Drawing.Size(104, 15)
+        Me.lblImageControls.TabIndex = 54
+        Me.lblImageControls.Text = "Image Controls"
+        '
+        'cmdPreviousImage
+        '
+        Me.cmdPreviousImage.Location = New System.Drawing.Point(6, 27)
+        Me.cmdPreviousImage.Name = "cmdPreviousImage"
+        Me.cmdPreviousImage.Size = New System.Drawing.Size(32, 23)
+        Me.cmdPreviousImage.TabIndex = 50
+        Me.cmdPreviousImage.Text = "<"
+        Me.cmdPreviousImage.UseVisualStyleBackColor = True
+        Me.cmdPreviousImage.Visible = False
+        '
+        'lblImageSize
+        '
+        Me.lblImageSize.AutoSize = True
+        Me.lblImageSize.Location = New System.Drawing.Point(7, 60)
+        Me.lblImageSize.Name = "lblImageSize"
+        Me.lblImageSize.Size = New System.Drawing.Size(62, 13)
+        Me.lblImageSize.TabIndex = 53
+        Me.lblImageSize.Text = "Image Size:"
+        Me.lblImageSize.Visible = False
+        '
+        'cmdNextImage
+        '
+        Me.cmdNextImage.Location = New System.Drawing.Point(53, 27)
+        Me.cmdNextImage.Name = "cmdNextImage"
+        Me.cmdNextImage.Size = New System.Drawing.Size(32, 23)
+        Me.cmdNextImage.TabIndex = 51
+        Me.cmdNextImage.Text = ">"
+        Me.cmdNextImage.UseVisualStyleBackColor = True
+        Me.cmdNextImage.Visible = False
+        '
+        'cboZoom
+        '
+        Me.cboZoom.FormattingEnabled = True
+        Me.cboZoom.Location = New System.Drawing.Point(5, 78)
+        Me.cboZoom.MaxLength = 4
+        Me.cboZoom.Name = "cboZoom"
+        Me.cboZoom.Size = New System.Drawing.Size(121, 21)
+        Me.cboZoom.TabIndex = 52
+        Me.cboZoom.Visible = False
+        '
         'SplitContainer2
         '
         Me.SplitContainer2.Dock = System.Windows.Forms.DockStyle.Fill
@@ -1195,12 +1196,9 @@ Partial Class VideoMiner
         '
         'SplitContainer2.Panel2
         '
-        Me.SplitContainer2.Panel2.Controls.Add(Me.cmdNothingInPhoto)
-        Me.SplitContainer2.Panel2.Controls.Add(Me.lblDisplayRecords)
-        Me.SplitContainer2.Panel2.Controls.Add(Me.cmdDeleteLastRecord)
-        Me.SplitContainer2.Panel2.Controls.Add(Me.cmdRefreshDatabase)
-        Me.SplitContainer2.Panel2.Controls.Add(Me.txtDisplayRecords)
         Me.SplitContainer2.Panel2.Controls.Add(Me.cmdAddComment)
+        Me.SplitContainer2.Panel2.Controls.Add(Me.cmdNothingInPhoto)
+        Me.SplitContainer2.Panel2.Controls.Add(Me.Panel1)
         Me.SplitContainer2.Size = New System.Drawing.Size(886, 497)
         Me.SplitContainer2.SplitterDistance = 423
         Me.SplitContainer2.TabIndex = 0
@@ -1250,7 +1248,6 @@ Partial Class VideoMiner
         Me.pnlTransectData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.pnlTransectData.Controls.Add(Me.cmdDefineAllTransectVariables)
         Me.pnlTransectData.Controls.Add(Me.lblTransectData)
-        Me.pnlTransectData.Controls.Add(Me.mnthCalendar)
         Me.pnlTransectData.Location = New System.Drawing.Point(0, 0)
         Me.pnlTransectData.Name = "pnlTransectData"
         Me.pnlTransectData.Size = New System.Drawing.Size(236, 423)
@@ -1433,10 +1430,10 @@ Partial Class VideoMiner
         Me.pnlSpeciesData.AutoScroll = True
         Me.pnlSpeciesData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.pnlSpeciesData.Controls.Add(Me.lblSpeciesData)
-        Me.pnlSpeciesData.Location = New System.Drawing.Point(0, 80)
+        Me.pnlSpeciesData.Location = New System.Drawing.Point(2, 79)
         Me.pnlSpeciesData.Margin = New System.Windows.Forms.Padding(2)
         Me.pnlSpeciesData.Name = "pnlSpeciesData"
-        Me.pnlSpeciesData.Size = New System.Drawing.Size(410, 343)
+        Me.pnlSpeciesData.Size = New System.Drawing.Size(408, 344)
         Me.pnlSpeciesData.TabIndex = 37
         '
         'lblSpeciesData
@@ -1448,71 +1445,56 @@ Partial Class VideoMiner
         Me.lblSpeciesData.TabIndex = 38
         Me.lblSpeciesData.Text = "SPECIES DATA"
         '
+        'cmdAddComment
+        '
+        Me.cmdAddComment.Location = New System.Drawing.Point(3, 3)
+        Me.cmdAddComment.Name = "cmdAddComment"
+        Me.cmdAddComment.Size = New System.Drawing.Size(154, 30)
+        Me.cmdAddComment.TabIndex = 37
+        Me.cmdAddComment.Text = "Add Comment"
+        Me.cmdAddComment.UseVisualStyleBackColor = True
+        Me.cmdAddComment.Visible = False
+        '
         'cmdNothingInPhoto
         '
-        Me.cmdNothingInPhoto.Location = New System.Drawing.Point(163, 3)
+        Me.cmdNothingInPhoto.Location = New System.Drawing.Point(3, 35)
         Me.cmdNothingInPhoto.Name = "cmdNothingInPhoto"
-        Me.cmdNothingInPhoto.Size = New System.Drawing.Size(154, 44)
+        Me.cmdNothingInPhoto.Size = New System.Drawing.Size(154, 30)
         Me.cmdNothingInPhoto.TabIndex = 55
         Me.cmdNothingInPhoto.Text = "Nothing In Photo"
         Me.cmdNothingInPhoto.UseVisualStyleBackColor = True
         Me.cmdNothingInPhoto.Visible = False
         '
-        'lblDisplayRecords
+        'Panel1
         '
-        Me.lblDisplayRecords.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblDisplayRecords.AutoSize = True
-        Me.lblDisplayRecords.Location = New System.Drawing.Point(575, 41)
-        Me.lblDisplayRecords.Name = "lblDisplayRecords"
-        Me.lblDisplayRecords.Size = New System.Drawing.Size(96, 26)
-        Me.lblDisplayRecords.TabIndex = 57
-        Me.lblDisplayRecords.Text = "Number of" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Displayed Records"
-        Me.lblDisplayRecords.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.lblDisplayRecords.Visible = False
+        Me.Panel1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Panel1.Controls.Add(Me.cmdUpdateDatabase)
+        Me.Panel1.Controls.Add(Me.lblDirtyData)
+        Me.Panel1.Location = New System.Drawing.Point(683, 0)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(200, 67)
+        Me.Panel1.TabIndex = 60
         '
-        'cmdDeleteLastRecord
+        'cmdUpdateDatabase
         '
-        Me.cmdDeleteLastRecord.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdDeleteLastRecord.Location = New System.Drawing.Point(808, 33)
-        Me.cmdDeleteLastRecord.Name = "cmdDeleteLastRecord"
-        Me.cmdDeleteLastRecord.Size = New System.Drawing.Size(75, 34)
-        Me.cmdDeleteLastRecord.TabIndex = 58
-        Me.cmdDeleteLastRecord.Text = "Delete Last Record"
-        Me.cmdDeleteLastRecord.UseVisualStyleBackColor = True
-        Me.cmdDeleteLastRecord.Visible = False
+        Me.cmdUpdateDatabase.Location = New System.Drawing.Point(4, 2)
+        Me.cmdUpdateDatabase.Name = "cmdUpdateDatabase"
+        Me.cmdUpdateDatabase.Size = New System.Drawing.Size(184, 31)
+        Me.cmdUpdateDatabase.TabIndex = 58
+        Me.cmdUpdateDatabase.Text = "Sync data (save to database)"
+        Me.cmdUpdateDatabase.UseVisualStyleBackColor = True
+        Me.cmdUpdateDatabase.Visible = False
         '
-        'cmdRefreshDatabase
+        'lblDirtyData
         '
-        Me.cmdRefreshDatabase.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdRefreshDatabase.Location = New System.Drawing.Point(727, 33)
-        Me.cmdRefreshDatabase.Name = "cmdRefreshDatabase"
-        Me.cmdRefreshDatabase.Size = New System.Drawing.Size(75, 34)
-        Me.cmdRefreshDatabase.TabIndex = 58
-        Me.cmdRefreshDatabase.Text = "Refresh Database"
-        Me.cmdRefreshDatabase.UseVisualStyleBackColor = True
-        Me.cmdRefreshDatabase.Visible = False
-        '
-        'txtDisplayRecords
-        '
-        Me.txtDisplayRecords.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtDisplayRecords.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtDisplayRecords.Location = New System.Drawing.Point(677, 44)
-        Me.txtDisplayRecords.Name = "txtDisplayRecords"
-        Me.txtDisplayRecords.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDisplayRecords.Size = New System.Drawing.Size(44, 23)
-        Me.txtDisplayRecords.TabIndex = 56
-        Me.txtDisplayRecords.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        Me.txtDisplayRecords.Visible = False
-        '
-        'cmdAddComment
-        '
-        Me.cmdAddComment.Location = New System.Drawing.Point(3, 2)
-        Me.cmdAddComment.Name = "cmdAddComment"
-        Me.cmdAddComment.Size = New System.Drawing.Size(154, 44)
-        Me.cmdAddComment.TabIndex = 37
-        Me.cmdAddComment.Text = "Add Comment"
-        Me.cmdAddComment.UseVisualStyleBackColor = True
-        Me.cmdAddComment.Visible = False
+        Me.lblDirtyData.AutoSize = True
+        Me.lblDirtyData.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblDirtyData.ForeColor = System.Drawing.Color.LimeGreen
+        Me.lblDirtyData.Location = New System.Drawing.Point(3, 42)
+        Me.lblDirtyData.Name = "lblDirtyData"
+        Me.lblDirtyData.Size = New System.Drawing.Size(124, 24)
+        Me.lblDirtyData.TabIndex = 59
+        Me.lblDirtyData.Text = "Data synced"
         '
         'grdVideoMinerDatabase
         '
@@ -1524,7 +1506,6 @@ Partial Class VideoMiner
         Me.grdVideoMinerDatabase.Location = New System.Drawing.Point(0, 0)
         Me.grdVideoMinerDatabase.Margin = New System.Windows.Forms.Padding(2)
         Me.grdVideoMinerDatabase.Name = "grdVideoMinerDatabase"
-        Me.grdVideoMinerDatabase.ReadOnly = True
         Me.grdVideoMinerDatabase.RowTemplate.Height = 24
         Me.grdVideoMinerDatabase.Size = New System.Drawing.Size(1098, 125)
         Me.grdVideoMinerDatabase.TabIndex = 0
@@ -1585,13 +1566,12 @@ Partial Class VideoMiner
         Me.SplitContainer3.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer3, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer3.ResumeLayout(False)
-        Me.pnlImageControls.ResumeLayout(False)
-        Me.pnlImageControls.PerformLayout()
         Me.pnlVideoControls.ResumeLayout(False)
         Me.pnlVideoControls.PerformLayout()
+        Me.pnlImageControls.ResumeLayout(False)
+        Me.pnlImageControls.PerformLayout()
         Me.SplitContainer2.Panel1.ResumeLayout(False)
         Me.SplitContainer2.Panel2.ResumeLayout(False)
-        Me.SplitContainer2.Panel2.PerformLayout()
         CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer2.ResumeLayout(False)
         Me.SplitContainer6.Panel1.ResumeLayout(False)
@@ -1610,6 +1590,8 @@ Partial Class VideoMiner
         Me.pnlSpeciesEntryControls.PerformLayout()
         Me.pnlSpeciesData.ResumeLayout(False)
         Me.pnlSpeciesData.PerformLayout()
+        Me.Panel1.ResumeLayout(False)
+        Me.Panel1.PerformLayout()
         CType(Me.grdVideoMinerDatabase, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -1677,7 +1659,6 @@ Partial Class VideoMiner
     Friend WithEvents SplitContainer2 As System.Windows.Forms.SplitContainer
     Friend WithEvents SplitContainer6 As System.Windows.Forms.SplitContainer
     Friend WithEvents SplitContainer7 As System.Windows.Forms.SplitContainer
-    Friend WithEvents cmdAddComment As System.Windows.Forms.Button
     Friend WithEvents mnthCalendar As System.Windows.Forms.MonthCalendar
     Friend WithEvents cmdCloseCalendar As System.Windows.Forms.Button
     Friend WithEvents pnlTransectData As System.Windows.Forms.Panel
@@ -1688,9 +1669,6 @@ Partial Class VideoMiner
     Friend WithEvents lblSpeciesData As System.Windows.Forms.Label
     Friend WithEvents mnuConfigureTools As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ConfigureSpeciesEventToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents txtDisplayRecords As System.Windows.Forms.TextBox
-    Friend WithEvents lblDisplayRecords As System.Windows.Forms.Label
-    Friend WithEvents cmdRefreshDatabase As System.Windows.Forms.Button
     Friend WithEvents txtQuickSpeciesCount As System.Windows.Forms.TextBox
     Friend WithEvents lblQuickSpeciesCount As System.Windows.Forms.Label
     Friend WithEvents cmdRareSpeciesLookup As System.Windows.Forms.Button
@@ -1732,7 +1710,7 @@ Partial Class VideoMiner
     Friend WithEvents DisableHabitatButtonsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents cmdDefineAllTransectVariables As System.Windows.Forms.Button
     Friend WithEvents cmdDefineAllSpatialVariables As System.Windows.Forms.Button
-    Friend WithEvents cmdDeleteLastRecord As System.Windows.Forms.Button
+    Friend WithEvents cmdUpdateDatabase As System.Windows.Forms.Button
     Friend WithEvents ConfigureButtonFormatToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents cmdScreenCapture As System.Windows.Forms.Button
     Friend WithEvents chkDefineAll As System.Windows.Forms.CheckBox
@@ -1755,5 +1733,8 @@ Partial Class VideoMiner
     Friend WithEvents pnlSpeciesEntryControls As System.Windows.Forms.Panel
     Friend WithEvents InformationToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents txtFramesToSkip As System.Windows.Forms.TextBox
+    Friend WithEvents lblDirtyData As System.Windows.Forms.Label
+    Friend WithEvents Panel1 As System.Windows.Forms.Panel
+    Friend WithEvents cmdAddComment As System.Windows.Forms.Button
 
 End Class
