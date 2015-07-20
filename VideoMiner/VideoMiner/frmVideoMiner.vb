@@ -103,6 +103,7 @@ Public Class VideoMiner
     Public Const STATUS_FONT_SIZE As Integer = 10
     Public Const DIR_SEP As String = "\"
     Public Const NULL_STRING As String = ""
+    Public Const NS As String = "NULL"
     Public Const UNNAMED_TRANSECT As String = "Unnamed Transect"
     Public Const NO_TRANSECT As String = "No Transect"
     Public Const NO_SUBSTRATE As String = "No Substrate"
@@ -111,6 +112,28 @@ Public Class VideoMiner
     Public Const NO_COMPLEXITY As String = "No Complexity"
     Public Const OFF_BOTTOM_STRING As String = "Off bottom"
     Public Const ON_BOTTOM_STRING As String = "On bottom"
+
+    Public Const TRANSECT_START As String = "1"
+    Public Const TRANSECT_END As String = "2"
+    Public Const ON_OFF_BOTTOM As String = "3"
+    Public Const SPECIES_EVENT As String = "4"
+    Public Const DOMINANT_SUBSTRATE As String = "5"
+    Public Const DOMINANT_SUBSTRATE_PERCENT As String = "6"
+    Public Const SUBDOMINANT_SUBSTRATE As String = "7"
+    Public Const SUBDOMINANT_SUBSTRATE_PERCENT As String = "8"
+    Public Const SURVEY_MODE As String = "9"
+    Public Const VIDEO_OR_IMAGE_QUALITY As String = "11"
+    Public Const RELIEF As String = "12"
+    Public Const DISTURBANCE As String = "13"
+    Public Const PROTOCOL As String = "14"
+    Public Const COMPLEXITY As String = "15"
+    Public Const FOV As String = "16"
+    Public Const SCREEN_CAPTURE As String = "555"
+    Public Const COMMENT_ADDED As String = "666"
+    Public Const NOTHING_IN_PHOTO As String = "777"
+    Public Const INDIVIDUAL_HABITAT_VARIABLE_CLEARED As String = "888"
+    Public Const ALL_HABITAT_VARIABLES_CLEARED As String = "999"
+
 #End Region
 
 #Region "Variables"
@@ -173,10 +196,59 @@ Public Class VideoMiner
     ''' <remarks></remarks>
     Private m_strSessionPath As String
     ''' <summary>
-    ''' Holds the user time as set by the frmSetTime form
+    ''' Holds the user time as set by the frmSetTime form.
+    ''' This is the master time object to be used by all functions when data are recorded.
     ''' </summary>
     ''' <remarks></remarks>
     Private m_tsUserTime As TimeSpan
+    ''' <summary>
+    ''' Holds the GPS X value (latitude). If a GPS device is not connected, this will be a default
+    ''' value as set in the load function for this form.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_GPS_X As String
+    ''' <summary>
+    ''' Holds the GPS Y value (longitude). If a GPS device is not connected, this will be a default
+    ''' value as set in the load function for this form.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_GPS_Y As String
+    ''' <summary>
+    ''' Holds the GPS Z value (elevation). If a GPS device is not connected, or the NMEA sting
+    ''' does not support elevation, this will be a default value as set in the load function for this form.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_GPS_Z As String
+    ''' <summary>
+    ''' Name of the current project
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_project_name As String = NULL_STRING
+    ''' <summary>
+    ''' Name of the current transect
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_transect_name As String
+    ''' <summary>
+    ''' Date for the current transect
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_transect_date As DateTime
+    ''' <summary>
+    ''' Is there a video file currently open or not.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_video_file_open As Boolean
+    ''' <summary>
+    ''' Relative rate at which to play the video. 1=regular speed.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_dblVideoRate As Double = 1
+    ''' <summary>
+    ''' Are we in a transect currently or not?
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_blInTransect As Boolean = vbFalse
 
     ' GPS connection settings to initialize frmGpsSettings form with
     Private m_strComPort As String
@@ -191,18 +263,14 @@ Public Class VideoMiner
     Private m_strDatabaseColumns As String
 
     Private ttToolTip As ToolTip
-    Public strMilliseconds As String = "00"
-    Public video_file_open As Boolean
+    'Public strMilliseconds As String = "00"
     Private select_string As String
     Private insert_string As String
-    Private transect_name As String
-    Private project_name As String = ""
-    Private transect_date As String = ""
     Private substrate_name As String
     Private substrate_code As String
 
-    Public strKeyboardShortcut As String = ""
-    Public strCurrentKey As String = ""
+    Public strKeyboardShortcut As String = NULL_STRING
+    Public strCurrentKey As String = NULL_STRING
     Private value As Array = [Enum].GetValues(GetType(Keys))
 
     Public image_open As Boolean = False
@@ -235,15 +303,6 @@ Public Class VideoMiner
     Private blFirstTime As Boolean = False
     Private blGPSFirstTime As Boolean = False
 
-    ' Variables to store Play for Seconds variables
-    Private dblPlaySecondsTC As Double = 0
-    Private strPlaySecondsVideoTime As String = VIDEO_TIME_LABEL
-    Private intPlayForSeconds As Integer
-    Private intPlayForSecondsTimerCount As Integer = 0
-    Private intStartPlaySeconds As Integer
-    Private intCurrentPlaySeconds As Integer
-    Private intEndPlaySeconds As Integer = 0
-    Private dblVideoRate As Double = 1
 
     ' Comparison value for reord every second functionality    
     Public intLastVideoSecond As Integer = 0
@@ -317,32 +376,28 @@ Public Class VideoMiner
 
     Private intNumberDisplayRecords As Integer = 0
     Private intDefaultNumberDisplayRecords As Integer = 15
-    Private strQuickEntryCount As String = ""
+    Private strQuickEntryCount As String = NULL_STRING
     Private strDefaultQuickEntryCount As String = "1"
 
     Private blVideoWasPlaying As Boolean = False
 
     Public imageFilesList As List(Of String)
-    Public imagePath As String = ""
+    Public imagePath As String = NULL_STRING
 
     Public tryCount As Integer = 0
     Public aquiredTryCount As Integer = 0
-    Public strPreviousGPSTime As String = ""
+    Public strPreviousGPSTime As String = NULL_STRING
     Public dblGPSExpiry As Double = 0
 
-    Public strTimeDateSource As String = "ELAPSED"
-    Public strPreviousClipTime As String = VIDEO_TIME_DECIMAL_LABEL
-    Public blUseGPSTime As Boolean = False
-    Public blUseComputerTime As Boolean = False
-    Public blUseElapsedTime As Boolean = False
-    Public blUseVideoTime As Boolean = False
+    '    Public strTimeDateSource As String = "ELAPSED"
+    '    Public strPreviousClipTime As String = VIDEO_TIME_DECIMAL_LABEL
     Public intTimeSource As Integer = 1
     Public blImageWarning As Boolean = True
     Public blScreenCaptureCalled As Boolean = False
     Public blOpenDatabase As Boolean = False
     Public blCloseDatabase As Boolean = False
     Public dblVideoStartPosition As Double = 0
-    'Public txtNMEAStringData As String = ""
+    'Public txtNMEAStringData As String = NULL_STRING
 
     Public dataColumns As Collection
     Public blupdateColumns As Boolean = True
@@ -387,13 +442,9 @@ Public Class VideoMiner
     Private m_FfwdCount As Integer
     Private m_RwndCount As Integer
 
-    Private m_VideoTime As TimeSpan
     Private m_SessionName As String
 
     Private m_GPSUserTime As TimeSpan
-    Private m_GPS_X As Double
-    Private m_GPS_Y As Double
-    Private m_GPS_Z As Double
 
     Private m_ButtonWidth As Integer
     Private m_ButtonHeight As Integer
@@ -451,7 +502,7 @@ Public Class VideoMiner
 
     Public Property FileName() As String
         Get
-            If m_strVideoPath = "" And m_strVideoFile = "" Then
+            If m_strVideoPath = NULL_STRING And m_strVideoFile = NULL_STRING Then
                 Return "External Video"
             Else
                 Return m_strVideoPath & "/" & m_strVideoFile
@@ -459,8 +510,8 @@ Public Class VideoMiner
         End Get
         Set(value As String)
             ' Only set for external video
-            m_strVideoPath = ""
-            m_strVideoFile = ""
+            m_strVideoPath = NULL_STRING
+            m_strVideoFile = NULL_STRING
         End Set
     End Property
 
@@ -655,10 +706,10 @@ Public Class VideoMiner
 
     Public Property VideoTime() As TimeSpan
         Get
-            Return m_VideoTime
+            Return m_tsUserTime
         End Get
         Set(ByVal value As TimeSpan)
-            m_VideoTime = value
+            m_tsUserTime = value
         End Set
     End Property
 
@@ -904,17 +955,16 @@ Public Class VideoMiner
     End Function
 
     ''' <summary>
-    ''' Load the main VideoMiner form.
+    ''' Get version name from assembly, read and process the Config file, and setup the form controls for an unloaded state.
     ''' </summary>
     ''' <param name="sender">System.Object</param>
     ''' <param name="e">System.EventArgs</param>
-    ''' <remarks>Get version name from assembly, read and process the Config file, and setup the form controls for an unloaded state.</remarks>
+    ''' <remarks> From MSDN for Windows.Forms.Control.CheckForIllegalCrossThreadCalls:
+    ''' When a thread other than the creating thread of a control tries to access one of that control's methods or properties,
+    ''' it often leads to unpredictable results. A common invalid thread activity is a call on the wrong thread that accesses
+    ''' the Control 's Handle property. Set CheckForIllegalCrossThreadCalls to true to find and diagnose this thread activity
+    ''' more easily while debugging. </remarks>
     Private Sub frmVideoMiner_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        ' From MSDN for Windows.Forms.Control.CheckForIllegalCrossThreadCalls:
-        ' When a thread other than the creating thread of a control tries to access one of that control's methods or properties,
-        ' it often leads to unpredictable results. A common invalid thread activity is a call on the wrong thread that accesses
-        ' the Control 's Handle property. Set CheckForIllegalCrossThreadCalls to true to find and diagnose this thread activity
-        ' more easily while debugging. 
         Dim currentDomain As AppDomain = AppDomain.CurrentDomain
         AddHandler currentDomain.UnhandledException, AddressOf UnHandledHandler
         Windows.Forms.Control.CheckForIllegalCrossThreadCalls = True
@@ -947,15 +997,14 @@ Public Class VideoMiner
         End If
 
         db_file_open = False
-        video_file_open = False
+        m_video_file_open = False
         db_file_unload()
         video_file_unload()
         no_files_loaded()
-        transect_name = UNNAMED_TRANSECT
-        transect_stopped(NULL_STRING, NULL_STRING, NULL_STRING & ".00", "NULL", "NULL", "NULL")
+        m_transect_name = UNNAMED_TRANSECT
         curr_code = BAD_ID
         is_on_bottom = 0
-        toggle_bottom(NULL_STRING, NULL_STRING, NULL_STRING & ".00", "NULL", "NULL", "NULL")
+        toggle_bottom(NULL_STRING, NULL_STRING, NULL_STRING & ".00", NS, NS, NS)
 
         Me.cboZoom.Items.Add("25%")
         Me.cboZoom.Items.Add("50%")
@@ -985,7 +1034,7 @@ Public Class VideoMiner
         'Else
         '    Me.DeviceControl.Enabled = True
         'End If
-        Dim strDate As String = ""
+        Dim strDate As String = NULL_STRING
         If Now.Day >= 10 Then
             strDate = CStr(Now.Day)
         Else
@@ -1003,7 +1052,7 @@ Public Class VideoMiner
             strDate = strDate & "/0" & CStr(Now.Year)
         End If
         Me.txtTransectDate.Text = strDate
-        transect_date = strDate
+        m_transect_date = strDate
         m_tsUserTime = Zero
 
         ttToolTip = New ToolTip()
@@ -1013,7 +1062,13 @@ Public Class VideoMiner
         ttToolTip.AutoPopDelay = 5000
         ttToolTip.ReshowDelay = 500
 
-        ' Need to create some form instances here. These forms will remain hidden throughout the session, and ShowDialog will be called to show them
+        ' Set the GPS values to a default of nothing. Once a GPS device is connected, these will be
+        ' continuously updated by the incoming data handler.
+        m_GPS_X = NULL_STRING
+        m_GPS_Y = NULL_STRING
+        m_GPS_Z = NULL_STRING
+
+        ' Create some form instances here. These forms will remain hidden throughout the session, and ShowDialog will be called to show them
         frmGpsSettings = New frmGpsSettings(m_strComPort, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
         'frmGpsSettings.ShowDialog()
         frmSetTime = New frmSetTime(m_tsUserTime)
@@ -1022,7 +1077,7 @@ Public Class VideoMiner
 
     ''' <summary>
     ''' Load the metadata found in the VideoMiner configuration file into member variables.
-    ''' If the configuration file is not found, defaults will be assigned for GPS and the path variables
+    ''' If the configuration file is not found, defaults will be assigned for GPS settings and the path variables
     ''' </summary>
     ''' <returns>True if all member variables were populated. False if an exceptioon was thrown or the file does not exist</returns>
     Private Function loadConfigurationFile() As Boolean
@@ -1036,43 +1091,43 @@ Public Class VideoMiner
                 m_ButtonFont = GetConfiguration(XPATH_BUTTON_FONT)
                 ' GPS settings
                 m_strComPort = GetConfiguration(XPATH_GPS_COM_PORT)
-                If m_strComPort = "" Then
+                If m_strComPort = NULL_STRING Then
                     m_strComPort = GPS_COM_PORT_DEFAULT
                     SaveConfiguration(XPATH_GPS_COM_PORT, m_strComPort)
                 End If
                 m_strNMEAStringType = GetConfiguration(XPATH_GPS_NMEA_STRING)
-                If m_strNMEAStringType = "" Then
+                If m_strNMEAStringType = NULL_STRING Then
                     m_strNMEAStringType = GPS_NMEA_DEFAULT
                     SaveConfiguration(XPATH_GPS_NMEA_STRING, m_strNMEAStringType)
                 End If
                 strTmp = GetConfiguration(XPATH_GPS_BAUD_RATE)
-                If strTmp = "" Then
+                If strTmp = NULL_STRING Then
                     m_intBaudRate = GPS_BAUD_RATE_DEFAULT
                     SaveConfiguration(XPATH_GPS_BAUD_RATE, CStr(m_intBaudRate))
                 Else
                     m_intBaudRate = CInt(strTmp)
                 End If
                 m_strParity = GetConfiguration(XPATH_GPS_PARITY)
-                If m_strParity = "" Then
+                If m_strParity = NULL_STRING Then
                     m_strParity = GPS_PARITY_DEFAULT
                     SaveConfiguration(XPATH_GPS_PARITY, m_strParity)
                 End If
                 strTmp = GetConfiguration(XPATH_GPS_STOP_BITS)
-                If strTmp = "" Then
+                If strTmp = NULL_STRING Then
                     m_dblStopBits = GPS_STOP_BITS_DEFAULT
                     SaveConfiguration(XPATH_GPS_STOP_BITS, CStr(m_dblStopBits))
                 Else
                     m_dblStopBits = CInt(strTmp)
                 End If
                 strTmp = GetConfiguration(XPATH_GPS_DATA_BITS)
-                If strTmp = "" Then
+                If strTmp = NULL_STRING Then
                     m_intDataBits = GPS_DATA_BITS_DEFAULT
                     SaveConfiguration(XPATH_GPS_DATA_BITS, CStr(m_intDataBits))
                 Else
                     m_intDataBits = CInt(strTmp)
                 End If
                 strTmp = GetConfiguration(XPATH_GPS_TIMEOUT)
-                If strTmp = "" Then
+                If strTmp = NULL_STRING Then
                     m_intTimeout = GPS_TIMEOUT_DEFAULT
                     SaveConfiguration(XPATH_GPS_TIMEOUT, CStr(m_intTimeout))
                 Else
@@ -1104,20 +1159,20 @@ Public Class VideoMiner
                 m_strSessionPath = GetConfiguration(XPATH_SESSION_PATH)
                 ' If any of the three paths were not present in the XML file, set them to the working directory
                 ' which is determined at program startup, not via XML file.
-                If m_strDatabasePath = "" Then
+                If m_strDatabasePath = NULL_STRING Then
                     m_strDatabasePath = m_strWorkingPath
                     SaveConfiguration(XPATH_DATABASE_PATH, m_strDatabasePath)
                 End If
-                If m_strVideoPath = "" Then
+                If m_strVideoPath = NULL_STRING Then
                     m_strVideoPath = m_strWorkingPath
                     SaveConfiguration(XPATH_VIDEO_PATH, m_strVideoPath)
                 End If
-                If m_strSessionPath = "" Then
+                If m_strSessionPath = NULL_STRING Then
                     m_strSessionPath = m_strWorkingPath
                     SaveConfiguration(XPATH_SESSION_PATH, m_strSessionPath)
                 End If
 
-                ' Previous project names
+                ' The list of previous project names
                 m_PreviousProjects = GetConfigurationCollection(XPATH_PREVIOUS_PROJECTS)
                 Return True
             End If
@@ -1180,19 +1235,21 @@ Public Class VideoMiner
         SaveConfiguration("/X/C/DBP", "Revenge of the Sith")
         SaveConfiguration("/a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p", "A New Hope")
         SaveConfiguration("/a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p", "The Empire Strikes Back")
-        ' Test forcibaly creating the node, even if it has the same name
+        ' Test forcibly creating the node, even if it has the same name
         SaveConfiguration("/PreviousProjects/ProjectName", "testSave1", vbTrue)
         SaveConfiguration("/PreviousProjects/ProjectName", "testSave2", vbTrue)
         SaveConfiguration("/PreviousProjects/ProjectName", "testSave3", vbTrue)
     End Sub
 
     ''' <summary>
-    ''' Delete a node and any child nodes represented by the string 'xPath'
-    ''' eg. if xPath = "X/Y/Z", the function will delete the node Z and any children it has.
+    ''' Delete a node represented by the string 'xPath'
+    ''' eg. if xPath = "X/Y/Z", the function will delete the node Z.
     ''' </summary>
-    ''' <param name="xPath">An XPath String representing the node you wish to add</param>
+    ''' <param name="xPath">An XPath String representing the node tag you wish to delete</param>
+    ''' <param name="strValue">The value to delete. There can be more than one node with the same tag, so this is required to diferrentiate.</param>
     ''' <remarks>xPath is a "/" seperated string where "/" represents node breaks.
-    ''' i.e. "X/Y/Z" represents X is parent of Y, Y is parent of Z and Z is the node to delete</remarks>
+    ''' i.e. "X/Y/Z" represents X is parent of Y, Y is parent of Z and Z is the node to delete, as long as it has
+    ''' value equal to strValue</remarks>
     Private Function DeleteXMLNode(xPath As String, ByVal strValue As String) As Boolean
         Dim strPath As String = VMCD & xPath
         If File.Exists(m_strConfigFile) Then
@@ -1217,11 +1274,10 @@ Public Class VideoMiner
                         If childNode IsNot Nothing Then
                             If childNode.InnerText = strValue Then
                                 parentNode.RemoveChild(childNode)
-                                ' Remove parentNode as well, since it is just an empty declaration now
+                                ' Remove the current node as well, since it is just an empty tag now
                                 parentNode.ParentNode.RemoveChild(parentNode)
                                 Exit For
                             End If
-                            ' Set the XML value
                         End If
                     Next
                 End If
@@ -1234,7 +1290,7 @@ Public Class VideoMiner
     End Function
 
     ''' <summary>
-    ''' Recursively create a node and any required parrent nodes represented by the string 'xPath'
+    ''' Recursively create a node and any required parent nodes represented by the string 'xPath'
     ''' eg. if xPath = "X/Y/Z", the function will insert a node with parents if necessary X->Y->Z
     ''' where "Z" is the base case and assumed to be the innerText of the child node.
     ''' </summary>
@@ -1245,8 +1301,8 @@ Public Class VideoMiner
     ''' <param name="leftPath">String representing the xPath to the left of the current node</param>
     ''' <remarks>xPath is a "/" seperated string where "/" represents node breaks.
     ''' i.e. "X/Y/Z" represents X is parent of Y, Y is parent of Z and Z is the variable with a value to set</remarks>
-    Private Sub CreateXMLNode(ByRef docNode As XmlDocument, ByRef node As XmlElement, xPath As String, strValue As String, Optional leftPath As String = "")
-        If docNode Is Nothing Or xPath Is Nothing Or xPath = "" Or strValue Is Nothing Then
+    Private Sub CreateXMLNode(ByRef docNode As XmlDocument, ByRef node As XmlElement, xPath As String, strValue As String, Optional leftPath As String = NULL_STRING)
+        If docNode Is Nothing Or xPath Is Nothing Or xPath = NULL_STRING Or strValue Is Nothing Then
             Exit Sub
         End If
 
@@ -1312,19 +1368,19 @@ Public Class VideoMiner
             ' Load the config file nodes into the Node List object
             Dim nodeList As XmlNodeList = xmlDoc.SelectNodes(strPath)
             If nodeList Is Nothing Then
-                Return ""
+                Return NULL_STRING
             End If
 
             ' Create the parent and child node objects and cycle through the file
             Dim parentNode, childNode As XmlNode
-            Dim strString As String = ""
+            Dim strString As String = NULL_STRING
             For Each parentNode In nodeList
                 If parentNode.HasChildNodes Then
                     For Each childNode In parentNode.ChildNodes
                         If childNode.ChildNodes.Count > 0 Then
                             strString &= childNode.InnerXml & ","
                         Else
-                            strString &= childNode.Value & ","      ' Get the value for the specified child node
+                            strString &= childNode.Value & ","
                         End If
                         'Debug.WriteLine("strString: " & strString)
                     Next
@@ -1336,7 +1392,7 @@ Public Class VideoMiner
 
             Return strString
         Else
-            Return ""
+            Return NULL_STRING
         End If
 
     End Function
@@ -1389,7 +1445,7 @@ Public Class VideoMiner
             Case Keys.Space.ToString
                 blHandled = True
                 e.Handled = True
-                If video_file_open Then
+                If m_video_file_open Then
                     If Not frmVideoPlayer.IsPlaying Then
                         playVideo()
                     Else
@@ -1435,7 +1491,7 @@ Public Class VideoMiner
             Case "Menu"
                 e.SuppressKeyPress = True
             Case Else
-                If strKeyboardShortcut <> "" Then
+                If strKeyboardShortcut <> NULL_STRING Then
                     Dim sub_data_set As DataSet = New DataSet()
 
                     Dim sub_db_command As OleDbCommand = New OleDbCommand("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor, KeyboardShortcut from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", conn)
@@ -1457,8 +1513,8 @@ Public Class VideoMiner
                     Next
                 End If
         End Select
-        strKeyboardShortcut = ""
-        strCurrentKey = ""
+        strKeyboardShortcut = NULL_STRING
+        strCurrentKey = NULL_STRING
     End Sub
 
     'Public Sub VideoMiner_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
@@ -1467,7 +1523,7 @@ Public Class VideoMiner
     '        Dim key As Object
     '        For Each key In value
     '            If e.KeyValue = key Then
-    '                If strKeyboardShortcut = "" Then
+    '                If strKeyboardShortcut = NULL_STRING Then
     '                    strKeyboardShortcut = key.ToString
     '                Else
     '                    strKeyboardShortcut = strKeyboardShortcut & "+" & key.ToString
@@ -1557,10 +1613,11 @@ Public Class VideoMiner
         End If
         blOpenDatabase = False
     End Sub
-    ' ==========================================================================================================
-    ' Name: CloseDatabase_Click
-    ' Description: When the user selects close database from the file menu, close the currently open database.
-    ' ==========================================================================================================
+
+    ''' <summary>
+    ''' When the user clicks "Close Database" in the file menu, close the currently open database.
+    ''' </summary>
+    ''' <remarks></remarks>
     Public Sub CloseDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuCloseDatabase.Click
         blCloseDatabase = True
         conn.Close()
@@ -1581,7 +1638,6 @@ Public Class VideoMiner
 
         cmdShowSetTimecode.Enabled = False
         cmdTransectStart.Enabled = False
-        cmdTransectEnd.Enabled = False
         cmdOffBottom.Enabled = False
         'ResumeVideo.Enabled = True
         Me.radQuickEntry.Visible = False
@@ -1609,13 +1665,10 @@ Public Class VideoMiner
         blCloseDatabase = False
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: mnuRefreshForm_Click
-    ' Description: When the user selects "Refresh Data" from the file menu, Refresh the database so that any changes
-    ' that have been made to the database will be shown/available within the program.
-    ' 1.) Close the database by calling CloseDatabase_Click()
-    ' 2.) Open the database by calling openDatabase()
-    ' ==========================================================================================================
+    ''' <summary>
+    ''' When the user clicks "Refresh database", it will reload the database into the form.
+    ''' </summary>
+    ''' <remarks></remarks>
     Private Sub mnuRefreshForm_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuRefreshForm.Click
         refresh_database()
     End Sub
@@ -1660,121 +1713,8 @@ Public Class VideoMiner
             Me.mnuOpenFile.Enabled = True
 
             booUseGPSTimeCodes = False
-            Me.mnuUseGPSTimeCodes.Checked = False
-            'Me.mnuUseGPSTimeCodes.Enabled = True
 
         End If
-    End Sub
-    'Public Sub CloseSerialPort()
-    '    Try
-    '        m_SerialPort.Close()
-    '        If Not Me.m_SerialPort.IsOpen Then     ' If the port is closed then reset the GPS elements
-    '            Me.tryCount = 0
-    '            Me.lblGPSConnectionValue.Text = "NO GPS FIX"
-    '            Me.lblGPSConnectionValue.ForeColor = Color.Red
-    '            Me.lblGPSPortValue.Text = "CLOSED"
-    '            Me.lblGPSPortValue.ForeColor = Color.Red
-    '            Me.txtNMEA.Text = ""
-    '            Me.lblXValue.Text = ""
-    '            Me.lblYValue.Text = ""
-    '            Me.lblZValue.Text = ""
-    '            Me.txtTime.ForeColor = Color.Red
-    '            Me.txtTimeSource.ForeColor = Color.Red
-    '            Me.txtDateSource.ForeColor = Color.Red
-    '            booUseGPSTimeCodes = False
-    '            Me.mnuUseGPSTimeCodes.Checked = False
-    '            Me.lblGPSConnection.Visible = False
-    '            Me.lblGPSConnectionValue.Visible = False
-    '            Me.lblGPSPort.Visible = False
-    '            Me.lblGPSPortValue.Visible = False
-    '            Me.lblGPSLocation.Visible = False
-    '            Me.lblX.Visible = False
-    '            Me.lblXValue.Visible = False
-    '            Me.lblY.Visible = False
-    '            Me.lblYValue.Visible = False
-    '            Me.lblZ.Visible = False
-    '            Me.lblZValue.Visible = False
-    '        End If
-    '        m_SerialPort = Nothing
-    '    Catch ex As Exception
-    '        MsgBox(ex.Message)
-    '    End Try
-    'End Sub
-
-    Public Sub mnuUseGPSTimeCodes_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuUseGPSTimeCodes.Click
-        'If Me.mnuUseGPSTimeCodes.Checked Then
-        '    If frmGpsSettings Is Nothing Then
-        '        frmGpsSettings = New frmGpsSettings(m_strComPort, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
-        '    Else
-        '        frmGpsSettings.TopMost = True
-        '        frmGpsSettings.BringToFront()
-        '        frmGpsSettings.ShowDialog()
-        '    End If
-        '    lblGPSConnection.Visible = True
-        '    lblGPSConnectionValue.Visible = True
-        '    lblGPSPort.Visible = True
-        '    lblGPSPortValue.Visible = True
-        '    lblGPSLocation.Visible = True
-        '    lblGPSLocation.Text = "GPS Location"
-        '    lblX.Visible = True
-        '    lblXValue.Visible = True
-        '    lblY.Visible = True
-        '    lblYValue.Visible = True
-        '    lblZ.Visible = True
-        '    lblZValue.Visible = True
-        '    If Not frmGpsSettings.SerialPort Is Nothing Then
-        '        If Not Me.m_SerialPort.IsOpen Then
-        '            booUseGPSTimeCodes = False
-        '            Me.mnuUseGPSTimeCodes.Checked = False
-        '            Me.mnuUseGPSTimeCodes.Checked = False
-        '            Me.lblGPSConnection.Visible = False
-        '            Me.lblGPSConnectionValue.Visible = False
-        '            Me.lblGPSPort.Visible = False
-        '            Me.lblGPSPortValue.Visible = False
-        '            Me.lblGPSLocation.Visible = False
-        '            Me.lblX.Visible = False
-        '            Me.lblXValue.Visible = False
-        '            Me.lblY.Visible = False
-        '            Me.lblYValue.Visible = False
-        '            Me.lblZ.Visible = False
-        '            Me.lblZValue.Visible = False
-        '            Exit Sub
-        '        End If
-        '        booUseGPSTimeCodes = True
-        '    Else
-        '        booUseGPSTimeCodes = False
-        '        Me.mnuUseGPSTimeCodes.Checked = False
-        '        Me.lblGPSConnection.Visible = False
-        '        Me.lblGPSConnectionValue.Visible = False
-        '        Me.lblGPSPort.Visible = False
-        '        Me.lblGPSPortValue.Visible = False
-        '        Me.lblGPSLocation.Visible = False
-        '        Me.lblX.Visible = False
-        '        Me.lblXValue.Visible = False
-        '        Me.lblY.Visible = False
-        '        Me.lblYValue.Visible = False
-        '        Me.lblZ.Visible = False
-        '        Me.lblZValue.Visible = False
-        '    End If
-        'Else
-        '    If Me.m_SerialPort.IsOpen Then
-        '        Dim closePort As Thread
-        '        closePort = New Thread(New ThreadStart(AddressOf CloseSerialPort))
-        '        closePort.Start()
-        '    End If
-        '    If tmrGPSExpiry.Enabled Then
-        '        tmrGPSExpiry.Stop()
-        '    End If
-        '    If Not frmGpsSettings Is Nothing Then
-        '        frmGpsSettings.Close()
-        '    End If
-        '    'frmVideoMiner.m_SerialPort.Close()                ' Close the port
-        '    'If frmGpsSettings.tmrGPSTimeout.Enabled Then
-        '    '    frmGpsSettings.tmrGPSTimeout.Stop()
-        '    'End If
-
-        'End If
-
     End Sub
 
     ''' <summary>
@@ -1792,107 +1732,59 @@ Public Class VideoMiner
         frmSetTime.Show()
     End Sub
 
+    ''' <summary>
+    ''' This handler is called when the user clicks on the "Transect Start" button.
+    ''' Pauses video, prompts user for a transect name, inserts new record in the DataGridView1
+    ''' database table, and plays the video again.
+    ''' </summary>
+    ''' <remarks></remarks>
     Private Sub TransectStart_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdTransectStart.Click
-        ' ==========================================================================================================
-        ' Name: TransectStart_Click()
-        ' Description: This event is called when the user clicks on the "Transect Start" button.
-        ' 1.) Pause Video
-        ' 2.) Retrieve Time Code From Video Controler
-        ' 3.) Prompt user to enter a name for the new transect.
-        ' 4.) transect_started() which will: prompt user for transect name, disable/enable buttons, insert new record
-        '     into the data table, load/refresh the the DataGridView1 database table view
-        ' 5.) Play Video.
-        ' ==========================================================================================================
-
-        Dim tc As String
         pauseVideo()
+        Dim start_or_end As String
 
-        Dim strX As String = "NULL"
-        Dim strY As String = "NULL"
-        Dim strZ As String = "NULL"
-        Dim blAquiredFix As Boolean = False
-        'If they are using the video control then get the time from there.
-        Dim strVideoTime As String = VIDEO_TIME_LABEL
-        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
-        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
-
-        If Not booUseGPSTimeCodes Then
-            tc = getTimeCode()
-            If video_file_open Then
-                strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
-                'strVideoTime = GetVideoTime(tc, strVideoDecimalTime)
+        If Not m_blInTransect Then
+            ' Currently not in a transect, so we start it here
+            m_transect_name = InputBox("Enter a name for this transect if you wish.", "Transect Name?")
+            If m_transect_name = NULL_STRING Then
+                m_transect_name = UNNAMED_TRANSECT
+                txtTransectTextbox.Text = UNNAMED_TRANSECT
+            Else
+                txtTransectTextbox.Text = "Transect '" & m_transect_name & "'"
             End If
+            txtTransectTextbox.Text = "Transect '" & m_transect_name & "'"
+            txtTransectTextbox.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+            txtTransectTextbox.BackColor = Color.LightGray
+            txtTransectTextbox.ForeColor = Color.LimeGreen
+            txtTransectTextbox.TextAlign = HorizontalAlignment.Center
+            cmdTransectStart.Text = "Transect End"
+            start_or_end = TRANSECT_START
+            m_blInTransect = vbTrue
         Else
-            'Otherwise get the time from the NMEA string.
-            blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
-            If Not blAquiredFix Then
-                Exit Sub
+            ' Currently in a transect, so we end it here
+            txtTransectTextbox.Text = NO_TRANSECT
+            txtTransectTextbox.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+            txtTransectTextbox.BackColor = Color.LightGray
+            txtTransectTextbox.ForeColor = Color.Red
+            txtTransectTextbox.TextAlign = HorizontalAlignment.Center
+            cmdTransectStart.Text = "Transect Start"
+            start_or_end = TRANSECT_END
+            m_blInTransect = vbFalse
+        End If
+
+        Dim numrows As Integer
+        Dim query As String = NULL_STRING
+        Try
+            query = createInsertQuery(start_or_end, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
+            Dim oComm As New OleDbCommand(query, conn)
+            numrows = oComm.ExecuteNonQuery()
+            fetch_data()
+        Catch ex As Exception
+            If ex.Message.StartsWith("Syntax") Then
+                MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
+            Else
+                MsgBox(ex.Message & vbCrLf & ex.StackTrace)
             End If
-        End If
-        strVideoTextTime = strVideoTime
-        ' The GPRMC NMEA String does not contain elevation values. Enter null into database
-        ' if GPRMC is the chosen string type.
-        'Dim regKey As RegistryKey = Registry.CurrentUser.CreateSubKey("Software\VideoMiner")
-        'Dim strGPSStringType As String = regKey.GetValue("GPSStringType")
-
-        transect_name = InputBox("Enter a name for this transect if you wish.", "Transect Name?")
-        If transect_name = NULL_STRING Then
-            transect_name = UNNAMED_TRANSECT
-        End If
-        If strVideoTime = "" Then
-            MessageBox.Show("Could not read the NMEA string. Please ensure that the GPS port is open.", "GPS Port", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-            Exit Sub
-        End If
-        transect_started(strVideoTime, strVideoTextTime, strVideoDecimalTime, strX, strY, strZ)
-    End Sub
-
-    Private Sub TransectEnd_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdTransectEnd.Click
-        ' ==========================================================================================================
-        ' Name: TransectEnd_Click()
-        ' Description: This event is called when the user clicks on the "Transect End" button.
-        ' 1.) Pause Video
-        ' 2.) Retrieve Time Code From Video Controler
-        ' 3.) transect_stopped() which will change text on main form, add record to database table, and refresh DataGridView1
-        ' 4.) Play Video
-        ' ==========================================================================================================
-
-        Dim tc As String
-        pauseVideo()
-
-        Dim strX As String = "NULL"
-        Dim strY As String = "NULL"
-        Dim strZ As String = "NULL"
-        Dim blAquiredFix As Boolean = False
-
-        ' The GPRMC NMEA String does not contain elevation values. Enter null into database
-        ' if GPRMC is the chosen string type.
-        'Dim regKey As RegistryKey = Registry.CurrentUser.CreateSubKey("Software\VideoMiner")
-        'Dim strGPSStringType As String = regKey.GetValue("GPSStringType")
-
-        'If they are using the video control then get the time from there.
-        Dim strVideoTime As String = VIDEO_TIME_LABEL
-        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
-        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
-        If Not booUseGPSTimeCodes Then
-            tc = getTimeCode()
-            If video_file_open Then
-                strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
-            End If
-        Else
-            'Otherwise get the time from the NMEA string.
-            blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
-            If Not blAquiredFix Then
-                Exit Sub
-            End If
-        End If
-        strVideoTextTime = strVideoTime
-        If strVideoTime = "" Then
-            MessageBox.Show("Could not read the NMEA string. Please ensure that the GPS port is open.", "GPS Port", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-            Exit Sub
-        End If
-
-
-        transect_stopped(strVideoTime, strVideoTextTime, strVideoDecimalTime, strX, strY, strZ)
+        End Try
 
     End Sub
 
@@ -1909,10 +1801,11 @@ Public Class VideoMiner
         ' 4.) Play Video
         ' ==========================================================================================================
 
-        Dim tc As String
-        Dim strX As String = "NULL"
-        Dim strY As String = "NULL"
-        Dim strZ As String = "NULL"
+        Dim tc As TimeSpan
+
+        Dim strX As String = NS
+        Dim strY As String = NS
+        Dim strZ As String = NS
         Dim strVideoTime As String = VIDEO_TIME_LABEL
         Dim strVideoTextTime As String = VIDEO_TIME_LABEL
         Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
@@ -1922,13 +1815,13 @@ Public Class VideoMiner
 
             ' The GPRMC NMEA String does not contain elevation values. Enter null into database
             ' if GPRMC is the chosen string type.
-            blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+            blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
             If Not blAquiredFix Then
                 Exit Sub
             End If
         End If
 
-        If video_file_open And Not booUseGPSTimeCodes Then
+        If m_video_file_open And Not booUseGPSTimeCodes Then
             If frmVideoPlayer.IsPlaying Then
                 blVideoWasPlaying = True
             Else
@@ -1985,9 +1878,9 @@ Public Class VideoMiner
     '    Dim strVideoTextTime As String = VIDEO_TIME_LABEL
     '    Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
     '    Dim tc As String = VIDEO_TIME_LABEL
-    '    Dim strX As String = "NULL"
-    '    Dim strY As String = "NULL"
-    '    Dim strZ As String = "NULL"
+    '    Dim strX As String = NS
+    '    Dim strY As String = NS
+    '    Dim strZ As String = NS
     '    Dim blAquiredFix As Boolean = False
 
     '    ' Get the video time
@@ -1996,28 +1889,28 @@ Public Class VideoMiner
     '    strVideoTime = GetVideoTime(tc, strVideoDecimalTime)
     '    strVideoTextTime = strVideoTime
     '    Dim strVideoTimeNoColon As String
-    '    strVideoTimeNoColon = Replace(strVideoTime, ":", "")
+    '    strVideoTimeNoColon = Replace(strVideoTime, ":", NULL_STRING)
 
     '    ' First, the function in the dvTapeController to capture the screen
     '    ' We assume that the capture screen function is only used for video, not 
     '    ' for still images.
 
-    '    Dim blank As String = ""
+    '    Dim blank As String = NULL_STRING
 
     '    ' Set the default name to display in screen capture save as dialog
-    '    Dim strDefaultName As String = ""
+    '    Dim strDefaultName As String = NULL_STRING
     '    'Dim dtTransectDate As Date = (Me.txtTransectDate.Text)
     '    'Dim strTransectDate As String = dtTransectDate.Year & AddZeros(dtTransectDate.Month, 2) & AddZeros(dtTransectDate.Day, 2)
     '    Dim strTextBoxTransectDate As String = Me.txtTransectDate.Text
     '    Dim strTransectDate As String = Mid(strTextBoxTransectDate, 7, 4) & Mid(strTextBoxTransectDate, 4, 2) & Mid(strTextBoxTransectDate, 1, 2)
-    '    Dim strTransectTime As String = ""
+    '    Dim strTransectTime As String = NULL_STRING
     '    If booUseGPSTimeCodes Then
     '        blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
     '        strVideoTextTime = strVideoTime
     '        If Not blAquiredFix Then
     '            Exit Sub
     '        End If
-    '        strTransectTime = Replace(tc, ":", "")
+    '        strTransectTime = Replace(tc, ":", NULL_STRING)
 
     '    Else
     '        strTransectTime = strVideoTimeNoColon
@@ -2042,7 +1935,7 @@ Public Class VideoMiner
     '    ElseIf mnuNameOption_8.Checked Then
     '        strDefaultName = strTodaysDate & "_" & strTodaysTime
     '    ElseIf MnuNameOption_9.Checked Then
-    '        strDefaultName = ""
+    '        strDefaultName = NULL_STRING
     '    End If
 
     '    ' Specify the name to be displayed in the save window dialog
@@ -2131,8 +2024,8 @@ Public Class VideoMiner
     '    strDateTime = strDateTime & " " & Me.txtTime.Text
     '    Dim arguments As String
     '    Dim exePathStr As String = System.Windows.Forms.Application.ExecutablePath.ToString()
-    '    Dim command As String = String.Concat("""", exePathStr.Substring(0, exePathStr.LastIndexOf("\") + 1), "exiftool.exe")
-    '    arguments = String.Concat("""", " -FileModifyDate=", DoubleQuote(strDateTime) & " ", """", strFileName, """")
+    '    Dim command As String = String.Concat(NULL_STRINGNULL_STRING, exePathStr.Substring(0, exePathStr.LastIndexOf("\") + 1), "exiftool.exe")
+    '    arguments = String.Concat(NULL_STRINGNULL_STRING, " -FileModifyDate=", DoubleQuote(strDateTime) & " ", NULL_STRINGNULL_STRING, strFileName, NULL_STRINGNULL_STRING)
     '    Console.WriteLine(command & arguments)
     '    'MsgBox(command & arguments)
     '    Dim oProcess As New Process()
@@ -2165,19 +2058,19 @@ Public Class VideoMiner
     '        Dim oComm As OleDbCommand
 
 
-    '        strSpeciesCode = "NULL"
-    '        strSpeciesCount = "NULL"
-    '        strSide = "NULL"
-    '        strRange = "NULL"
-    '        strLength = "NULL"
-    '        strHeight = "NULL"
-    '        strWidth = "NULL"
-    '        strAbundance = "NULL"
-    '        strIdConfidence = "NULL"
+    '        strSpeciesCode = NS
+    '        strSpeciesCount = NS
+    '        strSide = NS
+    '        strRange = NS
+    '        strLength = NS
+    '        strHeight = NS
+    '        strWidth = NS
+    '        strAbundance = NS
+    '        strIdConfidence = NS
     '        strComment = "Screen Capture"
 
-    '        query = createInsertQuery(transect_date, "Screen Capture", strVideoTime, strVideoTextTime, strVideoDecimalTime, "555", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
-    '        Me.ScreenCaptureName = ""
+    '        query = createInsertQuery(transect_date, "Screen Capture", strVideoTime, strVideoTextTime, strVideoDecimalTime, "555", NS, strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+    '        Me.ScreenCaptureName = NULL_STRING
 
     '        ' Write this transaction to the database if open.
     '        Try
@@ -2319,7 +2212,7 @@ Public Class VideoMiner
             ' all the images under the current directory
             imagePath = strFileName.Substring(0, strFileName.LastIndexOf("\") + 1)
             Dim allFiles As String() = Directory.GetFiles(imagePath)
-            Dim cur_folder_files As String = ""
+            Dim cur_folder_files As String = NULL_STRING
             Dim i As Integer
             Dim intIndex As Integer = 0
             Dim tempFileName As String
@@ -2345,7 +2238,7 @@ Public Class VideoMiner
                 frmImage.PictureBox1.Image = New Bitmap(imagePath & imageFilesList(intIndex))
                 frmImage.Text = imageFilesList(intIndex)
                 image_index = intIndex
-                getEXIFData(Me.txtTime.Text, "", Me.lblXValue.Text, Me.lblYValue.Text, Me.lblZValue.Text)
+                getEXIFData()
                 'Me.txtTimeSource.ForeColor = Color.LimeGreen
                 'Me.txtTime.ForeColor = Color.LimeGreen
                 Me.txtTimeSource.Text = "EXIF"
@@ -2358,7 +2251,7 @@ Public Class VideoMiner
                 Me.txtTime.BackColor = Color.LightGray
                 Me.txtTime.ForeColor = Color.LimeGreen
                 Me.txtTime.TextAlign = HorizontalAlignment.Center
-                Me.txtTransectDate.Text = transect_date
+                Me.txtTransectDate.Text = m_transect_date
                 Me.txtDateSource.Text = "EXIF"
                 Me.txtDateSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
                 Me.txtDateSource.BackColor = Color.LightGray
@@ -2440,7 +2333,9 @@ Public Class VideoMiner
         ' Delete the name from the XML file and current collection
         Dim key As String = frmProjectNames.getProjectNameToDelete()
         m_PreviousProjects.Remove(key)
-        DeleteXMLNode("/PreviousProjects/ProjectName", frmProjectNames.getProjectNameToDelete())
+        If Not DeleteXMLNode("/PreviousProjects/ProjectName", frmProjectNames.getProjectNameToDelete()) Then
+            MessageBox.Show("Error - failed to delete the node from the XML file. Check the file and retry.", "Failed to edit XML file", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End If
     End Sub
 
     Private Sub txtProjectName_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtProjectName.Click
@@ -2452,7 +2347,7 @@ Public Class VideoMiner
     End Sub
 
     Private Sub txtProjectName_Leave(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtProjectName.Leave
-        project_name = txtProjectName.Text
+        m_project_name = txtProjectName.Text
     End Sub
 
     Private Sub txtTransectDate_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtTransectDate.Click
@@ -2463,7 +2358,7 @@ Public Class VideoMiner
 
     Private Sub mnthCalendar_DateSelected(ByVal sender As Object, ByVal e As System.Windows.Forms.DateRangeEventArgs) Handles mnthCalendar.DateSelected
         Me.txtTransectDate.Text = AddZeros(Me.mnthCalendar.SelectionStart.Day, 2) & "/" & AddZeros(Me.mnthCalendar.SelectionStart.Month, 2) & "/" & Me.mnthCalendar.SelectionStart.Year
-        transect_date = Me.txtTransectDate.Text
+        m_transect_date = Me.txtTransectDate.Text
         Me.mnthCalendar.Visible = False
         Me.cmdCloseCalendar.Visible = False
     End Sub
@@ -2476,15 +2371,15 @@ Public Class VideoMiner
 
     Private Sub cmdDefineAllSpatialVariables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDefineAllSpatialVariables.Click
 
-        Dim tc As String = VIDEO_TIME_LABEL
+        Dim tc As TimeSpan = New TimeSpan(VIDEO_TIME_LABEL)
 
-        Dim strX As String = "NULL"
-        Dim strY As String = "NULL"
-        Dim strZ As String = "NULL"
+        Dim strX As String = NS
+        Dim strY As String = NS
+        Dim strZ As String = NS
 
-        Dim query As String = ""
-        Dim strCode As String = ""
-        Dim strName As String = ""
+        Dim query As String = NULL_STRING
+        Dim strCode As String = NULL_STRING
+        Dim strName As String = NULL_STRING
         Dim blFlag As Boolean = False
         Dim blAquiredFix As Boolean = False
         'If they are using the video control then get the time from there.
@@ -2496,7 +2391,7 @@ Public Class VideoMiner
         ' pause stream and get the time code
         ' If the video is not open, then we cannot pause the
         ' video stream, and there is no need to get the TimeCode.
-        If video_file_open Then
+        If m_video_file_open Then
             If frmVideoPlayer.IsPlaying Then
                 blVideoWasPlaying = True
                 pauseVideo()
@@ -2513,15 +2408,15 @@ Public Class VideoMiner
 
             ' The GPRMC NMEA String does not contain elevation values. Enter null into database
             ' if GPRMC is the chosen string type.
-            blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+            blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
             If Not blAquiredFix Then
                 Exit Sub
             End If
         End If
         strVideoTextTime = strVideoTime
         ' If an image is open and a video is closed, get the photo information from the EXIF file
-        If image_open And video_file_open = False Then
-            getEXIFData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+        If image_open And m_video_file_open = False Then
+            getEXIFData()
             strVideoTextTime = strVideoTime
         End If
 
@@ -2564,12 +2459,12 @@ Public Class VideoMiner
                     sub_form.Multiple = True
                     sub_form.ShowDialog()
                     If Not sub_form.UserClosedForm Then
-                        strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & ""
+                        strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & NULL_STRING
                         strHabitatButtonUserCodeChoice(i) = strCode
                         dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
                         dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
 
-                        strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & ""
+                        strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & NULL_STRING
 
                         If strName.Length = 0 Then
                             strName = strCode
@@ -2586,20 +2481,8 @@ Public Class VideoMiner
                 End If
             Next
 
-
-
-            strSpeciesCode = "NULL"
-            strSpeciesCount = "NULL"
-            strSide = "NULL"
-            strRange = "NULL"
-            strLength = "NULL"
-            strHeight = "NULL"
-            strWidth = "NULL"
-            strAbundance = "NULL"
-            strIdConfidence = "NULL"
-
-            query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "999", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
-            Me.ScreenCaptureName = ""
+            query = createInsertQuery(ALL_HABITAT_VARIABLES_CLEARED, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
+            Me.ScreenCaptureName = NULL_STRING
             'Debug.WriteLine(query)
             Dim numrows As Integer
             Dim oComm As OleDbCommand
@@ -2622,15 +2505,15 @@ Public Class VideoMiner
     End Sub
 
     Private Sub cmdDefineAllTransectVariables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDefineAllTransectVariables.Click
-        Dim tc As String = VIDEO_TIME_LABEL
+        Dim tc As TimeSpan = New TimeSpan(VIDEO_TIME_LABEL)
 
-        Dim strX As String = "NULL"
-        Dim strY As String = "NULL"
-        Dim strZ As String = "NULL"
+        Dim strX As String = NS
+        Dim strY As String = NS
+        Dim strZ As String = NS
 
-        Dim query As String = ""
-        Dim strCode As String = ""
-        Dim strName As String = ""
+        Dim query As String = NULL_STRING
+        Dim strCode As String = NULL_STRING
+        Dim strName As String = NULL_STRING
         Dim blFlag As Boolean = False
         Dim blAquiredFix As Boolean = False
         'If they are using the video control then get the time from there.
@@ -2642,7 +2525,7 @@ Public Class VideoMiner
         ' pause stream and get the time code
         ' If the video is not open, then we cannot pause the
         ' video stream, and there is no need to get the TimeCode.
-        If video_file_open Then
+        If m_video_file_open Then
             If frmVideoPlayer.IsPlaying Then
                 blVideoWasPlaying = True
                 pauseVideo()
@@ -2658,15 +2541,15 @@ Public Class VideoMiner
 
             ' The GPRMC NMEA String does not contain elevation values. Enter null into database
             ' if GPRMC is the chosen string type.
-            blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+            blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
             If Not blAquiredFix Then
                 Exit Sub
             End If
         End If
         strVideoTextTime = strVideoTime
         ' If an image is open and a video is closed, get the photo information from the EXIF file
-        If image_open And video_file_open = False Then
-            getEXIFData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+        If image_open And m_video_file_open = False Then
+            getEXIFData()
             strVideoTextTime = strVideoTime
         End If
         Try
@@ -2707,11 +2590,11 @@ Public Class VideoMiner
                     sub_form.Multiple = True
                     sub_form.ShowDialog()
                     If Not sub_form.UserClosedForm Then
-                        strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & ""
+                        strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & NULL_STRING
                         strTransectButtonUserCodeChoice(i) = strCode
                         dictTransectFieldValues(strTransectButtonCodeNames(i).ToString) = strTransectButtonUserCodeChoice(i).ToString
 
-                        strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & ""
+                        strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & NULL_STRING
 
                         If strName.Length = 0 Then
                             strName = strCode
@@ -2728,37 +2611,19 @@ Public Class VideoMiner
                 End If
             Next
 
-            If Me.strComment <> "" Then
-
-                strSpeciesCode = "NULL"
-                strSpeciesCount = "NULL"
-                strSide = "NULL"
-                strRange = "NULL"
-                strLength = "NULL"
-                strHeight = "NULL"
-                strWidth = "NULL"
-                strAbundance = "NULL"
-                strIdConfidence = "NULL"
-
-                query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, intTransectButtonCodes(i), "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
-
-                'Debug.WriteLine(query)
+            If Me.strComment <> NULL_STRING Then
+                query = createInsertQuery(intTransectButtonCodes(i), NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
                 Dim numrows As Integer
                 Dim oComm As OleDbCommand
                 oComm = New OleDbCommand(query, conn)
                 numrows = oComm.ExecuteNonQuery()
                 fetch_data()
-
             End If
-
-            Me.strComment = ""
-
-
+            Me.strComment = NULL_STRING
             If blVideoWasPlaying = True Then
                 playVideo()
                 blVideoWasPlaying = False
             End If
-
         Catch ex As Exception
             If ex.Message.StartsWith("Syntax") Then
                 MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
@@ -2767,21 +2632,23 @@ Public Class VideoMiner
             End If
         End Try
     End Sub
+
     Private Sub tmrRecordPerSecond_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrRecordPerSecond.Tick
         'Insert A record into the database every second that video is played.
         ' This will include all continuous variables.
 
-        Dim tc As String = VIDEO_TIME_LABEL
+        Dim tc As TimeSpan = New TimeSpan(VIDEO_TIME_LABEL)
+
         Dim strVideoTime As String = VIDEO_TIME_LABEL
         Dim strVideoTextTime As String = VIDEO_TIME_LABEL
         Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
-        Dim strX As String = "NULL"
-        Dim strY As String = "NULL"
-        Dim strZ As String = "NULL"
+        Dim strX As String = NS
+        Dim strY As String = NS
+        Dim strZ As String = NS
 
-        Dim query As String = ""
+        Dim query As String = NULL_STRING
         Try
-            If video_file_open Then
+            If m_video_file_open Then
                 'pauseVideo()
                 tc = getTimeCode()
                 strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
@@ -2814,18 +2681,7 @@ Public Class VideoMiner
                     intVideoStopCounter = 0
                     intPreviousVideoSeconds = intVideoSeconds
 
-                    strSpeciesCode = "NULL"
-                    strSpeciesCount = "NULL"
-                    strSide = "NULL"
-                    strRange = "NULL"
-                    strLength = "NULL"
-                    strHeight = "NULL"
-                    strWidth = "NULL"
-                    strAbundance = "NULL"
-                    strIdConfidence = "NULL"
-                    strComment = "NULL"
-
-                    query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "NULL", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+                    query = createInsertQuery(NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
 
                     Dim numrows As Integer
                     Dim oComm As OleDbCommand
@@ -2841,9 +2697,9 @@ Public Class VideoMiner
 
                 ' The GPRMC NMEA String does not contain elevation values. Enter null into database
                 ' if GPRMC is the chosen string type.
-                getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+                getGPSData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
 
-                intGPSSeconds = CInt(Mid(tc, 7, 2))
+                'intGPSSeconds = CInt(Mid(tc, 7, 2))
 
                 If blGPSFirstTime Then
                     intPreviousGPSSeconds = intGPSSeconds
@@ -2854,19 +2710,7 @@ Public Class VideoMiner
                     Exit Sub
                 Else
                     intPreviousGPSSeconds = intGPSSeconds
-
-                    strSpeciesCode = "NULL"
-                    strSpeciesCount = "NULL"
-                    strSide = "NULL"
-                    strRange = "NULL"
-                    strLength = "NULL"
-                    strHeight = "NULL"
-                    strWidth = "NULL"
-                    strAbundance = "NULL"
-                    strIdConfidence = "NULL"
-                    strComment = "NULL"
-
-                    query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "NULL", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+                    query = createInsertQuery(NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
 
                     Dim numrows As Integer
                     Dim oComm As OleDbCommand
@@ -2918,10 +2762,10 @@ Public Class VideoMiner
     '        End If
     '    End If
     '    If Me.chkRecordEachSecond.Checked = True Then
-    '        Dim query As String = ""
-    '        Dim strX As String = "NULL"
-    '        Dim strY As String = "NULL"
-    '        Dim strZ As String = "NULL"
+    '        Dim query As String = NULL_STRING
+    '        Dim strX As String = NS
+    '        Dim strY As String = NS
+    '        Dim strZ As String = NS
 
     '        If blFirstTime Then
     '            intPreviousVideoSeconds = intCurrentPlaySeconds
@@ -2932,18 +2776,18 @@ Public Class VideoMiner
     '            Try
     '                intPreviousVideoSeconds = intCurrentPlaySeconds
 
-    '                strSpeciesCode = "NULL"
-    '                strSpeciesCount = "NULL"
-    '                strSide = "NULL"
-    '                strRange = "NULL"
-    '                strLength = "NULL"
-    '                strHeight = "NULL"
-    '                strWidth = "NULL"
-    '                strAbundance = "NULL"
-    '                strIdConfidence = "NULL"
-    '                strComment = "NULL"
+    '                strSpeciesCode = NS
+    '                strSpeciesCount = NS
+    '                strSide = NS
+    '                strRange = NS
+    '                strLength = NS
+    '                strHeight = NS
+    '                strWidth = NS
+    '                strAbundance = NS
+    '                strIdConfidence = NS
+    '                strComment = NS
 
-    '                query = createInsertQuery(transect_date, transect_name, strPlaySecondsVideoTime, strVideoTextTime, strVideoDecimalTime, "NULL", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+    '                query = createInsertQuery(transect_date, transect_name, strPlaySecondsVideoTime, strVideoTextTime, strVideoDecimalTime, NS, NS, strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
 
     '                Dim numrows As Integer
     '                Dim oComm As OleDbCommand
@@ -3051,13 +2895,14 @@ Public Class VideoMiner
         If Me.chkRecordEachSecond.Checked = False Then
             Me.tmrRecordPerSecond.Stop()
         Else
-            Dim tc As String = VIDEO_TIME_LABEL
+            Dim tc As TimeSpan = New TimeSpan(VIDEO_TIME_LABEL)
+
             Dim strVideoTime As String = VIDEO_TIME_LABEL
             Dim strVideoTextTime As String = VIDEO_TIME_LABEL
             Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
-            Dim strX As String = ""
-            Dim strY As String = ""
-            Dim strZ As String = ""
+            Dim strX As String = NULL_STRING
+            Dim strY As String = NULL_STRING
+            Dim strZ As String = NULL_STRING
 
             If Not frmVideoPlayer Is Nothing Then
                 'If frmVideoPlayer.blIsPlaying Then
@@ -3081,17 +2926,18 @@ Public Class VideoMiner
 
     Private Sub cmdAddComment_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdAddComment.Click
 
-        Dim tc As String = VIDEO_TIME_LABEL
+        Dim tc As TimeSpan = New TimeSpan(VIDEO_TIME_LABEL)
 
-        Dim strX As String = "NULL"
-        Dim strY As String = "NULL"
-        Dim strZ As String = "NULL"
+
+        Dim strX As String = NS
+        Dim strY As String = NS
+        Dim strZ As String = NS
         Dim query As String
         Dim blAquiredFix As Boolean = False
 
         strComment = InputBox("Enter a comment to be inserted as a record", "Enter Comment")
         If strComment = NULL_STRING Then
-            If video_file_open Then
+            If m_video_file_open Then
                 playVideo()
             End If
             Exit Sub
@@ -3105,7 +2951,7 @@ Public Class VideoMiner
         ' pause stream and get the time code
         ' If the video is not open, then we cannot pause the
         ' video stream, and there is no need to get the TimeCode.
-        If video_file_open Then
+        If m_video_file_open Then
             pauseVideo()
             tc = getTimeCode()
             strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
@@ -3116,19 +2962,19 @@ Public Class VideoMiner
 
             ' The GPRMC NMEA String does not contain elevation values. Enter null into database
             ' if GPRMC is the chosen string type.
-            blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+            blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
             If Not blAquiredFix Then
                 Exit Sub
             End If
         End If
         strVideoTextTime = strVideoTime
-        Dim strCode As String = ""
-        Dim strName As String = ""
+        Dim strCode As String = NULL_STRING
+        Dim strName As String = NULL_STRING
 
         ' If the image is open and the video is closed then get the picture information from the EXIF file
-        If image_open And video_file_open = False Then
+        If image_open And m_video_file_open = False Then
 
-            getEXIFData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+            getEXIFData()
             strVideoTextTime = strVideoTime
 
         End If
@@ -3143,23 +2989,11 @@ Public Class VideoMiner
                 Next
             End If
 
-            If tc <> NULL_STRING Then
+            If tc.ToString() <> NULL_STRING Then
                 ' Insert new record in database
                 Dim numrows As Integer
 
-
-                strSpeciesCode = "NULL"
-                strSpeciesCount = "NULL"
-                strSide = "NULL"
-                strRange = "NULL"
-                strLength = "NULL"
-                strHeight = "NULL"
-                strWidth = "NULL"
-                strAbundance = "NULL"
-                strIdConfidence = "NULL"
-
-                'If transect_date = "" Then
-                query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "666", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+                query = createInsertQuery(COMMENT_ADDED, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
 
                 Dim oComm As New OleDbCommand(query, conn)
                 numrows = oComm.ExecuteNonQuery()
@@ -3182,10 +3016,10 @@ Public Class VideoMiner
         If db_file_open = True Then
             Dim tc As String = VIDEO_TIME_LABEL
 
-            Dim strX As String = "NULL"
-            Dim strY As String = "NULL"
-            Dim strZ As String = "NULL"
-            Dim query As String = ""
+            Dim strX As String = NS
+            Dim strY As String = NS
+            Dim strZ As String = NS
+            Dim query As String = NULL_STRING
             Dim blAquiredFix As Boolean = False
 
             strComment = "Nothing in photo"
@@ -3211,18 +3045,18 @@ Public Class VideoMiner
 
                     ' The GPRMC NMEA String does not contain elevation values. Enter null into database
                     ' if GPRMC is the chosen string type.
-                    blAquiredFix = getGPSData(tc, strPhotoTime, strPhotoDecimalTime, strX, strY, strZ)
+                    blAquiredFix = getGPSData(strPhotoTime, strPhotoDecimalTime, strX, strY, strZ)
                     If Not blAquiredFix Then
                         Exit Sub
                     End If
                 End If
                 strPhotoTextTime = strPhotoTime
-                Dim strCode As String = ""
-                Dim strName As String = ""
+                Dim strCode As String = NULL_STRING
+                Dim strName As String = NULL_STRING
 
-                If image_open And video_file_open = False Then
+                If image_open And m_video_file_open = False Then
 
-                    getEXIFData(strPhotoTime, strPhotoDecimalTime, strX, strY, strZ)
+                    getEXIFData()
                     strPhotoTextTime = strPhotoTime
 
                 End If
@@ -3232,18 +3066,7 @@ Public Class VideoMiner
                     ' Insert new record in database
                     Dim numrows As Integer
 
-
-                    strSpeciesCode = "NULL"
-                    strSpeciesCount = "NULL"
-                    strSide = "NULL"
-                    strRange = "NULL"
-                    strLength = "NULL"
-                    strHeight = "NULL"
-                    strWidth = "NULL"
-                    strAbundance = "NULL"
-                    strIdConfidence = "NULL"
-
-                    query = createInsertQuery(transect_date, transect_name, strPhotoTime, strPhotoTextTime, strPhotoDecimalTime, "777", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+                    query = createInsertQuery(NOTHING_IN_PHOTO, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
 
                     Dim oComm As New OleDbCommand(query, conn)
                     numrows = oComm.ExecuteNonQuery()
@@ -3301,7 +3124,7 @@ Public Class VideoMiner
             SaveConfiguration("/SessionPath", m_strSessionPath)
             Me.SessionName = strFileName
 
-            If strFileName = "" Or Not System.IO.File.Exists(strFileName) Then
+            If strFileName = NULL_STRING Or Not System.IO.File.Exists(strFileName) Then
                 Exit Sub
             End If
 
@@ -3385,7 +3208,7 @@ Public Class VideoMiner
                 ' all the images under the current directory
                 Dim imagePath As String = strImageFileName.Substring(0, strImageFileName.LastIndexOf("\") + 1)
                 Dim allFiles As String() = Directory.GetFiles(imagePath)
-                Dim cur_folder_files As String = ""
+                Dim cur_folder_files As String = NULL_STRING
                 Dim i As Integer
                 Dim tempFileName As String
                 ' We try to store the name of all the files under this folder
@@ -3493,8 +3316,8 @@ Public Class VideoMiner
                 strVideoTime = CStr(frmVideoPlayer.Position)
             Else
                 blVideoOpen = False
-                strVideoFileName = "NULL"
-                strVideoTime = "NULL"
+                strVideoFileName = NS
+                strVideoTime = NS
             End If
 
             If Not frmImage Is Nothing Then
@@ -3502,7 +3325,7 @@ Public Class VideoMiner
                 strImageFileName = currentImage
             Else
                 blImageOpen = False
-                strImageFileName = "NULL"
+                strImageFileName = NS
             End If
 
             If Not Me.grdVideoMinerDatabase.DataSource Is Nothing Then
@@ -3511,8 +3334,8 @@ Public Class VideoMiner
                 strNumberRecordsShown = CStr(intNumberDisplayRecords)
             Else
                 blDatabaseOpen = False
-                strDatabaseFileName = "NULL"
-                strNumberRecordsShown = "NULL"
+                strDatabaseFileName = NS
+                strNumberRecordsShown = NS
             End If
 
 
@@ -3549,11 +3372,11 @@ Public Class VideoMiner
 
         sfd.ShowDialog()
 
-        Dim strFileName As String = ""
+        Dim strFileName As String = NULL_STRING
         strFileName = sfd.FileName
         Me.SessionName = strFileName
 
-        If strFileName = "" Then
+        If strFileName = NULL_STRING Then
             Exit Sub
         End If
         'If System.IO.File.Exists(strFileName) Then
@@ -3576,8 +3399,8 @@ Public Class VideoMiner
             strVideoTime = CStr(frmVideoPlayer.Position)
         Else
             blVideoOpen = False
-            strVideoFileName = "NULL"
-            strVideoTime = "NULL"
+            strVideoFileName = NS
+            strVideoTime = NS
         End If
 
         If Not frmImage Is Nothing Then
@@ -3585,7 +3408,7 @@ Public Class VideoMiner
             strImageFileName = currentImage
         Else
             blImageOpen = False
-            strImageFileName = "NULL"
+            strImageFileName = NS
         End If
 
         If Not Me.grdVideoMinerDatabase.DataSource Is Nothing Then
@@ -3594,7 +3417,7 @@ Public Class VideoMiner
             strNumberRecordsShown = CStr(intNumberDisplayRecords)
         Else
             blDatabaseOpen = False
-            strDatabaseFileName = "NULL"
+            strDatabaseFileName = NS
             strNumberRecordsShown = "15"
         End If
 
@@ -3745,24 +3568,19 @@ Public Class VideoMiner
         'Return retval
     End Function
 
-    ' ==========================================================================================================
-    ' Name: getTimeCode()
-    ' Description: Opens the DV tape by calling delegate function
-    ' 1.) Retrieve the time code from Video Controller
-    ' ==========================================================================================================
-    Private Function getTimeCode() As String
-
-        Dim dblValue As Double = 0
-        Try
-            dblValue = frmVideoPlayer.Position
-        Catch ex As Exception
-
-        End Try
-
-        Return dblValue
+    ''' <summary>
+    ''' Return the current timecode.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private Function getTimeCode() As TimeSpan
+        Return m_tsUserTime
     End Function
 
-    Public Sub enableDisableVideoMenu(ByVal mnuState As Boolean)
+    ''' <summary>
+    ''' Enable or disable the video menu items
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Sub toggleVideoMenu(ByVal mnuState As Boolean)
         ' Enable (mnuState=True) or Disable (mnuState=False) the menu item for opening video or opening external video
         Dim mnuItem As ToolStripMenuItem
         For Each mnuItem In mnuVideoTools.DropDownItems
@@ -3773,11 +3591,10 @@ Public Class VideoMiner
             End If
         Next
     End Sub
-
-    ' ==========================================================================================================
-    ' Name: get_rel_filename()
-    ' Description: Returns the filename without its path.
-    ' ==========================================================================================================
+    ''' <summary>
+    ''' Returns the filename without its path
+    ''' </summary>
+    ''' <remarks></remarks>
     Private Function get_rel_filename(ByVal fullpath As String) As String
         Dim arr() As String = fullpath.Split(DIR_SEP)
         If arr.Length = 0 Then
@@ -3799,7 +3616,6 @@ Public Class VideoMiner
     Private Sub no_files_loaded()
         cmdShowSetTimecode.Enabled = False
         cmdTransectStart.Enabled = False
-        cmdTransectEnd.Enabled = False
         cmdOffBottom.Enabled = False
         'Me.cmdEdit.Enabled = False
     End Sub
@@ -3816,7 +3632,6 @@ Public Class VideoMiner
     Private Sub files_loaded()
         cmdShowSetTimecode.Enabled = True
         cmdTransectStart.Enabled = True
-        cmdTransectEnd.Enabled = False
         cmdOffBottom.Enabled = True
         'ResumeVideo.Enabled = True
         Me.radQuickEntry.Visible = True
@@ -3838,112 +3653,6 @@ Public Class VideoMiner
         Me.KeyboardShortcutsToolStripMenuItem.Enabled = True
         Me.DataCodeAssignmentsToolStripMenuItem.Enabled = True
 
-    End Sub
-
-    ' ==========================================================================================================
-    ' Name: transect_started()
-    ' Description: Function called when user presses transect start button
-    ' 1.) Dispaly Transect name in TransectTextbox
-    ' 2.) Disable the transect start button
-    ' 3.) Enable the Transect end button
-    ' 4.) Insert record into the database table "data" with variables for fields: id,TimeCode,DataCode,transect,OnBottom
-    ' 5.) Load/Refresh the DataGridView1 database table view at bottom of main form using fetch_data().
-    ' ==========================================================================================================
-    Private Sub transect_started(ByVal tc As String, ByVal tcText As String, ByVal tcDecimal As String, ByVal strX As String, ByVal strY As String, ByVal strZ As String)
-
-        If transect_name = UNNAMED_TRANSECT Then
-            txtTransectTextbox.Text = UNNAMED_TRANSECT
-        Else
-            txtTransectTextbox.Text = "Transect '" & transect_name & "'"
-        End If
-
-        txtTransectTextbox.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-        txtTransectTextbox.BackColor = Color.LightGray
-        txtTransectTextbox.ForeColor = Color.LimeGreen
-        txtTransectTextbox.TextAlign = HorizontalAlignment.Center
-        cmdTransectStart.Enabled = False
-        cmdTransectEnd.Enabled = True
-
-        ' Insert new record in database
-        Dim numrows As Integer
-        Dim query As String
-
-        strSpeciesCode = "NULL"
-        strSpeciesCount = "NULL"
-        strSide = "NULL"
-        strRange = "NULL"
-        strLength = "NULL"
-        strHeight = "NULL"
-        strWidth = "NULL"
-        strAbundance = "NULL"
-        strIdConfidence = "NULL"
-        strComment = "NULL"
-        Try
-            'If transect_date = "" Then
-            query = createInsertQuery(transect_date, transect_name, tc, tcText, tcDecimal, "1", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
-
-            Dim oComm As New OleDbCommand(query, conn)
-            numrows = oComm.ExecuteNonQuery()
-            fetch_data()
-        Catch ex As Exception
-            If ex.Message.StartsWith("Syntax") Then
-                MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-            Else
-                MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-            End If
-        End Try
-    End Sub
-
-    ' ==========================================================================================================
-    ' Name: transect_stopped()
-    ' Description: Function called when user presses transect start button
-    ' 1.) Change text of TransectTextbox to read "No Transect"
-    ' 2.) If a database and a video are open Enable the transect start button
-    ' 3.) If a database and a video are open Disable the Transect end button
-    ' 4.) If the time code variable "tc" is not blank, Insert record into the database table "data" with variables for 
-    '     fields: id,TimeCode,DataCode,transect,OnBottom
-    ' 5.) Load/Refresh the DataGridView1 database table view at bottom of main form using fetch_data().
-    ' ==========================================================================================================
-    Private Sub transect_stopped(ByVal tc As String, ByVal tcText As String, ByVal tcDecimal As String, ByVal strX As String, ByVal strY As String, ByVal strZ As String)
-        txtTransectTextbox.Text = NO_TRANSECT
-        txtTransectTextbox.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-        txtTransectTextbox.BackColor = Color.LightGray
-        txtTransectTextbox.ForeColor = Color.Red
-        txtTransectTextbox.TextAlign = HorizontalAlignment.Center
-        'If db_file_open And video_file_open Then
-        cmdTransectStart.Enabled = True
-        cmdTransectEnd.Enabled = False
-        'End If
-        If tc <> NULL_STRING Then
-            ' Insert new record in database
-            Dim numrows As Integer
-            Dim query As String = ""
-
-            strSpeciesCode = "NULL"
-            strSpeciesCount = "NULL"
-            strSide = "NULL"
-            strRange = "NULL"
-            strLength = "NULL"
-            strHeight = "NULL"
-            strWidth = "NULL"
-            strAbundance = "NULL"
-            strIdConfidence = "NULL"
-            strComment = "NULL"
-            Try
-                'If transect_date = "" Then
-                query = createInsertQuery(transect_date, transect_name, tc, tcText, tcDecimal, "2", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
-
-                Dim oComm As New OleDbCommand(query, conn)
-                numrows = oComm.ExecuteNonQuery()
-                fetch_data()
-            Catch ex As Exception
-                If ex.Message.StartsWith("Syntax") Then
-                    MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-                Else
-                    MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-                End If
-            End Try
-        End If
     End Sub
 
     ' ==========================================================================================================
@@ -3987,25 +3696,13 @@ Public Class VideoMiner
         If tc <> NULL_STRING Then
             Dim numrows As Integer
 
-            If tc = "" Then
+            If tc = NULL_STRING Then
                 tc = VIDEO_TIME_LABEL
             End If
-            Dim query As String = ""
+            Dim query As String = NULL_STRING
 
-
-            strSpeciesCode = "NULL"
-            strSpeciesCount = "NULL"
-            strSide = "NULL"
-            strRange = "NULL"
-            strLength = "NULL"
-            strHeight = "NULL"
-            strWidth = "NULL"
-            strAbundance = "NULL"
-            strIdConfidence = "NULL"
-            strComment = "NULL"
             Try
-                'If transect_date = "" Then
-                query = createInsertQuery(transect_date, transect_name, tc, tcText, tcDecimal, "3", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+                query = createInsertQuery(ON_OFF_BOTTOM, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
 
                 Dim oComm As New OleDbCommand(query, conn)
                 numrows = oComm.ExecuteNonQuery()
@@ -4024,7 +3721,7 @@ Public Class VideoMiner
         Dim intLength As Integer
         intLength = Len(strNumber.ToString)
 
-        Dim strZeros As String = ""
+        Dim strZeros As String = NULL_STRING
         Dim i As Integer
 
         For i = 1 To intPlaces - intLength
@@ -4043,47 +3740,10 @@ Public Class VideoMiner
     '    Me.chkRepeatVariables.Enabled = booEnable
     'End Sub
 
-    Private Function getGPSData(ByRef tc As String, ByRef strVideoTime As String, ByRef strVideoDecimalTime As String, ByRef strX As String, ByRef strY As String, ByRef strZ As String) As Boolean
-
-        'If m_SerialPort.IsOpen() Then
-        '    Dim regKey As RegistryKey = Registry.CurrentUser.CreateSubKey("Software\VideoMiner")
-        '    Dim strGPSStringType As String = regKey.GetValue("GPSStringType")
-
-        '    Dim blAquiredFix As Boolean = False
-        '    Dim m_CurrentPoint As Point
-
-        '    updateTextBox()
-
-        '    m_CurrentPoint = New Point
-        '    With m_CurrentPoint
-        '        .NMEA = Me.txtNMEA.Text
-        '        blAquiredFix = .GetPoint     ' Returns true if there is a valid location
-        '    End With
-        '    If blAquiredFix Then
-        '        tc = Me.GPSDateTime
-        '        strX = Me.GPS_X.ToString
-        '        strY = Me.GPS_Y.ToString
-        '        If strGPSStringType = "GPGGA" Then
-        '            strZ = Me.GPS_Z.ToString
-        '        End If
-        '        strVideoTime = tc
-
-        '        transect_date = Me.GPSDate
-        '        Me.txtTransectDate.Text = transect_date
-        '        Return True
-        '    Else
-        '        MessageBox.Show("The GPS string is empty. It is possible is that the GPS is not receiving a GPS fix.", "GPS String Empty", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-        '        Return False
-        '    End If
-        'Else
-        '    MessageBox.Show("You have selected 'Use GPS Timecodes', but the GPS port is closed.  Please make sure that it is open before entering data.", "GPS Port Closed", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        '    Return False
-        'End If
+    Private Function getGPSData(ByRef strVideoTime As String, ByRef strVideoDecimalTime As String, ByRef strX As String, ByRef strY As String, ByRef strZ As String) As Boolean
         strX = Me.lblXValue.Text
         strY = Me.lblYValue.Text
         strZ = Me.lblZValue.Text
-        'transect_date = Me.GPSDate
-        'strVideoTime = Me.GPSDateTime
         strVideoDecimalTime = strVideoTime & ".00"
         Return True
 
@@ -4144,7 +3804,7 @@ Public Class VideoMiner
     'End Function
 
 
-    Private Sub getEXIFData(ByRef strPhotoTime As String, ByRef strPhotoDecimalTime As String, ByRef strX As String, ByRef strY As String, ByRef strZ As String)
+    Private Sub getEXIFData()
         Me.lblGPSLocation.Visible = False
         Me.lblX.Visible = False
         Me.lblXValue.Visible = False
@@ -4154,8 +3814,8 @@ Public Class VideoMiner
         Me.lblZValue.Visible = False
         Dim arguments As String
         Dim exePathStr As String = System.Windows.Forms.Application.ExecutablePath.ToString()
-        Dim command As String = String.Concat("""", exePathStr.Substring(0, exePathStr.LastIndexOf("\") + 1), "exiftool.exe")
-        arguments = String.Concat("""", " -s ", """", imagePath & Me.FileName, """")
+        Dim command As String = String.Concat(NULL_STRING, NULL_STRING, exePathStr.Substring(0, exePathStr.LastIndexOf("\") + 1), "exiftool.exe")
+        arguments = String.Concat(NULL_STRING, NULL_STRING, " -s ", NULL_STRING, NULL_STRING, imagePath & Me.FileName, NULL_STRING, NULL_STRING)
         Console.WriteLine(command & arguments)
         'MsgBox(command & arguments)
         Dim oProcess As New Process()
@@ -4175,7 +3835,7 @@ Public Class VideoMiner
         Dim strEXIFOutput() As String
         strEXIFOutput = sOutput.Split(vbCrLf)
         Dim i As Integer
-        Dim strDate As String = ""
+        Dim strDate As String = NULL_STRING
         Dim strLine As String
         Dim strItems() As String
         Dim dblDegrees As Double
@@ -4190,26 +3850,28 @@ Public Class VideoMiner
         Dim blY As Boolean = False
         Dim blZ As Boolean = False
         Dim blFlag As Boolean = False
-        Dim strFileDate As String = ""
-        Dim strFileTime As String = ""
+        Dim strFileDate As String = NULL_STRING
+        Dim strFileTime As String = NULL_STRING
         ' Read the line that has "DateTimeOriginal".
+        ' TODO: Go over this whole algorithm. It is a big mess.
+        Dim strPhotoDecimalTime As String
         For i = 0 To strEXIFOutput.Length - 1
             If strEXIFOutput(i).Contains("DateTimeOriginal") And Not strEXIFOutput(i).Contains("SubSec") Then
                 strLine = strEXIFOutput(i)
                 strItems = strLine.Split(":")
                 strDate = strItems(3).Substring(0, 2) & "/" & strItems(2) & "/" & strItems(1).Substring(1, 4)
-                transect_date = strDate
+                m_transect_date = strDate
 
                 'strPhotoTime = ToMilitaryTime(strItems(3).Substring(3, 2) & ":" & strItems(4) & ":" & strItems(5))
-                strPhotoDecimalTime = strPhotoTime & ".00"
+                strPhotoDecimalTime = m_tsUserTime.ToString()
                 blDateTime = True
             ElseIf strEXIFOutput(i).Contains("DateTimeOriginal") And strEXIFOutput(i).Contains("SubSec") Then
                 strLine = strEXIFOutput(i)
                 strItems = strLine.Split(":")
                 strDate = strItems(3).Substring(0, 2) & "/" & strItems(2) & "/" & strItems(1).Substring(1, 4)
-                transect_date = strDate
+                m_transect_date = strDate
                 strPhotoDecimalTime = strItems(3).Substring(3, 2) & ":" & strItems(4) & ":" & strItems(5)
-                strPhotoTime = ToMilitaryTime(strPhotoDecimalTime)
+                'strPhotoTime = ToMilitaryTime(strPhotoDecimalTime)
                 blDateTime = True
             ElseIf strEXIFOutput(i).Contains("FileCreateDate") Then
                 strLine = strEXIFOutput(i)
@@ -4221,13 +3883,13 @@ Public Class VideoMiner
             ElseIf strEXIFOutput(i).Contains("GPSLatitude") And Not strEXIFOutput(i).Contains("Ref") Then
                 strLine = strEXIFOutput(i)
                 strItems = strLine.Split(":")
-                strGPS = strItems(1).Replace(" ", "")
+                strGPS = strItems(1).Replace(" ", NULL_STRING)
                 If strGPS.Contains("N") Then
                     intNegative = 1
-                    strGPS = strGPS.Replace("""N", "")
+                    strGPS = strGPS.Replace("N", NULL_STRING)
                 ElseIf strGPS.Contains("S") Then
                     intNegative = -1
-                    strGPS = strGPS.Replace("""S", "")
+                    strGPS = strGPS.Replace("S", NULL_STRING)
                 End If
                 strGPS = strGPS.Replace("deg", "/")
                 strGPS = strGPS.Replace("'", "/")
@@ -4236,7 +3898,7 @@ Public Class VideoMiner
                 dblDegrees = CDbl(strGPSSplit(0))
                 dblMinutes = CDbl(strGPSSplit(1))
                 dblSeconds = CDbl(strGPSSplit(2))
-                strY = FormatNumber((dblDegrees + (dblMinutes / 60) + (dblSeconds / 3600)) * intNegative, 5)
+                'strY = FormatNumber((dblDegrees + (dblMinutes / 60) + (dblSeconds / 3600)) * intNegative, 5)
                 blY = True
                 Me.lblGPSLocation.Visible = True
                 Me.lblGPSLocation.Text = "EXIF Location"
@@ -4245,22 +3907,22 @@ Public Class VideoMiner
             ElseIf strEXIFOutput(i).Contains("GPSLongitude") And Not strEXIFOutput(i).Contains("Ref") Then
                 strLine = strEXIFOutput(i)
                 strItems = strLine.Split(":")
-                strGPS = strItems(1).Replace(" ", "")
+                strGPS = strItems(1).Replace(" ", NULL_STRING)
                 If strGPS.Contains("E") Then
                     intNegative = 1
-                    strGPS = strGPS.Replace("""E", "")
+                    strGPS = strGPS.Replace("E", NULL_STRING)
                 ElseIf strGPS.Contains("W") Then
                     intNegative = -1
-                    strGPS = strGPS.Replace("""W", "")
+                    strGPS = strGPS.Replace("W", NULL_STRING)
                 End If
                 strGPS = strGPS.Replace("deg", "/")
                 strGPS = strGPS.Replace("'", "/")
-                strGPS = strGPS.Replace("""W", "")
+                strGPS = strGPS.Replace("W", NULL_STRING)
                 strGPSSplit = strGPS.Split("/")
                 dblDegrees = CDbl(strGPSSplit(0))
                 dblMinutes = CDbl(strGPSSplit(1))
                 dblSeconds = CDbl(strGPSSplit(2))
-                strX = FormatNumber((dblDegrees + (dblMinutes / 60) + (dblSeconds / 3600)) * intNegative, 5)
+                'strX = FormatNumber((dblDegrees + (dblMinutes / 60) + (dblSeconds / 3600)) * intNegative, 5)
                 blX = True
                 Me.lblGPSLocation.Visible = True
                 Me.lblGPSLocation.Text = "EXIF Location"
@@ -4269,16 +3931,17 @@ Public Class VideoMiner
             ElseIf strEXIFOutput(i).Contains("GPSAltitude") And Not strEXIFOutput(i).Contains("Ref") Then
                 strLine = strEXIFOutput(i)
                 strItems = strLine.Split(":")
-                strGPS = strItems(1).Replace(" ", "")
+                strGPS = strItems(1).Replace(" ", NULL_STRING)
                 If strGPS.Contains("AboveSeaLevel") Then
                     intNegative = 1
-                    strGPS = strGPS.Replace("AboveSeaLevel", "")
+                    strGPS = strGPS.Replace("AboveSeaLevel", NULL_STRING)
                 ElseIf strGPS.Contains("BelowSeaLevel") Then
                     intNegative = -1
-                    strGPS = strGPS.Replace("BelowSeaLevel", "")
+                    strGPS = strGPS.Replace("BelowSeaLevel", NULL_STRING)
                 End If
-                strGPS = strGPS.Replace("m", "")
-                strZ = FormatNumber(CDbl(strGPS) * intNegative, 2)
+                strGPS = strGPS.Replace("m", NULL_STRING)
+                ' TODO: See what this does
+                'strZ = FormatNumber(CDbl(strGPS) * intNegative, 2)
                 blZ = True
                 Me.lblGPSLocation.Visible = True
                 Me.lblGPSLocation.Text = "EXIF Location"
@@ -4294,26 +3957,25 @@ Public Class VideoMiner
             If blDateTime = False Then
                 If blFileDateTime = False Then
                     strMessage = strMessage & vbCrLf & "Date and Time"
-                    transect_date = ""
-                    strPhotoTime = ""
+                    m_transect_date = NULL_STRING
+                    'strPhotoTime = NULL_STRING
                 Else
-                    transect_date = strFileDate
-                    strPhotoTime = strFileTime
-                    strPhotoDecimalTime = strPhotoTime & ".00"
+                    m_transect_date = strFileDate
+                    'strPhotoTime = strFileTime
+                    strPhotoDecimalTime = m_tsUserTime.ToString()
                 End If
             End If
-            If blX = False Then
-                strMessage = strMessage & vbCrLf & "X"
-                strX = ""
-            End If
-            If blY = False Then
-                strMessage = strMessage & vbCrLf & "Y"
-                strY = ""
-            End If
-            If blZ = False Then
-                strMessage = strMessage & vbCrLf & "Z"
-                strZ = ""
-            End If
+            '            If blX = False Then
+            ' strMessage = strMessage & vbCrLf & "X"
+            '        End If
+            '       If blY = False Then
+            '          strMessage = strMessage & vbCrLf & "Y"
+            '         strY = NULL_STRING
+            '    End If
+            '            If blZ = False Then
+            'strMessage = strMessage & vbCrLf & "Z"
+            'strZ = NULL_STRING
+            'End If
             strMessage = strMessage & vbCrLf & vbCrLf & "Do you wish to disable this warning for future images?"
             If Not blDateTime Or Not blX Or Not blY Or Not blZ Then
                 Dim intAnswer As Integer
@@ -4340,7 +4002,7 @@ Public Class VideoMiner
     End Sub
 
     Private Sub cboZoom_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cboZoom.Click
-        Me.cboZoom.Text = ""
+        Me.cboZoom.Text = NULL_STRING
     End Sub
 
     Private Sub cboZoom_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles cboZoom.KeyDown
@@ -4349,7 +4011,7 @@ Public Class VideoMiner
             Dim intImageSize As Double = 0
             Dim w As Integer = 0
             Dim h As Integer = 0
-            Dim strZoomValue As String = ""
+            Dim strZoomValue As String = NULL_STRING
             Dim c As Char
 
             For Each c In cboZoom.Text
@@ -4498,22 +4160,15 @@ Public Class VideoMiner
     End Sub
 
     Public Sub LoadImg()
-
-
         ' And delete the .txt file generated by the EXIF tool for the previous image.
         System.IO.File.Delete(String.Concat(currentImage.Substring(0, currentImage.LastIndexOf(".")), ".txt"))
         ' When either one of the button ">" or "<" is pressed, the name of
         ' the current image should be updated.
-
-
         'currentImage = String.Concat(Me.image_prefix.Substring(0, Me.image_prefix.LastIndexOf("\") + 1), Me.fileNames(image_index))
         'Me.image_prefix = currentImage.Substring(0, currentImage.LastIndexOf("."))
-
         If imageFilesList.Count = 0 Then
             Exit Sub
         End If
-
-
         'If blForward Then
         '    If (image_index + 1) > (imageFilesList.Count - 1) Then
         '        intAnswer = MessageBox.Show("You have reached the last image in the folder, would you like to start again at the first image?", "Last Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
@@ -4572,8 +4227,6 @@ Public Class VideoMiner
                     h = Image.FromFile(imagePath & imageFilesList(image_index)).Height * dblImageSize
                 End If
         End Select
-
-
         Try
             ' Display the image in the picture box.
             'Dim bmp As Bitmap = New Bitmap(Image.FromFile(currentImage), w, h)
@@ -4595,8 +4248,9 @@ Public Class VideoMiner
             frmImage.Text = imageFilesList(image_index)
             Me.FileName = imageFilesList(image_index)
             currentImage = imagePath & imageFilesList(image_index)
-            getEXIFData(Me.txtTime.Text, "", Me.lblXValue.Text, Me.lblYValue.Text, Me.lblZValue.Text)
-            strTimeDateSource = "EXIF"
+            getEXIFData()
+            ' TODO: Fix next line, I added a dim in there to make it compile
+            Dim strTimeDateSource As String = "EXIF"
             intTimeSource = 3
             Me.txtTimeSource.Text = strTimeDateSource
             'Me.txtTimeSource.ForeColor = Color.LimeGreen
@@ -4609,7 +4263,7 @@ Public Class VideoMiner
             Me.txtTime.BackColor = Color.LightGray
             Me.txtTime.ForeColor = Color.LimeGreen
             Me.txtTime.TextAlign = HorizontalAlignment.Center
-            Me.txtTransectDate.Text = transect_date
+            Me.txtTransectDate.Text = m_transect_date
             Me.txtDateSource.Text = strTimeDateSource
             Me.txtDateSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
             Me.txtDateSource.BackColor = Color.LightGray
@@ -4681,27 +4335,8 @@ Public Class VideoMiner
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub mnuOpenFile_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuOpenFile.Click
-        'Me.strPreviousClipTime = Me.txtTime.Text
-        'If Not frmImage Is Nothing Then
-        '    Dim intAnswer As Integer = MessageBox.Show("The image file '" & Me.FileName & "' is currently open. In order to open a video, the image will be closed. Do you want to continue?", "Image File Open", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-        '    If intAnswer = vbNo Then
-        '        Exit Sub
-        '    Else
-        '        frmImage.Close()
-        '        If m_SerialPort Is Nothing Then
-        '            lblGPSLocation.Visible = False
-        '            lblX.Visible = False
-        '            lblXValue.Visible = False
-        '            lblY.Visible = False
-        '            lblYValue.Visible = False
-        '            lblZ.Visible = False
-        '            lblZValue.Visible = False
-        '        End If
-        '    End If
-        'End If
-
         If openVideo() Then
-            enableDisableVideoMenu(False)
+            toggleVideoMenu(False)
             playVideo()
             cmdShowSetTimecode.Enabled = True
         End If
@@ -4736,7 +4371,7 @@ Public Class VideoMiner
                 MessageBox.Show(ex.Message)
             End Try
 
-            ' Figure out where to put the video player form. If there ar3e two screens connected,
+            ' Figure out where to put the video player form. If there are two screens connected,
             ' put the video on the second screen, maximized. If only one screen, put it on the same screen,
             ' as an unmaximized window.
             Dim intX As Integer = 0
@@ -4757,7 +4392,7 @@ Public Class VideoMiner
                 frmVideoPlayer.WindowState = FormWindowState.Normal
                 'frmVideoPlayer.TopMost = True
             Else
-                ' CJG need to fix back to 2 monitors
+                'TODO: fix back to 2 monitors for non-debug version
                 'aPoint.X = intX + priMon.Bounds.Width
                 'aPoint.Y = intY / 2
                 aPoint.X = intX + priMon.Bounds.Width / 3
@@ -4777,7 +4412,7 @@ Public Class VideoMiner
         ' In the future if the frames per second are returned properly, this will show that in the status bar..
         'Me.lblVideo.Text = "Video File '" & Me.FileName & "' is open (" & frmVideoPlayer.FPS & " frames per second)"
         Me.lblVideo.Text = "Video File '" & Me.FileName & "' is open"
-        video_file_open = True
+        m_video_file_open = True
         Return True
     End Function
 
@@ -4791,10 +4426,10 @@ Public Class VideoMiner
                 dblCurrentSeconds = frmVideoPlayer.Position
                 strSeconds = dblCurrentSeconds.ToString.Split(".")
                 intCurrentSeconds = CInt(strSeconds(0))
-                intPlayForSeconds = CInt(Me.txtPlaySeconds.Text)
+                'intPlayForSeconds = CInt(Me.txtPlaySeconds.Text)
                 Me.tmrPlayForSeconds.Interval = 100
                 Me.tmrPlayForSeconds.Enabled = True
-                intEndPlaySeconds = intCurrentSeconds + intPlayForSeconds
+                'intEndPlaySeconds = intCurrentSeconds + intPlayForSeconds
                 playVideo()
                 Me.tmrPlayForSeconds.Start()
             Else
@@ -4827,14 +4462,14 @@ Public Class VideoMiner
         End If
         lblVideo.Text = VIDEO_FILE_STATUS_UNLOADED
         pnlVideoControls.Visible = False
-        enableDisableVideoMenu(True)
+        toggleVideoMenu(True)
         unsetTimes()
         cmdShowSetTimecode.Enabled = False
-        video_file_open = False
+        m_video_file_open = False
     End Sub
 
     Private Sub playVideo()
-        frmVideoPlayer.Rate = dblVideoRate
+        frmVideoPlayer.Rate = m_dblVideoRate
         If frmVideoPlayer.playVideo() Then
             setTimes()
             FfwdCount = 0
@@ -4913,9 +4548,9 @@ Public Class VideoMiner
 
     Private Sub increaseRate()
         Try
-            dblVideoRate = dblVideoRate + 0.25
-            frmVideoPlayer.Rate = dblVideoRate
-            Me.lblVideoRate.Text = dblVideoRate & " X"
+            m_dblVideoRate = m_dblVideoRate + 0.25
+            frmVideoPlayer.Rate = m_dblVideoRate
+            Me.lblVideoRate.Text = m_dblVideoRate & " X"
         Catch ex As Exception
             MessageBox.Show(ex.Message)
         End Try
@@ -4923,18 +4558,18 @@ Public Class VideoMiner
 
     Private Sub decreaseRate()
         Try
-            If dblVideoRate <> 0.25 Then
-                dblVideoRate = dblVideoRate - 0.25
+            If m_dblVideoRate <> 0.25 Then
+                m_dblVideoRate = m_dblVideoRate - 0.25
             End If
-            frmVideoPlayer.Rate = dblVideoRate
-            Me.lblVideoRate.Text = dblVideoRate & " X"
+            frmVideoPlayer.Rate = m_dblVideoRate
+            Me.lblVideoRate.Text = m_dblVideoRate & " X"
         Catch ex As Exception
             MessageBox.Show(ex.Message)
         End Try
     End Sub
 
     Private Sub Stepforward()
-        If txtFramesToSkip.Text = "" Then
+        If txtFramesToSkip.Text = NULL_STRING Then
             frmVideoPlayer.stepForward(VIDEO_FRAME_STEP_DEFAULT)
         Else
             frmVideoPlayer.stepForward(CInt(txtFramesToSkip.Text))
@@ -5043,10 +4678,10 @@ Public Class VideoMiner
             fillDataCodesTable()
             If Not conn Is Nothing Then
                 db_file_load()
-                If video_file_open Then
+                If m_video_file_open Then
                     files_loaded()
                     Me.lblVideo.Text = "Video File '" & Me.FileName & "' is open"
-                    video_file_open = True
+                    m_video_file_open = True
                 End If
                 fetch_data()
             End If
@@ -5365,17 +5000,33 @@ Public Class VideoMiner
         End Try
     End Sub
 
-    ' Function to create a query for a detailed insert statement
-    Private Function createInsertQuery(ByVal strTransectDate As String, ByVal strTransectName As String, ByVal strVideoTime As String, ByVal strVideoTextTime As String, ByVal strVideoDecimalTime As String, ByVal strDataCode As String, ByVal strSpecies_Name As String, _
-                                       ByVal strX As String, ByVal strY As String, ByVal strZ As String, ByVal strSpeciesCode As String, ByVal strSpeciesCount As String, ByVal strSide As String, ByVal strRange As String, _
-                                       ByVal strLength As String, ByVal strHeight As String, ByVal strWidth As String, ByVal strAbundance As String, ByVal strIdConfidence As String, ByVal strComment As String) As String
+    ''' <summary>
+    ''' Creates a string which is an 'INSERT INTO' query in access database format.
+    ''' </summary>
+    ''' <param name="strDataCode">Code for the data. This code is found in the lu_data_codes table in the access database</param>
+    ''' <param name="strSpeciesName">Species name as found in the lu_species_code table</param>
+    ''' <param name="strSpeciesCode">Species code as found in the lu_species_code table</param>
+    ''' <param name="strSpeciesCount">Count of the species given by strSpeciesCode and strSpeciesName</param>
+    ''' <param name="strSide">Which side the observation was on given by table lu_observed_side (0=center,1=port,2=starboard)</param>
+    ''' <param name="strRange">Distance of observation from the centerline in cm</param>
+    ''' <param name="strLength">Length in cm of the observed species</param>
+    ''' <param name="strHeight">Height measurement for species where length is not the standard measurement (e.g. Tunicate)</param>
+    ''' <param name="strWidth">Width measurement for species where length is not the standard measurement</param>
+    ''' <param name="strAbundance">Abundance of the species seen (TODO:update this definition)</param>
+    ''' <param name="strIdConfidence">Confidence value for species ID. See table lu_confidence_ids (1=high,2=med,3=low)</param>
+    ''' <param name="strComment">Video reviewer's comments</param>
+    ''' <remarks></remarks>
+    Private Function createInsertQuery(strDataCode As String, strSpeciesName As String, _
+                                       strSpeciesCode As String, strSpeciesCount As String, strSide As String, strRange As String, _
+                                       strLength As String, strHeight As String, strWidth As String, strAbundance As String,
+                                       strIdConfidence As String, strComment As String) As String
         Dim i As Integer
         Dim j As Integer
         Dim strQuery As String
         strQuery = insert_string & "VALUES ("
 
         If frmVideoPlayer Is Nothing Then
-            ElapsedTime = ""
+            ElapsedTime = NULL_STRING
         End If
 
         ' Parse through all the field names in the collection and attach the associated variables with the field names
@@ -5384,165 +5035,152 @@ Public Class VideoMiner
                 Case "ID"
                     strQuery = strQuery & db_id_num
                 Case "ProjectName"
-                    If project_name = "" Then
-                        strQuery = strQuery & "NULL"
+                    If m_project_name = NULL_STRING Then
+                        strQuery = strQuery & NS
                     Else
-                        strQuery = strQuery & SingleQuote(project_name)
+                        strQuery = strQuery & SingleQuote(m_project_name)
                     End If
                 Case "TransectName"
-                    If transect_name = "" Then
-                        strQuery = strQuery & "NULL"
+                    If m_transect_name = NULL_STRING Then
+                        strQuery = strQuery & NS
                     Else
-                        strQuery = strQuery & SingleQuote(transect_name)
+                        strQuery = strQuery & SingleQuote(m_transect_name)
                     End If
                 Case "TransectDate"
-                    If strTransectDate = "" Then
-                        strQuery = strQuery & "NULL"
-                    Else
-                        Try
-                            Dim strDate As New Date(CInt(strTransectDate.Substring(6, 4)), CInt(strTransectDate.Substring(3, 2)), CInt(strTransectDate.Substring(0, 2)))
-                            strQuery = strQuery & SingleQuote(strDate)
-                        Catch ex As Exception
-                            strQuery = strQuery & "NULL"
-                        End Try
-                    End If
+                    Try
+                        strQuery = strQuery & SingleQuote(m_transect_date)
+                    Catch ex As Exception
+                        strQuery = strQuery & NS
+                    End Try
                 Case "Format(TimeCode, 'hh:mm:ss') as TimeCode"
-                    If strVideoTime = "" Then
-                        strQuery = strQuery & "NULL"
+                    Dim tsTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
+                    If tsTime = Zero Then
+                        strQuery = strQuery & NS
                     Else
-                        strQuery = strQuery & SingleQuote(strVideoTime) '& ", " & SingleQuote(strVideoTime)
+                        Dim dt As DateTime = m_transect_date + tsTime
+                        strQuery = strQuery & SingleQuote(dt) '& ", " & SingleQuote(strVideoTime)
                     End If
                 Case "TextTime"
-                    If strVideoTextTime = "" Then
-                        strQuery = strQuery & "NULL"
-                    Else
-                        strQuery = strQuery & SingleQuote(strVideoTextTime)
-                    End If
+                    Dim tsTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
+                    Dim strTextTime As String = pad0(tsTime.Hours) & ":" & pad0(tsTime.Minutes) & ":" & pad0(tsTime.Seconds)
+                    strQuery = strQuery & SingleQuote(strTextTime)
                 Case "TextTimeDecimal"
-                    If strVideoDecimalTime = "" Then
-                        strQuery = strQuery & "NULL"
-                    Else
-                        strQuery = strQuery & SingleQuote(strVideoDecimalTime)
-                    End If
-                Case "Milliseconds"
-                    If strMilliseconds = "" Then
-                        strQuery = strQuery & "NULL"
-                    Else
-                        strQuery = strQuery & SingleQuote(strMilliseconds)
-                    End If
+                    Dim tsTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
+                    Dim strDecimalTime As String = pad0(tsTime.Hours) & ":" & pad0(tsTime.Minutes) & ":" & pad0(tsTime.Seconds) & "." & pad0(tsTime.Milliseconds)
+                    strQuery = strQuery & SingleQuote(strDecimalTime)
                 Case "OnBottom"
                     If is_on_bottom = -9999 Then
-                        strQuery = strQuery & "NULL"
+                        strQuery = strQuery & NS
                     Else
                         strQuery = strQuery & is_on_bottom
                     End If
                 Case "SpeciesID"
-                    If strSpeciesCode = "NULL" Then
-                        strQuery = strQuery & "NULL"
+                    If strSpeciesCode = NS Then
+                        strQuery = strQuery & NS
                     Else
                         strQuery = strQuery & SingleQuote(strSpeciesCode)
                     End If
                 Case "SpeciesName"
-                    If strSpecies_Name = "NULL" Then
-                        strQuery = strQuery & "NULL"
+                    If strSpeciesName = NS Then
+                        strQuery = strQuery & NS
                     Else
-                        strQuery = strQuery & SingleQuote(strSpecies_Name)
+                        strQuery = strQuery & SingleQuote(strSpeciesName)
                     End If
                 Case "SpeciesCount"
-                    If strSpeciesCount = "" Then
-                        strQuery = strQuery & "NULL"
+                    If strSpeciesCount = NULL_STRING Then
+                        strQuery = strQuery & NS
                     Else
                         strQuery = strQuery & strSpeciesCount
                     End If
                 Case "Side"
-                    If strSide = "" Then
-                        strQuery = strQuery & "NULL"
+                    If strSide = NULL_STRING Then
+                        strQuery = strQuery & NS
                     Else
                         strQuery = strQuery & strSide
                     End If
                 Case "Range"
-                    If strRange = "" Then
-                        strQuery = strQuery & "NULL"
+                    If strRange = NULL_STRING Then
+                        strQuery = strQuery & NS
                     Else
                         strQuery = strQuery & strRange
                     End If
                 Case "Length"
-                    If strLength = "" Then
-                        strQuery = strQuery & "NULL"
+                    If strLength = NULL_STRING Then
+                        strQuery = strQuery & NS
                     Else
                         strQuery = strQuery & strLength
                     End If
                 Case "Height"
-                    If strHeight = "" Then
-                        strQuery = strQuery & "NULL"
+                    If strHeight = NULL_STRING Then
+                        strQuery = strQuery & NS
                     Else
                         strQuery = strQuery & strHeight
                     End If
                 Case "Width"
-                    If strWidth = "" Then
-                        strQuery = strQuery & "NULL"
+                    If strWidth = NULL_STRING Then
+                        strQuery = strQuery & NS
                     Else
                         strQuery = strQuery & strWidth
                     End If
                 Case "Abundance"
-                    If strAbundance = "NULL" Then
-                        strQuery = strQuery & "NULL"
+                    If strAbundance = NS Then
+                        strQuery = strQuery & NS
                     Else
                         strQuery = strQuery & strAbundance
                     End If
                 Case "IDConfidence"
-                    If strIdConfidence = "NULL" Then
-                        strQuery = strQuery & "NULL"
+                    If strIdConfidence = NS Then
+                        strQuery = strQuery & NS
                     Else
                         strQuery = strQuery & strIdConfidence
                     End If
                 Case "Comment"
-                    If strComment = "NULL" Then
-                        strQuery = strQuery & "NULL"
+                    If strComment = NS Then
+                        strQuery = strQuery & NS
                     Else
                         strQuery = strQuery & SingleQuote(strComment)
                     End If
                 Case "DataCode"
-                    If strDataCode = "" Then
-                        strQuery = strQuery & "NULL"
+                    If strDataCode = NULL_STRING Then
+                        strQuery = strQuery & NS
                     Else
                         strQuery = strQuery & strDataCode
                     End If
                 Case "X"
-                    If strX = "" Then
-                        strQuery = strQuery & "NULL"
+                    If m_GPS_X = NULL_STRING Then
+                        strQuery = strQuery & NS
                     Else
-                        strQuery = strQuery & strX
+                        strQuery = strQuery & m_GPS_X
                     End If
                 Case "Y"
-                    If strY = "" Then
-                        strQuery = strQuery & "NULL"
+                    If m_GPS_Y = NULL_STRING Then
+                        strQuery = strQuery & NS
                     Else
-                        strQuery = strQuery & strY
+                        strQuery = strQuery & m_GPS_Y
                     End If
                 Case "Z"
-                    If strZ = "" Then
-                        strQuery = strQuery & "NULL"
+                    If m_GPS_Z = NULL_STRING Then
+                        strQuery = strQuery & NS
                     Else
-                        strQuery = strQuery & strZ
+                        strQuery = strQuery & m_GPS_Z
                     End If
                 Case "FileName"
-                    If Me.FileName = "" Then
-                        strQuery = strQuery & "NULL"
+                    If Me.FileName = NULL_STRING Then
+                        strQuery = strQuery & NS
                     Else
                         strQuery = strQuery & SingleQuote(Me.FileName)
                     End If
                 Case "ScreenCaptureName"
-                    If Me.FileName = "" Then
-                        strQuery = strQuery & "NULL"
+                    If Me.FileName = NULL_STRING Then
+                        strQuery = strQuery & NS
                     Else
                         strQuery = strQuery & SingleQuote(Me.ScreenCaptureName)
                     End If
                 Case "TimeSource"
                     strQuery = strQuery & intTimeSource
                 Case "Format(ElapsedTime, 'hh:mm:ss') as ElapsedTime"
-                    If Me.ElapsedTime = "" Then
-                        strQuery = strQuery & "NULL"
+                    If Me.ElapsedTime = NULL_STRING Then
+                        strQuery = strQuery & NS
                     Else
                         strQuery = strQuery & SingleQuote(Me.ElapsedTime)
                     End If
@@ -5557,7 +5195,7 @@ Public Class VideoMiner
                             If dictHabitatFieldValues(strHabitatButtonCodeNames(j).ToString) <> "-9999" Then
                                 strQuery = strQuery & SingleQuote(dictHabitatFieldValues(strHabitatButtonCodeNames(j).ToString))
                             Else
-                                strQuery = strQuery & Replace(dictHabitatFieldValues(strHabitatButtonCodeNames(j).ToString), "-9999", "Null")
+                                strQuery = strQuery & Replace(dictHabitatFieldValues(strHabitatButtonCodeNames(j).ToString), "-9999", NS)
                             End If
                             GoTo InsertComma
                         End If
@@ -5568,7 +5206,7 @@ Public Class VideoMiner
                             If dictTransectFieldValues(strTransectButtonCodeNames(j).ToString) <> "-9999" Then
                                 strQuery = strQuery & SingleQuote(dictTransectFieldValues(strTransectButtonCodeNames(j).ToString))
                             Else
-                                strQuery = strQuery & Replace(dictTransectFieldValues(strTransectButtonCodeNames(j).ToString), "-9999", "Null")
+                                strQuery = strQuery & Replace(dictTransectFieldValues(strTransectButtonCodeNames(j).ToString), "-9999", NS)
                             End If
                             GoTo InsertComma
                         End If
@@ -5588,17 +5226,14 @@ SkipInsertComma:
         strQuery = strQuery & ");"
 
         If Me.chkRepeatVariables.Checked = False Then
-
             Dim blHasValues As Boolean = False
             If Not dictHabitatFieldValues Is Nothing Or Not dictTempHabitatFieldValues Is Nothing Then
-
                 For i = 0 To intNumHabitatButtons - 1
                     If dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) <> "-9999" Then
                         blHasValues = True
                         Exit For
                     End If
                 Next
-
                 For i = 0 To intNumHabitatButtons - 1
                     If blHasValues = True Then
                         dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString)
@@ -5607,13 +5242,8 @@ SkipInsertComma:
                     dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = "-9999"
                 Next
             End If
-
         End If
-
-        Me.strComment = ""
-
         Return strQuery
-
     End Function
 
 
@@ -5802,25 +5432,25 @@ SkipInsertComma:
         Dim btn As Button = sender
         Dim i As Integer
         Dim j As Integer
-        Dim query As String = ""
-        Dim strCode As String = ""
-        Dim strName As String = ""
+        Dim query As String = NULL_STRING
+        Dim strCode As String = NULL_STRING
+        Dim strName As String = NULL_STRING
         Dim blAquiredFix As Boolean = False
-        Dim tc As String = VIDEO_TIME_LABEL
+        Dim tc As TimeSpan = New TimeSpan(VIDEO_TIME_LABEL)
         Dim strVideoTime As String = VIDEO_TIME_LABEL
         Dim strVideoTextTime As String = VIDEO_TIME_LABEL
         Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
 
-        Dim strX As String = "NULL"
-        Dim strY As String = "NULL"
-        Dim strZ As String = "NULL"
+        Dim strX As String = NS
+        Dim strY As String = NS
+        Dim strZ As String = NS
 
         If booUseGPSTimeCodes Then
             'Otherwise get the time from the NMEA string.
 
             ' The GPRMC NMEA String does not contain elevation values. Enter null into database
             ' if GPRMC is the chosen string type.
-            blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+            blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
             If Not blAquiredFix Then
                 Exit Sub
             End If
@@ -5861,7 +5491,7 @@ SkipInsertComma:
         ' pause stream and get the time code
         ' If the video is not open, then we cannot pause the
         ' video stream, and there is no need to get the TimeCode.
-        If video_file_open And Not booUseGPSTimeCodes Then
+        If m_video_file_open And Not booUseGPSTimeCodes Then
             If frmVideoPlayer.IsPlaying Then
                 blVideoWasPlaying = True
             Else
@@ -5874,7 +5504,7 @@ SkipInsertComma:
 
         strVideoTextTime = strVideoTime
         ' ======================================Code by Xida Chen (end)===========================================
-        Dim strHabitatValue As String = ""
+        Dim strHabitatValue As String = NULL_STRING
         For i = 0 To intNumHabitatButtons - 1
             If btn.Name = strHabitatButtonNames(i) Then
 
@@ -5895,25 +5525,15 @@ SkipInsertComma:
                     'strValue = InputBox("Please enter a value for " & btn.Text & " (limit 50 characters):", btn.Text & " Entry")
                     If strValue = "-9999" Then
                         ' If the image is open and the video is closed then get the picture information from the EXIF file
-                        If image_open And video_file_open = False Then
+                        If image_open And m_video_file_open = False Then
 
-                            getEXIFData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+                            getEXIFData()
                             strVideoTextTime = strVideoTime
 
                         End If
 
                         ClearSpatial(btn.Name, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
-                        strSpeciesCode = "NULL"
-                        strSpeciesCount = "NULL"
-                        strSide = "NULL"
-                        strRange = "NULL"
-                        strLength = "NULL"
-                        strHeight = "NULL"
-                        strWidth = "NULL"
-                        strAbundance = "NULL"
-                        strIdConfidence = "NULL"
-
-                        query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "888", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+                        query = createInsertQuery(INDIVIDUAL_HABITAT_VARIABLE_CLEARED, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
 
                         'Debug.WriteLine(query)
                         Dim numrows As Integer
@@ -5951,24 +5571,14 @@ SkipInsertComma:
 
 
                                 ' If the image is open and the video is closed then get the picture information from the EXIF file
-                                If image_open And video_file_open = False Then
+                                If image_open And m_video_file_open = False Then
 
-                                    getEXIFData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+                                    getEXIFData()
                                     strVideoTextTime = strVideoTime
 
                                 End If
 
-                                strSpeciesCode = "NULL"
-                                strSpeciesCount = "NULL"
-                                strSide = "NULL"
-                                strRange = "NULL"
-                                strLength = "NULL"
-                                strHeight = "NULL"
-                                strWidth = "NULL"
-                                strAbundance = "NULL"
-                                strIdConfidence = "NULL"
-
-                                query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "888", "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+                                query = createInsertQuery(INDIVIDUAL_HABITAT_VARIABLE_CLEARED, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
 
                                 'Debug.WriteLine(query)
                                 Dim numrows As Integer
@@ -5983,7 +5593,7 @@ SkipInsertComma:
                             Exit Sub
                         End If
                         'Console.WriteLine(DataGridView1.SelectedRows(0).Cells(0).Value)
-                        strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & ""
+                        strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & NULL_STRING
                         strHabitatButtonUserCodeChoice(i) = strCode
                         ' Depending on which button is selected, define the applicable spatial variable.
                         ' The other varaibles are cleared to prevent subsequent records being created from
@@ -5998,7 +5608,7 @@ SkipInsertComma:
                             Next
                         End If
 
-                        strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & ""
+                        strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & NULL_STRING
 
                         If strName.Length = 0 Then
                             strName = strCode
@@ -6015,7 +5625,6 @@ SkipInsertComma:
 
                     End Try
                 End If
-                Dim newFont As Font
                 Dim _fontfamily As FontFamily
                 _fontfamily = New FontFamily(Me.ButtonFont)
                 textboxes(i).Text = strHabitatButtonUserNameChoice(i)
@@ -6024,31 +5633,17 @@ SkipInsertComma:
                 textboxes(i).ForeColor = Color.LimeGreen
                 textboxes(i).TextAlign = HorizontalAlignment.Center
                 ' If the image is open and the video is closed then get the picture information from the EXIF file
-                If image_open And video_file_open = False Then
+                If image_open And m_video_file_open = False Then
 
-                    getEXIFData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+                    getEXIFData()
                     strVideoTextTime = strVideoTime
 
                 End If
 
-                If tc <> NULL_STRING Then
-
-                    ' Insert new record in database
+                If tc.ToString() <> NULL_STRING Then
                     Dim numrows As Integer
 
-
-                    strSpeciesCode = "NULL"
-                    strSpeciesCount = "NULL"
-                    strSide = "NULL"
-                    strRange = "NULL"
-                    strLength = "NULL"
-                    strHeight = "NULL"
-                    strWidth = "NULL"
-                    strAbundance = "NULL"
-                    strIdConfidence = "NULL"
-
-                    'If transect_date = "" Then
-                    query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, intHabitatButtonCodes(i), "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+                    query = createInsertQuery(intHabitatButtonCodes(i), NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
 
                     Dim oComm As New OleDbCommand(query, conn)
                     numrows = oComm.ExecuteNonQuery()
@@ -6067,7 +5662,7 @@ SkipInsertComma:
         If Not frmImage Is Nothing Then
             frmImage.Focus()
         End If
-        Me.ScreenCaptureName = ""
+        Me.ScreenCaptureName = NULL_STRING
     End Sub
 
 
@@ -6264,13 +5859,13 @@ SkipInsertComma:
         End If
 
 
-        Dim tc As String = VIDEO_TIME_LABEL
+        Dim tc As TimeSpan = New TimeSpan(VIDEO_TIME_LABEL)
 
-        Dim strX As String = "NULL"
-        Dim strY As String = "NULL"
-        Dim strZ As String = "NULL"
+        Dim strX As String = NS
+        Dim strY As String = NS
+        Dim strZ As String = NS
 
-        Dim query As String = ""
+        Dim query As String = NULL_STRING
 
 
         ' ======================================Code by Xida Chen (begin)===========================================
@@ -6283,7 +5878,7 @@ SkipInsertComma:
         ' pause stream and get the time code
         ' If the video is not open, then we cannot pause the
         ' video stream, and there is no need to get the TimeCode.
-        If video_file_open Then
+        If m_video_file_open Then
             If frmVideoPlayer.IsPlaying Then
                 If frmVideoPlayer.IsPlaying Then
                     blVideoWasPlaying = True
@@ -6297,13 +5892,13 @@ SkipInsertComma:
 
         End If
 
-        Dim strCode As String = ""
-        Dim strName As String = ""
+        Dim strCode As String = NULL_STRING
+        Dim strName As String = NULL_STRING
         Dim blAquiredFix As Boolean = False
         If booUseGPSTimeCodes Then
             'Otherwise get the time from the NMEA string.
 
-            blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+            blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
             If Not blAquiredFix Then
                 Exit Sub
             End If
@@ -6355,11 +5950,11 @@ SkipInsertComma:
                     Try
                         If sub_form.DataGridView1.SelectedRows.Count = 0 Then
                             blCleared = False
-                            Me.strComment = ""
+                            Me.strComment = NULL_STRING
                             Exit Sub
                         End If
                         'Console.WriteLine(DataGridView1.SelectedRows(0).Cells(0).Value)
-                        strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & ""
+                        strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & NULL_STRING
                         strTransectButtonUserCodeChoice(i) = strCode
 
                         ' Depending on which button is selected, define the applicable spatial variable.
@@ -6369,19 +5964,9 @@ SkipInsertComma:
 
 
 
-                        If Me.strComment <> "" Then
+                        If Me.strComment <> NULL_STRING Then
 
-                            strSpeciesCode = "NULL"
-                            strSpeciesCount = "NULL"
-                            strSide = "NULL"
-                            strRange = "NULL"
-                            strLength = "NULL"
-                            strHeight = "NULL"
-                            strWidth = "NULL"
-                            strAbundance = "NULL"
-                            strIdConfidence = "NULL"
-
-                            query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, intTransectButtonCodes(i), "NULL", strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+                            query = createInsertQuery(intTransectButtonCodes(i), NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
 
                             'Debug.WriteLine(query)
                             Dim numrows As Integer
@@ -6392,9 +5977,9 @@ SkipInsertComma:
 
                         End If
 
-                        Me.strComment = ""
+                        Me.strComment = NULL_STRING
 
-                        strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & ""
+                        strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & NULL_STRING
 
                         If strName.Length = 0 Then
                             strName = strCode
@@ -6434,7 +6019,7 @@ SkipInsertComma:
         If Not frmImage Is Nothing Then
             frmImage.Focus()
         End If
-        Me.ScreenCaptureName = ""
+        Me.ScreenCaptureName = NULL_STRING
     End Sub
 
 #End Region
@@ -6474,7 +6059,7 @@ SkipInsertComma:
 
         Dim intAdd As Integer = 0
         Dim intMultiply As Integer = 0
-        Dim strButtonText As String = ""
+        Dim strButtonText As String = NULL_STRING
 
         'Dim intColumnCount As Integer
         'Dim intCountPerColumn As Integer
@@ -6516,7 +6101,7 @@ SkipInsertComma:
             End If
 
             speciesButtons(i).Font = newFont
-            If r.Item("KeyboardShortcut").ToString <> "" Then
+            If r.Item("KeyboardShortcut").ToString <> NULL_STRING Then
                 strButtonText = strSpeciesButtonNames(i) & " (" & r.Item("KeyboardShortcut") & ")"
             Else
                 strButtonText = strSpeciesButtonNames(i)
@@ -6566,20 +6151,15 @@ SkipInsertComma:
     ' ==========================================================================================================
     ' ==========================================================================================================
     Public Sub SpeciesVariableButtonHandler(ByVal sender As Object, ByVal e As EventArgs)
-        If blHandled = True Then
-            blHandled = False
-            Exit Sub
-        End If
+        '        If blHandled = True Then
+        ' blHandled = False
+        ' Exit Sub
+        ' End If
 
         Dim btn As Button = sender
         Dim i As Integer
-        Dim tc As String = VIDEO_TIME_LABEL
 
-        Dim strX As String = "NULL"
-        Dim strY As String = "NULL"
-        Dim strZ As String = "NULL"
-
-        Dim query As String = ""
+        Dim query As String = NULL_STRING
 
         ' The GPRMC NMEA String does not contain elevation values. Enter null into database
         ' if GPRMC is the chosen string type.
@@ -6596,11 +6176,10 @@ SkipInsertComma:
         ' pause stream and get the time code
         ' If the video is not open, then we cannot pause the
         ' video stream, and there is no need to get the TimeCode.
-        If video_file_open Then
+        If m_video_file_open Then
             If frmVideoPlayer.IsPlaying Then
                 pauseVideo()
             End If
-            tc = getTimeCode()
             strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
         ElseIf booUseExternalVideo Then
             strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
@@ -6611,16 +6190,16 @@ SkipInsertComma:
         Dim numrows As Integer
         Dim oComm As OleDbCommand
 
-        Dim strWidth As String = ""
+        Dim strWidth As String = NULL_STRING
         Dim blAquiredFix As Boolean = False
-        If booUseGPSTimeCodes Then
-            'Otherwise get the time from the NMEA string.
-
-            blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
-            If Not blAquiredFix Then
-                Exit Sub
-            End If
-        End If
+        '        If booUseGPSTimeCodes Then
+        ' 'Otherwise get the time from the NMEA string.
+        '
+        '        blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+        '        If Not blAquiredFix Then
+        ' Exit Sub
+        ' End If
+        ' End If
         strVideoTextTime = strVideoTime
 
         If blRareSpecies = False Then
@@ -6655,19 +6234,19 @@ SkipInsertComma:
 
 
                                 ' If an image is open and the video is closed then get the picture information from the EXIF file
-                                If image_open And video_file_open = False Then
+                                If image_open And m_video_file_open = False Then
 
-                                    getEXIFData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+                                    getEXIFData()
                                     strVideoTextTime = strVideoTime
 
                                 End If
                                 strSpeciesButtonUserNameChoice(i) = 666
 
-                                If tc <> NULL_STRING Then
+                                If m_tsUserTime.ToString() <> NULL_STRING Then
                                     ' Insert new record in database
 
                                     If Me.SpeciesWidth Is Nothing Then
-                                        strWidth = "Null"
+                                        strWidth = NS
                                     Else
                                         strWidth = Me.SpeciesWidth
                                     End If
@@ -6676,7 +6255,7 @@ SkipInsertComma:
                                     strSpeciesCode = Me.SpeciesCode
                                     strSpeciesCount = Me.Count
                                     If Me.Side = "0" Then
-                                        strSide = ""
+                                        strSide = NULL_STRING
                                     Else
                                         strSide = Me.Side
                                     End If
@@ -6688,9 +6267,9 @@ SkipInsertComma:
                                     strIdConfidence = Me.IDConfidence
                                     strComment = Me.Comments
 
-                                    'If transect_date = "" Then
-                                    query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, intSpeciesButtonUserCodeChoice(i), strSpecies_Name, strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
-                                    Me.ScreenCaptureName = ""
+                                    'If transect_date = NULL_STRING Then
+                                    query = createInsertQuery(intSpeciesButtonUserCodeChoice(i), strSpecies_Name, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+                                    Me.ScreenCaptureName = NULL_STRING
                                     oComm = New OleDbCommand(query, conn)
                                     numrows = oComm.ExecuteNonQuery()
                                     fetch_data()
@@ -6712,9 +6291,9 @@ SkipInsertComma:
 
 
                             ' If an image is open and the video is closed then get the picture information from the EXIF file
-                            If image_open And video_file_open = False Then
+                            If image_open And m_video_file_open = False Then
 
-                                getEXIFData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+                                getEXIFData()
                                 strVideoTextTime = strVideoTime
 
                             End If
@@ -6722,17 +6301,7 @@ SkipInsertComma:
 
                             strSpeciesCode = strSpeciesButtonCodes(i)
                             strSpeciesCount = strQuickEntryCount
-                            strSide = "NULL"
-                            strRange = "NULL"
-                            strLength = "NULL"
-                            strHeight = "NULL"
-                            strWidth = "NULL"
-                            strAbundance = "NULL"
-                            strIdConfidence = "NULL"
-                            strComment = "NULL"
-
-                            'If transect_date = "" Then
-                            query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, intSpeciesButtonUserCodeChoice(i), strSpecies_Name, strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+                            query = createInsertQuery(intSpeciesButtonUserCodeChoice(i), strSpecies_Name, strSpeciesCode, strSpeciesCount, NS, NS, NS, NS, NS, NS, NS, NS)
 
                             oComm = New OleDbCommand(query, conn)
                             numrows = oComm.ExecuteNonQuery()
@@ -6750,9 +6319,9 @@ SkipInsertComma:
                             frmAbundanceTableView.ShowDialog()
 
                             ' If an image is open and the video is closed then get the picture information from the EXIF file
-                            If image_open And video_file_open = False Then
+                            If image_open And m_video_file_open = False Then
 
-                                getEXIFData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+                                getEXIFData()
                                 strVideoTextTime = strVideoTime
 
                             End If
@@ -6762,22 +6331,15 @@ SkipInsertComma:
                                     strSpeciesButtonUserNameChoice(i) = 666
 
                                     strSpeciesCode = strSpeciesButtonCodes(i)
-                                    strSpeciesCount = "NULL"
-                                    strSide = "NULL"
-                                    strRange = "NULL"
-                                    strLength = "NULL"
-                                    strHeight = "NULL"
-                                    strWidth = "NULL"
                                     strAbundance = frmAbundanceTableView.grdAbundance.SelectedRows(0).Cells(0).Value
-                                    strIdConfidence = "NULL"
-                                    If frmAbundanceTableView.txtCommentBox.Text <> "" Or frmAbundanceTableView.txtCommentBox.Text <> "Comment" Then
+                                    If frmAbundanceTableView.txtCommentBox.Text <> NULL_STRING Or frmAbundanceTableView.txtCommentBox.Text <> "Comment" Then
                                         strComment = frmAbundanceTableView.txtCommentBox.Text
                                     Else
-                                        strComment = "NULL"
+                                        strComment = NS
                                     End If
 
-                                    'If transect_date = "" Then
-                                    query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, intSpeciesButtonUserCodeChoice(i), strSpecies_Name, strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+                                    'If transect_date = NULL_STRING Then
+                                    query = createInsertQuery(intSpeciesButtonUserCodeChoice(i), strSpecies_Name, strSpeciesCode, NS, NS, NS, NS, NS, NS, strAbundance, NS, strComment)
 
                                     oComm = New OleDbCommand(query, conn)
                                     numrows = oComm.ExecuteNonQuery()
@@ -6796,79 +6358,78 @@ SkipInsertComma:
                 End If
             Next
         Else
-            If booUseGPSTimeCodes Then
-                blAquiredFix = getGPSData(tc, strVideoTime, strVideoDecimalTime, strX, strY, strZ)
-                If Not blAquiredFix Then
-                    Exit Sub
-                End If
-            End If
-            strVideoTextTime = strVideoTime
-            frmSpeciesEvent = New frmSpeciesEvent(RangeChecked, IDConfidenceChecked, AbundanceChecked, CountChecked, HeightChecked, WidthChecked, LengthChecked, CommentsChecked, _
-                                                  Range, Side, IDConfidence, Abundance, Count, Height, Width, Length, Comments)
-            frmSpeciesEvent.Location = New System.Drawing.Point(btn.Location.X, btn.Location.Y)
-            frmSpeciesEvent.SpeciesName = Me.SpeciesName
-            frmSpeciesEvent.SpeciesCode = Me.SpeciesCode
-            frmSpeciesEvent.ShowDialog()
-
-            If blSpeciesCancelled = True Then
-                blSpeciesCancelled = False
-                Exit Sub
-            End If
-
-            If blSpeciesValuesSet Then
-                Try
-                    ' If an image is open and the video is closed then get the picture information from the EXIF file
-                    If image_open And video_file_open = False Then
-
-                        getEXIFData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
-                        strVideoTextTime = strVideoTime
-
-                    End If
-                    strSpeciesButtonUserNameChoice(i) = 666
-
-                    If tc <> NULL_STRING Then
-                        ' Insert new record in database
-
-                        If Me.SpeciesWidth Is Nothing Then
-                            strWidth = "Null"
-                        Else
-                            strWidth = Me.SpeciesWidth
-                        End If
-
-
-                        strSpeciesCount = Me.Count
-                        If Me.Side = "0" Then
-                            strSide = ""
-                        Else
-                            strSide = Me.Side
-                        End If
-                        strRange = Me.Range
-                        strLength = Me.Length
-                        strHeight = Me.SpeciesHeight
-                        strWidth = Me.SpeciesWidth
-                        strAbundance = Me.Abundance
-                        strIdConfidence = Me.IDConfidence
-                        strComment = Me.Comments
-
-                        'If transect_date = "" Then
-                        query = createInsertQuery(transect_date, transect_name, strVideoTime, strVideoTextTime, strVideoDecimalTime, "4", Me.SpeciesName, strX, strY, strZ, Me.SpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
-
-                        oComm = New OleDbCommand(query, conn)
-                        numrows = oComm.ExecuteNonQuery()
-                        fetch_data()
-                    Else
-                        MessageBox.Show("There is no GPS data being recieved at this time, therefore the record was not entered into the database", "No GPS Data Recieved", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                    End If
-                Catch ex As Exception
-                    If ex.Message.StartsWith("Syntax") Then
-                        MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-                    Else
-                        MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-                    End If
-                End Try
-            End If
-
+            'If booUseGPSTimeCodes Then
+            ' blAquiredFix = getGPSData()
+            ' If Not blAquiredFix Then
+            ' Exit Sub
+            'End If
         End If
+        strVideoTextTime = strVideoTime
+        frmSpeciesEvent = New frmSpeciesEvent(RangeChecked, IDConfidenceChecked, AbundanceChecked, CountChecked, HeightChecked, WidthChecked, LengthChecked, CommentsChecked, _
+                                              Range, Side, IDConfidence, Abundance, Count, Height, Width, Length, Comments)
+        frmSpeciesEvent.Location = New System.Drawing.Point(btn.Location.X, btn.Location.Y)
+        frmSpeciesEvent.SpeciesName = Me.SpeciesName
+        frmSpeciesEvent.SpeciesCode = Me.SpeciesCode
+        frmSpeciesEvent.ShowDialog()
+
+        If blSpeciesCancelled = True Then
+            blSpeciesCancelled = False
+            Exit Sub
+        End If
+
+        If blSpeciesValuesSet Then
+            Try
+                ' If an image is open and the video is closed then get the picture information from the EXIF file
+                If image_open And m_video_file_open = False Then
+
+                    getEXIFData()
+                    strVideoTextTime = strVideoTime
+
+                End If
+                strSpeciesButtonUserNameChoice(i) = 666
+
+                If m_tsUserTime.ToString() <> NULL_STRING Then
+                    ' Insert new record in database
+
+                    If Me.SpeciesWidth Is Nothing Then
+                        strWidth = NS
+                    Else
+                        strWidth = Me.SpeciesWidth
+                    End If
+
+
+                    strSpeciesCount = Me.Count
+                    If Me.Side = "0" Then
+                        strSide = NULL_STRING
+                    Else
+                        strSide = Me.Side
+                    End If
+                    strRange = Me.Range
+                    strLength = Me.Length
+                    strHeight = Me.SpeciesHeight
+                    strWidth = Me.SpeciesWidth
+                    strAbundance = Me.Abundance
+                    strIdConfidence = Me.IDConfidence
+                    strComment = Me.Comments
+
+                    'If transect_date = NULL_STRING Then
+                    query = createInsertQuery(SPECIES_EVENT, Me.SpeciesName, Me.SpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
+
+                    oComm = New OleDbCommand(query, conn)
+                    numrows = oComm.ExecuteNonQuery()
+                    fetch_data()
+                Else
+                    MessageBox.Show("There is no GPS data being recieved at this time, therefore the record was not entered into the database", "No GPS Data Recieved", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                End If
+            Catch ex As Exception
+                If ex.Message.StartsWith("Syntax") Then
+                    MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
+                Else
+                    MsgBox(ex.Message & vbCrLf & ex.StackTrace)
+                End If
+            End Try
+        End If
+
         If Not frmImage Is Nothing Then
             frmImage.Focus()
         End If
@@ -6917,7 +6478,7 @@ SkipInsertComma:
 
     Private Sub cmdRefreshDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdRefreshDatabase.Click
 
-        If Me.txtDisplayRecords.Text = "" Then
+        If Me.txtDisplayRecords.Text = NULL_STRING Then
             Me.txtDisplayRecords.Text = intDefaultNumberDisplayRecords
         End If
 
@@ -6928,7 +6489,7 @@ SkipInsertComma:
     End Sub
 
     Private Sub txtDisplayRecords_LostFocus(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtDisplayRecords.LostFocus
-        If Me.txtDisplayRecords.Text = "" Or Me.txtDisplayRecords.Text = 0 Then
+        If Me.txtDisplayRecords.Text = NULL_STRING Or Me.txtDisplayRecords.Text = 0 Then
             Me.txtDisplayRecords.Text = intNumberDisplayRecords
         End If
     End Sub
@@ -6939,7 +6500,7 @@ SkipInsertComma:
 
     Private Sub txtQuickSpeciesCount_LostFocus(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtQuickSpeciesCount.LostFocus
         If Me.txtQuickSpeciesCount.Text = "0" Then
-            Me.txtDisplayRecords.Text = ""
+            Me.txtDisplayRecords.Text = NULL_STRING
         End If
 
         strQuickEntryCount = Me.txtQuickSpeciesCount.Text
@@ -7124,7 +6685,7 @@ SkipInsertComma:
         '        End If
         '    End With
         '    tryCount += 1       ' Increment the try counter
-        '    Dim strCaption As String = ""
+        '    Dim strCaption As String = NULL_STRING
 
         '    ' If there is not a GPS fix then exit the sub routine
         '    If Not blAquiredFix Then
@@ -7298,7 +6859,7 @@ SkipInsertComma:
     End Sub
 
     Private Sub tmrComputerTime_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrComputerTime.Tick
-        Dim strTime As String = ""
+        Dim strTime As String = NULL_STRING
         If Now.Hour >= 10 Then
             strTime = CStr(Now.Hour)
         Else
@@ -7323,7 +6884,7 @@ SkipInsertComma:
         Me.txtDateSource.BackColor = Color.LightGray
         Me.txtDateSource.ForeColor = Color.LimeGreen
 
-        Dim strDate As String = ""
+        Dim strDate As String = NULL_STRING
         If Now.Day >= 10 Then
             strDate = CStr(Now.Day)
         Else
@@ -7340,8 +6901,8 @@ SkipInsertComma:
             strDate = strDate & "/0" & CStr(Now.Year)
         End If
 
-        transect_date = strDate
-        Me.txtTransectDate.Text = transect_date
+        m_transect_date = strDate
+        Me.txtTransectDate.Text = m_transect_date
 
     End Sub
 
@@ -7369,8 +6930,8 @@ SkipInsertComma:
                     strNewDate = strNewDate & "/0" & CStr(dtNewDate.Year)
                 End If
 
-                transect_date = strNewDate
-                Me.txtTransectDate.Text = transect_date
+                m_transect_date = strNewDate
+                Me.txtTransectDate.Text = m_transect_date
             End If
         End If
     End Sub
@@ -7508,7 +7069,7 @@ SkipInsertComma:
     Private Sub grdVideoMinerDatabase_ColumnDisplayIndexChanged(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewColumnEventArgs) Handles grdVideoMinerDatabase.ColumnDisplayIndexChanged
         If blupdateColumns Then
             If Not blOpenDatabase And Not blCloseDatabase Then
-                Dim strColumns As String = ""
+                Dim strColumns As String = NULL_STRING
                 dataColumns = New Collection
                 Dim dgColumn As DataGridViewColumn
                 For Each dgColumn In grdVideoMinerDatabase.Columns
@@ -7524,7 +7085,7 @@ SkipInsertComma:
     Private Sub grdVideoMinerDatabase_ColumnWidthChanged(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewColumnEventArgs) Handles grdVideoMinerDatabase.ColumnWidthChanged
         If blupdateColumns Then
             If Not blOpenDatabase And Not blCloseDatabase Then
-                Dim strColumns As String = ""
+                Dim strColumns As String = NULL_STRING
                 dataColumns = New Collection
                 Dim dgColumn As DataGridViewColumn
                 For Each dgColumn In grdVideoMinerDatabase.Columns
@@ -7549,7 +7110,7 @@ SkipInsertComma:
         End If
         ' Format the time according to the VIDEO_TIME_FORMAT
         txtTime.Text = String.Format(VIDEO_TIME_FORMAT, tsNewTime.Hours, tsNewTime.Minutes, tsNewTime.Seconds, tsNewTime.Milliseconds)
-        txtTime.Font = New Font("", 10, FontStyle.Bold)
+        txtTime.Font = New Font(NULL_STRING, 10, FontStyle.Bold)
         txtTime.BackColor = Color.LightGray
         txtTime.ForeColor = Color.LimeGreen
         txtTime.TextAlign = HorizontalAlignment.Center
@@ -7562,9 +7123,9 @@ SkipInsertComma:
     ''' </summary>
     Private Sub unsetTimes()
         txtTime.Visible = False
-        txtTime.Text = ""
+        txtTime.Text = NULL_STRING
         txtTimeSource.Visible = False
-        txtTimeSource.Text = ""
+        txtTimeSource.Text = NULL_STRING
     End Sub
 
     ''' <summary>
@@ -7624,21 +7185,20 @@ SkipInsertComma:
         lblGPSPortValue.ForeColor = Color.Red
         lblGPSConnectionValue.Text = "NO GPS FIX"
         lblGPSConnectionValue.ForeColor = Color.Red
-        lblXValue.Text = ""
-        lblYValue.Text = ""
-        lblZValue.Text = ""
+        lblXValue.Text = NULL_STRING
+        lblYValue.Text = NULL_STRING
+        lblZValue.Text = NULL_STRING
         txtTime.ForeColor = Color.Red
         txtTimeSource.ForeColor = Color.Red
         txtDateSource.ForeColor = Color.Red
 
-        txtNMEA.Text = ""
+        txtNMEA.Text = NULL_STRING
         txtNMEA.Visible = False
         lblGPSLocation.Visible = False
         lblX.Visible = False
         lblY.Visible = False
         lblZ.Visible = False
 
-        mnuUseGPSTimeCodes.Checked = False
         frmSetTime.TimeSource = Global.VideoMiner.frmSetTime.WhichTimeEnum.Video
     End Sub
 
@@ -7674,7 +7234,7 @@ SkipInsertComma:
 
     Private Sub species_code_changed() Handles frmRareSpeciesLookup.SpeciesCodeChangedEvent
         SpeciesCode = frmRareSpeciesLookup.lblSpeciesCodeValue.Text
-        If frmRareSpeciesLookup.lblCommonNameValue.Text = "" Then
+        If frmRareSpeciesLookup.lblCommonNameValue.Text = NULL_STRING Then
             SpeciesName = frmRareSpeciesLookup.lblScientificNameValue.Text
         Else
             SpeciesName = frmRareSpeciesLookup.lblCommonNameValue.Text
@@ -7773,8 +7333,6 @@ SkipInsertComma:
             lblZValue.Visible = True
             lblGPSLocation.Visible = True
             txtNMEA.Visible = True
-            mnuUseGPSTimeCodes.Checked = True
-            mnuUseGPSTimeCodes_Click(Me, Nothing)
         Else
             lblX.Visible = False
             lblY.Visible = False
@@ -7785,10 +7343,8 @@ SkipInsertComma:
             txtNMEA.Visible = False
             lblGPSLocation.Visible = False
             m_tsUserTime = frmSetTime.UserTime
-            mnuUseGPSTimeCodes.Checked = False
         End If
-        Dim ts As TimeSpan = m_tsUserTime + m_VideoTime
-        txtTime.Text = pad0(ts.Hours) & ":" & pad0(ts.Minutes) & ":" & pad0(ts.Seconds)
+        txtTime.Text = pad0(m_tsUserTime.Hours) & ":" & pad0(m_tsUserTime.Minutes) & ":" & pad0(m_tsUserTime.Seconds)
     End Sub
 
     ''' <summary>
@@ -7796,15 +7352,12 @@ SkipInsertComma:
     ''' </summary>
     Private Sub frmSetTime_RequestGPS() Handles frmSetTime.RequestGPSTime
         If frmGpsSettings.IsConnected Then
-            If mnuUseGPSTimeCodes.Checked Then
-                frmSetTime.UserTime = m_GPSUserTime
-                frmSetTime.ChangeSource(frmSetTime.WhichTimeEnum.GPS)
-            End If
+            frmSetTime.UserTime = m_GPSUserTime
+            frmSetTime.ChangeSource(frmSetTime.WhichTimeEnum.GPS)
         Else
             frmGpsSettings.ShowDialog()
         End If
     End Sub
-
 
     ''' <summary>
     ''' Handles an event to grab the time from the frmSetTime form.
@@ -7812,6 +7365,9 @@ SkipInsertComma:
     Private Sub frmSetTime_TimeSourceChanged() Handles frmSetTime.TimeSourceChange
     End Sub
 
+    ''' <summary>
+    ''' Handles an event to grab the latests data from the GPS device.
+    ''' </summary>
     Private Sub frmGpsSettings_DataChanged() Handles frmGpsSettings.DataChangedEvent
         If Me.InvokeRequired Then
             Me.Invoke(marshalRefreshGPSStatus)
@@ -7822,6 +7378,7 @@ SkipInsertComma:
 
     ''' <summary>
     ''' Handle everything not handled by .NET handlers. This will catch crossthread exceptions as well.
+    ''' Important as it gives a message about the error and the stack trace at the time the exception was thrown.
     ''' </summary>
     Sub UnHandledHandler(ByVal sender As Object, ByVal args As System.UnhandledExceptionEventArgs)
         Dim e As Exception = DirectCast(args.ExceptionObject, Exception)
@@ -7864,4 +7421,7 @@ SkipInsertComma:
     End Sub
 
 
+    Private Sub VideoMiner_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
+
+    End Sub
 End Class

@@ -977,20 +977,73 @@ VideoMiner
 	<remarks></remarks>
 </member><member name="F:VideoMiner.VideoMiner.m_tsUserTime">
 	<summary>
- Holds the user time as set by the frmSetTime form
+ Holds the user time as set by the frmSetTime form.
+ This is the master time object to be used by all functions when data are recorded.
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_GPS_X">
+	<summary>
+ Holds the GPS X value (latitude). If a GPS device is not connected, this will be a default
+ value as set in the load function for this form.
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_GPS_Y">
+	<summary>
+ Holds the GPS Y value (longitude). If a GPS device is not connected, this will be a default
+ value as set in the load function for this form.
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_GPS_Z">
+	<summary>
+ Holds the GPS Z value (elevation). If a GPS device is not connected, or the NMEA sting
+ does not support elevation, this will be a default value as set in the load function for this form.
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_project_name">
+	<summary>
+ Name of the current project
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_transect_name">
+	<summary>
+ Name of the current transect
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_transect_date">
+	<summary>
+ Date for the current transect
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_video_file_open">
+	<summary>
+ Is there a video file currently open or not.
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_dblVideoRate">
+	<summary>
+ Relative rate at which to play the video. 1=regular speed.
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_blInTransect">
+	<summary>
+ Are we in a transect currently or not?
  </summary>
 	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.frmVideoMiner_Load(System.Object,System.EventArgs)">
 	<summary>
- Load the main VideoMiner form.
+ Get version name from assembly, read and process the Config file, and setup the form controls for an unloaded state.
  </summary>
 	<param name="sender">System.Object</param>
 	<param name="e">System.EventArgs</param>
-	<remarks>Get version name from assembly, read and process the Config file, and setup the form controls for an unloaded state.</remarks>
+	<remarks> From MSDN for Windows.Forms.Control.CheckForIllegalCrossThreadCalls:
+ When a thread other than the creating thread of a control tries to access one of that control's methods or properties,
+ it often leads to unpredictable results. A common invalid thread activity is a call on the wrong thread that accesses
+ the Control 's Handle property. Set CheckForIllegalCrossThreadCalls to true to find and diagnose this thread activity
+ more easily while debugging. </remarks>
 </member><member name="M:VideoMiner.VideoMiner.loadConfigurationFile">
 	<summary>
  Load the metadata found in the VideoMiner configuration file into member variables.
- If the configuration file is not found, defaults will be assigned for GPS and the path variables
+ If the configuration file is not found, defaults will be assigned for GPS settings and the path variables
  </summary>
 	<returns>True if all member variables were populated. False if an exceptioon was thrown or the file does not exist</returns>
 </member><member name="M:VideoMiner.VideoMiner.SaveConfiguration(System.String,System.String,System.Boolean)">
@@ -1005,15 +1058,17 @@ VideoMiner
 	<returns>A Boolean representing success or failure</returns>
 </member><member name="M:VideoMiner.VideoMiner.DeleteXMLNode(System.String,System.String)">
 	<summary>
- Delete a node and any child nodes represented by the string 'xPath'
- eg. if xPath = "X/Y/Z", the function will delete the node Z and any children it has.
+ Delete a node represented by the string 'xPath'
+ eg. if xPath = "X/Y/Z", the function will delete the node Z.
  </summary>
-	<param name="xPath">An XPath String representing the node you wish to add</param>
+	<param name="xPath">An XPath String representing the node tag you wish to delete</param>
+	<param name="strValue">The value to delete. There can be more than one node with the same tag, so this is required to diferrentiate.</param>
 	<remarks>xPath is a "/" seperated string where "/" represents node breaks.
- i.e. "X/Y/Z" represents X is parent of Y, Y is parent of Z and Z is the node to delete</remarks>
+ i.e. "X/Y/Z" represents X is parent of Y, Y is parent of Z and Z is the node to delete, as long as it has
+ value equal to strValue</remarks>
 </member><member name="M:VideoMiner.VideoMiner.CreateXMLNode(System.Xml.XmlDocument@,System.Xml.XmlElement@,System.String,System.String,System.String)">
 	<summary>
- Recursively create a node and any required parrent nodes represented by the string 'xPath'
+ Recursively create a node and any required parent nodes represented by the string 'xPath'
  eg. if xPath = "X/Y/Z", the function will insert a node with parents if necessary X-&gt;Y-&gt;Z
  where "Z" is the base case and assumed to be the innerText of the child node.
  </summary>
@@ -1076,12 +1131,29 @@ VideoMiner
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.CloseDatabase_Click(System.Object,System.EventArgs)">
+	<summary>
+ When the user clicks "Close Database" in the file menu, close the currently open database.
+ </summary>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.mnuRefreshForm_Click(System.Object,System.EventArgs)">
+	<summary>
+ When the user clicks "Refresh database", it will reload the database into the form.
+ </summary>
+	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.cmdShowSetTimecode_Click(System.Object,System.EventArgs)">
 	<summary>
  Ask user to input time that is shown on the video. This synchronizes the program with the video, and sets the label to the correct time.
  </summary>
 	<param name="sender"></param>
 	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.TransectStart_Click(System.Object,System.EventArgs)">
+	<summary>
+ This handler is called when the user clicks on the "Transect Start" button.
+ Pauses video, prompts user for a transect name, inserts new record in the DataGridView1
+ database table, and plays the video again.
+ </summary>
 	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.newProjectName">
 	<summary>
@@ -1112,6 +1184,21 @@ VideoMiner
 	<param name="strPath"></param>
 	<param name="strValue"></param>
 	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.getTimeCode">
+	<summary>
+ Return the current timecode.
+ </summary>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.toggleVideoMenu(System.Boolean)">
+	<summary>
+ Enable or disable the video menu items
+ </summary>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.get_rel_filename(System.String)">
+	<summary>
+ Returns the filename without its path
+ </summary>
 	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.mnuOpenFile_Click(System.Object,System.EventArgs)">
 	<summary>
@@ -1153,9 +1240,14 @@ VideoMiner
 	<summary>
  Handles an event to grab the time from the frmSetTime form.
  </summary>
+</member><member name="M:VideoMiner.VideoMiner.frmGpsSettings_DataChanged">
+	<summary>
+ Handles an event to grab the latests data from the GPS device.
+ </summary>
 </member><member name="M:VideoMiner.VideoMiner.UnHandledHandler(System.Object,System.UnhandledExceptionEventArgs)">
 	<summary>
  Handle everything not handled by .NET handlers. This will catch crossthread exceptions as well.
+ Important as it gives a message about the error and the stack trace at the time the exception was thrown.
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.Me_Closing(System.Object,System.Windows.Forms.FormClosingEventArgs)">
 	<summary>

@@ -63,7 +63,6 @@ Partial Class VideoMiner
         Me.EditLookupTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.GPSToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuGPSSettings = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuUseGPSTimeCodes = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeviceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeviceControl = New System.Windows.Forms.ToolStripMenuItem()
         Me.RelayConfigurationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -126,7 +125,6 @@ Partial Class VideoMiner
         Me.txtOnOffBottomTextbox = New System.Windows.Forms.TextBox()
         Me.cmdOffBottom = New System.Windows.Forms.Button()
         Me.lblTransectDate = New System.Windows.Forms.Label()
-        Me.cmdTransectEnd = New System.Windows.Forms.Button()
         Me.cmdTransectStart = New System.Windows.Forms.Button()
         Me.cmdShowSetTimecode = New System.Windows.Forms.Button()
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
@@ -473,7 +471,7 @@ Partial Class VideoMiner
         '
         'GPSToolStripMenuItem
         '
-        Me.GPSToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuGPSSettings, Me.mnuUseGPSTimeCodes})
+        Me.GPSToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuGPSSettings})
         Me.GPSToolStripMenuItem.Name = "GPSToolStripMenuItem"
         Me.GPSToolStripMenuItem.Size = New System.Drawing.Size(40, 20)
         Me.GPSToolStripMenuItem.Text = "GPS"
@@ -481,15 +479,8 @@ Partial Class VideoMiner
         'mnuGPSSettings
         '
         Me.mnuGPSSettings.Name = "mnuGPSSettings"
-        Me.mnuGPSSettings.Size = New System.Drawing.Size(183, 22)
+        Me.mnuGPSSettings.Size = New System.Drawing.Size(160, 22)
         Me.mnuGPSSettings.Text = "GPS Connection"
-        '
-        'mnuUseGPSTimeCodes
-        '
-        Me.mnuUseGPSTimeCodes.CheckOnClick = True
-        Me.mnuUseGPSTimeCodes.Name = "mnuUseGPSTimeCodes"
-        Me.mnuUseGPSTimeCodes.Size = New System.Drawing.Size(183, 22)
-        Me.mnuUseGPSTimeCodes.Text = "Use GPS Time Codes"
         '
         'DeviceToolStripMenuItem
         '
@@ -770,8 +761,6 @@ Partial Class VideoMiner
         'SplitContainer3.Panel1
         '
         Me.SplitContainer3.Panel1.Controls.Add(Me.cmdCloseCalendar)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.mnthCalendar)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.pnlImageControls)
         Me.SplitContainer3.Panel1.Controls.Add(Me.pnlVideoControls)
         Me.SplitContainer3.Panel1.Controls.Add(Me.txtTransectDate)
         Me.SplitContainer3.Panel1.Controls.Add(Me.chkRecordEachSecond)
@@ -784,9 +773,9 @@ Partial Class VideoMiner
         Me.SplitContainer3.Panel1.Controls.Add(Me.txtOnOffBottomTextbox)
         Me.SplitContainer3.Panel1.Controls.Add(Me.cmdOffBottom)
         Me.SplitContainer3.Panel1.Controls.Add(Me.lblTransectDate)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.cmdTransectEnd)
         Me.SplitContainer3.Panel1.Controls.Add(Me.cmdTransectStart)
         Me.SplitContainer3.Panel1.Controls.Add(Me.cmdShowSetTimecode)
+        Me.SplitContainer3.Panel1.Controls.Add(Me.pnlImageControls)
         '
         'SplitContainer3.Panel2
         '
@@ -809,7 +798,7 @@ Partial Class VideoMiner
         '
         'mnthCalendar
         '
-        Me.mnthCalendar.Location = New System.Drawing.Point(11, 101)
+        Me.mnthCalendar.Location = New System.Drawing.Point(58, 99)
         Me.mnthCalendar.MaxSelectionCount = 1
         Me.mnthCalendar.Name = "mnthCalendar"
         Me.mnthCalendar.ShowToday = False
@@ -1173,16 +1162,6 @@ Partial Class VideoMiner
         Me.lblTransectDate.TabIndex = 48
         Me.lblTransectDate.Text = "Transect Date DD/MM/YYYY: "
         '
-        'cmdTransectEnd
-        '
-        Me.cmdTransectEnd.Location = New System.Drawing.Point(11, 209)
-        Me.cmdTransectEnd.Margin = New System.Windows.Forms.Padding(2)
-        Me.cmdTransectEnd.Name = "cmdTransectEnd"
-        Me.cmdTransectEnd.Size = New System.Drawing.Size(116, 25)
-        Me.cmdTransectEnd.TabIndex = 42
-        Me.cmdTransectEnd.Text = "Transect End"
-        Me.cmdTransectEnd.UseVisualStyleBackColor = True
-        '
         'cmdTransectStart
         '
         Me.cmdTransectStart.Location = New System.Drawing.Point(11, 163)
@@ -1271,6 +1250,7 @@ Partial Class VideoMiner
         Me.pnlTransectData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.pnlTransectData.Controls.Add(Me.cmdDefineAllTransectVariables)
         Me.pnlTransectData.Controls.Add(Me.lblTransectData)
+        Me.pnlTransectData.Controls.Add(Me.mnthCalendar)
         Me.pnlTransectData.Location = New System.Drawing.Point(0, 0)
         Me.pnlTransectData.Name = "pnlTransectData"
         Me.pnlTransectData.Size = New System.Drawing.Size(236, 423)
@@ -1690,7 +1670,6 @@ Partial Class VideoMiner
     Friend WithEvents txtOnOffBottomTextbox As System.Windows.Forms.TextBox
     Friend WithEvents cmdOffBottom As System.Windows.Forms.Button
     Friend WithEvents lblTransectDate As System.Windows.Forms.Label
-    Friend WithEvents cmdTransectEnd As System.Windows.Forms.Button
     Friend WithEvents cmdTransectStart As System.Windows.Forms.Button
     Friend WithEvents cmdShowSetTimecode As System.Windows.Forms.Button
     Friend WithEvents cmdNothingInPhoto As System.Windows.Forms.Button
@@ -1738,7 +1717,6 @@ Partial Class VideoMiner
     Friend WithEvents mnuImageZoom200 As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents GPSToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuGPSSettings As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents mnuUseGPSTimeCodes As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents LblRate As System.Windows.Forms.Label
     Friend WithEvents lblVideoRate As System.Windows.Forms.Label
     Friend WithEvents cmdNext As System.Windows.Forms.Button
