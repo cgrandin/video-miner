@@ -1238,20 +1238,30 @@ VideoMiner
 	<param name="strIdConfidence">Confidence value for species ID. See table lu_confidence_ids (1=high,2=med,3=low)</param>
 	<param name="strComment">Video reviewer's comments</param>
 	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.rowWasGood">
+	<summary>
+ Whether or not the row is synced properly with the database. Used when the user edits a cell value. The cell's row
+ will immediately be colored since the data are now 'dirty' but if the value is of the wrong type (not validated)
+ then this is required to put the row back into the condition it was in before the current edit attempt.
+ </summary>
 </member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_CurrentCellDirtyStateChanged(System.Object,System.EventArgs)">
 	<summary>
  Triggered when any cell value is changed in the grid. Will update a label telling the user that the data is no longer synced with the database.
  </summary>
-	<param name="sender"></param>
-	<param name="e"></param>
-	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_KeyDown(System.Windows.Forms.DataGridView,System.Windows.Forms.KeyEventArgs)">
 	<summary>
- Captures key presses in the DataGridView. Pressing the 'delete' key will delete rows from the grid view and the database.
+ Key events for the data grid. The arrow keys will move to adjacent cells, the Enter key will submit the edit (if applicable)
+ and move to the next cell down or, if it is currently the last row, the next cell on the right, or if neither of those,
+ the top left-most cell. Pressing the 'delete' key will delete rows from the grid view and the database.
  </summary>
-	<param name="sender"></param>
-	<param name="e"></param>
-	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_EditingControlShowing(System.Windows.Forms.DataGridView,System.Windows.Forms.DataGridViewEditingControlShowingEventArgs)">
+	<summary>
+ Allow keys to be captured while the editor is focussed on an individual cell
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.TextBox_PreviewKeyDown(System.Object,System.Windows.Forms.PreviewKeyDownEventArgs)">
+	<summary>
+ Handles the keypresses while editing of any given cell in the data grid
+ </summary>
 </member><member name="M:VideoMiner.VideoMiner.deleteSelectedRows(System.Object,System.EventArgs)">
 	<summary>
  Deletes selected rows from the MS access database as well as in the grid view. A confirmation box will verify this.
@@ -1266,14 +1276,24 @@ VideoMiner
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks>If no rows are selected, a message will tell you to select rows and then press delete</remarks>
+</member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_CellValidating(System.Object,System.Windows.Forms.DataGridViewCellValidatingEventArgs)">
+	<summary>
+ Validate the cell values if user makes them NULL. Avoids errors/exceptions during the update to the database.
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_DataError(System.Object,System.Windows.Forms.DataGridViewDataErrorEventArgs)">
+	<summary>
+ Give column and row-specific error message to user. Avoids errors/exceptions during the update to the database.
+ </summary>
 </member><member name="M:VideoMiner.VideoMiner.cmdUpdateDatabase_Click(System.Object,System.EventArgs)">
 	<summary>
  Update the MS Access database table bound to the data adapter. This allows changes made within the DataGridView to be
  updated inside the actual database.
  </summary>
-	<param name="sender"></param>
-	<param name="e"></param>
-	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.cmdRevertDatabase_Click(System.Object,System.EventArgs)">
+	<summary>
+ Reload the grid from the access database. A confirmation box will be displayed and if the user aggrees then any changes in the grid will
+ be discarded and the database will be reloaded from scratch
+ </summary>
 </member><member name="M:VideoMiner.VideoMiner.setTimes">
 	<summary>
  Set the User time (txtTime) textbox and source time (txtTimeSource) to show

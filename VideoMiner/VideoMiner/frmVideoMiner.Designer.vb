@@ -159,6 +159,7 @@ Partial Class VideoMiner
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
+        Me.cmdRevertDatabase = New System.Windows.Forms.Button()
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1468,11 +1469,12 @@ Partial Class VideoMiner
         'Panel1
         '
         Me.Panel1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Panel1.Controls.Add(Me.cmdRevertDatabase)
         Me.Panel1.Controls.Add(Me.cmdUpdateDatabase)
         Me.Panel1.Controls.Add(Me.lblDirtyData)
-        Me.Panel1.Location = New System.Drawing.Point(683, 0)
+        Me.Panel1.Location = New System.Drawing.Point(503, 0)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(200, 67)
+        Me.Panel1.Size = New System.Drawing.Size(380, 67)
         Me.Panel1.TabIndex = 60
         '
         'cmdUpdateDatabase
@@ -1526,6 +1528,17 @@ Partial Class VideoMiner
         'tmrComputerTime
         '
         Me.tmrComputerTime.Interval = 500
+        '
+        'cmdRevertDatabase
+        '
+        Me.cmdRevertDatabase.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdRevertDatabase.Location = New System.Drawing.Point(194, 1)
+        Me.cmdRevertDatabase.Name = "cmdRevertDatabase"
+        Me.cmdRevertDatabase.Size = New System.Drawing.Size(184, 31)
+        Me.cmdRevertDatabase.TabIndex = 60
+        Me.cmdRevertDatabase.Text = "Revert data (reload database)"
+        Me.cmdRevertDatabase.UseVisualStyleBackColor = True
+        Me.cmdRevertDatabase.Visible = False
         '
         'VideoMiner
         '
@@ -1736,5 +1749,6 @@ Partial Class VideoMiner
     Friend WithEvents lblDirtyData As System.Windows.Forms.Label
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
     Friend WithEvents cmdAddComment As System.Windows.Forms.Button
+    Friend WithEvents cmdRevertDatabase As System.Windows.Forms.Button
 
 End Class
