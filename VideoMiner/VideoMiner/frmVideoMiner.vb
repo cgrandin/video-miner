@@ -6715,6 +6715,8 @@ SkipInsertComma:
     End Sub
 
 #Region "ValidationFunctions"
+
+    Dim firstTime As Boolean = True
     ''' <summary>
     ''' Validate the cell values if user makes them NULL. Avoids errors/exceptions during the update to the database.
     ''' </summary>
@@ -6727,6 +6729,24 @@ SkipInsertComma:
                 If s = String.Empty Then
                     MessageBox.Show("Error in column 'ID', row " & e.RowIndex.ToString() & ": Value must be a non-null integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     e.Cancel = True
+                Else
+                    ' Check to see that the ID is unique in the grid to avoid exceptions when update query is run later
+                    Dim isUnique As Boolean = True
+                    If Not firstTime Then
+                        For Each row As DataGridViewRow In grdVideoMinerDatabase.Rows
+                            If Not row.IsNewRow Then
+                                Dim cell As DataGridViewCell = row.Cells("ID")
+                                If cell.Value.ToString = e.FormattedValue.ToString And cell.RowIndex <> e.RowIndex Then
+                                    isUnique = False
+                                End If
+                            End If
+                        Next
+                    End If
+                    If Not isUnique Then
+                        MessageBox.Show("Error in column 'ID', row " & e.RowIndex.ToString() & ": The value is not unique. 'ID' is the primary key and must have a unique value.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        e.Cancel = True
+                    End If
+                    firstTime = False
                 End If
             Case ("DataCode")
                 If s = String.Empty Then
@@ -6810,10 +6830,19 @@ SkipInsertComma:
 #End Region
 
     ''' <summary>
+    ''' Check to see that the primary key values are unique in the DataGridView. Returns true if they are, false otherwise.
+    ''' </summary>
+    Private Function primary_keys_unique() As Boolean
+
+    End Function
+
+    ''' <summary>
     ''' Update the MS Access database table bound to the data adapter. This allows changes made within the DataGridView to be
     ''' updated inside the actual database.
     ''' </summary>
     Private Sub cmdUpdateDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUpdateDatabase.Click
+        ' Check that the primary keys do not have duplicates
+
         m_data_adapter.Update(m_data_table)
         lblDirtyData.ForeColor = Color.LimeGreen
         lblDirtyData.Text = "Data synced"

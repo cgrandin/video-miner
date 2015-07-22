@@ -1285,6 +1285,10 @@ VideoMiner
 	<summary>
  Give column and row-specific error message to user. Avoids errors/exceptions during the update to the database.
  </summary>
+</member><member name="M:VideoMiner.VideoMiner.primary_keys_unique">
+	<summary>
+ Check to see that the primary key values are unique in the DataGridView. Returns true if they are, false otherwise.
+ </summary>
 </member><member name="M:VideoMiner.VideoMiner.cmdUpdateDatabase_Click(System.Object,System.EventArgs)">
 	<summary>
  Update the MS Access database table bound to the data adapter. This allows changes made within the DataGridView to be
