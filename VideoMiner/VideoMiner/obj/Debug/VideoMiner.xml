@@ -1247,6 +1247,7 @@ VideoMiner
 </member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_CurrentCellDirtyStateChanged(System.Object,System.EventArgs)">
 	<summary>
  Triggered when any cell value is changed in the grid. Will update a label telling the user that the data is no longer synced with the database.
+ If the user just types the same value that was in the cell to begin with, the row will be unchanged.
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_KeyDown(System.Windows.Forms.DataGridView,System.Windows.Forms.KeyEventArgs)">
 	<summary>
@@ -1284,10 +1285,6 @@ VideoMiner
 </member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_DataError(System.Object,System.Windows.Forms.DataGridViewDataErrorEventArgs)">
 	<summary>
  Give column and row-specific error message to user. Avoids errors/exceptions during the update to the database.
- </summary>
-</member><member name="M:VideoMiner.VideoMiner.primary_keys_unique">
-	<summary>
- Check to see that the primary key values are unique in the DataGridView. Returns true if they are, false otherwise.
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.cmdUpdateDatabase_Click(System.Object,System.EventArgs)">
 	<summary>

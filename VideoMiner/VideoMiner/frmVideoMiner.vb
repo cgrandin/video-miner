@@ -6634,6 +6634,7 @@ SkipInsertComma:
 
     ''' <summary>
     ''' Triggered when any cell value is changed in the grid. Will update a label telling the user that the data is no longer synced with the database.
+    ''' If the user just types the same value that was in the cell to begin with, the row will be unchanged.
     ''' </summary>
     Private Sub grdVideoMinerDatabase_CurrentCellDirtyStateChanged(sender As Object, e As EventArgs) Handles grdVideoMinerDatabase.CurrentCellDirtyStateChanged
         rowWasGood = (grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.BackColor <> Color.Salmon)
@@ -6716,7 +6717,6 @@ SkipInsertComma:
 
 #Region "ValidationFunctions"
 
-    Dim firstTime As Boolean = True
     ''' <summary>
     ''' Validate the cell values if user makes them NULL. Avoids errors/exceptions during the update to the database.
     ''' </summary>
@@ -6732,21 +6732,19 @@ SkipInsertComma:
                 Else
                     ' Check to see that the ID is unique in the grid to avoid exceptions when update query is run later
                     Dim isUnique As Boolean = True
-                    If Not firstTime Then
-                        For Each row As DataGridViewRow In grdVideoMinerDatabase.Rows
-                            If Not row.IsNewRow Then
-                                Dim cell As DataGridViewCell = row.Cells("ID")
-                                If cell.Value.ToString = e.FormattedValue.ToString And cell.RowIndex <> e.RowIndex Then
-                                    isUnique = False
-                                End If
+                    For Each row As DataGridViewRow In grdVideoMinerDatabase.Rows
+                        If Not row.IsNewRow Then
+                            Dim cell As DataGridViewCell = row.Cells("ID")
+                            ' Compare new and old values as long as it is not the same row
+                            If cell.Value.ToString = e.FormattedValue.ToString And cell.RowIndex <> e.RowIndex Then
+                                isUnique = False
                             End If
-                        Next
-                    End If
+                        End If
+                    Next
                     If Not isUnique Then
                         MessageBox.Show("Error in column 'ID', row " & e.RowIndex.ToString() & ": The value is not unique. 'ID' is the primary key and must have a unique value.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         e.Cancel = True
                     End If
-                    firstTime = False
                 End If
             Case ("DataCode")
                 If s = String.Empty Then
@@ -6762,9 +6760,9 @@ SkipInsertComma:
     Private Sub grdVideoMinerDatabase_DataError(sender As Object, e As System.Windows.Forms.DataGridViewDataErrorEventArgs) Handles grdVideoMinerDatabase.DataError
         Dim strFieldName As String = grdVideoMinerDatabase.Columns(e.ColumnIndex).HeaderText
         If rowWasGood Then
-            ' Reset the color back to white
+            ' Reset the background color back to white and the selection color back to default 'HighLight'
             grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.BackColor = Color.White
-            grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.SelectionBackColor = Color.Blue
+            grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Highlight
         End If
         Select Case strFieldName
             Case "ID"
@@ -6830,25 +6828,17 @@ SkipInsertComma:
 #End Region
 
     ''' <summary>
-    ''' Check to see that the primary key values are unique in the DataGridView. Returns true if they are, false otherwise.
-    ''' </summary>
-    Private Function primary_keys_unique() As Boolean
-
-    End Function
-
-    ''' <summary>
     ''' Update the MS Access database table bound to the data adapter. This allows changes made within the DataGridView to be
     ''' updated inside the actual database.
     ''' </summary>
     Private Sub cmdUpdateDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUpdateDatabase.Click
-        ' Check that the primary keys do not have duplicates
-
         m_data_adapter.Update(m_data_table)
         lblDirtyData.ForeColor = Color.LimeGreen
         lblDirtyData.Text = "Data synced"
         For i As Integer = 0 To grdVideoMinerDatabase.RowCount - 1
+            ' Reset the background color back to white and the selection color back to default 'HighLight'
             grdVideoMinerDatabase.Rows(i).DefaultCellStyle.BackColor = Color.White
-            grdVideoMinerDatabase.Rows(i).DefaultCellStyle.SelectionBackColor = Color.Blue
+            grdVideoMinerDatabase.Rows(i).DefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Highlight
         Next
     End Sub
 
