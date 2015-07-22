@@ -6665,24 +6665,13 @@ SkipInsertComma:
         AddHandler tb.PreviewKeyDown, AddressOf TextBox_PreviewKeyDown
     End Sub
 
-    Private skipOnce As Boolean = False
     ''' <summary>
-    ''' Handles the keypresses while editing of any given cell in the data grid
+    ''' Sets up the Enter or Return key to be captured by the TextBox, which is a cell in the DataGridView.
+    ''' This is the only way that the Enter key can be used to submit a value when editing a cell.
     ''' </summary>
     Private Sub TextBox_PreviewKeyDown(ByVal sender As Object, ByVal e As PreviewKeyDownEventArgs)
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Return Then
-            If (skipOnce) Then
-                skipOnce = False
-                Return
-            End If
-            Dim currColumn As Integer = grdVideoMinerDatabase.CurrentCell.ColumnIndex
-            Dim currRow As Integer = grdVideoMinerDatabase.CurrentCell.RowIndex
-            Dim maxColumn As Integer = grdVideoMinerDatabase.ColumnCount - 1
-            Dim maxRow As Integer = grdVideoMinerDatabase.RowCount - 1
-            If currRow < maxRow Then
-                grdVideoMinerDatabase.CurrentCell = grdVideoMinerDatabase.Item(currColumn, currRow + 1)
-            End If
-            skipOnce = True
+            e.IsInputKey = True
         End If
     End Sub
 

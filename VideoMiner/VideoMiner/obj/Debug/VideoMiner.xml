@@ -1260,7 +1260,8 @@ VideoMiner
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.TextBox_PreviewKeyDown(System.Object,System.Windows.Forms.PreviewKeyDownEventArgs)">
 	<summary>
- Handles the keypresses while editing of any given cell in the data grid
+ Sets up the Enter or Return key to be captured by the TextBox, which is a cell in the DataGridView.
+ This is the only way that the Enter key can be used to submit a value when editing a cell.
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.deleteSelectedRows(System.Object,System.EventArgs)">
 	<summary>
