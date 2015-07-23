@@ -3,18 +3,26 @@ Imports System.Data.OleDb
 Imports System.Data.SqlClient
 Imports Microsoft.VisualBasic
 
+''' <summary>
+''' This form will show a table which will be loaded from the database
+''' </summary>
+''' <remarks></remarks>
 Public Class frmTableView
+    ' OLE objects
+    Private m_conn As OleDbConnection
+    Private m_data_cmd As OleDbCommand
+    Private m_data_adapter As OleDbDataAdapter
+    Private m_data_command_builder As OleDbCommandBuilder
 
-    Private table_name As String
-    Private sub_data_set As DataSet
-    Private query As String
-    Private sub_db_command
-    Private sub_data_adapter As OleDbDataAdapter
-    Private sub_data_binding As BindingSource
-    Private sub_data_command_builder As OleDbCommandBuilder
+    ' Data, table, and query objects
+    Private m_query As String
+    Private m_table_name As String
+    Private m_data_table As DataTable
+    Private m_data_set As DataSet
+
     Private m_Multiple As Boolean
     Private m_UserClosedForm As Boolean = False
-    Private strSelectedButtonName As String = ""
+    Private m_strSelectedButtonName As String = ""
 
     Private m_intNumButtons As Integer
     Private m_strButtonNames As String()
@@ -24,12 +32,13 @@ Public Class frmTableView
 
     Event ClearSpatialInformationEvent()
 
+#Region "Properties"
     Public Property SelectedButtonName As String
         Get
-            Return strSelectedButtonName
+            Return m_strSelectedButtonName
         End Get
         Set(value As String)
-            strSelectedButtonName = value
+            m_strSelectedButtonName = value
         End Set
     End Property
 
@@ -95,11 +104,29 @@ Public Class frmTableView
         End Set
     End Property
 
-    Public Sub New(ByVal table As String, ByVal intCurrentSpatialVariable As Integer, ByVal intNumButtons As Integer, ByVal strButtonNames As String(), ByRef dictFieldValues As Dictionary(Of String, String), ByVal strButtonCodeNames As String(), ByRef txtTextBoxes As TextBox())
+#End Region
+
+    Public Sub New(conn As OleDbConnection, ByVal table As String, ByVal intCurrentSpatialVariable As Integer, ByVal intNumButtons As Integer, ByVal strButtonNames As String(), ByRef dictFieldValues As Dictionary(Of String, String), ByVal strButtonCodeNames As String(), ByRef txtTextBoxes As TextBox())
         ' This is required by the Windows Form Designer.
         InitializeComponent()
-        table_name = table
+        m_conn = conn
+        m_table_name = table
 
+        Try
+            m_query = "select * from " & m_table_name & ";"
+            m_data_cmd = New OleDbCommand(m_query, m_conn)
+            m_data_adapter = New OleDbDataAdapter(m_data_cmd)
+            m_data_set = New DataSet()
+            m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
+            m_data_command_builder.QuotePrefix = "["
+            m_data_command_builder.QuoteSuffix = "]"
+            m_data_adapter.Fill(m_data_set, m_table_name)
+            m_data_table = m_data_set.Tables(m_table_name)
+            DataGridView1.DataSource = m_data_table
+        Catch ex As Exception
+            MsgBox("There was an exception thrown while trying to load the " & m_table_name & _
+                   " table from the MS Access database into the DataGridView. Message and Stack trace:" & vbCrLf & ex.Message() & vbCrLf & ex.StackTrace)
+        End Try
         m_dictFieldValues = dictFieldValues
         m_intNumButtons = intNumButtons
         m_strButtonCodeNames = strButtonCodeNames
@@ -112,7 +139,7 @@ Public Class frmTableView
         Controls.Add(DataGridView1)
 
         If intCurrentSpatialVariable <> 8888 Then
-            strSelectedButtonName = strButtonNames(intCurrentSpatialVariable)
+            m_strSelectedButtonName = strButtonNames(intCurrentSpatialVariable)
         End If
 
     End Sub
@@ -123,30 +150,14 @@ Public Class frmTableView
 
 
     Private Sub TableViewForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        Me.Text = strSelectedButtonName
-
+        Me.Text = m_strSelectedButtonName
         m_UserClosedForm = False
-        'If Me.m_Multiple Then
         Me.btnSkipSpatial.Visible = True
         Me.btnClear.Visible = True
-        'End If
-        sub_data_set = New DataSet()
-        query = "select * from " & table_name & ";"
-        sub_db_command = New OleDbCommand(query, conn)
-        sub_data_adapter = New OleDbDataAdapter(sub_db_command)
-        sub_data_binding = New BindingSource()
-        sub_data_command_builder = New OleDbCommandBuilder(sub_data_adapter)
-        sub_data_adapter.Fill(sub_data_set, table_name)
-        sub_data_binding.DataSource = sub_data_set.Tables(table_name)
-        DataGridView1.DataSource = sub_data_binding
-
         Me.Width = DataGridView1.Width
         Me.Height = (DataGridView1.RowCount + 3) * DataGridView1.Rows(0).Height
-
         Me.txtCommentBox.Text = VideoMiner.strComment
-
         Refresh()
-
     End Sub
 
     Private Sub DataGridView1_CellBeginEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellCancelEventArgs) Handles DataGridView1.CellBeginEdit
@@ -165,15 +176,11 @@ Public Class frmTableView
     End Sub
 
     Private Sub update_database()
-        'update the database
-        sub_data_binding.EndEdit()
-        Dim comm_builder As OleDbCommandBuilder = New OleDbCommandBuilder(sub_data_adapter)
         Try
-            sub_data_adapter.Update(sub_data_set, table_name)
-            sub_data_set.AcceptChanges()
+            m_data_adapter.Update(m_data_set, m_table_name)
         Catch ex As Exception
-            MsgBox("The value you entered would result in a key violation in the database table '" & table_name & "'" & vbCrLf & _
-            "and therefore no changes were made to the database.", MsgBoxStyle.Exclamation, "Key Violation")
+            MessageBox.Show("The value you entered would result in a key violation in the database table '" & m_table_name & "'" & vbCrLf & _
+            "and therefore no changes were made to the database.", "Key Violation", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -185,11 +192,9 @@ Public Class frmTableView
         RaiseEvent ClearSpatialInformationEvent()
         blCleared = True
         Me.Close()
-
     End Sub
 
     Private Sub cmdComment_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdComment.Click
-
         If Me.cmdComment.Text = "Edit Comment" Then
             txtCommentBox.Enabled = True
             Me.btnClear.Enabled = False
@@ -204,13 +209,12 @@ Public Class frmTableView
             Me.DataGridView1.Enabled = True
             Me.DataGridView1.DefaultCellStyle.ForeColor = Color.Black
             Me.cmdComment.Text = "Edit Comment"
-            VideoMiner.strComment = Me.txtCommentBox.Text
+            'TODO: Make sure a comment here is put into the table in the DataGridView in the main form
         End If
-
     End Sub
 
     Private Sub cmdScreenCapture_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdScreenCapture.Click
-        'CJG
+        'TODO: Screen capturee... not sure why though
         'myFormLibrary.frmVideoMiner.blScreenCaptureCalled = True
         'myFormLibrary.frmVideoMiner.mnuCapScr_Click(sender, e)
         'myFormLibrary.frmVideoMiner.blScreenCaptureCalled = False

@@ -1,5 +1,8 @@
-﻿Public Class frmCreateKeyboardShortcut
+﻿Imports System.Data.OleDb
 
+Public Class frmCreateKeyboardShortcut
+
+    Private m_conn As OleDbConnection
     Private m_ButtonText As String
     Private m_KeyboardShortcut As String
 
@@ -71,7 +74,7 @@
             Dim oComm As OleDb.OleDbCommand
             query = "SELECT KeyboardShortcut FROM " & DB_SPECIES_BUTTONS_TABLE & " WHERE KeyboardShortcut = " & DoubleQuote(txtCurrentShortcut.Text)
             Dim sub_data_set As DataSet = New DataSet()
-            oComm = New OleDb.OleDbCommand(query, conn)
+            oComm = New OleDb.OleDbCommand(query, m_conn)
             Dim sub_data_adapter As OleDb.OleDbDataAdapter = New OleDb.OleDbDataAdapter(oComm)
             sub_data_adapter.Fill(sub_data_set, DB_SPECIES_BUTTONS_TABLE)
             Dim r As DataRow
@@ -96,7 +99,7 @@
                         "SET KeyboardShortCut = " & DoubleQuote(txtCurrentShortcut.Text) & " " & _
                         "WHERE ButtonText = " & DoubleQuote(ButtonText)
 
-            oComm = New OleDb.OleDbCommand(query, conn)
+            oComm = New OleDb.OleDbCommand(query, m_conn)
             oComm.ExecuteNonQuery()
             RaiseEvent AddedNewShortcut()
         Catch ex As Exception

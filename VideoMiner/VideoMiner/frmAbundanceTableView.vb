@@ -2,7 +2,26 @@
 
 Public Class frmAbundanceTableView
 
+#Region "Member variables"
+    ' OLE objects
+    Private m_conn As OleDbConnection
+    Private m_data_cmd As OleDbCommand
+    Private m_data_adapter As OleDbDataAdapter
+    Private m_data_command_builder As OleDbCommandBuilder
+
+    ' Data, table, and query objects
+    Private m_query As String
+    Private m_table_name As String
+    Private m_data_table As DataTable
+    Private m_data_set As DataSet
+
     Private blCanceled As Boolean
+    Private m_Multiple As Boolean
+    Private m_UserClosedForm As Boolean = False
+    Private strSelectedButtonName As String = ""
+#End Region
+
+#Region "Properties"
     Public Property Canceled() As Boolean
         Get
             Return blCanceled
@@ -11,40 +30,35 @@ Public Class frmAbundanceTableView
             blCanceled = value
         End Set
     End Property
+#End Region
 
 
-
-    Private table_name As String
-    Private sub_data_set As DataSet
-    Private query As String
-    Private sub_db_command
-    Private sub_data_adapter As OleDbDataAdapter
-    Private sub_data_binding As BindingSource
-    Private sub_data_command_builder As OleDbCommandBuilder
-    Private m_Multiple As Boolean
-    Private m_UserClosedForm As Boolean = False
-    Private strSelectedButtonName As String = ""
-
+    Public Sub New(conn As OleDbConnection)
+        InitializeComponent()
+        m_conn = conn
+        m_table_name = DB_ABUNDANCE_TABLE
+        Try
+            m_query = "select * from " & m_table_name & " order by Code Asc;"
+            m_data_cmd = New OleDbCommand(m_query, m_conn)
+            m_data_adapter = New OleDbDataAdapter(m_data_cmd)
+            m_data_set = New DataSet()
+            m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
+            m_data_command_builder.QuotePrefix = "["
+            m_data_command_builder.QuoteSuffix = "]"
+            m_data_adapter.Fill(m_data_set, m_table_name)
+            m_data_table = m_data_set.Tables(m_table_name)
+            grdAbundance.DataSource = m_data_table
+        Catch ex As Exception
+            MsgBox("There was an exception thrown while trying to load the " & m_table_name & _
+                   " table from the MS Access database into the DataGridView. Message and Stack trace:" & vbCrLf & ex.Message() & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
 
     Private Sub TableViewForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        table_name = "lu_acfor_scale"
-
         cmdCancel.Visible = True
-        sub_data_set = New DataSet()
-        query = "select * from " & table_name & ";"
-        sub_db_command = New OleDbCommand(query, conn)
-        sub_data_adapter = New OleDbDataAdapter(sub_db_command)
-        sub_data_binding = New BindingSource()
-        sub_data_command_builder = New OleDbCommandBuilder(sub_data_adapter)
-        sub_data_adapter.Fill(sub_data_set, table_name)
-        sub_data_binding.DataSource = sub_data_set.Tables(table_name)
-        grdAbundance.DataSource = sub_data_binding
-
         Width = grdAbundance.Width
         Height = (grdAbundance.RowCount + 5) * grdAbundance.Rows(0).Height
-
         'txtCommentBox.Text = VideoMiner.strComment
-        Refresh()
     End Sub
 
     Private Sub grdAbundance_CellBeginEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellCancelEventArgs) Handles grdAbundance.CellBeginEdit
@@ -67,13 +81,10 @@ Public Class frmAbundanceTableView
     End Sub
 
     Private Sub update_database()
-        sub_data_binding.EndEdit()
-        Dim comm_builder As OleDbCommandBuilder = New OleDbCommandBuilder(sub_data_adapter)
         Try
-            sub_data_adapter.Update(sub_data_set, table_name)
-            sub_data_set.AcceptChanges()
+            m_data_adapter.Update(m_data_table)
         Catch ex As Exception
-            MsgBox("The value you entered would result in a key violation in the database table '" & table_name & "'" & vbCrLf & _
+            MsgBox("The value you entered would result in a key violation in the database table '" & m_table_name & "'" & vbCrLf & _
             "and therefore no changes were made to the database.", MsgBoxStyle.Exclamation, "Key Violation")
         End Try
     End Sub
@@ -84,7 +95,6 @@ Public Class frmAbundanceTableView
     End Sub
 
     Private Sub cmdComment_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdComment.Click
-
         If cmdComment.Text = "Edit Comment" Then
             txtCommentBox.Enabled = True
             cmdCancel.Enabled = False
@@ -97,10 +107,9 @@ Public Class frmAbundanceTableView
             grdAbundance.Enabled = True
             grdAbundance.DefaultCellStyle.ForeColor = Color.Black
             cmdComment.Text = "Edit Comment"
-            'CJG 
+            'TODO: Main form must access this value through event handling 
             'myFormLibrary.frmVideoMiner.strComment = txtCommentBox.Text
         End If
-
     End Sub
 
 End Class

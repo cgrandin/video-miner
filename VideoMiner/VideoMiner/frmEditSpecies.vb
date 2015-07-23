@@ -1,6 +1,7 @@
 Imports System.Data.OleDb
 
 Public Class frmEditSpecies
+    Private m_conn As OleDbConnection
     Private WithEvents frmCreateKeyboardShortcut As frmCreateKeyboardShortcut
     Private m_OriginalSpeciesName As String
     Private m_OpriginalSpeciesCode As String
@@ -63,10 +64,10 @@ Public Class frmEditSpecies
             If Edit_Insert = "Edit" Then
 
                 strQuery = "SELECT DrawingOrder, ButtonText, ButtonCode, ButtonColor, KeyboardShortcut " & _
-                            "FROM videominer_species_buttons " & _
-                            "WHERE DrawingOrder = " & selIdx + 1
+                            "FROM " & DB_SPECIES_BUTTONS_TABLE & _
+                            " WHERE DrawingOrder = " & selIdx + 1
 
-                Dim cmd As OleDbCommand = New OleDbCommand(strQuery, conn)
+                Dim cmd As OleDbCommand = New OleDbCommand(strQuery, m_conn)
                 Dim aDataReader As OleDb.OleDbDataReader
                 aDataReader = cmd.ExecuteReader
 
@@ -95,33 +96,30 @@ Public Class frmEditSpecies
                 Me.txtSpeciesCode.Text = ""
             End If
 
-            strQuery = "SELECT DISTINCT ScientificName " & _
-                       "FROM lu_species_code " & _
+            strQuery = "SELECT DISTINCT ScientificName FROM " & DB_SPECIES_CODE_TABLE & _
                        "ORDER BY ScientificName;"
 
             Me.cboScientificName.Items.Clear()
             PopulateSpeciesLists(Me.cboScientificName, strQuery)
 
-            'strQuery = "SELECT DISTINCT LatinName " & _
-            '           "FROM lu_species_code " & _
+            'strQuery = "SELECT DISTINCT LatinName FROM " & DB_SPECIES_CODE_TABLE & _
             '           "ORDER BY LatinName;"
 
             'Me.cboLatinName.Items.Clear()
             'PopulateSpeciesLists(Me.cboLatinName, strQuery)
 
-            strQuery = "SELECT DISTINCT CommonName " & _
-                       "FROM lu_species_code " & _
+            strQuery = "SELECT DISTINCT CommonName FROM " & DB_SPECIES_CODE_TABLE & _
                        "ORDER BY CommonName;"
 
             Me.cboCommonName.Items.Clear()
             PopulateSpeciesLists(Me.cboCommonName, strQuery)
 
-            strQuery = "SELECT TaxonomyClassLevelCode FROM lu_species_code WHERE SpeciesCode = " & SingleQuote(Me.txtSpeciesCode.Text) & ";"
+            strQuery = "SELECT TaxonomyClassLevelCode FROM " & DB_SPECIES_CODE_TABLE & " WHERE SpeciesCode = " & SingleQuote(Me.txtSpeciesCode.Text) & ";"
 
             Dim sub_data_set As DataSet = New DataSet()
-            Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, conn)
+            Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, m_conn)
             Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-            sub_data_adapter.Fill(sub_data_set, "lu_species_code")
+            sub_data_adapter.Fill(sub_data_set, DB_SPECIES_CODE_TABLE)
 
             Dim dt As DataTable
             Dim r As DataRow
@@ -134,12 +132,12 @@ Public Class frmEditSpecies
             Next
 
 
-            strQuery = "SELECT Color FROM lu_button_colors;"
+            strQuery = "SELECT Color FROM " & DB_BUTTON_COLORS_TABLE & ";"
 
             sub_data_set = New DataSet()
-            sub_db_command = New OleDbCommand(strQuery, conn)
+            sub_db_command = New OleDbCommand(strQuery, m_conn)
             sub_data_adapter = New OleDbDataAdapter(sub_db_command)
-            sub_data_adapter.Fill(sub_data_set, "lu_button_colors")
+            sub_data_adapter.Fill(sub_data_set, DB_BUTTON_COLORS_TABLE)
 
             dt = sub_data_set.Tables.Item(0)
 
@@ -164,9 +162,9 @@ Public Class frmEditSpecies
     Private Sub PopulateSpeciesLists(ByRef cboBox As ComboBox, ByVal strQuery As String)
 
         Dim sub_data_set As DataSet = New DataSet()
-        Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, conn)
+        Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, m_conn)
         Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-        sub_data_adapter.Fill(sub_data_set, "lu_species_code")
+        sub_data_adapter.Fill(sub_data_set, DB_SPECIES_CODE_TABLE)
         Dim r As DataRow
         Dim d As DataTable
         d = sub_data_set.Tables(0)
@@ -244,7 +242,7 @@ Public Class frmEditSpecies
                             DoubleQuote(Me.txtKeyboardShortcut.Text) & _
                             ")"
 
-            oComm = New OleDbCommand(query, conn)
+            oComm = New OleDbCommand(query, m_conn)
             oComm.ExecuteNonQuery()
 
         ElseIf Edit_Insert = "Edit" Then
@@ -257,7 +255,7 @@ Public Class frmEditSpecies
                     "WHERE ButtonText = " & DoubleQuote(Me.OriginalSpeciesName) & " AND " & _
                     "      ButtonCode = " & DoubleQuote(Me.OriginalSpeciesCode)
 
-            oComm = New OleDbCommand(query, conn)
+            oComm = New OleDbCommand(query, m_conn)
             oComm.ExecuteNonQuery()
         End If
 
@@ -270,7 +268,7 @@ Public Class frmEditSpecies
         Dim intId As Integer = 0
 
         Dim sub_data_set As DataSet = New DataSet()
-        Dim sub_db_command As OleDbCommand = New OleDbCommand("SELECT DrawingOrder FROM " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", conn)
+        Dim sub_db_command As OleDbCommand = New OleDbCommand("SELECT DrawingOrder FROM " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", m_conn)
         Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
         sub_data_adapter.Fill(sub_data_set, DB_SPECIES_BUTTONS_TABLE)
 
@@ -291,9 +289,9 @@ Public Class frmEditSpecies
     Private Sub GetSpeciesCode(ByVal strQuery As String)
 
         Dim sub_data_set As DataSet = New DataSet()
-        Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, conn)
+        Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, m_conn)
         Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-        sub_data_adapter.Fill(sub_data_set, "lu_species_code")
+        sub_data_adapter.Fill(sub_data_set, DB_SPECIES_CODE_TABLE)
         Dim r As DataRow
         Dim d As DataTable
         d = sub_data_set.Tables(0)
@@ -317,8 +315,7 @@ Public Class frmEditSpecies
             Me.txtSpeciesBtnTxt.Text = m_SpeciesName
 
             Dim strQuery As String
-            strQuery = "SELECT DISTINCT SpeciesCode, TaxonomyClassLevelCode " & _
-                       "FROM lu_species_code " & _
+            strQuery = "SELECT DISTINCT SpeciesCode, TaxonomyClassLevelCode FROM " & DB_SPECIES_CODE_TABLE & _
                        "WHERE CommonName = " & DoubleQuote(m_SpeciesName) & _
                        "ORDER BY SpeciesCode;"
 
@@ -340,8 +337,7 @@ Public Class frmEditSpecies
             Me.txtSpeciesBtnTxt.Text = m_SpeciesName
 
             Dim strQuery As String
-            strQuery = "SELECT DISTINCT SpeciesCode, TaxonomyClassLevelCode " & _
-                       "FROM lu_species_code " & _
+            strQuery = "SELECT DISTINCT SpeciesCode, TaxonomyClassLevelCode FROM " & DB_SPECIES_CODE_TABLE & _
                        "WHERE ScientificName = " & DoubleQuote(m_SpeciesName) & _
                        "ORDER BY SpeciesCode;"
 
@@ -362,8 +358,7 @@ Public Class frmEditSpecies
     '        Me.txtSpeciesBtnTxt.Text = m_SpeciesName
 
     '        Dim strQuery As String
-    '        strQuery = "SELECT DISTINCT SpeciesCode, TaxonomyClassLevelCode " & _
-    '                   "FROM lu_species_code " & _
+    '        strQuery = "SELECT DISTINCT SpeciesCode, TaxonomyClassLevelCode FROM " DB_SPECIES_CODE_TABLE & _
     '                   "WHERE LatinName = " & DoubleQuote(m_SpeciesName) & _
     '                   "ORDER BY SpeciesCode;"
 

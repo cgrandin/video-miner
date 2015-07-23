@@ -2,18 +2,12 @@
 
 Public Class frmKeyboardCommands
 
+    Private m_conn As OleDbConnection
     Event RefreshDatabaseEvent()
 
-    Public Sub New()
-
-        ' This is required by the Windows Form Designer.
+    Public Sub New(conn As OleDbConnection)
         InitializeComponent()
-
-        ' Add any initialization after the InitializeComponent() call.
-
-        ' -------------------------------------------------
-        ' Initialize Form elements
-        ' -------------------------------------------------
+        m_conn = conn
         With Me.lstSpecies
             .Visible = True
             .FullRowSelect = True
@@ -32,7 +26,7 @@ Public Class frmKeyboardCommands
             Me.lstSpecies.Items.Clear()
             Dim sub_data_set As DataSet = New DataSet()
 
-            Dim sub_db_command As OleDbCommand = New OleDbCommand("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor, KeyboardShortcut from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", conn)
+            Dim sub_db_command As OleDbCommand = New OleDbCommand("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor, KeyboardShortcut from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", m_conn)
             Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
 
             sub_data_adapter.Fill(sub_data_set, DB_SPECIES_BUTTONS_TABLE)

@@ -1,6 +1,7 @@
 Imports System.Data.OleDb
 Public Class frmSpeciesList
 
+    Private m_conn As OleDbConnection
     Dim frmEditSpecies As frmEditSpecies
 
     Event RefreshDatabaseEvent()
@@ -11,7 +12,7 @@ Public Class frmSpeciesList
             Me.lstSpecies.Items.Clear()
             Dim sub_data_set As DataSet = New DataSet()
 
-            Dim sub_db_command As OleDbCommand = New OleDbCommand("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", conn)
+            Dim sub_db_command As OleDbCommand = New OleDbCommand("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", m_conn)
             Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
 
             sub_data_adapter.Fill(sub_data_set, DB_SPECIES_BUTTONS_TABLE)
@@ -32,9 +33,9 @@ Public Class frmSpeciesList
 
 
                 Dim tax_data_set As DataSet = New DataSet()
-                Dim tax_db_command As OleDbCommand = New OleDbCommand("Select SpeciesCode, TaxonomyClassLevelCode from lu_species_code WHERE SpeciesCode = " & SingleQuote(r.Item("ButtonCode")) & ";", conn)
+                Dim tax_db_command As OleDbCommand = New OleDbCommand("Select SpeciesCode, TaxonomyClassLevelCode from " & DB_SPECIES_CODE_TABLE & " WHERE SpeciesCode = " & SingleQuote(r.Item("ButtonCode")) & ";", m_conn)
                 Dim tax_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(tax_db_command)
-                tax_data_adapter.Fill(tax_data_set, "lu_species_code")
+                tax_data_adapter.Fill(tax_data_set, DB_SPECIES_CODE_TABLE)
                 taxData = tax_data_set.Tables(0)
                 taxRow = taxData.Rows.Item(0)
 
@@ -50,8 +51,9 @@ Public Class frmSpeciesList
     End Sub
 
 
-    Public Sub New()
+    Public Sub New(conn As OleDbConnection)
         InitializeComponent()
+        m_conn = conn
         With Me.lstSpecies
             .Visible = True
             .FullRowSelect = True
@@ -250,7 +252,7 @@ Public Class frmSpeciesList
 
         query = "UPDATE " & DB_SPECIES_BUTTONS_TABLE & " " & _
                 "SET DrawingOrder = DrawingOrder + 1000"
-        oComm = New OleDbCommand(query, conn)
+        oComm = New OleDbCommand(query, m_conn)
         oComm.ExecuteNonQuery()
 
         For i As Integer = 0 To Me.lstSpecies.Items.Count - 1
@@ -263,7 +265,7 @@ Public Class frmSpeciesList
                     "WHERE ButtonText = " & DoubleQuote(strSpeciesName) & " AND " & _
                     "      ButtonCode = " & DoubleQuote(strSpeciesCode)
 
-            oComm = New OleDbCommand(query, conn)
+            oComm = New OleDbCommand(query, m_conn)
             oComm.ExecuteNonQuery()
 
         Next
@@ -302,7 +304,7 @@ Public Class frmSpeciesList
                 "WHERE ButtonText = " & SingleQuote(strSpeciesName) & " AND " & _
                 "      ButtonCode = " & SingleQuote(strSpeciesCode)
 
-        oComm = New OleDbCommand(query, conn)
+        oComm = New OleDbCommand(query, m_conn)
         oComm.ExecuteNonQuery()
 
         frmSpeciesList_Activated(Nothing, Nothing)

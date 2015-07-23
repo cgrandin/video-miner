@@ -1118,7 +1118,7 @@ Public Class frmGpsSettings
     End Sub
 
     ' The function 'UnHandledHandler'. I have kept just in case I need to debug crossthread errors in the future.
-    ' To use it in a class, add these  3lines to the beginning of the form_load function:
+    ' To use it in a class, add these  3 lines to the beginning of the form_load function:
     'Dim currentDomain As AppDomain = AppDomain.CurrentDomain
     'AddHandler currentDomain.UnhandledException, AddressOf UnHandledHandler
     'Windows.Forms.Control.CheckForIllegalCrossThreadCalls = True

@@ -2,22 +2,27 @@
 
 Public Class frmRareSpeciesLookup
 
+    Private m_conn As OleDbConnection
     Private tblSpecies As DataTable
     Private tblSelection As DataTable
 
     Event SpeciesCodeChangedEvent()
 
+    Public Sub New(conn As OleDbConnection)
+        InitializeComponent()
+        m_conn = conn
+    End Sub
 
     Private Sub frmRareSpeciesLookup_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         tblSpecies = Nothing
     End Sub
 
     Private Sub frmRareSpeciesLookup_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        Dim strQuery As String = "SELECT DISTINCT CommonName, LatinName, ScientificName, SpeciesCode, TaxonomyClassLevelCode FROM lu_species_code;"
+        Dim strQuery As String = "SELECT DISTINCT CommonName, LatinName, ScientificName, SpeciesCode, TaxonomyClassLevelCode FROM " & DB_SPECIES_CODE_TABLE & ";"
         Dim sub_data_set As DataSet = New DataSet()
-        Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, conn)
+        Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, m_conn)
         Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-        sub_data_adapter.Fill(sub_data_set, "lu_species_code")
+        sub_data_adapter.Fill(sub_data_set, DB_SPECIES_CODE_TABLE)
         tblSpecies = sub_data_set.Tables(0)
         If strRareSpeciesCode <> "" Then
             Dim r As DataRow

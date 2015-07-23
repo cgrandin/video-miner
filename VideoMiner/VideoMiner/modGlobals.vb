@@ -9,15 +9,29 @@ Imports System.IO
 ''' <remarks>Think hard before adding something here, especially new classes. The program should
 ''' remain object-oriented as much as possible and adding things here will likely break that</remarks>
 Module modGlobals
-
     Public Const VMCD = "VideoMinerConfigurationDetails"
     Public Const VIDEOMINER_CONFIG_FILE_NAME = VMCD & ".xml"
     Public Const DB_DATA_TABLE As String = "data"
-    Public Const DB_SPECIES_BUTTONS_TABLE As String = "videominer_species_buttons"
-    Public Const DB_BUTTONS_TABLE As String = "videominer_habitat_buttons"
-    Public Const DB_TRANSECT_BUTTONS_TABLE As String = "videominer_transect_buttons"
-    Public Const DB_CONFIDENCE_IDS_TABLE As String = "lu_confidence_ids"
+
     Public Const DB_ABUNDANCE_TABLE As String = "lu_acfor_scale"
+    Public Const DB_BUTTON_COLORS_TABLE As String = "lu_button_colors"
+    Public Const DB_COMPLEXITY_TABLE As String = "lu_complexity"
+    Public Const DB_CONFIDENCE_IDS_TABLE As String = "lu_confidence_ids"
+    Public Const DB_DATA_CODES_TABLE As String = "lu_data_codes"
+    Public Const DB_DISTURBANCE_TABLE As String = "lu_disturbance"
+    Public Const DB_IMAGE_QUALITY_TABLE As String = "lu_image_quality"
+    Public Const DB_OBSERVED_SIDE_TABLE As String = "lu_observed_side"
+    Public Const DB_PERCENT_TABLE As String = "lu_percent"
+    Public Const DB_PROTOCOL_TABLE As String = "lu_protocol"
+    Public Const DB_RELIEF_TABLE As String = "lu_relief"
+    Public Const DB_SPECIES_CODE_TABLE As String = "lu_species_code"
+    Public Const DB_SUBSTRATE_TABLE As String = "lu_substrate"
+    Public Const DB_SURVEY_MODE_TABLE As String = "lu_survey_mode"
+    Public Const DB_TIME_SOURCE_TABLE As String = "lu_time_source"
+    Public Const DB_HABITAT_BUTTONS_TABLE As String = "videominer_habitat_buttons"
+    Public Const DB_SPECIES_BUTTONS_TABLE As String = "videominer_species_buttons"
+    Public Const DB_TRANSECT_BUTTONS_TABLE As String = "videominer_transect_buttons"
+
 
     Public Const DB_CONN_STRING As String = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source="
 
@@ -27,7 +41,6 @@ Module modGlobals
     Public Const VIDEO_TIME_DECIMAL_LABEL As String = "00:00:00.000"
     Public Const VIDEO_TIME_FORMAT As String = "{0:D2}:{1:D2}:{2:D2}.{3:D4}"
 
-    Public conn As OleDbConnection
     Public blRareSpecies As Boolean = False
 
     Public dictHabitatFieldValues As Dictionary(Of String, String)
@@ -44,7 +57,7 @@ Module modGlobals
     Public strConfigureTable As String = ""
     Public blButtonEdit As Boolean = False
 
-    Public strDatabaseFilePath As String
+    'Public strDatabaseFilePath As String
     Public strVideoFilePath As String
 
     Public blCleared As Boolean = False

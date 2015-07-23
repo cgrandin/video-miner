@@ -180,6 +180,11 @@ Public Class VideoMiner
     ''' <remarks></remarks>
     Private m_strDatabasePath As String
     ''' <summary>
+    ''' Holds the full path filename as entered by the user in the OpenFileDialog
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_strDatabaseFilePath As String
+    ''' <summary>
     ''' Holds the last known video file path as entered by the user in the OpenFileDialog
     ''' Does not hold the filename itself
     ''' </summary>
@@ -250,23 +255,16 @@ Public Class VideoMiner
     ''' <remarks></remarks>
     Private m_blInTransect As Boolean = vbFalse
 
-    ''' <summary>
-    ''' Current database table object
-    ''' </summary>
-    ''' <remarks></remarks>
+    Private m_conn As OleDbConnection
     Private m_data_table As DataTable
     Private m_data_cmd As OleDbCommand
     Private m_data_adapter As OleDbDataAdapter
     Private m_data_command_builder As OleDbCommandBuilder
     Private m_data_set As DataSet
     Private m_data_binding As BindingSource
-
-    ' Database variables
-    Public db_filename As String
-    Public db_file_open As Boolean
-    Private db_id_num As Long
-    Private last_data_row As DataRow
-
+    Private m_db_file_open As Boolean
+    Private m_db_filename As String
+    Private m_db_id_num As Long
 
     ' GPS connection settings to initialize frmGpsSettings form with
     Private m_strComPort As String
@@ -281,7 +279,6 @@ Public Class VideoMiner
     Private m_strDatabaseColumns As String
 
     Private ttToolTip As ToolTip
-    'Public strMilliseconds As String = "00"
     Private select_string As String
     Private insert_string As String
     Private substrate_name As String
@@ -346,8 +343,8 @@ Public Class VideoMiner
     Private intNumHabitatButtons As Integer
 
     ' Transect variables
-    Public Transect_Textboxes() As TextBox
-    Public strTransectButtonCodeNames() As String
+    Private Transect_Textboxes() As TextBox
+    Private strTransectButtonCodeNames() As String
     Private Transect_Buttons() As Button
     Private intTransectButtonCodes() As Integer
     Private strTransectButtonTables() As String
@@ -357,7 +354,7 @@ Public Class VideoMiner
     Private intNumTransectButtons As Integer
 
     ' for the species variables
-    Public speciesButtons() As Button
+    Private speciesButtons() As Button
     Private strSpeciesButtonCodes() As String ' species codes
     Private strSpeciesButtonNames() As String
     Private strSpeciesButtonCodeNames() As String ' name of the fields where the data came from when user clicks a user button
@@ -1002,7 +999,7 @@ Public Class VideoMiner
             Me.Close()
         End If
 
-        db_file_open = False
+        m_db_file_open = False
         m_video_file_open = False
         db_file_unload()
         video_file_unload()
@@ -1501,7 +1498,7 @@ Public Class VideoMiner
                 If strKeyboardShortcut <> NULL_STRING Then
                     Dim sub_data_set As DataSet = New DataSet()
 
-                    Dim sub_db_command As OleDbCommand = New OleDbCommand("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor, KeyboardShortcut from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", conn)
+                    Dim sub_db_command As OleDbCommand = New OleDbCommand("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor, KeyboardShortcut from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", m_conn)
                     Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
 
                     sub_data_adapter.Fill(sub_data_set, DB_SPECIES_BUTTONS_TABLE)
@@ -1610,11 +1607,11 @@ Public Class VideoMiner
 
         If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
             m_strDatabasePath = ofd.FileName.Substring(0, ofd.FileName.LastIndexOf("\"))
+            m_strDatabaseFilePath = ofd.FileName  ' ofd.FileName returns full path filename
             ' write the database path to the XML file
             SaveConfiguration("/DatabasePath", m_strDatabasePath)
-            strDatabaseFilePath = ofd.FileName
-            openDatabase(ofd.FileName) ' ofd.FileName returns full path filename
-            If Not conn Is Nothing Then
+            openDatabase()
+            If Not m_conn Is Nothing Then
                 files_loaded()
             End If
         End If
@@ -1627,12 +1624,12 @@ Public Class VideoMiner
     ''' <remarks></remarks>
     Public Sub CloseDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuCloseDatabase.Click
         blCloseDatabase = True
-        conn.Close()
-        conn = Nothing
+        m_conn.Close()
+        m_conn = Nothing
         m_data_cmd = Nothing
         m_data_adapter = Nothing
         grdVideoMinerDatabase.DataSource = Nothing
-        db_file_open = False
+        m_db_file_open = False
         db_file_unload()
         no_files_loaded()
         Me.cmdDefineAllSpatialVariables.Visible = False
@@ -1780,7 +1777,7 @@ Public Class VideoMiner
         Dim query As String = NULL_STRING
         Try
             query = createInsertQuery(start_or_end, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-            Dim oComm As New OleDbCommand(query, conn)
+            Dim oComm As New OleDbCommand(query, m_conn)
             numrows = oComm.ExecuteNonQuery()
             fetch_data()
         Catch ex As Exception
@@ -1852,7 +1849,7 @@ Public Class VideoMiner
     End Sub
 
     Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEdit.Click
-        frmSpeciesList = New frmSpeciesList
+        frmSpeciesList = New frmSpeciesList(m_conn)
         frmSpeciesList.ShowDialog()
         pnlSpeciesData.Controls.Clear()
         fillSpeciesVariableButtonPanel()
@@ -2373,15 +2370,7 @@ Public Class VideoMiner
         Me.cmdCloseCalendar.Visible = False
     End Sub
 
-
     Private Sub cmdDefineAllSpatialVariables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDefineAllSpatialVariables.Click
-
-        Dim tc As TimeSpan = New TimeSpan(VIDEO_TIME_LABEL)
-
-        Dim strX As String = NS
-        Dim strY As String = NS
-        Dim strZ As String = NS
-
         Dim query As String = NULL_STRING
         Dim strCode As String = NULL_STRING
         Dim strName As String = NULL_STRING
@@ -2403,7 +2392,6 @@ Public Class VideoMiner
             Else
                 blVideoWasPlaying = False
             End If
-            tc = getTimeCode()
             strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
             strVideoTextTime = strVideoTime
         End If
@@ -2413,7 +2401,7 @@ Public Class VideoMiner
 
             ' The GPRMC NMEA String does not contain elevation values. Enter null into database
             ' if GPRMC is the chosen string type.
-            blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+            blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, "", "", "")
             If Not blAquiredFix Then
                 Exit Sub
             End If
@@ -2460,7 +2448,7 @@ Public Class VideoMiner
 
                 Else
 
-                    Dim sub_form As frmTableView = New frmTableView(strHabitatButtonTables(i), i, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
+                    Dim sub_form As frmTableView = New frmTableView(m_conn, strHabitatButtonTables(i), i, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
                     sub_form.Multiple = True
                     sub_form.ShowDialog()
                     If Not sub_form.UserClosedForm Then
@@ -2491,7 +2479,7 @@ Public Class VideoMiner
             'Debug.WriteLine(query)
             Dim numrows As Integer
             Dim oComm As OleDbCommand
-            oComm = New OleDbCommand(query, conn)
+            oComm = New OleDbCommand(query, m_conn)
             numrows = oComm.ExecuteNonQuery()
             fetch_data()
 
@@ -2509,13 +2497,14 @@ Public Class VideoMiner
         End Try
     End Sub
 
+    ''' <summary>
+    ''' When user clicks this button, it is the same as if they clicked all the transect variable buttons in sequence.
+    ''' This is a convinience button.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub cmdDefineAllTransectVariables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDefineAllTransectVariables.Click
-        Dim tc As TimeSpan = New TimeSpan(VIDEO_TIME_LABEL)
-
-        Dim strX As String = NS
-        Dim strY As String = NS
-        Dim strZ As String = NS
-
         Dim query As String = NULL_STRING
         Dim strCode As String = NULL_STRING
         Dim strName As String = NULL_STRING
@@ -2537,7 +2526,6 @@ Public Class VideoMiner
             Else
                 blVideoWasPlaying = False
             End If
-            tc = getTimeCode()
             strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
         End If
 
@@ -2546,7 +2534,7 @@ Public Class VideoMiner
 
             ' The GPRMC NMEA String does not contain elevation values. Enter null into database
             ' if GPRMC is the chosen string type.
-            blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
+            blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, "", "", "")
             If Not blAquiredFix Then
                 Exit Sub
             End If
@@ -2591,7 +2579,7 @@ Public Class VideoMiner
                 Else
 
 
-                    Dim sub_form As frmTableView = New frmTableView(strTransectButtonTables(i), i, intNumTransectButtons, strTransectButtonNames, dictTransectFieldValues, strTransectButtonCodeNames, Transect_Textboxes)
+                    Dim sub_form As frmTableView = New frmTableView(m_conn, strTransectButtonTables(i), i, intNumTransectButtons, strTransectButtonNames, dictTransectFieldValues, strTransectButtonCodeNames, Transect_Textboxes)
                     sub_form.Multiple = True
                     sub_form.ShowDialog()
                     If Not sub_form.UserClosedForm Then
@@ -2620,7 +2608,7 @@ Public Class VideoMiner
                 query = createInsertQuery(intTransectButtonCodes(i), NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
                 Dim numrows As Integer
                 Dim oComm As OleDbCommand
-                oComm = New OleDbCommand(query, conn)
+                oComm = New OleDbCommand(query, m_conn)
                 numrows = oComm.ExecuteNonQuery()
                 fetch_data()
             End If
@@ -2690,7 +2678,7 @@ Public Class VideoMiner
 
                     Dim numrows As Integer
                     Dim oComm As OleDbCommand
-                    oComm = New OleDbCommand(query, conn)
+                    oComm = New OleDbCommand(query, m_conn)
                     numrows = oComm.ExecuteNonQuery()
                     fetch_data()
 
@@ -2719,7 +2707,7 @@ Public Class VideoMiner
 
                     Dim numrows As Integer
                     Dim oComm As OleDbCommand
-                    oComm = New OleDbCommand(query, conn)
+                    oComm = New OleDbCommand(query, m_conn)
                     numrows = oComm.ExecuteNonQuery()
                     fetch_data()
                 End If
@@ -3000,7 +2988,7 @@ Public Class VideoMiner
 
                 query = createInsertQuery(COMMENT_ADDED, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
 
-                Dim oComm As New OleDbCommand(query, conn)
+                Dim oComm As New OleDbCommand(query, m_conn)
                 numrows = oComm.ExecuteNonQuery()
                 fetch_data()
             Else
@@ -3018,7 +3006,7 @@ Public Class VideoMiner
 
     Private Sub cmdNothingInPhoto_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdNothingInPhoto.Click
 
-        If db_file_open = True Then
+        If m_db_file_open = True Then
             Dim tc As String = VIDEO_TIME_LABEL
 
             Dim strX As String = NS
@@ -3073,7 +3061,7 @@ Public Class VideoMiner
 
                     query = createInsertQuery(NOTHING_IN_PHOTO, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
 
-                    Dim oComm As New OleDbCommand(query, conn)
+                    Dim oComm As New OleDbCommand(query, m_conn)
                     numrows = oComm.ExecuteNonQuery()
                     fetch_data()
                 Else
@@ -3096,7 +3084,7 @@ Public Class VideoMiner
             frmSpeciesEvent = Nothing
         End If
 
-        frmConfigureSpecies = New frmConfigureSpecies
+        frmConfigureSpecies = New frmConfigureSpecies(m_conn)
         frmConfigureSpecies.ShowDialog()
 
     End Sub
@@ -3158,9 +3146,9 @@ Public Class VideoMiner
                 If Not Me.grdVideoMinerDatabase.DataSource Is Nothing Then
                     CloseDatabase_Click(Nothing, Nothing)
                 End If
-                openDatabase(strDatabaseFileName) ' ofd.FileName returns full path filename
+                openDatabase()
                 files_loaded()
-                strDatabaseFilePath = strDatabaseFileName
+                m_strDatabaseFilePath = strDatabaseFileName
             End If
 
             If blImageOpen = True Then
@@ -3335,7 +3323,7 @@ Public Class VideoMiner
 
             If Not Me.grdVideoMinerDatabase.DataSource Is Nothing Then
                 blDatabaseOpen = True
-                strDatabaseFileName = strDatabaseFilePath
+                strDatabaseFileName = m_strDatabaseFilePath
                 strNumberRecordsShown = CStr(intNumberDisplayRecords)
             Else
                 blDatabaseOpen = False
@@ -3418,7 +3406,7 @@ Public Class VideoMiner
 
         If Not Me.grdVideoMinerDatabase.DataSource Is Nothing Then
             blDatabaseOpen = True
-            strDatabaseFileName = strDatabaseFilePath
+            strDatabaseFileName = m_strDatabaseFilePath
             strNumberRecordsShown = CStr(intNumberDisplayRecords)
         Else
             blDatabaseOpen = False
@@ -3711,7 +3699,7 @@ Public Class VideoMiner
             Try
                 query = createInsertQuery(ON_OFF_BOTTOM, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
 
-                Dim oComm As New OleDbCommand(query, conn)
+                Dim oComm As New OleDbCommand(query, m_conn)
                 numrows = oComm.ExecuteNonQuery()
                 fetch_data()
             Catch ex As Exception
@@ -4586,46 +4574,22 @@ Public Class VideoMiner
 #End Region
 
 #Region "Database Functions"
-
-    ' ==========================================================================================================
-    ' Name: db_file_load()
-    ' Description: Function called when a database is opened
-    ' 1.) Change the text of text box DatabaseFileStatus at top of program to read Name of opened database.
-    ' 2.) Enable option "Close Database" in the file menu. (this is disabled until you open a database)
-    ' 3.) Disable option "Open Database" in the file menu. (this is disabled until you close a database)
-    ' ==========================================================================================================
+    ''' <summary>
+    ''' Enable some controls when the database is opened
+    ''' </summary>
     Private Sub db_file_load()
-        'DatabaseFileStatus.Text = DB_FILE_STATUS_LOADED + db_filename + IS_OPEN
-        'DatabaseFileStatus.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-        'DatabaseFileStatus.BackColor = Color.LightGray
-        'DatabaseFileStatus.ForeColor = Color.LimeGreen
-        'DatabaseFileStatus.TextAlign = HorizontalAlignment.Center
-        If Not conn Is Nothing Then
-            Me.lblDatabase.Text = DB_FILE_STATUS_LOADED & db_filename & " is open"
-
+        If Not m_conn Is Nothing Then
+            Me.lblDatabase.Text = DB_FILE_STATUS_LOADED & m_db_filename & " is open"
             mnuOpenDatabase.Enabled = False
             mnuCloseDatabase.Enabled = True
         End If
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: db_file_unload()
-    ' Description: Function called when a database is closed
-    ' 1.) Change the text of text box DatabaseFileStatus at top of program to read "no database loaded"
-    ' 2.) Enable option "Open Database" in the file menu. (this is disabled until you close a database)
-    ' 3.) Disable option "Close Database" in the file menu. (this is disabled until you open a database)
-    ' 4.) Remove buttons from panel1 and panel2
-    ' ==========================================================================================================
+    ''' <summary>
+    ''' Set some controls to be invisible once the database has been closed, and remove the dynamic panel buttons.
+    ''' </summary>
     Public Sub db_file_unload()
-
-        'DatabaseFileStatus.Text = DB_FILE_STATUS_UNLOADED
-        'DatabaseFileStatus.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-        'DatabaseFileStatus.BackColor = Color.LightGray
-        'DatabaseFileStatus.ForeColor = Color.Red
-        'DatabaseFileStatus.TextAlign = HorizontalAlignment.Center
-
         Me.lblDatabase.Text = DB_FILE_STATUS_UNLOADED
-
         mnuOpenDatabase.Enabled = True
         mnuCloseDatabase.Enabled = False
         Dim i As Integer
@@ -4635,55 +4599,45 @@ Public Class VideoMiner
                 Transect_Buttons(i) = Nothing
                 Transect_Textboxes(i).Dispose()
                 Transect_Textboxes(i) = Nothing
-
             Next
             intNumTransectButtons = 0
         End If
-
         If Not IsNothing(buttons) Then
             For i = 0 To intNumHabitatButtons - 1
                 buttons(i).Dispose()
                 buttons(i) = Nothing
                 textboxes(i).Dispose()
                 textboxes(i) = Nothing
-
             Next
             intNumHabitatButtons = 0
             For i = 0 To intNumSpeciesButtons - 1
                 speciesButtons(i).Dispose()
                 speciesButtons(i) = Nothing
-
             Next
             intNumSpeciesButtons = 0
         End If
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: openDatabase
-    ' Description: Opens a database for use in the program.
-    ' 1.) If the database can not be loaded, inform the user.
-    ' 2.) Load one button for each record in the videominer_habitat_buttons table into Panel1: fill_spatialvariable_button_panel()
-    ' 3.) Load one button for each record in the videominer_species_buttons table into Panel2: fill_speciesvariable_button_panel()
-    ' ==========================================================================================================
-    Public Sub openDatabase(ByVal strDBFileName As String)
-        Dim connection_string As String
-        connection_string = DB_CONN_STRING + strDBFileName
-
+    ''' <summary>
+    ''' Opens the MS Access database, loads one button for each record in the DB_HABITAT_BUTTONS_TABLE table into Panel1: fill_spatialvariable_button_panel(),
+    ''' and loads one button for each record in the DB_SPECIES_BUTTONS_TABLE table into Panel2: fill_speciesvariable_button_panel().
+    ''' </summary>
+    Public Sub openDatabase()
+        Dim connection_string As String = DB_CONN_STRING + m_strDatabaseFilePath
         Try
-            conn = New OleDbConnection(connection_string)
-            conn.Open()
+            m_conn = New OleDbConnection(connection_string)
+            m_conn.Open()
         Catch ex As Exception
-            MsgBox("The file" + strDBFileName + " was not found.", MsgBoxStyle.Exclamation, "File not found")
+            MessageBox.Show("Error loading database. Check that the file" & m_strDatabaseFilePath & " exists and is not corrupted.", "Error loading database file", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Finally
-            db_filename = get_rel_filename(strDBFileName)
-            'db_filename = Path.GetFileName(strDBFileName) ' CJG try this instead?
-            db_file_open = True
+            m_db_filename = get_rel_filename(m_strDatabaseFilePath)
+            m_db_file_open = True
             fillTransectVariableButtonPanel()
             fillSpatialVariableButtonPanel()
             fillSpeciesVariableButtonPanel()
             fillHabitatFieldsCollection()
             fillDataCodesTable()
-            If Not conn Is Nothing Then
+            If Not m_conn Is Nothing Then
                 db_file_load()
                 If m_video_file_open Then
                     files_loaded()
@@ -4695,111 +4649,79 @@ Public Class VideoMiner
         End Try
     End Sub
 
-
     Private Sub fillDataCodesTable()
-
         Dim clDataCodes As New Collection
         Dim clDataCodeDescriptions As New Collection
-
         Dim strQuery As String
         Dim tblDataCodes As DataTable
-
         Dim oComm As OleDbCommand
-
         Try
-            strQuery = "DELETE * FROM lu_data_codes WHERE Code > 4 AND Code < 555;"
-
-            oComm = New OleDbCommand(strQuery, conn)
+            strQuery = "DELETE * FROM " & DB_DATA_CODES_TABLE & " WHERE Code > 4 AND Code < 555;"
+            oComm = New OleDbCommand(strQuery, m_conn)
             oComm.ExecuteNonQuery()
         Catch ex As Exception
             MessageBox.Show("You do not have the permissions to perform operations on this database, make sure you have full control over the file", "Could Not Open Database", MessageBoxButtons.OK, MessageBoxIcon.Error)
             CloseDatabase_Click(Nothing, Nothing)
             Exit Sub
         End Try
-
-
-        strQuery = "SELECT * FROM videominer_habitat_buttons;"
-
+        strQuery = "SELECT * FROM " & DB_HABITAT_BUTTONS_TABLE & ";"
         Dim sub_data_set As DataSet = New DataSet()
-        Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, conn)
+        Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, m_conn)
         Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-        sub_data_adapter.Fill(sub_data_set, "videominer_habitat_buttons")
-
+        sub_data_adapter.Fill(sub_data_set, DB_HABITAT_BUTTONS_TABLE)
         tblDataCodes = sub_data_set.Tables(0)
-
         Dim r As DataRow
-
+        For Each r In tblDataCodes.Rows
+            clDataCodes.Add(r.Item("DataCode"))
+            clDataCodeDescriptions.Add(r.Item("ButtonText"))
+        Next
+        strQuery = "SELECT * FROM " & DB_TRANSECT_BUTTONS_TABLE & ";"
+        sub_data_set = Nothing
+        sub_data_set = New DataSet
+        sub_db_command = New OleDbCommand(strQuery, m_conn)
+        sub_data_adapter = New OleDbDataAdapter(sub_db_command)
+        sub_data_adapter.Fill(sub_data_set, DB_TRANSECT_BUTTONS_TABLE)
+        tblDataCodes = sub_data_set.Tables(0)
         For Each r In tblDataCodes.Rows
             clDataCodes.Add(r.Item("DataCode"))
             clDataCodeDescriptions.Add(r.Item("ButtonText"))
         Next
 
-        strQuery = "SELECT * FROM videominer_transect_buttons;"
-
+        strQuery = "SELECT * FROM " & DB_SPECIES_BUTTONS_TABLE & " WHERE DataCode <> 4;"
         sub_data_set = Nothing
         sub_data_set = New DataSet
-        sub_db_command = New OleDbCommand(strQuery, conn)
+        sub_db_command = New OleDbCommand(strQuery, m_conn)
         sub_data_adapter = New OleDbDataAdapter(sub_db_command)
-        sub_data_adapter.Fill(sub_data_set, "videominer_transect_buttons")
-
+        sub_data_adapter.Fill(sub_data_set, DB_TRANSECT_BUTTONS_TABLE)
         tblDataCodes = sub_data_set.Tables(0)
-
         For Each r In tblDataCodes.Rows
             clDataCodes.Add(r.Item("DataCode"))
             clDataCodeDescriptions.Add(r.Item("ButtonText"))
         Next
 
-        strQuery = "SELECT * FROM videominer_species_buttons WHERE DataCode <> 4;"
-
+        strQuery = "SELECT * FROM " & DB_DATA_CODES_TABLE & ";"
         sub_data_set = Nothing
         sub_data_set = New DataSet
-        sub_db_command = New OleDbCommand(strQuery, conn)
+        sub_db_command = New OleDbCommand(strQuery, m_conn)
         sub_data_adapter = New OleDbDataAdapter(sub_db_command)
-        sub_data_adapter.Fill(sub_data_set, "videominer_transect_buttons")
-
+        sub_data_adapter.Fill(sub_data_set, DB_DATA_CODES_TABLE)
         tblDataCodes = sub_data_set.Tables(0)
-
-        For Each r In tblDataCodes.Rows
-            clDataCodes.Add(r.Item("DataCode"))
-            clDataCodeDescriptions.Add(r.Item("ButtonText"))
-        Next
-
-        strQuery = "SELECT * FROM lu_data_codes;"
-
-        sub_data_set = Nothing
-        sub_data_set = New DataSet
-        sub_db_command = New OleDbCommand(strQuery, conn)
-        sub_data_adapter = New OleDbDataAdapter(sub_db_command)
-        sub_data_adapter.Fill(sub_data_set, "lu_data_codes")
-
-        tblDataCodes = sub_data_set.Tables(0)
-
         Dim i As Integer
-
         For Each r In tblDataCodes.Rows
-
             For i = 1 To clDataCodes.Count
-
                 If r.Item("Code") = clDataCodes.Item(i) Then
                     clDataCodes.Remove(i)
                     clDataCodeDescriptions.Remove(i)
                     i -= 1
                 End If
-
             Next
-
         Next
-
         Dim insertCommand As OleDbCommand
-
         Try
             For i = 1 To clDataCodes.Count
-
-                strQuery = "INSERT INTO lu_data_codes (Code, Description) VALUES(" & clDataCodes.Item(i) & ", " & SingleQuote(clDataCodeDescriptions.Item(i)) & ")"
-
-                insertCommand = New OleDbCommand(strQuery, conn)
+                strQuery = "INSERT INTO " & DB_DATA_CODES_TABLE & " (Code, Description) VALUES(" & clDataCodes.Item(i) & ", " & SingleQuote(clDataCodeDescriptions.Item(i)) & ")"
+                insertCommand = New OleDbCommand(strQuery, m_conn)
                 insertCommand.ExecuteNonQuery()
-
             Next
         Catch ex As Exception
             MessageBox.Show("You do not have the permissions to perform operations on this database, make sure you have full control over the file", "Could Not Open Database", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -4808,11 +4730,14 @@ Public Class VideoMiner
         End Try
     End Sub
 
+    ''' <summary>
+    ''' Fetch the data from the MS Access database into the DataGridView and sets the next unique ID that the database can recieve.
+    ''' </summary>
+    ''' <remarks>Order of the rows will be by decending primary key ('ID' field)</remarks>
     Private Sub fetch_data()
-        Dim query As String = "SELECT * FROM " & DB_DATA_TABLE & " ORDER BY ID DESC;"
-
-        m_data_cmd = New OleDbCommand(query, conn)
-        m_data_adapter = New OleDbDataAdapter(query, conn)
+        Dim query As String = "SELECT * FROM " & DB_DATA_TABLE & " ORDER BY ID DESC;" ' DESC is important here, see comment below on m_db_id_num
+        m_data_cmd = New OleDbCommand(query, m_conn)
+        m_data_adapter = New OleDbDataAdapter(query, m_conn)
         m_data_set = New DataSet()
         Dim intIDColumn As Integer = 0
         Try
@@ -4823,12 +4748,12 @@ Public Class VideoMiner
             m_data_table = m_data_set.Tables(DB_DATA_TABLE)
             grdVideoMinerDatabase.DataSource = m_data_table
         Catch ex As Exception
-            MsgBox("There was an exception thrown while trying to set up the database view. Message and Stack trace:" & vbCrLf & ex.Message() & vbCrLf & ex.StackTrace)
+            MsgBox("There was an exception thrown while trying to load the MS Access database into the DataGridView. Message and Stack trace:" & vbCrLf & ex.Message() & vbCrLf & ex.StackTrace)
         Finally
             If m_data_set.Tables(0).Rows.Count > 0 Then
-                db_id_num = m_data_table.Rows(0).Item(intIDColumn) + 1 ' retrieve id from database, assumes id ordered descending
+                m_db_id_num = m_data_table.Rows(0).Item(intIDColumn) + 1 ' m_db_id_num is the next unique primary key to use in inserting data into database (assumes decending order)
             Else
-                db_id_num = 1
+                m_db_id_num = 1
             End If
         End Try
         If Me.grdVideoMinerDatabase.Rows.Count = 0 Then
@@ -4844,17 +4769,17 @@ Public Class VideoMiner
     ''' <summary>
     ''' Creates a string which is an 'INSERT INTO' query in access database format.
     ''' </summary>
-    ''' <param name="strDataCode">Code for the data. This code is found in the lu_data_codes table in the access database</param>
-    ''' <param name="strSpeciesName">Species name as found in the lu_species_code table</param>
-    ''' <param name="strSpeciesCode">Species code as found in the lu_species_code table</param>
+    ''' <param name="strDataCode">Code for the data. This code is found in the DB_DATA_CODES_TABLE table in the access database</param>
+    ''' <param name="strSpeciesName">Species name as found in the DB_SPECIES_CODE_TABLE table</param>
+    ''' <param name="strSpeciesCode">Species code as found in the DB_SPECIES_CODE_TABLE table</param>
     ''' <param name="strSpeciesCount">Count of the species given by strSpeciesCode and strSpeciesName</param>
-    ''' <param name="strSide">Which side the observation was on given by table lu_observed_side (0=center,1=port,2=starboard)</param>
+    ''' <param name="strSide">Which side the observation was on given by table DB_OBSERVED_SIDE_TABLE (0=center,1=port,2=starboard)</param>
     ''' <param name="strRange">Distance of observation from the centerline in cm</param>
     ''' <param name="strLength">Length in cm of the observed species</param>
     ''' <param name="strHeight">Height measurement for species where length is not the standard measurement (e.g. Tunicate)</param>
     ''' <param name="strWidth">Width measurement for species where length is not the standard measurement</param>
     ''' <param name="strAbundance">Abundance of the species seen (TODO:update this definition)</param>
-    ''' <param name="strIdConfidence">Confidence value for species ID. See table lu_confidence_ids (1=high,2=med,3=low)</param>
+    ''' <param name="strIdConfidence">Confidence value for species ID. See table DB_CONFIDENCE_IDS_TABLE (1=high,2=med,3=low)</param>
     ''' <param name="strComment">Video reviewer's comments</param>
     ''' <remarks></remarks>
     Private Function createInsertQuery(strDataCode As String, strSpeciesName As String, _
@@ -4869,15 +4794,11 @@ Public Class VideoMiner
                                  "ImageQualityID,SpeciesName,SpeciesID,SpeciesCount,Side,Range,Length,Height,Width,Abundance,IDConfidence,Comment,DataCode," & _
                                  "X,Y,Z,FileName,ScreenCaptureName,ElapsedTime,ReviewedDate,ReviewedTime,ComplexityID,FieldOfView) VALUES("
 
-        If frmVideoPlayer Is Nothing Then
-            ElapsedTime = NULL_STRING
-        End If
-
         ' Parse through all the field names in the collection and attach the associated variables with the field names
         For i = 1 To colTableFields.Count
             Select Case colTableFields.Item(i).ToString
                 Case "ID"
-                    strQuery = strQuery & db_id_num
+                    strQuery = strQuery & m_db_id_num
                 Case "ProjectName"
                     If m_project_name = NULL_STRING Then
                         strQuery = strQuery & NS
@@ -5130,7 +5051,7 @@ SkipInsertComma:
     ' ==========================================================================================================
     ' Name: fill_spatialvariable_button_panel()
     ' Description:  Prepare panel1 once both a database and a video file are opened.
-    ' 1.) Load one button for each record in the videominer_habitat_buttons table into Panel1.
+    ' 1.) Load one button for each record in the DB_HABITAT_BUTTONS_TABLE table into Panel1.
     ' 2.) Set the button click event to SpatialVariableButtonHandler()
     ' ==========================================================================================================
 
@@ -5161,9 +5082,9 @@ SkipInsertComma:
         End If
 
         Dim sub_data_set As DataSet = New DataSet()
-        Dim sub_db_command As OleDbCommand = New OleDbCommand("select * from " & DB_BUTTONS_TABLE & " ORDER BY DrawingOrder;", conn)
+        Dim sub_db_command As OleDbCommand = New OleDbCommand("select * from " & DB_HABITAT_BUTTONS_TABLE & " ORDER BY DrawingOrder;", m_conn)
         Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-        sub_data_adapter.Fill(sub_data_set, DB_BUTTONS_TABLE)
+        sub_data_adapter.Fill(sub_data_set, DB_HABITAT_BUTTONS_TABLE)
         Dim r As DataRow
         Dim d As DataTable
         d = sub_data_set.Tables(0)
@@ -5272,7 +5193,7 @@ SkipInsertComma:
     ' Name: SpatialVariableButtonHandler
     ' Description: Called when a spatial button from Panel1 is clicked.
     ' 1.) When a user clicks a button, pull up that buttons corresponding list of choices. For example, selecting the
-    '     relief button allows the user to select a relief type from the datbase table lu_relief_type.
+    '     relief button allows the user to select a relief type from the datbase table DB_RELIEF_TABLE.
     ' 2.) Insert a record into the database table "data" with values for the fields:
     '           id,TimeCode,DataCode,transect,OnBottom and the id field that corresponds to the button that was pressed.
     '     - The id field is filleed with the user selected type (see step 1).
@@ -5287,27 +5208,6 @@ SkipInsertComma:
         Dim query As String = NULL_STRING
         Dim strCode As String = NULL_STRING
         Dim strName As String = NULL_STRING
-        Dim blAquiredFix As Boolean = False
-        Dim tc As TimeSpan = New TimeSpan(VIDEO_TIME_LABEL)
-        Dim strVideoTime As String = VIDEO_TIME_LABEL
-        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
-        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
-
-        Dim strX As String = NS
-        Dim strY As String = NS
-        Dim strZ As String = NS
-
-        If booUseGPSTimeCodes Then
-            'Otherwise get the time from the NMEA string.
-
-            ' The GPRMC NMEA String does not contain elevation values. Enter null into database
-            ' if GPRMC is the chosen string type.
-            blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
-            If Not blAquiredFix Then
-                Exit Sub
-            End If
-        End If
-
         ' Give the user the ability to cear a substrate type or percent by ctrl clicking the button
         If My.Computer.Keyboard.CtrlKeyDown Then
             For i = 0 To intNumHabitatButtons - 1
@@ -5350,11 +5250,8 @@ SkipInsertComma:
                 blVideoWasPlaying = False
             End If
             pauseVideo()
-            tc = getTimeCode()
-            strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
         End If
 
-        strVideoTextTime = strVideoTime
         ' ======================================Code by Xida Chen (end)===========================================
         Dim strHabitatValue As String = NULL_STRING
         For i = 0 To intNumHabitatButtons - 1
@@ -5380,8 +5277,6 @@ SkipInsertComma:
                         If image_open And m_video_file_open = False Then
 
                             getEXIFData()
-                            strVideoTextTime = strVideoTime
-
                         End If
 
                         ClearSpatial(btn.Name, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
@@ -5390,7 +5285,7 @@ SkipInsertComma:
                         'Debug.WriteLine(query)
                         Dim numrows As Integer
                         Dim oComm As OleDbCommand
-                        oComm = New OleDbCommand(query, conn)
+                        oComm = New OleDbCommand(query, m_conn)
                         numrows = oComm.ExecuteNonQuery()
                         fetch_data()
                         Exit Sub
@@ -5410,7 +5305,7 @@ SkipInsertComma:
                 Else
 
 
-                    Dim sub_form As frmTableView = New frmTableView(strHabitatButtonTables(i), i, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
+                    Dim sub_form As frmTableView = New frmTableView(m_conn, strHabitatButtonTables(i), i, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
                     sub_form.Multiple = False
                     sub_form.ShowDialog()
 
@@ -5426,7 +5321,6 @@ SkipInsertComma:
                                 If image_open And m_video_file_open = False Then
 
                                     getEXIFData()
-                                    strVideoTextTime = strVideoTime
 
                                 End If
 
@@ -5435,7 +5329,7 @@ SkipInsertComma:
                                 'Debug.WriteLine(query)
                                 Dim numrows As Integer
                                 Dim oComm As OleDbCommand
-                                oComm = New OleDbCommand(query, conn)
+                                oComm = New OleDbCommand(query, m_conn)
                                 numrows = oComm.ExecuteNonQuery()
                                 fetch_data()
 
@@ -5488,16 +5382,15 @@ SkipInsertComma:
                 If image_open And m_video_file_open = False Then
 
                     getEXIFData()
-                    strVideoTextTime = strVideoTime
 
                 End If
 
-                If tc.ToString() <> NULL_STRING Then
+                If VideoTime.ToString <> NULL_STRING Then
                     Dim numrows As Integer
 
                     query = createInsertQuery(intHabitatButtonCodes(i), NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
 
-                    Dim oComm As New OleDbCommand(query, conn)
+                    Dim oComm As New OleDbCommand(query, m_conn)
                     numrows = oComm.ExecuteNonQuery()
                     fetch_data()
 
@@ -5524,7 +5417,7 @@ SkipInsertComma:
         colTableFields = New Collection
 
         Dim sub_data_set As DataSet = New DataSet()
-        Dim sub_db_command As OleDbCommand = New OleDbCommand("select * from " & DB_DATA_TABLE, conn)
+        Dim sub_db_command As OleDbCommand = New OleDbCommand("select * from " & DB_DATA_TABLE, m_conn)
         Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
         sub_data_adapter.Fill(sub_data_set, DB_DATA_TABLE)
         Dim dc As DataColumn
@@ -5554,8 +5447,18 @@ SkipInsertComma:
 
 #End Region
 
-#Region "Transect Variable Functions"
 
+    ''' <summary>
+    ''' Load a table in from the currently loaded MS Access database
+    ''' </summary>
+    ''' <param name="name">The name of the table</param>
+    ''' <returns>True if the table was loaded successfully, false otherwise</returns>
+    Private Function get_table(name As String) As Boolean
+        Return False
+    End Function
+
+
+#Region "Transect Variable Functions"
     Public Sub fillTransectVariableButtonPanel()
         If dictTransectFieldValues Is Nothing Then
             dictTransectFieldValues = New Dictionary(Of String, String)
@@ -5563,22 +5466,16 @@ SkipInsertComma:
             dictTransectFieldValues = Nothing
             dictTransectFieldValues = New Dictionary(Of String, String)
         End If
-
         If Me.pnlTransectData.Controls.Count <> 0 Then
-
             Dim ctl As Control
-
             For Each ctl In pnlTransectData.Controls
                 If ctl.Name <> "lblTransectData" And ctl.Name <> "cmdDefineAllTransectVariables" Then
                     pnlTransectData.Controls.Remove(ctl)
                 End If
             Next
-
         End If
-
-
         Dim dsTransect As DataSet = New DataSet()
-        Dim commandTransect As OleDbCommand = New OleDbCommand("select * from " & DB_TRANSECT_BUTTONS_TABLE & " ORDER BY DrawingOrder;", conn)
+        Dim commandTransect As OleDbCommand = New OleDbCommand("select * from " & DB_TRANSECT_BUTTONS_TABLE & " ORDER BY DrawingOrder;", m_conn)
         Dim adaptCommand As OleDbDataAdapter = New OleDbDataAdapter(commandTransect)
         adaptCommand.Fill(dsTransect, DB_TRANSECT_BUTTONS_TABLE)
         Dim r As DataRow
@@ -5684,12 +5581,9 @@ SkipInsertComma:
         Me.cmdDefineAllTransectVariables.Visible = True
     End Sub
 
-
     Private Sub TransectVariableButtonHandler(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
-
         Dim btn As Button = sender
         Dim i As Integer
-
         ' Give the user the ability to cear a substrate type or percent by ctrl clicking the button
         If My.Computer.Keyboard.CtrlKeyDown Then
             For i = 0 To intNumTransectButtons - 1
@@ -5709,17 +5603,11 @@ SkipInsertComma:
             Next
             Exit Sub
         End If
-
-
-        Dim tc As TimeSpan = New TimeSpan(VIDEO_TIME_LABEL)
-
+        'Dim tc As TimeSpan = New TimeSpan(VIDEO_TIME_LABEL)
         Dim strX As String = NS
         Dim strY As String = NS
         Dim strZ As String = NS
-
         Dim query As String = NULL_STRING
-
-
         ' ======================================Code by Xida Chen (begin)===========================================
         'If they are using the video control then get the time from there.
         ' The time code is set to be VIDEO_TIME_LABEL initially.
@@ -5739,7 +5627,7 @@ SkipInsertComma:
                 End If
                 pauseVideo()
             End If
-            tc = getTimeCode()
+            'tc = getTimeCode()
             strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
 
         End If
@@ -5794,7 +5682,7 @@ SkipInsertComma:
                         Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
                     End If
                 Else
-                    Dim sub_form As frmTableView = New frmTableView(strTransectButtonTables(i), i, intNumTransectButtons, strTransectButtonNames, dictTransectFieldValues, strTransectButtonCodeNames, Transect_Textboxes)
+                    Dim sub_form As frmTableView = New frmTableView(m_conn, strTransectButtonTables(i), i, intNumTransectButtons, strTransectButtonNames, dictTransectFieldValues, strTransectButtonCodeNames, Transect_Textboxes)
                     sub_form.cmdScreenCapture.Visible = False
                     sub_form.Multiple = False
                     sub_form.ShowDialog()
@@ -5823,7 +5711,7 @@ SkipInsertComma:
                             'Debug.WriteLine(query)
                             Dim numrows As Integer
                             Dim oComm As OleDbCommand
-                            oComm = New OleDbCommand(query, conn)
+                            oComm = New OleDbCommand(query, m_conn)
                             numrows = oComm.ExecuteNonQuery()
                             fetch_data()
 
@@ -5881,13 +5769,13 @@ SkipInsertComma:
     ' ==========================================================================================================
     ' Name: fill_speciesvariable_button_panel()
     ' Description:  Once both a database and a video file are opened, prepare panel2
-    ' 1.) Load one button for each record in the videominer_species_buttons table into Panel2.
+    ' 1.) Load one button for each record in the DB_SPECIES_BUTTONS_TABLE table into Panel2.
     ' 2.) Set the button click event to SpeciesVariableButtonHandler()
     ' ==========================================================================================================
     Public Sub fillSpeciesVariableButtonPanel()
 
         Dim sub_data_set As DataSet = New DataSet()
-        Dim sub_db_command As OleDbCommand = New OleDbCommand("select * from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", conn)
+        Dim sub_db_command As OleDbCommand = New OleDbCommand("select * from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", m_conn)
         Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
         sub_data_adapter.Fill(sub_data_set, DB_SPECIES_BUTTONS_TABLE)
         Dim r As DataRow
@@ -6060,10 +5948,10 @@ SkipInsertComma:
                 If btn.Name = strSpeciesButtonNames(i) Then
                     'Query Species name based on button text column from data table
                     Dim strBtnTxtQuery As String
-                    strBtnTxtQuery = "SELECT ButtonText, DataCode FROM videominer_species_buttons WHERE " & _
+                    strBtnTxtQuery = "SELECT ButtonText, DataCode FROM " & DB_SPECIES_BUTTONS_TABLE & " WHERE " & _
                                     "ButtonCode = " & SingleQuote(strSpeciesButtonCodes(i))
 
-                    Dim cmd As OleDbCommand = New OleDbCommand(strBtnTxtQuery, conn)
+                    Dim cmd As OleDbCommand = New OleDbCommand(strBtnTxtQuery, m_conn)
                     Dim aDataReader As OleDb.OleDbDataReader
                     aDataReader = cmd.ExecuteReader
 
@@ -6074,7 +5962,7 @@ SkipInsertComma:
 
 
                     If Me.radDetailedEntry.Checked Then
-                        frmSpeciesEvent = New frmSpeciesEvent(RangeChecked, IDConfidenceChecked, AbundanceChecked, CountChecked, HeightChecked, WidthChecked, LengthChecked, CommentsChecked, _
+                        frmSpeciesEvent = New frmSpeciesEvent(m_conn, RangeChecked, IDConfidenceChecked, AbundanceChecked, CountChecked, HeightChecked, WidthChecked, LengthChecked, CommentsChecked, _
                                                               Range, Side, IDConfidence, Abundance, Count, Height, Width, Length, Comments)
 
                         frmSpeciesEvent.Location = New System.Drawing.Point(btn.Location.X, btn.Location.Y)
@@ -6122,7 +6010,7 @@ SkipInsertComma:
                                     'If transect_date = NULL_STRING Then
                                     query = createInsertQuery(intSpeciesButtonUserCodeChoice(i), strSpecies_Name, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
                                     Me.ScreenCaptureName = NULL_STRING
-                                    oComm = New OleDbCommand(query, conn)
+                                    oComm = New OleDbCommand(query, m_conn)
                                     numrows = oComm.ExecuteNonQuery()
                                     fetch_data()
                                 Else
@@ -6155,7 +6043,7 @@ SkipInsertComma:
                             strSpeciesCount = strQuickEntryCount
                             query = createInsertQuery(intSpeciesButtonUserCodeChoice(i), strSpecies_Name, strSpeciesCode, strSpeciesCount, NS, NS, NS, NS, NS, NS, NS, NS)
 
-                            oComm = New OleDbCommand(query, conn)
+                            oComm = New OleDbCommand(query, m_conn)
                             numrows = oComm.ExecuteNonQuery()
                             fetch_data()
                         Catch ex As Exception
@@ -6167,7 +6055,7 @@ SkipInsertComma:
                         End Try
                     ElseIf radAbundanceEntry.Checked Then
                         Try
-                            frmAbundanceTableView = New frmAbundanceTableView
+                            frmAbundanceTableView = New frmAbundanceTableView(m_conn)
                             frmAbundanceTableView.ShowDialog()
 
                             ' If an image is open and the video is closed then get the picture information from the EXIF file
@@ -6193,7 +6081,7 @@ SkipInsertComma:
                                     'If transect_date = NULL_STRING Then
                                     query = createInsertQuery(intSpeciesButtonUserCodeChoice(i), strSpecies_Name, strSpeciesCode, NS, NS, NS, NS, NS, NS, strAbundance, NS, strComment)
 
-                                    oComm = New OleDbCommand(query, conn)
+                                    oComm = New OleDbCommand(query, m_conn)
                                     numrows = oComm.ExecuteNonQuery()
                                     fetch_data()
                                     frmAbundanceTableView.Close()
@@ -6217,7 +6105,7 @@ SkipInsertComma:
             'End If
         End If
         strVideoTextTime = strVideoTime
-        frmSpeciesEvent = New frmSpeciesEvent(RangeChecked, IDConfidenceChecked, AbundanceChecked, CountChecked, HeightChecked, WidthChecked, LengthChecked, CommentsChecked, _
+        frmSpeciesEvent = New frmSpeciesEvent(m_conn, RangeChecked, IDConfidenceChecked, AbundanceChecked, CountChecked, HeightChecked, WidthChecked, LengthChecked, CommentsChecked, _
                                               Range, Side, IDConfidence, Abundance, Count, Height, Width, Length, Comments)
         frmSpeciesEvent.Location = New System.Drawing.Point(btn.Location.X, btn.Location.Y)
         frmSpeciesEvent.SpeciesName = Me.SpeciesName
@@ -6267,7 +6155,7 @@ SkipInsertComma:
                     'If transect_date = NULL_STRING Then
                     query = createInsertQuery(SPECIES_EVENT, Me.SpeciesName, Me.SpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
 
-                    oComm = New OleDbCommand(query, conn)
+                    oComm = New OleDbCommand(query, m_conn)
                     numrows = oComm.ExecuteNonQuery()
                     fetch_data()
                 Else
@@ -6336,7 +6224,7 @@ SkipInsertComma:
     Private Sub cmdRareSpeciesLookup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdRareSpeciesLookup.Click
 
         Try
-            frmRareSpeciesLookup = New frmRareSpeciesLookup
+            frmRareSpeciesLookup = New frmRareSpeciesLookup(m_conn)
             frmRareSpeciesLookup.ShowDialog()
         Catch ex As Exception
 
@@ -6345,20 +6233,20 @@ SkipInsertComma:
     End Sub
 
     Private Sub KeyboardShortcutsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles KeyboardShortcutsToolStripMenuItem.Click
-        frmKeyboardCommands = New frmKeyboardCommands
+        frmKeyboardCommands = New frmKeyboardCommands(m_conn)
         frmKeyboardCommands.ShowDialog()
     End Sub
 
     Private Sub ConfigureHabitatButtonToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureHabitatButtonToolStripMenuItem.Click
-        strConfigureTable = DB_BUTTONS_TABLE
-        frmConfigureButtons = New frmConfigureButtons
+        strConfigureTable = DB_HABITAT_BUTTONS_TABLE
+        frmConfigureButtons = New frmConfigureButtons(m_conn)
         frmConfigureButtons.cmdMoveToPanel.Text = "Move To TRANSECT DATA"
         frmConfigureButtons.ShowDialog()
     End Sub
 
     Private Sub ConfigureTransectButtonsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureTransectButtonsToolStripMenuItem.Click
         strConfigureTable = DB_TRANSECT_BUTTONS_TABLE
-        frmConfigureButtons = New frmConfigureButtons
+        frmConfigureButtons = New frmConfigureButtons(m_conn)
         frmConfigureButtons.cmdMoveToPanel.Text = "Move To HABITAT DATA"
         frmConfigureButtons.ShowDialog()
     End Sub
@@ -6424,7 +6312,7 @@ SkipInsertComma:
     End Sub
 
     Private Sub DataCodeAssignmentsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DataCodeAssignmentsToolStripMenuItem.Click
-        frmDataCodes = New frmDataCodes
+        frmDataCodes = New frmDataCodes(m_conn)
         frmDataCodes.ShowDialog()
     End Sub
 
@@ -6615,16 +6503,14 @@ SkipInsertComma:
     End Sub
 
     Private Sub pnlSpeciesData_SizeChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles pnlSpeciesData.SizeChanged
-        If db_file_open Then
+        If m_db_file_open Then
 
             Me.pnlSpeciesData.Controls.Clear()
             fillSpeciesVariableButtonPanel()
         End If
     End Sub
 
-    Private Sub grdVideoMinerDatabase_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grdVideoMinerDatabase.CellValueChanged
-    End Sub
-
+#Region "DataGridView functions and handlers"
     ''' <summary>
     ''' Whether or not the row is synced properly with the database. Used when the user edits a cell value. The cell's row
     ''' will immediately be colored since the data are now 'dirty' but if the value is of the wrong type (not validated)
@@ -6644,114 +6530,6 @@ SkipInsertComma:
             grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.BackColor = Color.Salmon
             grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.SelectionBackColor = Color.DarkSalmon
         End If
-    End Sub
-
-    ''' <summary>
-    ''' Key events for the data grid. The arrow keys will move to adjacent cells, the Enter key will submit the edit (if applicable)
-    ''' and move to the next cell down or, if it is currently the last row, the next cell on the right, or if neither of those,
-    ''' the top left-most cell. Pressing the 'delete' key will delete rows from the grid view and the database.
-    ''' </summary>
-    Private Sub grdVideoMinerDatabase_KeyDown(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.KeyEventArgs) Handles grdVideoMinerDatabase.KeyDown
-        Select Case e.KeyCode
-            Case Keys.Delete
-                deleteSelectedRows(sender, e)
-        End Select
-    End Sub
-
-    ''' <summary>
-    ''' Allow keys to be captured while the editor is focussed on an individual cell
-    ''' </summary>
-    Private Sub grdVideoMinerDatabase_EditingControlShowing(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.DataGridViewEditingControlShowingEventArgs) Handles grdVideoMinerDatabase.EditingControlShowing
-        Dim tb As TextBox = CType(e.Control, TextBox)
-        AddHandler tb.PreviewKeyDown, AddressOf TextBox_PreviewKeyDown
-    End Sub
-
-    ''' <summary>
-    ''' Sets up the Enter or Return key to be captured by the TextBox, which is a cell in the DataGridView.
-    ''' This is the only way that the Enter key can be used to submit a value when editing a cell.
-    ''' </summary>
-    Private Sub TextBox_PreviewKeyDown(ByVal sender As Object, ByVal e As PreviewKeyDownEventArgs)
-        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Return Then
-            e.IsInputKey = True
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' Deletes selected rows from the MS access database as well as in the grid view. A confirmation box will verify this.
-    ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
-    ''' <remarks></remarks>
-    Private Sub deleteSelectedRows(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        If grdVideoMinerDatabase.SelectedRows.Count > 0 Then
-            If MessageBox.Show("Are you sure you want to delete all selected rows from the database? They will be gone forever.", "Delete rows?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = vbYes Then
-                For Each row As DataGridViewRow In grdVideoMinerDatabase.SelectedRows
-                    grdVideoMinerDatabase.Rows.Remove(row)
-                Next
-                cmdUpdateDatabase_Click(sender, e)
-            End If
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' Captures right click in the DataGridView. This will delete rows from the grid view and the database.
-    ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
-    ''' <remarks>If no rows are selected, a message will tell you to select rows and then press delete</remarks>
-    Private Sub grdVideoMinerDatabase_RightClick(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.MouseEventArgs) Handles grdVideoMinerDatabase.MouseClick
-        If e.Button = Windows.Forms.MouseButtons.Right Then
-            Dim cms As ContextMenuStrip = New ContextMenuStrip
-            Dim item1 As ToolStripItem
-            If grdVideoMinerDatabase.SelectedRows.Count > 0 Then
-                item1 = cms.Items.Add("Delete selected rows (or use delete key)")
-                item1.Tag = 1
-                AddHandler item1.Click, AddressOf deleteSelectedRows
-            Else
-                item1 = cms.Items.Add("Delete rows by selecting them and pressing delete.")
-                item1.Tag = 1
-            End If
-            cms.Show(grdVideoMinerDatabase, e.Location)
-        End If
-    End Sub
-
-#Region "ValidationFunctions"
-
-    ''' <summary>
-    ''' Validate the cell values if user makes them NULL. Avoids errors/exceptions during the update to the database.
-    ''' </summary>
-    Private Sub grdVideoMinerDatabase_CellValidating(ByVal sender As Object, ByVal e As DataGridViewCellValidatingEventArgs) Handles grdVideoMinerDatabase.CellValidating
-        ' Get column name from cell that was changed
-        Dim strFieldName As String = grdVideoMinerDatabase.Columns(e.ColumnIndex).HeaderText
-        Dim s = e.FormattedValue.ToString()
-        Select Case strFieldName
-            Case "ID"
-                If s = String.Empty Then
-                    MessageBox.Show("Error in column 'ID', row " & e.RowIndex.ToString() & ": Value must be a non-null integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    e.Cancel = True
-                Else
-                    ' Check to see that the ID is unique in the grid to avoid exceptions when update query is run later
-                    Dim isUnique As Boolean = True
-                    For Each row As DataGridViewRow In grdVideoMinerDatabase.Rows
-                        If Not row.IsNewRow Then
-                            Dim cell As DataGridViewCell = row.Cells("ID")
-                            ' Compare new and old values as long as it is not the same row
-                            If cell.Value.ToString = e.FormattedValue.ToString And cell.RowIndex <> e.RowIndex Then
-                                isUnique = False
-                            End If
-                        End If
-                    Next
-                    If Not isUnique Then
-                        MessageBox.Show("Error in column 'ID', row " & e.RowIndex.ToString() & ": The value is not unique. 'ID' is the primary key and must have a unique value.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                        e.Cancel = True
-                    End If
-                End If
-            Case ("DataCode")
-                If s = String.Empty Then
-                    MessageBox.Show("Error in column 'DataCode', row " & e.RowIndex.ToString() & ": Value must be a non-null integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    e.Cancel = True
-                End If
-        End Select
     End Sub
 
     ''' <summary>
@@ -6825,7 +6603,107 @@ SkipInsertComma:
                 MessageBox.Show("Error in column 'ReviewedTime', row " & e.RowIndex.ToString() & ": Value must be a DateTime.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Select
     End Sub
-#End Region
+
+    ''' <summary>
+    ''' Key events for the data grid. The arrow keys will move to adjacent cells, the Enter key will submit the edit (if applicable)
+    ''' and move to the next cell down or, if it is currently the last row, the next cell on the right, or if neither of those,
+    ''' the top left-most cell. Pressing the 'delete' key will delete rows from the grid view and the database.
+    ''' </summary>
+    Private Sub grdVideoMinerDatabase_KeyDown(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.KeyEventArgs) Handles grdVideoMinerDatabase.KeyDown
+        Select Case e.KeyCode
+            Case Keys.Delete
+                deleteSelectedRows(sender, e)
+        End Select
+    End Sub
+
+    ''' <summary>
+    ''' Allow keys to be captured while the editor is focussed on an individual cell
+    ''' </summary>
+    Private Sub grdVideoMinerDatabase_EditingControlShowing(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.DataGridViewEditingControlShowingEventArgs) Handles grdVideoMinerDatabase.EditingControlShowing
+        Dim tb As TextBox = CType(e.Control, TextBox)
+        AddHandler tb.PreviewKeyDown, AddressOf TextBox_PreviewKeyDown
+    End Sub
+
+    ''' <summary>
+    ''' Sets up the Enter or Return key to be captured by the TextBox, which is a cell in the DataGridView.
+    ''' This is the only way that the Enter key can be used to submit a value when editing a cell.
+    ''' </summary>
+    Private Sub TextBox_PreviewKeyDown(ByVal sender As Object, ByVal e As PreviewKeyDownEventArgs)
+        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Return Then
+            e.IsInputKey = True
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Deletes selected rows from the MS access database as well as in the grid view. A confirmation box will verify this.
+    ''' </summary>
+    Private Sub deleteSelectedRows(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        If grdVideoMinerDatabase.SelectedRows.Count > 0 Then
+            If MessageBox.Show("Are you sure you want to delete all selected rows from the database? They will be gone forever.", "Delete rows?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = vbYes Then
+                For Each row As DataGridViewRow In grdVideoMinerDatabase.SelectedRows
+                    grdVideoMinerDatabase.Rows.Remove(row)
+                Next
+                cmdUpdateDatabase_Click(sender, e)
+            End If
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Captures right click in the DataGridView. This will delete rows from the grid view and the database.
+    ''' </summary>
+    ''' <remarks>If no rows are selected, a message will tell you to select rows and then press delete</remarks>
+    Private Sub grdVideoMinerDatabase_RightClick(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.MouseEventArgs) Handles grdVideoMinerDatabase.MouseClick
+        If e.Button = Windows.Forms.MouseButtons.Right Then
+            Dim cms As ContextMenuStrip = New ContextMenuStrip
+            Dim item1 As ToolStripItem
+            If grdVideoMinerDatabase.SelectedRows.Count > 0 Then
+                item1 = cms.Items.Add("Delete selected rows (or use delete key)")
+                item1.Tag = 1
+                AddHandler item1.Click, AddressOf deleteSelectedRows
+            Else
+                item1 = cms.Items.Add("Delete rows by selecting them and pressing delete.")
+                item1.Tag = 1
+            End If
+            cms.Show(grdVideoMinerDatabase, e.Location)
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Validate the cell values if user makes them NULL. Avoids errors/exceptions during the update to the database.
+    ''' </summary>
+    Private Sub grdVideoMinerDatabase_CellValidating(ByVal sender As Object, ByVal e As DataGridViewCellValidatingEventArgs) Handles grdVideoMinerDatabase.CellValidating
+        ' Get column name from cell that was changed
+        Dim strFieldName As String = grdVideoMinerDatabase.Columns(e.ColumnIndex).HeaderText
+        Dim s = e.FormattedValue.ToString()
+        Select Case strFieldName
+            Case "ID"
+                If s = String.Empty Then
+                    MessageBox.Show("Error in column 'ID', row " & e.RowIndex.ToString() & ": Value must be a non-null integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    e.Cancel = True
+                Else
+                    ' Check to see that the ID is unique in the grid to avoid exceptions when update query is run later
+                    Dim isUnique As Boolean = True
+                    For Each row As DataGridViewRow In grdVideoMinerDatabase.Rows
+                        If Not row.IsNewRow Then
+                            Dim cell As DataGridViewCell = row.Cells("ID")
+                            ' Compare new and old values as long as it is not the same row
+                            If cell.Value.ToString = e.FormattedValue.ToString And cell.RowIndex <> e.RowIndex Then
+                                isUnique = False
+                            End If
+                        End If
+                    Next
+                    If Not isUnique Then
+                        MessageBox.Show("Error in column 'ID', row " & e.RowIndex.ToString() & ": The value is not unique. 'ID' is the primary key and must have a unique value.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        e.Cancel = True
+                    End If
+                End If
+            Case ("DataCode")
+                If s = String.Empty Then
+                    MessageBox.Show("Error in column 'DataCode', row " & e.RowIndex.ToString() & ": Value must be a non-null integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    e.Cancel = True
+                End If
+        End Select
+    End Sub
 
     ''' <summary>
     ''' Update the MS Access database table bound to the data adapter. This allows changes made within the DataGridView to be
@@ -6847,13 +6725,13 @@ SkipInsertComma:
     ''' be discarded and the database will be reloaded from scratch
     ''' </summary>
     Private Sub cmdRevertDatabase_Click(sender As Object, e As EventArgs) Handles cmdRevertDatabase.Click
-        If MessageBox.Show("Are you sure you want to throw away all unsynced changes in the grid and revert to the database data?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) Then
+        If MessageBox.Show("Are you sure you want to discard all unsynced changes in the grid and revert to the database data?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) Then
             fetch_data()
             lblDirtyData.ForeColor = Color.LimeGreen
             lblDirtyData.Text = "Data synced"
         End If
     End Sub
-
+#End Region
 
 
     Private Sub ConfigureButtonFormatToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureButtonFormatToolStripMenuItem.Click
@@ -6965,7 +6843,7 @@ SkipInsertComma:
     End Sub
 
     Private Sub EditLookupTableToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles EditLookupTableToolStripMenuItem.Click
-        frmEditLookupTable = New frmEditLookupTable
+        frmEditLookupTable = New frmEditLookupTable(m_conn)
         frmEditLookupTable.ShowDialog()
     End Sub
 
@@ -7067,7 +6945,7 @@ SkipInsertComma:
         'myFormLibrary.frmVideoMiner.fillTransectVariableButtonPanel()
         'myFormLibrary.frmVideoMiner.fillSpatialVariableButtonPanel()
         'myFormLibrary.frmVideoMiner.fillHabitatFieldsCollection()
-        openDatabase(strDatabaseFilePath)
+        openDatabase()
         For i = 0 To pnlHabitatData.Controls.Count - 1
             If pnlHabitatData.Controls.Item(i).Name.Substring(0, 3) = "txt" Then
                 pnlHabitatData.Controls.Item(i).Text = dictTempTextBoxValues.Item(pnlHabitatData.Controls.Item(i).Name)
@@ -7104,7 +6982,7 @@ SkipInsertComma:
                     dataColumns.Add(dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width)
                     strColumns = strColumns & dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width & ","
                 Next
-                SaveConfiguration("/Database/Configuration/DatabaseName", db_filename)
+                SaveConfiguration("/Database/Configuration/DatabaseName", m_db_filename)
                 SaveConfiguration("/Database/Configuration/Columns", strColumns.Substring(0, strColumns.Length - 1))
             End If
         End If
@@ -7120,7 +6998,7 @@ SkipInsertComma:
                     dataColumns.Add(dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width)
                     strColumns = strColumns & dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width & ","
                 Next
-                SaveConfiguration("/Database/Configuration/DatabaseName", db_filename)
+                SaveConfiguration("/Database/Configuration/DatabaseName", m_db_filename)
                 SaveConfiguration("/Database/Configuration/Columns", strColumns.Substring(0, strColumns.Length - 1))
             End If
         End If

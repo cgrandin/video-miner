@@ -12,6 +12,7 @@ Public Class frmSpeciesEvent
     Event SpeciesButtonConfigurationChangedEvent()
 
 #Region "Fields"
+    Private m_conn As OleDbConnection
     Private m_SpeciesName As String
     Private m_SpeciesCode As String
 
@@ -228,11 +229,12 @@ Public Class frmSpeciesEvent
     Private clLabelNames As New Collection
 
 
-    Public Sub New(blRangeChecked As Boolean, blIDConfidenceChecked As Boolean, blAbundanceChecked As Boolean, blCountChecked As Boolean, blHeightChecked As Boolean, _
+    Public Sub New(conn As OleDbConnection, blRangeChecked As Boolean, blIDConfidenceChecked As Boolean, blAbundanceChecked As Boolean, blCountChecked As Boolean, blHeightChecked As Boolean, _
                    blWidthChecked As Boolean, blLengthChecked As Boolean, blCommentsChecked As Boolean, _
                    strRange As String, strSide As String, strIDConfidence As String, strAbundance As String, strCount As String, strHeight As String, _
                    strWidth As String, strLength As String, strComments As String)
         InitializeComponent()
+        m_conn = conn
         Me.RangeChecked = blRangeChecked
         Me.IDConfidenceChecked = blIDConfidenceChecked
         Me.AbundanceChecked = blAbundanceChecked
@@ -255,7 +257,6 @@ Public Class frmSpeciesEvent
     End Sub
 
     Private Sub loadCollection()
-
         If Me.RangeChecked Then
             clControlNames.Add("txtRange")
             clControlNames.Add("cboSide")
@@ -314,12 +315,9 @@ Public Class frmSpeciesEvent
 
             End If
         Next
-
     End Sub
 
     Private Sub fillSpeciesEventPanel()
-
-
         Dim speciesControl As Control
         Dim row As DataRow
         Dim dt As DataTable
@@ -402,7 +400,7 @@ Public Class frmSpeciesEvent
                     speciesEventComboBox.Name = clControlNames.Item(j)
                     speciesEventLabel.Text = clLabelNames.Item(j)
                     Dim ConfID_data_set As DataSet = New DataSet
-                    Dim ConfID_db_command As OleDbCommand = New OleDbCommand("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " ORDER BY ConfidenceID;", conn)
+                    Dim ConfID_db_command As OleDbCommand = New OleDbCommand("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " ORDER BY ConfidenceID;", m_conn)
                     Dim ConfID_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(ConfID_db_command)
                     ConfID_data_adapter.Fill(ConfID_data_set, DB_CONFIDENCE_IDS_TABLE)
 
@@ -425,7 +423,7 @@ Public Class frmSpeciesEvent
                     speciesEventComboBox.Name = clControlNames.Item(j)
                     speciesEventLabel.Text = clLabelNames.Item(j)
                     Dim Abundance_Data_Set As DataSet = New DataSet
-                    Dim Abundance_db_command As OleDbCommand = New OleDbCommand("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " ORDER BY ACFORScaleID;", conn)
+                    Dim Abundance_db_command As OleDbCommand = New OleDbCommand("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " ORDER BY ACFORScaleID;", m_conn)
                     Dim Abundance_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(Abundance_db_command)
                     Abundance_data_adapter.Fill(Abundance_Data_Set, DB_ABUNDANCE_TABLE)
 
@@ -592,7 +590,7 @@ Public Class frmSpeciesEvent
                         End Select
                     Case "cboIDConfidence"
                         Dim ConfID_data_set As DataSet = New DataSet
-                        Dim ConfID_db_command As OleDbCommand = New OleDbCommand("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " WHERE ConfidenceIdDescription = " & SingleQuote(ctlSpeciesControl.Text) & ";", conn)
+                        Dim ConfID_db_command As OleDbCommand = New OleDbCommand("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " WHERE ConfidenceIdDescription = " & SingleQuote(ctlSpeciesControl.Text) & ";", m_conn)
                         Dim ConfID_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(ConfID_db_command)
                         ConfID_data_adapter.Fill(ConfID_data_set, DB_CONFIDENCE_IDS_TABLE)
 
@@ -603,7 +601,7 @@ Public Class frmSpeciesEvent
                     Case "cboAbundance"
 
                         Dim Abundance_Data_Set As DataSet = New DataSet
-                        Dim Abundance_db_command As OleDbCommand = New OleDbCommand("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " WHERE ACFORScaleDescription = " & SingleQuote(ctlSpeciesControl.Text) & ";", conn)
+                        Dim Abundance_db_command As OleDbCommand = New OleDbCommand("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " WHERE ACFORScaleDescription = " & SingleQuote(ctlSpeciesControl.Text) & ";", m_conn)
                         Dim Abundance_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(Abundance_db_command)
                         Abundance_data_adapter.Fill(Abundance_Data_Set, DB_ABUNDANCE_TABLE)
 
@@ -710,7 +708,7 @@ Public Class frmSpeciesEvent
         centerButtonPressed = False
 
         Dim sub_data_set As DataSet = New DataSet()
-        Dim sub_db_command As OleDbCommand = New OleDbCommand("select * from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", conn)
+        Dim sub_db_command As OleDbCommand = New OleDbCommand("select * from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", m_conn)
         Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
         sub_data_adapter.Fill(sub_data_set, DB_SPECIES_BUTTONS_TABLE)
         Dim r As DataRow

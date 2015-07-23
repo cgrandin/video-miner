@@ -3,6 +3,7 @@
 Public Class frmAddNewTable
 
 #Region "Fields"
+    Private m_conn As OleDbConnection
     Private m_TableName As String
     Private m_IDField As String
     Private m_DescriptionField As String
@@ -79,7 +80,7 @@ Public Class frmAddNewTable
 
         Dim tblSchema As DataTable
 
-        tblSchema = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, New Object() {Nothing, Nothing, Nothing, Nothing})
+        tblSchema = m_conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, New Object() {Nothing, Nothing, Nothing, Nothing})
 
         Dim i As Integer
 
@@ -187,7 +188,7 @@ Public Class frmAddNewTable
         Dim createCommand As OleDbCommand
         Dim insertCommand As OleDbCommand
 
-        createCommand = New OleDbCommand(strQuery, conn)
+        createCommand = New OleDbCommand(strQuery, m_conn)
 
         createCommand.ExecuteNonQuery()
 
@@ -239,13 +240,13 @@ Public Class frmAddNewTable
                 End If
 
             Next
-            insertCommand = New OleDbCommand(strQuery, conn)
+            insertCommand = New OleDbCommand(strQuery, m_conn)
             insertCommand.ExecuteNonQuery()
         Next
 
         Dim tblSchema As DataTable
 
-        tblSchema = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, New Object() {Nothing, Nothing, Nothing, Nothing})
+        tblSchema = m_conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, New Object() {Nothing, Nothing, Nothing, Nothing})
 
         'CJG
         'myFormLibrary.frmAddButton.cboTables.Items.Clear()

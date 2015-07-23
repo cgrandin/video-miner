@@ -4,7 +4,18 @@ Imports ADODB
 
 Public Class frmAddButton
 
-#Region "Fields"
+#Region "Member variables"
+    ' OLE objects
+    Private m_conn As OleDbConnection
+    Private m_data_cmd As OleDbCommand
+    Private m_data_adapter As OleDbDataAdapter
+    Private m_data_command_builder As OleDbCommandBuilder
+
+    ' Data, table, and query objects
+    Private m_query As String
+    Private m_table_name As String
+    Private m_data_table As DataTable
+    Private m_data_set As DataSet
 
     Private m_ButtonName As String
     Private m_TableName As String
@@ -16,7 +27,6 @@ Public Class frmAddButton
     Private m_OldTableName As String
     Private m_OldDataCode As Integer
     Private m_OldFieldName As String
-
 #End Region
 
 #Region "Properties"
@@ -109,15 +119,18 @@ Public Class frmAddButton
     Event RefreshDatabaseEvent()
     Event AddNewTableEvent()
 
+    Public Sub New(conn As OleDbConnection)
+        InitializeComponent()
+        m_conn = conn
+        m_table_name = strConfigureTable
+    End Sub
+
     Private Sub txtDataCode_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtDataCode.KeyPress
         numericTextboxValidation(e)
     End Sub
 
-
     Private Sub txtFieldName_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtFieldName.TextChanged
-
         Dim strCharactersAllowed As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-
         Dim txtName As String = Me.txtFieldName.Text
         Dim Letter As String
         Dim sel_s As Integer = Me.txtFieldName.SelectionStart
@@ -134,8 +147,6 @@ Public Class frmAddButton
         Else
             Me.txtFieldName.Text = txtName
         End If
-
-
         If did_change = False Then
             Me.txtFieldName.Select(sel_s, 0)
         Else
@@ -148,32 +159,29 @@ Public Class frmAddButton
     End Sub
 
     Private Sub frmAddButton_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Dim tblSchema As DataTable
-        tblSchema = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, New Object() {Nothing, Nothing, Nothing, Nothing})
+        Dim tblSchema As DataTable = m_conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, New Object() {Nothing, Nothing, Nothing, Nothing})
         Dim i As Integer
         For i = 0 To tblSchema.Rows.Count - 1
             If tblSchema.Rows(i)!TABLE_TYPE.ToString = "TABLE" Then
                 Dim strTableName As String
                 strTableName = tblSchema.Rows(i)!TABLE_NAME.ToString
                 If strTableName.Substring(0, 3) = "lu_" Then
-                    If strTableName <> "lu_button_colors" And strTableName <> "lu_data_codes" And strTableName <> "lu_species_code" Then
+                    If strTableName <> DB_BUTTON_COLORS_TABLE And strTableName <> DB_DATA_CODES_TABLE And strTableName <> DB_SPECIES_CODE_TABLE Then
                         Me.cboTables.Items.Add(strTableName)
                     End If
                 End If
             End If
         Next
-        If blButtonEdit = True Then
-            Dim strQuery As String
-            strQuery = "SELECT ButtonText, TableName, DataCode, DataCodeName FROM " & strConfigureTable & " WHERE ButtonText = " & SingleQuote(Me.txtButtonName.Text) & ";"
-            Dim sub_data_set As DataSet = New DataSet()
-            Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, conn)
-            Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-            sub_data_adapter.Fill(sub_data_set, strConfigureTable)
-
-            Dim dt As DataTable
-            Dim r As DataRow
-            dt = sub_data_set.Tables.Item(0)
-            r = dt.Rows.Item(0)
+        If blButtonEdit Then
+            m_query = "SELECT ButtonText, TableName, DataCode, DataCodeName FROM " & m_table_name & " WHERE ButtonText = " & SingleQuote(Me.txtButtonName.Text) & ";"
+            m_data_cmd = New OleDbCommand(m_query, m_conn)
+            m_data_adapter = New OleDbDataAdapter(m_data_cmd)
+            m_data_set = New DataSet()
+            m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
+            m_data_command_builder.QuotePrefix = "["
+            m_data_command_builder.QuoteSuffix = "]"
+            m_data_adapter.Fill(m_data_set, m_table_name)
+            Dim r As DataRow = m_data_table.Rows.Item(0)
             If Not r Is Nothing Then
                 If r.Item("TableName") = "UserEntered" Then
                     Me.rdInputValue.Checked = True
@@ -183,27 +191,21 @@ Public Class frmAddButton
                     Me.rdUseTable.Checked = True
                     Me.cboTables.SelectedItem = r.Item("TableName")
                 End If
-
                 Me.txtDataCode.Text = r.Item("DataCode")
                 Me.txtFieldName.Text = r.Item("DataCodeName")
-
                 Me.OldButtonName = Me.txtButtonName.Text
                 Me.OldTableName = Me.cboTables.SelectedItem
                 Me.OldDataCode = CInt(Me.txtDataCode.Text)
                 Me.OldFieldName = Me.txtFieldName.Text
-
             End If
-
             strEditTextBoxOldName = "txt" & Replace(Me.txtButtonName.Text, "%", "Percent")
-
             Dim strCharactersAllowed As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"
-
             Dim txtName As String = strEditTextBoxOldName
-            Dim Letter As String
+            Dim letter As String
             For x As Integer = 0 To strEditTextBoxOldName.Length - 1
-                Letter = strEditTextBoxOldName.Substring(x, 1).ToUpper
-                If strCharactersAllowed.Contains(Letter) = False Then
-                    txtName = txtName.Replace(Letter, String.Empty)
+                letter = strEditTextBoxOldName.Substring(x, 1).ToUpper
+                If strCharactersAllowed.Contains(letter) = False Then
+                    txtName = txtName.Replace(letter, String.Empty)
                 End If
             Next
             strEditTextBoxOldName = txtName
@@ -211,83 +213,67 @@ Public Class frmAddButton
     End Sub
 
     Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-        Me.Close()
+        Me.Hide()
     End Sub
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
-
         Me.ButtonName = Me.txtButtonName.Text
         Me.TableName = Me.cboTables.SelectedItem
         Me.DataCode = CInt(Me.txtDataCode.Text)
         Me.FieldName = Me.txtFieldName.Text
         Dim strInsertQuery As String
-        Dim strSelectQuery As String
         Dim numrows As Integer
 
         Dim tblDrawingOrder As DataTable
         Dim tblDataCodes As DataTable
         Dim r As DataRow
-
-
         If blButtonEdit = False Then
-
             blNewButton = True
-
-            strSelectQuery = "SELECT * FROM " & strConfigureTable & ";"
-
-            Dim sub_data_set As DataSet = New DataSet()
-            Dim sub_db_command As OleDbCommand = New OleDbCommand(strSelectQuery, conn)
-            Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-            sub_data_adapter.Fill(sub_data_set, strConfigureTable)
-
-            tblDrawingOrder = sub_data_set.Tables(0)
-
-            Dim i As Integer
+            m_query = "SELECT * FROM " & m_table_name & ";"
+            m_data_cmd = New OleDbCommand(m_query, m_conn)
+            m_data_adapter = New OleDbDataAdapter(m_data_cmd)
+            m_data_set = New DataSet()
+            m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
+            m_data_command_builder.QuotePrefix = "["
+            m_data_command_builder.QuoteSuffix = "]"
+            m_data_adapter.Fill(m_data_set, m_table_name)
+            tblDrawingOrder = m_data_table
             Dim intValue As Integer = 0
-
-            For i = 0 To tblDrawingOrder.Rows.Count - 1
-
+            For i As Integer = 0 To tblDrawingOrder.Rows.Count - 1
                 r = tblDrawingOrder.Rows.Item(i)
-
                 If r.Item("ButtonText").ToString = Me.ButtonName Then
                     MessageBox.Show("The button name entered is already in use, please change the name and try again.", "Button Name In Use", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Exit Sub
                 End If
-
                 'If CInt(r.Item("DataCode")) = Me.DataCode Then
                 '    MessageBox.Show("The data code entered is already in use, please change the code and try again.", "Data Code In Use", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 '    Exit Sub
                 'End If
-
                 If r.Item("DataCodeName").ToString = Me.FieldName Then
                     MessageBox.Show("The field name entered is already in use, please change the name and try again.", "Field Name In Use", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Exit Sub
                 End If
-
                 If CInt(r.Item("DrawingOrder")) > intValue Then
                     intValue = CInt(r.Item("DrawingOrder"))
                 End If
-
             Next
-
-            strSelectQuery = "SELECT * FROM lu_data_codes;"
-
-            sub_data_set = New DataSet()
-            sub_db_command = New OleDbCommand(strSelectQuery, conn)
-            sub_data_adapter = New OleDbDataAdapter(sub_db_command)
-            sub_data_adapter.Fill(sub_data_set, strConfigureTable)
-
-            tblDataCodes = sub_data_set.Tables(0)
-
-            For i = 0 To tblDataCodes.Rows.Count - 1
+            m_query = "SELECT * FROM " & DB_DATA_CODES_TABLE & ";"
+            m_data_cmd = New OleDbCommand(m_query, m_conn)
+            m_data_adapter = New OleDbDataAdapter(m_data_cmd)
+            m_data_set = New DataSet()
+            m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
+            m_data_command_builder.QuotePrefix = "["
+            m_data_command_builder.QuoteSuffix = "]"
+            m_data_adapter.Fill(m_data_set, m_table_name)
+            m_data_table = m_data_set.Tables(m_table_name)
+            tblDataCodes = m_data_table
+            For i As Integer = 0 To tblDataCodes.Rows.Count - 1
                 r = tblDataCodes.Rows.Item(i)
-
                 If CInt(r.Item("Code")) = Me.DataCode Then
                     MessageBox.Show("The data code entered is already used for '" & r.Item("Description") & "' , please change the code and try again.", "Data Code In Use", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Exit Sub
                 End If
             Next
-
             Me.DrawingOrder = intValue + 1
             Dim strTableName As String
             If Me.rdInputValue.Checked = True Then
@@ -295,37 +281,30 @@ Public Class frmAddButton
             Else
                 strTableName = Me.TableName
             End If
-
-            strInsertQuery = "INSERT INTO " & strConfigureTable & "(DrawingOrder, ButtonText, TableName, DataCode, DataCodeName, ButtonColor) "
-
-            strInsertQuery = strInsertQuery & "VALUES (" & Me.DrawingOrder & ", " & SingleQuote(Me.ButtonName) & ", " & SingleQuote(strTableName) & ", " & Me.DataCode & ", " & SingleQuote(Me.FieldName) & ", 'DarkBlue')"
-
-            Dim oComm As New OleDbCommand(strInsertQuery, conn)
+            strInsertQuery = "INSERT INTO " & m_table_name & _
+                "(DrawingOrder, ButtonText, TableName, DataCode, DataCodeName, ButtonColor) " & _
+                "VALUES (" & Me.DrawingOrder & ", " & SingleQuote(Me.ButtonName) & ", " & _
+                SingleQuote(strTableName) & ", " & Me.DataCode & ", " & SingleQuote(Me.FieldName) & ", 'DarkBlue')"
+            Dim oComm As New OleDbCommand(strInsertQuery, m_conn)
             numrows = oComm.ExecuteNonQuery()
-
-            strInsertQuery = "INSERT INTO lu_data_codes (Code, Description) VALUES(" & Me.DataCode & ", " & SingleQuote(Me.ButtonName) & ")"
-
-            oComm = New OleDbCommand(strInsertQuery, conn)
+            strInsertQuery = "INSERT INTO " & DB_DATA_CODES_TABLE & " (Code, Description) VALUES(" & Me.DataCode & ", " & SingleQuote(Me.ButtonName) & ")"
+            oComm = New OleDbCommand(strInsertQuery, m_conn)
             oComm.ExecuteNonQuery()
-
             addField()
         Else
-
-
             If Me.DataCode <> Me.OldDataCode Then
-                strSelectQuery = "SELECT * FROM lu_data_codes;"
-
-                Dim sub_data_set As DataSet = New DataSet()
-                Dim sub_db_command As OleDbCommand = New OleDbCommand(strSelectQuery, conn)
-                Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-                sub_data_adapter.Fill(sub_data_set, "lu_data_codes")
-                Dim i As Integer
-
-                tblDataCodes = sub_data_set.Tables(0)
-
-                For i = 0 To tblDataCodes.Rows.Count - 1
+                m_query = "SELECT * FROM " & DB_DATA_CODES_TABLE & ";"
+                m_data_cmd = New OleDbCommand(m_query, m_conn)
+                m_data_adapter = New OleDbDataAdapter(m_data_cmd)
+                m_data_set = New DataSet()
+                m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
+                m_data_command_builder.QuotePrefix = "["
+                m_data_command_builder.QuoteSuffix = "]"
+                m_data_adapter.Fill(m_data_set, m_table_name)
+                m_data_table = m_data_set.Tables(m_table_name)
+                tblDataCodes = m_data_table
+                For i As Integer = 0 To tblDataCodes.Rows.Count - 1
                     r = tblDataCodes.Rows.Item(i)
-
                     If CInt(r.Item("Code")) = Me.DataCode Then
                         MessageBox.Show("The data code entered is already used for '" & r.Item("Description") & "' , please change the code and try again.", "Data Code In Use", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                         Exit Sub
@@ -339,41 +318,26 @@ Public Class frmAddButton
                 strTableName = Me.TableName
             End If
             Dim strUpdateQuery As String
-            strUpdateQuery = "UPDATE " & strConfigureTable & " SET " & _
+            strUpdateQuery = "UPDATE " & m_table_name & " SET " & _
             "ButtonText = " & SingleQuote(Me.ButtonName) & ", " & _
             "TableName = " & SingleQuote(strTableName) & ", " & _
             "DataCode = " & CInt(Me.txtDataCode.Text) & ", " & _
             "DataCodeName = " & SingleQuote(Me.FieldName) & _
             " WHERE ButtonText = " & SingleQuote(Me.OldButtonName)
-
-            Dim cmdUpdate As OleDbCommand
-
-            cmdUpdate = New OleDbCommand(strUpdateQuery, conn)
+            Dim cmdUpdate As OleDbCommand = New OleDbCommand(strUpdateQuery, m_conn)
             cmdUpdate.ExecuteNonQuery()
-
             If Me.FieldName <> Me.OldFieldName Then
-
-                Dim cnConnection As New ADODB.Connection
-
-                cnConnection.Open(DB_CONN_STRING & strDatabaseFilePath & "; Jet OLEDB:Engine Type=5;")
-
-
-                Dim catButtons As New ADOX.Catalog
-
-                catButtons.ActiveConnection = cnConnection
-                catButtons.Tables(DB_DATA_TABLE).Columns(Me.OldFieldName).Name = Me.FieldName
-
-                catButtons.ActiveConnection.close()
-                catButtons.ActiveConnection = Nothing
-
+                'TODO: Fix whatever this code is for..
+                'Dim cnConnection As New ADODB.Connection
+                'cnConnection.Open(DB_CONN_STRING & strDatabaseFilePath & "; Jet OLEDB:Engine Type=5;")
+                'Dim catButtons As New ADOX.Catalog
+                'catButtons.ActiveConnection = cnConnection
+                'catButtons.Tables(DB_DATA_TABLE).Columns(Me.OldFieldName).Name = Me.FieldName
+                'catButtons.ActiveConnection.close()
+                'catButtons.ActiveConnection = Nothing
             End If
-
-            'CJG comment out while trying to remove myformlibrary
-            'myFormLibrary.frmConfigureButtons.frmConfigureButtons_Activated(sender, e)
             strEditTextBoxNewName = "txt" & Replace(Me.txtButtonName.Text, "%", "Percent")
-
             Dim strCharactersAllowed As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"
-
             Dim txtName As String = strEditTextBoxNewName
             Dim Letter As String
             For x As Integer = 0 To strEditTextBoxNewName.Length - 1
@@ -382,56 +346,34 @@ Public Class frmAddButton
                     txtName = txtName.Replace(Letter, String.Empty)
                 End If
             Next
-
             strEditTextBoxNewName = txtName
-
         End If
-
         If Me.ButtonName <> Me.OldButtonName Or Me.DataCode <> Me.OldDataCode Then
-
-
             Dim strQuery As String
-            strQuery = "UPDATE lu_data_codes SET Code = " & Me.DataCode & ", Description = " & SingleQuote(Me.ButtonName) & _
+            strQuery = "UPDATE " & DB_DATA_CODES_TABLE & " SET Code = " & Me.DataCode & ", Description = " & SingleQuote(Me.ButtonName) & _
                        " WHERE Code = " & Me.OldDataCode & " AND Description = " & SingleQuote(Me.OldButtonName)
-
             Dim cmdUpdate As OleDbCommand
-
-            cmdUpdate = New OleDbCommand(strQuery, conn)
+            cmdUpdate = New OleDbCommand(strQuery, m_conn)
             cmdUpdate.ExecuteNonQuery()
-
         End If
-
         RaiseEvent RefreshDatabaseEvent()
         blNewButton = False
-
-        Me.Close()
+        Me.Hide()
     End Sub
 
-
     Private Sub addField()
-
         Dim strQuery As String
         strQuery = "ALTER TABLE data ADD COLUMN " & Me.FieldName & " TEXT(50)"
-
-        Dim alterCommand As New OleDbCommand(strQuery, conn)
-
+        Dim alterCommand As New OleDbCommand(strQuery, m_conn)
         Try
             alterCommand.ExecuteNonQuery()
-
-
             'strQuery = "SELECT * FROM data;"
-
             'Dim sub_data_set As DataSet = New DataSet()
             'Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, conn)
             'Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-            'sub_data_adapter.Fill(sub_data_set, "videominer_habitat_buttons")
-
-
-
+            'sub_data_adapter.Fill(sub_data_set,  DB_HABITAT_BUTTONS_TABLE )
         Catch ex As Exception
-
             MsgBox(ex.Message)
-
         End Try
     End Sub
 

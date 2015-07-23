@@ -2,17 +2,32 @@
 
 Public Class frmConfigureButtons
 
+#Region "Member variables"
     Private frmAddButton As frmAddButton
-    Public Event UpdateButtonDrawingOrder()
-    Public Event UpdateButtons()
-    Event RefreshDatabaseEvent()
 
-#Region "Fields"
+    ' OLE objects
+    Private m_conn As OleDbConnection
+    Private m_data_cmd As OleDbCommand
+    Private m_data_adapter As OleDbDataAdapter
+    Private m_data_command_builder As OleDbCommandBuilder
+
+    ' Data, table, and query objects
+    Private m_query As String
+    Private m_table_name As String
+    Private m_data_table As DataTable
+    Private m_data_set As DataSet
+
     Private m_ButtonName As String
     Private m_TableName As String
     Private m_DataCode As Integer
     Private m_FieldName As String
     Private m_DrawingOrder As String
+#End Region
+
+#Region "Events"
+    Public Event UpdateButtonDrawingOrder()
+    Public Event UpdateButtons()
+    Public Event RefreshDatabaseEvent()
 #End Region
 
 #Region "Properties"
@@ -62,46 +77,38 @@ Public Class frmConfigureButtons
     End Property
 #End Region
 
-
-    Public Sub frmConfigureButtons_Activated(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Activated
-
-        Try
-            Me.lstButtons.Items.Clear()
-            Dim sub_data_set As DataSet = New DataSet()
-            Dim sub_db_command As OleDbCommand = New OleDbCommand("select DrawingOrder, ButtonText, TableName, DataCode, DataCodeName, ButtonColor from " & strConfigureTable & " ORDER BY DrawingOrder;", conn)
-            Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-            sub_data_adapter.Fill(sub_data_set, strConfigureTable)
-            Dim r As DataRow
-            Dim d As DataTable
-            d = sub_data_set.Tables(0)
-
-            Dim itm As ListViewItem
-            For Each r In d.Rows
-                itm = New ListViewItem
-                itm.Text = ""
-
-                itm.SubItems.Add(r.Item("ButtonText").ToString())
-                itm.SubItems.Add(r.Item("TableName").ToString())
-                Me.lstButtons.Items.Add(itm)
-            Next
-        Catch ex As Exception
-
-        End Try
-
-
-    End Sub
-
-
-    Public Sub New()
-
-        ' This is required by the Windows Form Designer.
+    ''' <summary>
+    ''' Initialize the query, and extract the data that query defines into a DataSet with corresponding DataTable.
+    ''' Populate the list and set up list attributes.
+    ''' </summary>
+    Public Sub New(conn As OleDbConnection)
         InitializeComponent()
-
-        ' Add any initialization after the InitializeComponent() call.
-
-        ' -------------------------------------------------
-        ' Initialize Form elements
-        ' -------------------------------------------------
+        m_conn = conn
+        m_table_name = strConfigureTable
+        Try
+            m_query = "select * from " & m_table_name & " order by DrawingOrder Asc;"
+            'm_query = "select DrawingOrder, ButtonText, TableName, DataCode, DataCodeName, ButtonColor from " & m_table_name & " ORDER BY DrawingOrder;"
+            m_data_cmd = New OleDbCommand(m_query, m_conn)
+            m_data_adapter = New OleDbDataAdapter(m_data_cmd)
+            m_data_set = New DataSet()
+            m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
+            m_data_command_builder.QuotePrefix = "["
+            m_data_command_builder.QuoteSuffix = "]"
+            m_data_adapter.Fill(m_data_set, m_table_name)
+            m_data_table = m_data_set.Tables(m_table_name)
+            'grdEditTable.DataSource = m_data_table
+        Catch ex As Exception
+            MsgBox("There was an exception thrown while trying to load the button configuration from the " & m_table_name & _
+                   " table from the MS Access database into the DataGridView. Message and Stack trace:" & vbCrLf & ex.Message() & vbCrLf & ex.StackTrace)
+        End Try
+        Dim itm As ListViewItem
+        For Each r As DataRow In m_data_table.Rows
+            itm = New ListViewItem
+            itm.Text = ""
+            itm.SubItems.Add(r.Item("ButtonText").ToString())
+            itm.SubItems.Add(r.Item("TableName").ToString())
+            Me.lstButtons.Items.Add(itm)
+        Next
         With Me.lstButtons
             .Visible = True
             .FullRowSelect = True
@@ -116,44 +123,59 @@ Public Class frmConfigureButtons
 
     End Sub
 
+    ''' <summary>
+    ''' Clicking this button calls the function that moves the first selected item up in the list, and raises the event to the main form so that the buttons can
+    ''' be redrawn to correspond to the new order.
+    ''' </summary>
     Private Sub cmdMoveUp_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveUp.Click
-
         If Me.lstButtons.SelectedItems.Count > 0 Then
             Dim intSelectedIndex As Integer
             intSelectedIndex = Me.lstButtons.SelectedItems(0).Index
-            'MsgBox(intSelectedIndex)
             MoveListViewItem(True)
         Else
-            MsgBox("Please select a button from the list")
+            MessageBox.Show("Please select a button from the list", "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
 
-    Private Sub MoveListViewItem(ByVal moveUp As Boolean)
+    ''' <summary>
+    ''' Clicking this button calls the function that moves the first selected item down in the list, and raises the event to the main form so that the buttons can
+    ''' be redrawn to correspond to the new order.
+    ''' </summary>
+    Private Sub cmdMoveDown_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveDown.Click
+        If Me.lstButtons.SelectedItems.Count > 0 Then
+            Dim intSelectedIndex As Integer
+            intSelectedIndex = Me.lstButtons.SelectedItems(0).Index
+            MoveListViewItem(False)
+        Else
+            MessageBox.Show("Please select a button from the list", "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End If
+    End Sub
 
+    ''' <summary>
+    ''' Move the first selected item up in the list, and raise the event to the main form so that the buttons can
+    ''' be redrawn to correspond to the new order.
+    ''' </summary>
+    ''' <param name="moveUp">If true, the item will be moved up the list (when possible). If false, it will be moved down (when possible)</param>
+    Private Sub MoveListViewItem(ByVal moveUp As Boolean)
         Dim i As Integer
         Dim cache As String
         Dim selIdx As Integer
-
         With Me.lstButtons
             If .SelectedIndices.Count = 0 Then
                 Exit Sub
             Else
                 selIdx = .SelectedIndices.Item(0)
             End If
-
             If moveUp Then
                 ' ignore moveup of row(0)
                 If selIdx = 0 Then
                     Exit Sub
                 End If
-
                 ' move the subitems for the previous row
                 ' to cache so we can move the selected row up
                 Dim strFields As String = ""
-
                 For i = 0 To .Items(selIdx).SubItems.Count - 1
                     cache = .Items(selIdx - 1).SubItems(i).Text
-
                     .Items(selIdx - 1).SubItems(i).Text = .Items(selIdx).SubItems(i).Text
                     .Items(selIdx).SubItems(i).Text = cache
                 Next
@@ -174,7 +196,6 @@ Public Class frmConfigureButtons
                     .Items(selIdx + 1).SubItems(i).Text = .Items(selIdx).SubItems(i).Text
                     .Items(selIdx).SubItems(i).Text = cache
                 Next
-
                 .Items(selIdx + 1).Selected = True
                 .Items(selIdx + 1).Focused = True
                 .EnsureVisible(selIdx)
@@ -182,115 +203,86 @@ Public Class frmConfigureButtons
                 .Focus()
             End If
         End With
-        UpdateDrawingOrder(strConfigureTable)
+        UpdateDrawingOrder(m_table_name)
     End Sub
 
-    Private Sub cmdMoveDown_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveDown.Click
-
-        If Me.lstButtons.SelectedItems.Count > 0 Then
-            Dim intSelectedIndex As Integer
-            intSelectedIndex = Me.lstButtons.SelectedItems(0).Index
-            'MsgBox(intSelectedIndex)
-            MoveListViewItem(False)
-        Else
-            MsgBox("Please select a species from the list")
-        End If
-
-    End Sub
-
+    ''' <summary>
+    ''' Clicking this button will bring up the 'add button' dialog which allows the definition of a new button.
+    ''' </summary>
     Private Sub cmdCreateNewButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCreateNewButton.Click
-
-        Me.UpdateDrawingOrder(strConfigureTable)
-
-        frmAddButton = New frmAddButton
-
+        Me.UpdateDrawingOrder(m_table_name)
+        frmAddButton = New frmAddButton(m_conn)
         frmAddButton.ShowDialog()
     End Sub
 
+    ''' <summary>
+    ''' Clicking this button will bring up the 'add button' dialog which will allow the editing of the current button's attributes.
+    ''' </summary>
     Private Sub cmdEditButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEditButton.Click
-
         If Me.lstButtons.SelectedItems.Count = 0 Then
-            MsgBox("Please select a button from the list")
+            MessageBox.Show("Please select a button from the list", "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
-
         blButtonEdit = True
-
-        frmAddButton = New frmAddButton
+        frmAddButton = New frmAddButton(m_conn)
         frmAddButton.Text = "Edit " & Me.lstButtons.SelectedItems.Item(0).SubItems(1).Text.ToString & " Button"
         frmAddButton.txtButtonName.Text = Me.lstButtons.SelectedItems.Item(0).SubItems(1).Text.ToString
-
-        'Me.UpdateDrawingOrder(strConfigureTable)
-
+        'Me.UpdateDrawingOrder(m_table_name)
         frmAddButton.ShowDialog()
     End Sub
 
+    ''' <summary>
+    ''' Pressing this button will Hide the dialog
+    ''' </summary>
     Private Sub cmdDone_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDone.Click
-
         'Me.UpdateDrawingOrder()
-
-        Me.Close()
-
+        Me.Hide()
     End Sub
 
+    ''' <summary>
+    ''' Changes the database values for the 'DrawingOrder' field to reflect the change in drawing order.
+    ''' </summary>
     Private Sub UpdateDrawingOrder(ByVal strTable As String)
-
         Dim oComm As OleDbCommand
         Dim query As String
-
         Dim strButtonName As String
-
         query = "UPDATE " & strTable & " " & _
                 "SET DrawingOrder = DrawingOrder + 1000"
-        oComm = New OleDbCommand(query, conn)
+        oComm = New OleDbCommand(query, m_conn)
         oComm.ExecuteNonQuery()
-
-        If strTable = strConfigureTable Then
-
+        If strTable = m_table_name Then
             For i As Integer = 0 To Me.lstButtons.Items.Count - 1
-
                 strButtonName = Me.lstButtons.Items(i).SubItems(1).Text
-
                 query = "UPDATE " & strTable & " " & _
                         "SET DrawingOrder = " & i + 1 & " " & _
                         "WHERE ButtonText = " & SingleQuote(strButtonName)
-
-                oComm = New OleDbCommand(query, conn)
+                oComm = New OleDbCommand(query, m_conn)
                 oComm.ExecuteNonQuery()
-
             Next
         Else
             query = "SELECT ButtonText FROM " & strTable & " ORDER BY DrawingOrder ASC"
-
             Dim sub_data_set As DataSet = New DataSet()
-            Dim sub_db_command As OleDbCommand = New OleDbCommand(query, conn)
+            Dim sub_db_command As OleDbCommand = New OleDbCommand(query, m_conn)
             Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-            sub_data_adapter.Fill(sub_data_set, strConfigureTable)
-            Dim r As DataRow
-            Dim d As DataTable
-            d = sub_data_set.Tables(0)
-
+            sub_data_adapter.Fill(sub_data_set, m_table_name)
             Dim i As Integer = 0
-
-            For Each r In d.Rows
-
+            For Each r As DataRow In m_data_table.Rows
                 strButtonName = r.Item("ButtonText")
-
                 query = "UPDATE " & strTable & " " & _
                         "SET DrawingOrder = " & i + 1 & " " & _
                         "WHERE ButtonText = " & SingleQuote(strButtonName)
-
-                oComm = New OleDbCommand(query, conn)
+                oComm = New OleDbCommand(query, m_conn)
                 oComm.ExecuteNonQuery()
-
                 i += 1
-
             Next
         End If
-        RaiseEvent refreshdatabaseEvent()
+        RaiseEvent RefreshDatabaseEvent()
         RaiseEvent UpdateButtons()
     End Sub
 
+    ''' <summary>
+    ''' Clicking this button will remove the selected button from the project, including from the database.
+    ''' </summary>
     Private Sub cmdDeleteButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDeleteButton.Click
         Dim selIdx As Integer
         Try
@@ -300,170 +292,122 @@ Public Class frmConfigureButtons
         End Try
 
         If Me.lstButtons.SelectedItems.Count = 0 Then
-            MsgBox("Please select a button from the list")
+            MessageBox.Show("Please select a button from the list", "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
-
         Me.ButtonName = Me.lstButtons.Items(selIdx).SubItems(1).Text
 
-        Dim strQuery As String
-
-        strQuery = "SELECT * FROM " & strConfigureTable
-
-        Dim sub_data_set As DataSet = New DataSet()
-        Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, conn)
-        Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-        sub_data_adapter.Fill(sub_data_set, strConfigureTable)
-
-        Dim dt As DataTable
-        Dim r As DataRow
-
-        dt = sub_data_set.Tables.Item(0)
-
-        For Each r In dt.Rows
-
+        m_query = "select * from " & m_table_name
+        m_data_cmd = New OleDbCommand(m_query, m_conn)
+        m_data_adapter = New OleDbDataAdapter(m_data_cmd)
+        m_data_set = New DataSet()
+        m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
+        m_data_command_builder.QuotePrefix = "["
+        m_data_command_builder.QuoteSuffix = "]"
+        m_data_adapter.Fill(m_data_set, m_table_name)
+        m_data_table = m_data_set.Tables(m_table_name)
+        For Each r As DataRow In m_data_table.Rows
             If r.Item("ButtonText") = Me.ButtonName Then
-
                 Me.FieldName = r.Item("DataCodeName")
                 Me.DataCode = r.Item("DataCode")
                 Exit For
             End If
         Next
-
-        Dim dr As DialogResult
-        dr = MessageBox.Show("By deleting this button the field '" & Me.FieldName & "' will be removed from the '" & DB_DATA_TABLE & "' table in the database.  Are you sure you want to delete this button?", "Delete Button", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
-        If dr = Windows.Forms.DialogResult.No Then
+        If MessageBox.Show("By deleting this button the field '" & Me.FieldName & "' will be removed from the '" & DB_DATA_TABLE & "' table in the database.  Are you sure you want to delete this button?", "Delete Button", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.No Then
             Exit Sub
         End If
-
         Dim oComm As OleDbCommand
-        Dim query As String
-
         Try
-            query = "DELETE * FROM " & strConfigureTable & " " & _
-                    "WHERE ButtonText = " & SingleQuote(Me.ButtonName)
-
-            oComm = New OleDbCommand(query, conn)
+            Dim query As String = "DELETE * FROM " & m_table_name & " WHERE ButtonText = " & SingleQuote(Me.ButtonName)
+            oComm = New OleDbCommand(query, m_conn)
             oComm.ExecuteNonQuery()
-
             query = "ALTER TABLE " & DB_DATA_TABLE & " DROP " & Me.FieldName
-
-            oComm = New OleDbCommand(query, conn)
+            oComm = New OleDbCommand(query, m_conn)
             oComm.ExecuteNonQuery()
-
-            query = "DELETE * FROM lu_data_codes WHERE Code = " & Me.DataCode
-            oComm = New OleDbCommand(query, conn)
+            query = "DELETE * FROM " & DB_DATA_CODES_TABLE & " WHERE Code = " & Me.DataCode
+            oComm = New OleDbCommand(query, m_conn)
             oComm.ExecuteNonQuery()
-
-            frmConfigureButtons_Activated(Nothing, Nothing)
-
-            Me.UpdateDrawingOrder(strConfigureTable)
+            Me.UpdateDrawingOrder(m_table_name)
         Catch ex As Exception
             MessageBox.Show("Could not delete the selected button due to the exception: " & ex.ToString, "Delete Button Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
         'RefreshDatabase(Me, New EventArgs)
-
     End Sub
 
+    ''' <summary>
+    ''' Clickng this button results in the first selected button being moved to the other panel.
+    ''' The database will also have the entry moved from one button table to the other.
+    ''' </summary>
     Private Sub cmdMoveToPanel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveToPanel.Click
         Dim strMoveToTable As String
         Dim strMoveToPanel As String
-
-        If strConfigureTable = DB_BUTTONS_TABLE Then
+        If m_table_name = DB_HABITAT_BUTTONS_TABLE Then
             strMoveToTable = DB_TRANSECT_BUTTONS_TABLE
             strMoveToPanel = "TRANSECT DATA"
         Else
-            strMoveToTable = DB_BUTTONS_TABLE
+            strMoveToTable = DB_HABITAT_BUTTONS_TABLE
             strMoveToPanel = "HABITAT DATA"
         End If
-
         Dim selIdx As Integer
         Try
             selIdx = Me.lstButtons.SelectedIndices.Item(0)
         Catch ex As Exception
             selIdx = 0
         End Try
-
         If Me.lstButtons.SelectedItems.Count = 0 Then
-            MsgBox("Please select a button from the list")
+            MessageBox.Show("Please select a button from the list", "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         Else
-            Dim answer As Integer
-            answer = MessageBox.Show("Are you sure you want to move the " & Me.lstButtons.Items(selIdx).SubItems(1).Text & " button to " & strMoveToPanel & "?", "Move Button", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-            If answer = vbNo Then
+            If MessageBox.Show("Are you sure you want to move the " & Me.lstButtons.Items(selIdx).SubItems(1).Text & " button to " & strMoveToPanel & "?", "Move Button", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = vbNo Then
                 Exit Sub
             End If
         End If
-
         Me.ButtonName = Me.lstButtons.Items(selIdx).SubItems(1).Text
-
-        Dim strQuery As String
-
-        strQuery = "SELECT * FROM " & strConfigureTable
-
-        Dim sub_data_set As DataSet = New DataSet()
-        Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, conn)
-        Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-        sub_data_adapter.Fill(sub_data_set, strConfigureTable)
-
-        Dim dt As DataTable
+        Dim strQuery As String = "select * from " & m_table_name
+        m_data_cmd = New OleDbCommand(m_query, m_conn)
+        m_data_adapter = New OleDbDataAdapter(m_data_cmd)
+        m_data_set = New DataSet()
+        m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
+        m_data_command_builder.QuotePrefix = "["
+        m_data_command_builder.QuoteSuffix = "]"
+        m_data_adapter.Fill(m_data_set, m_table_name)
+        m_data_table = m_data_set.Tables(m_table_name)
         Dim r As DataRow
-
-        dt = sub_data_set.Tables.Item(0)
-
-        For Each r In dt.Rows
-
+        For Each r In m_data_table.Rows
             If r.Item("ButtonText") = Me.ButtonName Then
-
                 Me.FieldName = r.Item("DataCodeName")
                 Me.DataCode = r.Item("DataCode")
                 Me.TableName = r.Item("TableName")
                 Exit For
             End If
         Next
-
         strQuery = "SELECT * FROM " & strMoveToTable & ";"
-
-        sub_data_set = New DataSet()
-        sub_db_command = New OleDbCommand(strQuery, conn)
-        sub_data_adapter = New OleDbDataAdapter(sub_db_command)
-        sub_data_adapter.Fill(sub_data_set, strConfigureTable)
-
-        dt = sub_data_set.Tables(0)
-
-        Dim i As Integer
+        m_data_cmd = New OleDbCommand(m_query, m_conn)
+        m_data_adapter = New OleDbDataAdapter(m_data_cmd)
+        m_data_set = New DataSet()
+        m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
+        m_data_command_builder.QuotePrefix = "["
+        m_data_command_builder.QuoteSuffix = "]"
+        m_data_adapter.Fill(m_data_set, m_table_name)
+        m_data_table = m_data_set.Tables(m_table_name)
         Dim intValue As Integer = 0
-
-        For i = 0 To dt.Rows.Count - 1
-
-            r = dt.Rows.Item(i)
-
+        For i As Integer = 0 To m_data_table.Rows.Count - 1
+            r = m_data_table.Rows.Item(i)
             If CInt(r.Item("DrawingOrder")) > intValue Then
                 intValue = CInt(r.Item("DrawingOrder"))
             End If
-
         Next
-
         Me.DrawingOrder = intValue + 1
-
-        strQuery = "INSERT INTO " & strMoveToTable & "(DrawingOrder, ButtonText, TableName, DataCode, DataCodeName, ButtonColor) "
-
-        strQuery = strQuery & "VALUES (" & Me.DrawingOrder & ", " & SingleQuote(Me.ButtonName) & ", " & SingleQuote(Me.TableName) & ", " & Me.DataCode & ", " & SingleQuote(Me.FieldName) & ", 'DarkBlue')"
-
-        Dim oComm As New OleDbCommand(strQuery, conn)
+        strQuery = "INSERT INTO " & strMoveToTable & "(DrawingOrder, ButtonText, TableName, DataCode, DataCodeName, ButtonColor) " & _
+                    "VALUES (" & Me.DrawingOrder & ", " & SingleQuote(Me.ButtonName) & ", " & SingleQuote(Me.TableName) & ", " & Me.DataCode & ", " & SingleQuote(Me.FieldName) & ", 'DarkBlue')"
+        Dim oComm As New OleDbCommand(strQuery, m_conn)
         oComm.ExecuteNonQuery()
-
-        strQuery = "DELETE * FROM " & strConfigureTable & " " & _
+        strQuery = "DELETE * FROM " & m_table_name & " " & _
                 "WHERE ButtonText = " & SingleQuote(Me.ButtonName)
-
-        oComm = New OleDbCommand(strQuery, conn)
+        oComm = New OleDbCommand(strQuery, m_conn)
         oComm.ExecuteNonQuery()
-
         Me.UpdateDrawingOrder(strMoveToTable)
-
-        frmConfigureButtons_Activated(sender, e)
-
         If strMoveToTable = DB_TRANSECT_BUTTONS_TABLE Then
             dictTransectFieldValues.Add(Me.ButtonName, Me.DataCode)
             dictHabitatFieldValues.Remove(Me.ButtonName)
@@ -471,7 +415,6 @@ Public Class frmConfigureButtons
             dictTransectFieldValues.Remove(Me.ButtonName)
             dictHabitatFieldValues.Add(Me.ButtonName, Me.DataCode)
         End If
-        RaiseEvent refreshdatabaseEvent()
-
+        RaiseEvent RefreshDatabaseEvent()
     End Sub
 End Class

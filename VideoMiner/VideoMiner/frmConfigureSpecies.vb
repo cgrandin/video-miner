@@ -7,6 +7,7 @@ Public Class frmConfigureSpecies
     Event SpeciesConfigurationUpdate()
 
 #Region "Fields"
+    Private m_conn As OleDbConnection
     Private m_Range As String
     Private m_Side As String
     Private m_IDConfidence As String
@@ -181,11 +182,15 @@ Public Class frmConfigureSpecies
     Dim dt As DataTable
     Dim row As DataRow
 
-    ' The load event of the form
+    Public Sub New(conn As OleDbConnection)
+        InitializeComponent()
+        m_conn = conn
+    End Sub
+
     Private Sub frmConfigureSpecies_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         ' Create a new dataset object containing the confidence id and description
         Dim ConfID_data_set As DataSet = New DataSet
-        Dim ConfID_db_command As OleDbCommand = New OleDbCommand("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " ORDER BY ConfidenceID;", conn)
+        Dim ConfID_db_command As OleDbCommand = New OleDbCommand("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " ORDER BY ConfidenceID;", m_conn)
         Dim ConfID_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(ConfID_db_command)
         ConfID_data_adapter.Fill(ConfID_data_set, DB_CONFIDENCE_IDS_TABLE)
 
@@ -197,7 +202,7 @@ Public Class frmConfigureSpecies
 
         ' Create a new dataset object containing the Abundance Scale ID and description
         Dim Abundance_Data_Set As DataSet = New DataSet
-        Dim Abundance_db_command As OleDbCommand = New OleDbCommand("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " ORDER BY ACFORScaleID;", conn)
+        Dim Abundance_db_command As OleDbCommand = New OleDbCommand("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " ORDER BY ACFORScaleID;", m_conn)
         Dim ACFOR_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(Abundance_db_command)
         ACFOR_data_adapter.Fill(Abundance_Data_Set, DB_ABUNDANCE_TABLE)
 

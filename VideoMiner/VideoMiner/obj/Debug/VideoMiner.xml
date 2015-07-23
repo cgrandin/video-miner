@@ -6,7 +6,53 @@ VideoMiner
 </name>
 </assembly>
 <members>
-<member name="F:VideoMiner.frmVideoPlayer.VIDEO_TIME_FORMAT">
+<member name="M:VideoMiner.frmConfigureButtons.#ctor(System.Data.OleDb.OleDbConnection)">
+	<summary>
+ Initialize the query, and extract the data that query defines into a DataSet with corresponding DataTable.
+ Populate the list and set up list attributes.
+ </summary>
+</member><member name="M:VideoMiner.frmConfigureButtons.cmdMoveUp_Click(System.Object,System.EventArgs)">
+	<summary>
+ Clicking this button calls the function that moves the first selected item up in the list, and raises the event to the main form so that the buttons can
+ be redrawn to correspond to the new order.
+ </summary>
+</member><member name="M:VideoMiner.frmConfigureButtons.cmdMoveDown_Click(System.Object,System.EventArgs)">
+	<summary>
+ Clicking this button calls the function that moves the first selected item down in the list, and raises the event to the main form so that the buttons can
+ be redrawn to correspond to the new order.
+ </summary>
+</member><member name="M:VideoMiner.frmConfigureButtons.MoveListViewItem(System.Boolean)">
+	<summary>
+ Move the first selected item up in the list, and raise the event to the main form so that the buttons can
+ be redrawn to correspond to the new order.
+ </summary>
+	<param name="moveUp">If true, the item will be moved up the list (when possible). If false, it will be moved down (when possible)</param>
+</member><member name="M:VideoMiner.frmConfigureButtons.cmdCreateNewButton_Click(System.Object,System.EventArgs)">
+	<summary>
+ Clicking this button will bring up the 'add button' dialog which allows the definition of a new button.
+ </summary>
+</member><member name="M:VideoMiner.frmConfigureButtons.cmdEditButton_Click(System.Object,System.EventArgs)">
+	<summary>
+ Clicking this button will bring up the 'add button' dialog which will allow the editing of the current button's attributes.
+ </summary>
+</member><member name="M:VideoMiner.frmConfigureButtons.cmdDone_Click(System.Object,System.EventArgs)">
+	<summary>
+ Pressing this button will Hide the dialog
+ </summary>
+</member><member name="M:VideoMiner.frmConfigureButtons.UpdateDrawingOrder(System.String)">
+	<summary>
+ Changes the database values for the 'DrawingOrder' field to reflect the change in drawing order.
+ </summary>
+</member><member name="M:VideoMiner.frmConfigureButtons.cmdDeleteButton_Click(System.Object,System.EventArgs)">
+	<summary>
+ Clicking this button will remove the selected button from the project, including from the database.
+ </summary>
+</member><member name="M:VideoMiner.frmConfigureButtons.cmdMoveToPanel_Click(System.Object,System.EventArgs)">
+	<summary>
+ Clickng this button results in the first selected button being moved to the other panel.
+ The database will also have the entry moved from one button table to the other.
+ </summary>
+</member><member name="F:VideoMiner.frmVideoPlayer.VIDEO_TIME_FORMAT">
 	<summary>
  Default format for the time labels
  </summary>
@@ -940,6 +986,11 @@ VideoMiner
  </summary>
 	<remarks>Think hard before adding something here, especially new classes. The program should
  remain object-oriented as much as possible and adding things here will likely break that</remarks>
+</member><member name="T:VideoMiner.frmTableView">
+	<summary>
+ This form will show a table which will be loaded from the database
+ </summary>
+	<remarks></remarks>
 </member><member name="F:VideoMiner.VideoMiner.m_strWorkingPath">
 	<summary>
  The working directory of the software
@@ -957,6 +1008,11 @@ VideoMiner
 </member><member name="F:VideoMiner.VideoMiner.m_strDatabasePath">
 	<summary>
  Holds the last known database path as entered by the user in the OpenFileDialog
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.VideoMiner.m_strDatabaseFilePath">
+	<summary>
+ Holds the full path filename as entered by the user in the OpenFileDialog
  </summary>
 	<remarks></remarks>
 </member><member name="F:VideoMiner.VideoMiner.m_strVideoPath">
@@ -1027,11 +1083,6 @@ VideoMiner
 </member><member name="F:VideoMiner.VideoMiner.m_blInTransect">
 	<summary>
  Are we in a transect currently or not?
- </summary>
-	<remarks></remarks>
-</member><member name="F:VideoMiner.VideoMiner.m_data_table">
-	<summary>
- Current database table object
  </summary>
 	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.frmVideoMiner_Load(System.Object,System.EventArgs)">
@@ -1172,6 +1223,14 @@ VideoMiner
 	<summary>
  Delete the project name currently selected in the frmProjectName form.
  </summary>
+</member><member name="M:VideoMiner.VideoMiner.cmdDefineAllTransectVariables_Click(System.Object,System.EventArgs)">
+	<summary>
+ When user clicks this button, it is the same as if they clicked all the transect variable buttons in sequence.
+ This is a convinience button.
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.openSession">
 	<summary>
  Open a session which has saved the previous state of the program in VideoMiner Session file (*.xml)
@@ -1221,23 +1280,47 @@ VideoMiner
 	<summary>
  Updates the time text on the form everytime the timer tick event is issued by the frmVideoPlayer form
  </summary>
+</member><member name="M:VideoMiner.VideoMiner.db_file_load">
+	<summary>
+ Enable some controls when the database is opened
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.db_file_unload">
+	<summary>
+ Set some controls to be invisible once the database has been closed, and remove the dynamic panel buttons.
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.openDatabase">
+	<summary>
+ Opens the MS Access database, loads one button for each record in the DB_HABITAT_BUTTONS_TABLE table into Panel1: fill_spatialvariable_button_panel(),
+ and loads one button for each record in the DB_SPECIES_BUTTONS_TABLE table into Panel2: fill_speciesvariable_button_panel().
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.fetch_data">
+	<summary>
+ Fetch the data from the MS Access database into the DataGridView and sets the next unique ID that the database can recieve.
+ </summary>
+	<remarks>Order of the rows will be by decending primary key ('ID' field)</remarks>
 </member><member name="M:VideoMiner.VideoMiner.createInsertQuery(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
 	<summary>
  Creates a string which is an 'INSERT INTO' query in access database format.
  </summary>
-	<param name="strDataCode">Code for the data. This code is found in the lu_data_codes table in the access database</param>
-	<param name="strSpeciesName">Species name as found in the lu_species_code table</param>
-	<param name="strSpeciesCode">Species code as found in the lu_species_code table</param>
+	<param name="strDataCode">Code for the data. This code is found in the DB_DATA_CODES_TABLE table in the access database</param>
+	<param name="strSpeciesName">Species name as found in the DB_SPECIES_CODE_TABLE table</param>
+	<param name="strSpeciesCode">Species code as found in the DB_SPECIES_CODE_TABLE table</param>
 	<param name="strSpeciesCount">Count of the species given by strSpeciesCode and strSpeciesName</param>
-	<param name="strSide">Which side the observation was on given by table lu_observed_side (0=center,1=port,2=starboard)</param>
+	<param name="strSide">Which side the observation was on given by table DB_OBSERVED_SIDE_TABLE (0=center,1=port,2=starboard)</param>
 	<param name="strRange">Distance of observation from the centerline in cm</param>
 	<param name="strLength">Length in cm of the observed species</param>
 	<param name="strHeight">Height measurement for species where length is not the standard measurement (e.g. Tunicate)</param>
 	<param name="strWidth">Width measurement for species where length is not the standard measurement</param>
 	<param name="strAbundance">Abundance of the species seen (TODO:update this definition)</param>
-	<param name="strIdConfidence">Confidence value for species ID. See table lu_confidence_ids (1=high,2=med,3=low)</param>
+	<param name="strIdConfidence">Confidence value for species ID. See table DB_CONFIDENCE_IDS_TABLE (1=high,2=med,3=low)</param>
 	<param name="strComment">Video reviewer's comments</param>
 	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.get_table(System.String)">
+	<summary>
+ Load a table in from the currently loaded MS Access database
+ </summary>
+	<param name="name">The name of the table</param>
+	<returns>True if the table was loaded successfully, false otherwise</returns>
 </member><member name="F:VideoMiner.VideoMiner.rowWasGood">
 	<summary>
  Whether or not the row is synced properly with the database. Used when the user edits a cell value. The cell's row
@@ -1248,6 +1331,10 @@ VideoMiner
 	<summary>
  Triggered when any cell value is changed in the grid. Will update a label telling the user that the data is no longer synced with the database.
  If the user just types the same value that was in the cell to begin with, the row will be unchanged.
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_DataError(System.Object,System.Windows.Forms.DataGridViewDataErrorEventArgs)">
+	<summary>
+ Give column and row-specific error message to user. Avoids errors/exceptions during the update to the database.
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_KeyDown(System.Windows.Forms.DataGridView,System.Windows.Forms.KeyEventArgs)">
 	<summary>
@@ -1268,23 +1355,14 @@ VideoMiner
 	<summary>
  Deletes selected rows from the MS access database as well as in the grid view. A confirmation box will verify this.
  </summary>
-	<param name="sender"></param>
-	<param name="e"></param>
-	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_RightClick(System.Windows.Forms.DataGridView,System.Windows.Forms.MouseEventArgs)">
 	<summary>
  Captures right click in the DataGridView. This will delete rows from the grid view and the database.
  </summary>
-	<param name="sender"></param>
-	<param name="e"></param>
 	<remarks>If no rows are selected, a message will tell you to select rows and then press delete</remarks>
 </member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_CellValidating(System.Object,System.Windows.Forms.DataGridViewCellValidatingEventArgs)">
 	<summary>
  Validate the cell values if user makes them NULL. Avoids errors/exceptions during the update to the database.
- </summary>
-</member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_DataError(System.Object,System.Windows.Forms.DataGridViewDataErrorEventArgs)">
-	<summary>
- Give column and row-specific error message to user. Avoids errors/exceptions during the update to the database.
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.cmdUpdateDatabase_Click(System.Object,System.EventArgs)">
 	<summary>
