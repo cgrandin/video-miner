@@ -1587,14 +1587,11 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
-    ''' When the user clicks "Open Database" in the file menu, open a dialogue where a database can be selected
+    ''' When the user clicks "Open Database" in the file menu, open a dialog box where a database can be selected
     ''' and opened for use in the program.
     ''' Load OpenFileDialog object to prompt user to select a database to open.
     ''' When the user clicks OK, sub openDatabase and send it the path of the database to open.
     ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
-    ''' <remarks></remarks>
     Private Sub mnuOpenDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuOpenDatabase.Click
         blOpenDatabase = True
         Dim ofd As OpenFileDialog = New OpenFileDialog
@@ -4603,6 +4600,9 @@ Public Class VideoMiner
             intNumTransectButtons = 0
         End If
         If Not IsNothing(buttons) Then
+            Do While pnlHabitatData.Controls.Count <> 0
+                pnlTransectData.Controls.RemoveAt(0)
+            Loop
             For i = 0 To intNumHabitatButtons - 1
                 buttons(i).Dispose()
                 buttons(i) = Nothing
@@ -4610,11 +4610,15 @@ Public Class VideoMiner
                 textboxes(i) = Nothing
             Next
             intNumHabitatButtons = 0
-            For i = 0 To intNumSpeciesButtons - 1
-                speciesButtons(i).Dispose()
-                speciesButtons(i) = Nothing
-            Next
+            ' Making the panel invisible makes the remove operations much faster
+            pnlSpeciesData.Visible = False
+            ' The Do.While is the only method that works for removing controls propery. Other methods, i.e. For..Each and For..Next
+            ' will have the index changing while the controls are being removed which will mess it up and leave some on the panel.
+            Do While pnlSpeciesData.Controls.Count <> 0
+                pnlSpeciesData.Controls.RemoveAt(0)
+            Loop
             intNumSpeciesButtons = 0
+            pnlSpeciesData.Visible = True
         End If
     End Sub
 
@@ -5765,23 +5769,22 @@ SkipInsertComma:
 #End Region
 
 #Region "Species Variable Functions"
-
-    ' ==========================================================================================================
-    ' Name: fill_speciesvariable_button_panel()
-    ' Description:  Once both a database and a video file are opened, prepare panel2
-    ' 1.) Load one button for each record in the DB_SPECIES_BUTTONS_TABLE table into Panel2.
-    ' 2.) Set the button click event to SpeciesVariableButtonHandler()
-    ' ==========================================================================================================
+    ''' <summary>
+    ''' Load one button for each record in the DB_SPECIES_BUTTONS_TABLE table into 'Species DATA' Panel.
+    ''' </summary>
+    ''' <remarks></remarks>
     Public Sub fillSpeciesVariableButtonPanel()
+        Dim query As String = "select * from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;"
+        m_data_cmd = New OleDbCommand(query, m_conn)
+        m_data_adapter = New OleDbDataAdapter(m_data_cmd)
+        m_data_set = New DataSet()
+        m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
+        m_data_command_builder.QuotePrefix = "["
+        m_data_command_builder.QuoteSuffix = "]"
+        m_data_adapter.Fill(m_data_set, DB_SPECIES_BUTTONS_TABLE)
+        m_data_table = m_data_set.Tables(DB_SPECIES_BUTTONS_TABLE)
 
-        Dim sub_data_set As DataSet = New DataSet()
-        Dim sub_db_command As OleDbCommand = New OleDbCommand("select * from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", m_conn)
-        Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-        sub_data_adapter.Fill(sub_data_set, DB_SPECIES_BUTTONS_TABLE)
-        Dim r As DataRow
-        Dim d As DataTable
-        d = sub_data_set.Tables(0)
-        intNumSpeciesButtons = d.Rows.Count
+        intNumSpeciesButtons = m_data_table.Rows.Count
 
         ReDim speciesButtons(intNumSpeciesButtons)
         ReDim strSpeciesButtonNames(intNumSpeciesButtons)
@@ -5796,25 +5799,15 @@ SkipInsertComma:
         Dim sizex As Integer = Me.ButtonWidth
         Dim sizey As Integer = Me.ButtonHeight
         Dim gap As Integer = 5
-
         Dim intAdd As Integer = 0
         Dim intMultiply As Integer = 0
         Dim strButtonText As String = NULL_STRING
-
-        'Dim intColumnCount As Integer
-        'Dim intCountPerColumn As Integer
         Dim intCountPerRow As Integer
-        Dim cellsizex = sizex + gap
-        Dim cellsizey = sizey + gap
-
-        'intColumnCount = 3
-        'intCountPerColumn = (intNumSpeciesButtons / intColumnCount) + 1
+        Dim cellsizex As Integer = sizex + gap
+        Dim cellsizey As Integer = sizey + gap
 
         intCountPerRow = Math.Floor(w / (cellsizex))
-
-
-        For Each r In d.Rows
-
+        For Each r As DataRow In m_data_table.Rows
             strSpeciesButtonNames(i) = New String(r.Item(1).ToString())
             strSpeciesButtonCodes(i) = New String(r.Item(2).ToString())
             strSpeciesButtonCodeNames(i) = New String(r.Item(4).ToString())

@@ -1179,14 +1179,11 @@ VideoMiner
 	<param name="e">System.EventArgs</param>
 </member><member name="M:VideoMiner.VideoMiner.mnuOpenDatabase_Click(System.Object,System.EventArgs)">
 	<summary>
- When the user clicks "Open Database" in the file menu, open a dialogue where a database can be selected
+ When the user clicks "Open Database" in the file menu, open a dialog box where a database can be selected
  and opened for use in the program.
  Load OpenFileDialog object to prompt user to select a database to open.
  When the user clicks OK, sub openDatabase and send it the path of the database to open.
  </summary>
-	<param name="sender"></param>
-	<param name="e"></param>
-	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.CloseDatabase_Click(System.Object,System.EventArgs)">
 	<summary>
  When the user clicks "Close Database" in the file menu, close the currently open database.
@@ -1321,6 +1318,11 @@ VideoMiner
  </summary>
 	<param name="name">The name of the table</param>
 	<returns>True if the table was loaded successfully, false otherwise</returns>
+</member><member name="M:VideoMiner.VideoMiner.fillSpeciesVariableButtonPanel">
+	<summary>
+ Load one button for each record in the DB_SPECIES_BUTTONS_TABLE table into 'Species DATA' Panel.
+ </summary>
+	<remarks></remarks>
 </member><member name="F:VideoMiner.VideoMiner.rowWasGood">
 	<summary>
  Whether or not the row is synced properly with the database. Used when the user edits a cell value. The cell's row
