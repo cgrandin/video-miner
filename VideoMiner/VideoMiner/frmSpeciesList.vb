@@ -1,59 +1,11 @@
-Imports System.Data.OleDb
 Public Class frmSpeciesList
 
-    Private m_conn As OleDbConnection
     Dim frmEditSpecies As frmEditSpecies
 
     Event RefreshDatabaseEvent()
 
-    Private Sub frmSpeciesList_Activated(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Activated
-
-        Try
-            Me.lstSpecies.Items.Clear()
-            Dim sub_data_set As DataSet = New DataSet()
-
-            Dim sub_db_command As OleDbCommand = New OleDbCommand("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", m_conn)
-            Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-
-            sub_data_adapter.Fill(sub_data_set, DB_SPECIES_BUTTONS_TABLE)
-
-            Dim r As DataRow
-            Dim taxRow As DataRow
-            Dim d As DataTable
-            Dim taxData As DataTable
-            d = sub_data_set.Tables(0)
-
-            Dim itm As ListViewItem
-            For Each r In d.Rows
-                itm = New ListViewItem
-                itm.Text = ""
-
-                itm.SubItems.Add(r.Item("ButtonText").ToString())
-                itm.SubItems.Add(r.Item("ButtonCode").ToString())
-
-
-                Dim tax_data_set As DataSet = New DataSet()
-                Dim tax_db_command As OleDbCommand = New OleDbCommand("Select SpeciesCode, TaxonomyClassLevelCode from " & DB_SPECIES_CODE_TABLE & " WHERE SpeciesCode = " & SingleQuote(r.Item("ButtonCode")) & ";", m_conn)
-                Dim tax_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(tax_db_command)
-                tax_data_adapter.Fill(tax_data_set, DB_SPECIES_CODE_TABLE)
-                taxData = tax_data_set.Tables(0)
-                taxRow = taxData.Rows.Item(0)
-
-                itm.SubItems.Add(taxRow.Item("TaxonomyClassLevelCode").ToString())
-
-                Me.lstSpecies.Items.Add(itm)
-            Next
-        Catch ex As Exception
-
-        End Try
-
-
-    End Sub
-
-
-    Public Sub New(conn As OleDbConnection)
+    Public Sub New()
         InitializeComponent()
-        m_conn = conn
         With Me.lstSpecies
             .Visible = True
             .FullRowSelect = True
@@ -68,12 +20,28 @@ Public Class frmSpeciesList
         End With
     End Sub
 
-    Private Sub cmdMoveUp_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveUp.Click
+    Private Sub frmSpeciesList_Activated(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Activated
+        Dim taxRow As DataRow
+        Dim taxData As DataTable
+        Dim itm As ListViewItem
+        Me.lstSpecies.Items.Clear()
+        Dim d As DataTable = Database.GetDataTable("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", DB_SPECIES_BUTTONS_TABLE)
+        For Each r As DataRow In d.Rows
+            itm = New ListViewItem
+            itm.Text = ""
+            itm.SubItems.Add(r.Item("ButtonText").ToString())
+            itm.SubItems.Add(r.Item("ButtonCode").ToString())
+            taxData = Database.GetDataTable("Select SpeciesCode, TaxonomyClassLevelCode from " & DB_SPECIES_CODE_TABLE & " WHERE SpeciesCode = " & SingleQuote(r.Item("ButtonCode")) & ";", DB_SPECIES_CODE_TABLE)
+            taxRow = taxData.Rows.Item(0)
+            itm.SubItems.Add(taxRow.Item("TaxonomyClassLevelCode").ToString())
+            Me.lstSpecies.Items.Add(itm)
+        Next
+    End Sub
 
+    Private Sub cmdMoveUp_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveUp.Click
         If Me.lstSpecies.SelectedItems.Count > 0 Then
             Dim intSelectedIndex As Integer
             intSelectedIndex = Me.lstSpecies.SelectedItems(0).Index
-            'MsgBox(intSelectedIndex)
             MoveListViewItem(intSelectedIndex - 1)
         Else
             MsgBox("Please select a species from the list")
@@ -81,11 +49,9 @@ Public Class frmSpeciesList
     End Sub
 
     Private Sub cmdMoveDown_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveDown.Click
-
         If Me.lstSpecies.SelectedItems.Count > 0 Then
             Dim intSelectedIndex As Integer
             intSelectedIndex = Me.lstSpecies.SelectedItems(0).Index
-            'MsgBox(intSelectedIndex)
             MoveListViewItem(intSelectedIndex + 1)
         Else
             MsgBox("Please select a species from the list")
@@ -94,28 +60,23 @@ Public Class frmSpeciesList
     End Sub
 
     Private Sub cmdMoveToTop_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveToTop.Click
-
         If Me.lstSpecies.SelectedItems.Count > 0 Then
             Dim intSelectedIndex As Integer
             intSelectedIndex = Me.lstSpecies.SelectedItems(0).Index
-            'MsgBox(intSelectedIndex)
             MoveListViewItem(0)
         Else
             MsgBox("Please select a species from the list")
         End If
-
     End Sub
 
     Private Sub cmdMoveToBottom_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveToBottom.Click
         If Me.lstSpecies.SelectedItems.Count > 0 Then
             Dim intSelectedIndex As Integer
             intSelectedIndex = Me.lstSpecies.SelectedItems(0).Index
-            'MsgBox(intSelectedIndex)
             MoveListViewItem(Me.lstSpecies.Items.Count - 1)
         Else
             MsgBox("Please select a species from the list")
         End If
-
     End Sub
 
     Private Sub MoveListViewItem(ByVal moveToIndex As Integer)
@@ -235,41 +196,20 @@ Public Class frmSpeciesList
     End Sub
 
     Private Sub cmdOk_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOk.Click
-
         Me.UpdateDrawingOrder()
-
-        Me.Close()
-
+        Me.Hide()
     End Sub
 
     Private Sub UpdateDrawingOrder()
-
-        Dim oComm As OleDbCommand
-        Dim query As String
-
         Dim strSpeciesName As String
         Dim strSpeciesCode As String
-
-        query = "UPDATE " & DB_SPECIES_BUTTONS_TABLE & " " & _
-                "SET DrawingOrder = DrawingOrder + 1000"
-        oComm = New OleDbCommand(query, m_conn)
-        oComm.ExecuteNonQuery()
-
+        Database.ExecuteNonQuery("UPDATE " & DB_SPECIES_BUTTONS_TABLE & " SET DrawingOrder = DrawingOrder + 1000")
         For i As Integer = 0 To Me.lstSpecies.Items.Count - 1
-
             strSpeciesName = Me.lstSpecies.Items(i).SubItems(1).Text
             strSpeciesCode = Me.lstSpecies.Items(i).SubItems(2).Text
-
-            query = "UPDATE " & DB_SPECIES_BUTTONS_TABLE & " " & _
-                    "SET DrawingOrder = " & i + 1 & " " & _
-                    "WHERE ButtonText = " & DoubleQuote(strSpeciesName) & " AND " & _
-                    "      ButtonCode = " & DoubleQuote(strSpeciesCode)
-
-            oComm = New OleDbCommand(query, m_conn)
-            oComm.ExecuteNonQuery()
-
+            Database.ExecuteNonQuery("UPDATE " & DB_SPECIES_BUTTONS_TABLE & " SET DrawingOrder = " & i + 1 & " " & _
+                    "WHERE ButtonText = " & DoubleQuote(strSpeciesName) & " AND ButtonCode = " & DoubleQuote(strSpeciesCode))
         Next
-
         RaiseEvent RefreshDatabaseEvent()
     End Sub
 
@@ -285,30 +225,17 @@ Public Class frmSpeciesList
             MsgBox("Please select a species from the list")
             Exit Sub
         End If
-
         Dim dr As DialogResult
         dr = MessageBox.Show("Are you sure you want to delete this species button?", "Delete Species Button", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
         If dr = Windows.Forms.DialogResult.No Then
             Exit Sub
         End If
-
         Me.UpdateDrawingOrder()
-
         Dim strSpeciesName As String = Me.lstSpecies.Items(selIdx).SubItems(1).Text
         Dim strSpeciesCode As String = Me.lstSpecies.Items(selIdx).SubItems(2).Text
-
-        Dim oComm As OleDbCommand
-        Dim query As String
-
-        query = "DELETE * FROM " & DB_SPECIES_BUTTONS_TABLE & " " & _
-                "WHERE ButtonText = " & SingleQuote(strSpeciesName) & " AND " & _
-                "      ButtonCode = " & SingleQuote(strSpeciesCode)
-
-        oComm = New OleDbCommand(query, m_conn)
-        oComm.ExecuteNonQuery()
-
+        Database.ExecuteNonQuery("DELETE * FROM " & DB_SPECIES_BUTTONS_TABLE & " WHERE ButtonText = " & SingleQuote(strSpeciesName) & " AND " & _
+                " ButtonCode = " & SingleQuote(strSpeciesCode))
         frmSpeciesList_Activated(Nothing, Nothing)
-
     End Sub
 
     Private Sub lstSpecies_DragDrop(ByVal sender As Object, ByVal e As System.Windows.Forms.DragEventArgs) Handles lstSpecies.DragDrop
@@ -356,7 +283,6 @@ Public Class frmSpeciesList
         Next
     End Sub
 
-  
     Private Sub lstSpecies_ItemDrag(ByVal sender As Object, ByVal e As System.Windows.Forms.ItemDragEventArgs) Handles lstSpecies.ItemDrag
         lstSpecies.DoDragDrop(lstSpecies.SelectedItems, DragDropEffects.Move)
     End Sub

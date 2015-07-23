@@ -1,13 +1,9 @@
-﻿Imports System.Data.OleDb
+﻿Public Class frmKeyboardCommands
 
-Public Class frmKeyboardCommands
-
-    Private m_conn As OleDbConnection
     Event RefreshDatabaseEvent()
 
-    Public Sub New(conn As OleDbConnection)
+    Public Sub New()
         InitializeComponent()
-        m_conn = conn
         With Me.lstSpecies
             .Visible = True
             .FullRowSelect = True
@@ -22,37 +18,21 @@ Public Class frmKeyboardCommands
     End Sub
 
     Private Sub frmKeyboardCommands_Activated(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Activated
-        Try
-            Me.lstSpecies.Items.Clear()
-            Dim sub_data_set As DataSet = New DataSet()
-
-            Dim sub_db_command As OleDbCommand = New OleDbCommand("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor, KeyboardShortcut from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", m_conn)
-            Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-
-            sub_data_adapter.Fill(sub_data_set, DB_SPECIES_BUTTONS_TABLE)
-
-            Dim d As DataTable
-            Dim r As DataRow
-            d = sub_data_set.Tables(0)
-
-            Dim itm As ListViewItem
-            For Each r In d.Rows
-                itm = New ListViewItem
-                itm.Text = ""
-
-                itm.SubItems.Add(r.Item("ButtonText").ToString())
-                itm.SubItems.Add(r.Item("KeyboardShortcut").ToString())
-
-                Me.lstSpecies.Items.Add(itm)
-            Next
-        Catch ex As Exception
-
-        End Try
+        Me.lstSpecies.Items.Clear()
+        Dim d As DataTable = Database.GetDataTable("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor, KeyboardShortcut from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", DB_SPECIES_BUTTONS_TABLE)
+        Dim itm As ListViewItem
+        For Each r As DataRow In d.Rows
+            itm = New ListViewItem
+            itm.Text = ""
+            itm.SubItems.Add(r.Item("ButtonText").ToString())
+            itm.SubItems.Add(r.Item("KeyboardShortcut").ToString())
+            Me.lstSpecies.Items.Add(itm)
+        Next
     End Sub
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
         RaiseEvent RefreshDatabaseEvent()
-        Me.Close()
+        Me.Hide()
     End Sub
 
     Private Sub cmdAssignShortcut_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdAssignShortcut.Click
@@ -60,13 +40,10 @@ Public Class frmKeyboardCommands
             MsgBox("Please select a species button from the list")
             Exit Sub
         End If
-
         frmCreateKeyboardShortcut = New frmCreateKeyboardShortcut
-
         Dim selIdx As Integer = Me.lstSpecies.SelectedIndices.Item(0)
         frmCreateKeyboardShortcut.ButtonText = Me.lstSpecies.Items(selIdx).SubItems(1).Text
         frmCreateKeyboardShortcut.KeyboardShortcut = Me.lstSpecies.Items(selIdx).SubItems(2).Text
         frmCreateKeyboardShortcut.ShowDialog()
-
     End Sub
 End Class

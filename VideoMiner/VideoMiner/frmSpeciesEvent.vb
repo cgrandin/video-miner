@@ -12,7 +12,6 @@ Public Class frmSpeciesEvent
     Event SpeciesButtonConfigurationChangedEvent()
 
 #Region "Fields"
-    Private m_conn As OleDbConnection
     Private m_SpeciesName As String
     Private m_SpeciesCode As String
 
@@ -229,12 +228,11 @@ Public Class frmSpeciesEvent
     Private clLabelNames As New Collection
 
 
-    Public Sub New(conn As OleDbConnection, blRangeChecked As Boolean, blIDConfidenceChecked As Boolean, blAbundanceChecked As Boolean, blCountChecked As Boolean, blHeightChecked As Boolean, _
+    Public Sub New(blRangeChecked As Boolean, blIDConfidenceChecked As Boolean, blAbundanceChecked As Boolean, blCountChecked As Boolean, blHeightChecked As Boolean, _
                    blWidthChecked As Boolean, blLengthChecked As Boolean, blCommentsChecked As Boolean, _
                    strRange As String, strSide As String, strIDConfidence As String, strAbundance As String, strCount As String, strHeight As String, _
                    strWidth As String, strLength As String, strComments As String)
         InitializeComponent()
-        m_conn = conn
         Me.RangeChecked = blRangeChecked
         Me.IDConfidenceChecked = blIDConfidenceChecked
         Me.AbundanceChecked = blAbundanceChecked
@@ -345,30 +343,23 @@ Public Class frmSpeciesEvent
         Dim blNumeric As Boolean = False
 
         Dim speciesFont As Font = New Font("Microsoft Sans Serif", 10.8, FontStyle.Bold)
+        Dim d As DataTable
 
         intColumnCount = 2
         intCountPerColumn = (clControlNames.Count / intColumnCount)
-
         For j = 1 To clControlNames.Count
-
             Select Case clControlNames.Item(j)
-
                 Case "txtRange"
-
                     speciesTextBox = New TextBox
                     speciesEventLabel = New Label
                     speciesTextBox.Name = clControlNames.Item(j)
                     speciesEventLabel.Text = clLabelNames.Item(j)
                     speciesTextBox.Width = 121
                     speciesTextBox.Font = speciesFont
-
                     speciesTextBox.Text = clControlValues.Item(j)
-
                     speciesControl = speciesTextBox
                     blNumeric = True
-
                 Case "cboSide"
-
                     speciesEventComboBox = New ComboBox
                     speciesEventLabel = New Label
                     speciesEventComboBox.Name = clControlNames.Item(j)
@@ -376,155 +367,97 @@ Public Class frmSpeciesEvent
                     speciesEventComboBox.Width = 121
                     speciesEventComboBox.Font = speciesFont
                     speciesEventComboBox.DropDownStyle = ComboBoxStyle.DropDownList
-
                     speciesEventComboBox.Items.Add("On Center")
                     speciesEventComboBox.Items.Add("Port")
                     speciesEventComboBox.Items.Add("Starboard")
-
                     speciesEventComboBox.SelectedIndex = clControlValues.Item(j)
-
                     If speciesEventComboBox.SelectedIndex = 0 Then
                         pnlSpeciesEvent.Controls.Item("txtRange").Text = ""
                         pnlSpeciesEvent.Controls.Item("txtRange").Enabled = False
                         Me.Range = ""
                     End If
-
                     AddHandler speciesEventComboBox.SelectedIndexChanged, AddressOf sideControl
-
                     speciesControl = speciesEventComboBox
-
                 Case "cboIDConfidence"
-
                     speciesEventComboBox = New ComboBox
                     speciesEventLabel = New Label
                     speciesEventComboBox.Name = clControlNames.Item(j)
                     speciesEventLabel.Text = clLabelNames.Item(j)
-                    Dim ConfID_data_set As DataSet = New DataSet
-                    Dim ConfID_db_command As OleDbCommand = New OleDbCommand("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " ORDER BY ConfidenceID;", m_conn)
-                    Dim ConfID_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(ConfID_db_command)
-                    ConfID_data_adapter.Fill(ConfID_data_set, DB_CONFIDENCE_IDS_TABLE)
-
-                    dt = ConfID_data_set.Tables(0)
-                    For Each row In dt.Rows
+                    d = Database.GetDataTable("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " ORDER BY ConfidenceID;", DB_CONFIDENCE_IDS_TABLE)
+                    For Each row In d.Rows
                         speciesEventComboBox.Items.Add(New ValueDescriptionPair(row.Item(0).ToString(), row.Item(1).ToString()))
                     Next
-
                     speciesEventComboBox.Font = speciesFont
                     speciesEventComboBox.DropDownStyle = ComboBoxStyle.DropDownList
-
                     speciesEventComboBox.Text = clControlValues.Item(j)
-
                     speciesControl = speciesEventComboBox
-
                 Case "cboAbundance"
-
                     speciesEventComboBox = New ComboBox
                     speciesEventLabel = New Label
                     speciesEventComboBox.Name = clControlNames.Item(j)
                     speciesEventLabel.Text = clLabelNames.Item(j)
-                    Dim Abundance_Data_Set As DataSet = New DataSet
-                    Dim Abundance_db_command As OleDbCommand = New OleDbCommand("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " ORDER BY ACFORScaleID;", m_conn)
-                    Dim Abundance_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(Abundance_db_command)
-                    Abundance_data_adapter.Fill(Abundance_Data_Set, DB_ABUNDANCE_TABLE)
-
-                    dt = Nothing
-                    row = Nothing
-
-                    dt = Abundance_Data_Set.Tables(0)
-                    For Each row In dt.Rows
+                    d = Database.GetDataTable("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " ORDER BY ACFORScaleID;", DB_ABUNDANCE_TABLE)
+                    For Each row In d.Rows
                         speciesEventComboBox.Items.Add(New ValueDescriptionPair(row.Item(0).ToString(), row.Item(1).ToString()))
                     Next
-
                     speciesEventComboBox.Font = speciesFont
                     speciesEventComboBox.DropDownStyle = ComboBoxStyle.DropDownList
-
                     speciesEventComboBox.Text = clControlValues.Item(j)
-
                     speciesControl = speciesEventComboBox
-
                 Case "txtCount"
-
                     speciesTextBox = New TextBox
                     speciesEventLabel = New Label
                     speciesTextBox.Name = clControlNames.Item(j)
                     speciesEventLabel.Text = clLabelNames.Item(j)
                     speciesTextBox.Width = 121
                     speciesTextBox.Font = speciesFont
-
                     speciesTextBox.Text = clControlValues.Item(j)
-
                     speciesControl = speciesTextBox
-
                     blNumeric = True
-
                 Case "txtHeight"
-
                     speciesTextBox = New TextBox
                     speciesEventLabel = New Label
                     speciesTextBox.Name = clControlNames.Item(j)
                     speciesEventLabel.Text = clLabelNames.Item(j)
                     speciesTextBox.Width = 121
                     speciesTextBox.Font = speciesFont
-
                     speciesTextBox.Text = clControlValues.Item(j)
-
                     speciesControl = speciesTextBox
-
                     blNumeric = True
-
                 Case "txtWidth"
-
                     speciesTextBox = New TextBox
                     speciesEventLabel = New Label
                     speciesTextBox.Name = clControlNames.Item(j)
                     speciesEventLabel.Text = clLabelNames.Item(j)
                     speciesTextBox.Width = 121
                     speciesTextBox.Font = speciesFont
-
                     speciesTextBox.Text = clControlValues.Item(j)
-
                     speciesControl = speciesTextBox
-
                     blNumeric = True
-
                 Case "txtLength"
-
                     speciesTextBox = New TextBox
                     speciesEventLabel = New Label
                     speciesTextBox.Name = clControlNames.Item(j)
                     speciesEventLabel.Text = clLabelNames.Item(j)
                     speciesTextBox.Width = 121
                     speciesTextBox.Font = speciesFont
-
                     speciesTextBox.Text = clControlValues.Item(j)
-
                     speciesControl = speciesTextBox
-
                     blNumeric = True
-
                 Case "txtComments"
-
                     speciesRichTextBox = New RichTextBox
                     speciesEventLabel = New Label
                     speciesRichTextBox.Name = clControlNames.Item(j)
                     speciesEventLabel.Text = clLabelNames.Item(j)
                     speciesRichTextBox.Font = speciesFont
                     speciesRichTextBox.Width = 261
-
                     speciesRichTextBox.Text = clControlValues.Item(j)
-
                     speciesControl = speciesRichTextBox
                     intMultiply += 1
                     intAdd += 1
-
             End Select
-
-
             Dim cellsizex = sizex + gapx
             Dim cellsizey = sizey + gapy
-
-
-
             If i Mod intColumnCount = 0 Or speciesControl.Name = "txtComments" Then
                 speciesControl.Location = New System.Drawing.Point(gapx, 20 + gapy + (cellsizey * intMultiply))
                 speciesEventLabel.Location = New System.Drawing.Point(speciesControl.Location.X, speciesControl.Location.Y - 15)
@@ -532,120 +465,36 @@ Public Class frmSpeciesEvent
                 speciesControl.Location = New System.Drawing.Point(140 + gapx, 20 + gapy + (cellsizey * intMultiply))
                 speciesEventLabel.Location = New System.Drawing.Point(speciesControl.Location.X, speciesControl.Location.Y - 15)
             End If
-
             'AddHandler speciesControl.Leave, AddressOf LostFocusControlHandler
             If blNumeric = True Then
                 AddHandler speciesControl.KeyPress, AddressOf numericTextboxValidation
             End If
-
             pnlSpeciesEvent.Controls.Add(speciesControl)
             pnlSpeciesEvent.Controls.Add(speciesEventLabel)
-
             If i Mod intColumnCount = intColumnCount - 1 Then
                 intAdd += intColumnCount
                 intMultiply += 1
             End If
-
             i = i + 1
-
             blNumeric = False
-
         Next
-
         For i = 0 To pnlSpeciesEvent.Controls.Count - 1
-
             If pnlSpeciesEvent.Controls.Item(i).Text = "NULL" Then
                 pnlSpeciesEvent.Controls.Item(i).Text = ""
             End If
-
         Next
-
     End Sub
 
     Private Sub GetSpeciesVariables()
-        Try
-            Dim ctlControl As Control
-            Dim ctlSpeciesControl As Control
-            Dim row As DataRow
-            Dim dt As DataTable
-
-            For Each ctlControl In pnlSpeciesEvent.Controls
-
-                ctlSpeciesControl = ctlControl
-
-                Select Case ctlSpeciesControl.Name
-                    Case "txtRange"
-
-                        Me.Range = ctlSpeciesControl.Text
-
-                    Case "cboSide"
-
-                        Select Case ctlSpeciesControl.Text
-                            Case "On Center"
-                                Me.Side = "0"
-                            Case "Port"
-                                Me.Side = "1"
-                            Case "Starboard"
-                                Me.Side = "2"
-                        End Select
-                    Case "cboIDConfidence"
-                        Dim ConfID_data_set As DataSet = New DataSet
-                        Dim ConfID_db_command As OleDbCommand = New OleDbCommand("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " WHERE ConfidenceIdDescription = " & SingleQuote(ctlSpeciesControl.Text) & ";", m_conn)
-                        Dim ConfID_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(ConfID_db_command)
-                        ConfID_data_adapter.Fill(ConfID_data_set, DB_CONFIDENCE_IDS_TABLE)
-
-                        dt = Nothing
-                        dt = ConfID_data_set.Tables(0)
-                        Me.IDConfidence = dt.Rows.Item(0).Item(0).ToString()
-
-                    Case "cboAbundance"
-
-                        Dim Abundance_Data_Set As DataSet = New DataSet
-                        Dim Abundance_db_command As OleDbCommand = New OleDbCommand("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " WHERE ACFORScaleDescription = " & SingleQuote(ctlSpeciesControl.Text) & ";", m_conn)
-                        Dim Abundance_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(Abundance_db_command)
-                        Abundance_data_adapter.Fill(Abundance_Data_Set, DB_ABUNDANCE_TABLE)
-
-                        dt = Nothing
-                        dt = Abundance_Data_Set.Tables(0)
-                        Me.Abundance = dt.Rows.Item(0).Item(0).ToString()
-                    Case "txtCount"
-
-                        Me.Count = ctlSpeciesControl.Text
-                    Case "txtHeight"
-
-                        Me.SpeciesHeight = ctlSpeciesControl.Text
-                    Case "txtWidth"
-
-                        Me.SpeciesWidth = ctlSpeciesControl.Text
-                    Case "txtLength"
-
-                        Me.Length = ctlSpeciesControl.Text
-                    Case "txtComments"
-                        Me.Comments = ctlSpeciesControl.Text
-
-                End Select
-
-            Next
-
-        Catch ex As Exception
-            MsgBox(ex.Message)
-        End Try
-
-    End Sub
-
-    Private Sub LostFocusControlHandler(ByVal sender As Object, ByVal e As System.EventArgs)
-        Try
-            Dim ctlSpeciesControl As Control
-
-            ctlSpeciesControl = sender
-
+        Dim ctlControl As Control
+        Dim ctlSpeciesControl As Control
+        Dim d As DataTable
+        For Each ctlControl In pnlSpeciesEvent.Controls
+            ctlSpeciesControl = ctlControl
             Select Case ctlSpeciesControl.Name
                 Case "txtRange"
-
                     Me.Range = ctlSpeciesControl.Text
-
                 Case "cboSide"
-
                     Select Case ctlSpeciesControl.Text
                         Case "On Center"
                             Me.Side = "0"
@@ -655,31 +504,55 @@ Public Class frmSpeciesEvent
                             Me.Side = "2"
                     End Select
                 Case "cboIDConfidence"
-                    Me.IDConfidence = ctlSpeciesControl.Text
-
+                    d = Database.GetDataTable("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " WHERE ConfidenceIdDescription = " & SingleQuote(ctlSpeciesControl.Text) & ";", DB_CONFIDENCE_IDS_TABLE)
+                    Me.IDConfidence = d.Rows.Item(0).Item(0).ToString()
                 Case "cboAbundance"
-
-                    Me.Abundance = ctlSpeciesControl.Text
+                    d = Database.GetDataTable("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " WHERE ACFORScaleDescription = " & SingleQuote(ctlSpeciesControl.Text) & ";", DB_ABUNDANCE_TABLE)
+                    Me.Abundance = d.Rows.Item(0).Item(0).ToString()
                 Case "txtCount"
-
                     Me.Count = ctlSpeciesControl.Text
                 Case "txtHeight"
-
                     Me.SpeciesHeight = ctlSpeciesControl.Text
                 Case "txtWidth"
-
                     Me.SpeciesWidth = ctlSpeciesControl.Text
                 Case "txtLength"
-
                     Me.Length = ctlSpeciesControl.Text
                 Case "txtComments"
                     Me.Comments = ctlSpeciesControl.Text
-
             End Select
-        Catch ex As Exception
-            MsgBox(ex.Message)
-        End Try
+        Next
+    End Sub
 
+    Private Sub LostFocusControlHandler(ByVal sender As Object, ByVal e As System.EventArgs)
+        Dim ctlSpeciesControl As Control
+        ctlSpeciesControl = sender
+        Select Case ctlSpeciesControl.Name
+            Case "txtRange"
+                Me.Range = ctlSpeciesControl.Text
+            Case "cboSide"
+                Select Case ctlSpeciesControl.Text
+                    Case "On Center"
+                        Me.Side = "0"
+                    Case "Port"
+                        Me.Side = "1"
+                    Case "Starboard"
+                        Me.Side = "2"
+                End Select
+            Case "cboIDConfidence"
+                Me.IDConfidence = ctlSpeciesControl.Text
+            Case "cboAbundance"
+                Me.Abundance = ctlSpeciesControl.Text
+            Case "txtCount"
+                Me.Count = ctlSpeciesControl.Text
+            Case "txtHeight"
+                Me.SpeciesHeight = ctlSpeciesControl.Text
+            Case "txtWidth"
+                Me.SpeciesWidth = ctlSpeciesControl.Text
+            Case "txtLength"
+                Me.Length = ctlSpeciesControl.Text
+            Case "txtComments"
+                Me.Comments = ctlSpeciesControl.Text
+        End Select
     End Sub
 
     Private Sub SpeciesEventForm_Activated(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Activated
@@ -692,7 +565,6 @@ Public Class frmSpeciesEvent
     End Sub
 
     Private Sub SpeciesEventForm_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
-
         If e.KeyCode = Keys.Enter Then
             ok_Click(Nothing, Nothing)
         End If
@@ -700,34 +572,22 @@ Public Class frmSpeciesEvent
     End Sub
 
     Private Sub SpeciesEventForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Dim d As DataTable
         loadCollection()
         fillSpeciesEventPanel()
-
-        'CJG
-        'myFormLibrary.frmVideoMiner.blSpeciesValuesSet = False
         centerButtonPressed = False
-
-        Dim sub_data_set As DataSet = New DataSet()
-        Dim sub_db_command As OleDbCommand = New OleDbCommand("select * from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", m_conn)
-        Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-        sub_data_adapter.Fill(sub_data_set, DB_SPECIES_BUTTONS_TABLE)
-        Dim r As DataRow
-        Dim d As DataTable
-        d = sub_data_set.Tables(0)
-        For Each r In d.Rows
+        d = Database.GetDataTable("select * from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", DB_SPECIES_BUTTONS_TABLE)
+        For Each r As DataRow In d.Rows
             Me.speciesComboBox.Items.Add(New ValueDescriptionPair(r.Item(2).ToString(), r.Item(1).ToString()))
         Next
-
         If blRareSpecies = True Then
             Me.speciesComboBox.Items.Add(New ValueDescriptionPair(Me.SpeciesCode, Me.SpeciesName))
         End If
-
         For i As Integer = 0 To Me.speciesComboBox.Items.Count - 1
             If Me.speciesComboBox.Items.Item(i).ToString = SpeciesName Then
                 Me.speciesComboBox.SelectedIndex = i
             End If
         Next
-
     End Sub
 
     ''' <summary>
@@ -735,47 +595,30 @@ Public Class frmSpeciesEvent
     '''  attatched red line going to the top of the form. This line helps a user visualize the center line,
     '''  and ranges to the left or right of the center line.
     ''' </summary>
-    ''' <param name="sender"></param><param name="e"></param>
-    ''' <remarks></remarks>
     Private Sub pnlSpeciesEvent_Paint(ByVal sender As Object, ByVal e As System.Windows.Forms.PaintEventArgs) Handles pnlSpeciesEvent.Paint
         Dim a As Graphics = e.Graphics
-        Dim mypen As Pen
-        mypen = New Pen(System.Drawing.Color.Red, 3)
+        Dim mypen As Pen = New Pen(System.Drawing.Color.Red, 3)
         a = pnlSpeciesEvent.CreateGraphics
         a.Clear(pnlSpeciesEvent.BackColor)
-
-        Dim intWidth As Integer
-        intWidth = CType(pnlSpeciesEvent.Width, Integer)
-
+        Dim intWidth As Integer = CType(pnlSpeciesEvent.Width, Integer)
         a.DrawArc(mypen, 0, 200, intWidth - 5, 200, 0, -180)
-
-        Dim xCenter As Integer
-        xCenter = CType(pnlSpeciesEvent.Width / 2, Integer)
-
+        Dim xCenter As Integer = CType(pnlSpeciesEvent.Width / 2, Integer)
         a.DrawLine(mypen, xCenter, 200, xCenter, 0)
         a.Dispose()
         mypen.Dispose()
     End Sub
 
     ''' <summary>
-    ''' 1.) If the user has not selected "On Centerline" and either the portRangeTextbox or the starboardRangeTextBox
-    '''     are not filled in or are not numeric, alert the user to fill them in with an integer.
-    ''' 2.) Else if "On Centerline" has been selected or "On Centerline" has not been selected AND portRangeTextbox and
-    '''     starboardRangeTextBox have both been flled in, then, hide the SpeciesEventForm
+    ''' If the user has not selected "On Centerline" and either the portRangeTextbox or the starboardRangeTextBox
+    ''' are not filled in or are not numeric, alert the user to fill them in with an integer.
+    ''' Else if "On Centerline" has been selected or "On Centerline" has not been selected AND portRangeTextbox and
+    ''' starboardRangeTextBox have both been flled in, then, hide the SpeciesEventForm
     ''' </summary>
-    ''' <param name="sender"></param><param name="e"></param>
-    ''' <remarks></remarks>
     Private Sub ok_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles ok.Click
         Dim ItemSelected As String
         ItemSelected = CType(Me.speciesComboBox.SelectedItem, ValueDescriptionPair).Value
         Me.SpeciesCode = ItemSelected.ToString
-        'CJG
-        'myFormLibrary.frmVideoMiner.blSpeciesValuesSet = True
-        'If Not myFormLibrary.frmRareSpeciesLookup Is Nothing Then
-        ' myFormLibrary.frmRareSpeciesLookup.Close()
-        ' End If
-        Me.Close()
-        Me.Dispose()
+        Me.Hide()
     End Sub
 
     ''' <summary>
@@ -796,10 +639,7 @@ Public Class frmSpeciesEvent
     End Function
 
     Private Sub btnCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCancel.Click
-        'CJG
-        'myFormLibrary.frmVideoMiner.blSpeciesValuesSet = False
-        'myFormLibrary.frmVideoMiner.blSpeciesCancelled = True
-        Me.Close()
+        Me.Hide()
     End Sub
 
     ''' <summary>

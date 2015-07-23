@@ -3,18 +3,8 @@
 Public Class frmEditLookupTable
 
 #Region "Member variables"
-    ' OLE objects
-    Private m_conn As OleDbConnection
-    Private m_data_cmd As OleDbCommand
-    Private m_data_adapter As OleDbDataAdapter
-    Private m_data_command_builder As OleDbCommandBuilder
-
-    ' Data, table, and query objects
-    Private m_query As String
     Private m_table_name As String
     Private m_data_table As DataTable
-    Private m_data_set As DataSet
-
     Private m_IDField As String
     Private m_DescriptionField As String
     Private intRecordCount As Integer = 0
@@ -51,9 +41,8 @@ Public Class frmEditLookupTable
 
 #End Region
 
-    Public Sub New(conn As OleDbConnection)
+    Public Sub New()
         InitializeComponent()
-        m_conn = conn
     End Sub
 
     Private Sub cboLookupTable_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboLookupTable.SelectedIndexChanged
@@ -68,21 +57,8 @@ Public Class frmEditLookupTable
 
     Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEdit.Click
         m_table_name = cboLookupTable.SelectedItem
-        Try
-            m_query = "select * from " & m_table_name & " order by Code Asc;"
-            m_data_cmd = New OleDbCommand(m_query, m_conn)
-            m_data_adapter = New OleDbDataAdapter(m_data_cmd)
-            m_data_set = New DataSet()
-            m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
-            m_data_command_builder.QuotePrefix = "["
-            m_data_command_builder.QuoteSuffix = "]"
-            m_data_adapter.Fill(m_data_set, m_table_name)
-            m_data_table = m_data_set.Tables(m_table_name)
-            grdEditTable.DataSource = m_data_table
-        Catch ex As Exception
-            MsgBox("There was an exception thrown while trying to load the " & m_table_name & _
-                   " table from the MS Access database into the DataGridView. Message and Stack trace:" & vbCrLf & ex.Message() & vbCrLf & ex.StackTrace)
-        End Try
+        m_data_table = Database.GetDataTable("select * from " & m_table_name & " order by Code Asc;", m_table_name)
+        grdEditTable.DataSource = m_data_table
         cmdAddRecord.Enabled = True
         grdEditTable.Enabled = True
         cmdEdit.Enabled = False
@@ -98,12 +74,7 @@ Public Class frmEditLookupTable
     End Sub
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
-        Try
-            m_data_adapter.Update(m_data_table)
-        Catch ex As Exception
-            MsgBox("The value you entered would result in a key violation in the database table '" & m_table_name & "'" & vbCrLf & _
-            "and therefore no changes were made to the database.", MsgBoxStyle.Exclamation, "Key Violation")
-        End Try
+        Database.Update(m_data_table)
         Me.Hide()
     End Sub
 
@@ -132,8 +103,7 @@ Public Class frmEditLookupTable
     End Sub
 
     Private Sub frmEditLookupTable_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Dim tblSchema As DataTable
-        tblSchema = m_conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, New Object() {Nothing, Nothing, Nothing, Nothing})
+        Dim tblSchema As DataTable = Database.GetDataTableSchema()
         For i As Integer = 0 To tblSchema.Rows.Count - 1
             If tblSchema.Rows(i)!TABLE_TYPE.ToString = "TABLE" Then
                 Dim strTableName As String

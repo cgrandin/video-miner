@@ -5,14 +5,7 @@ Imports ADODB
 Public Class frmAddButton
 
 #Region "Member variables"
-    ' OLE objects
-    Private m_conn As OleDbConnection
-    Private m_data_cmd As OleDbCommand
-    Private m_data_adapter As OleDbDataAdapter
-    Private m_data_command_builder As OleDbCommandBuilder
-
     ' Data, table, and query objects
-    Private m_query As String
     Private m_table_name As String
     Private m_data_table As DataTable
     Private m_data_set As DataSet
@@ -119,9 +112,8 @@ Public Class frmAddButton
     Event RefreshDatabaseEvent()
     Event AddNewTableEvent()
 
-    Public Sub New(conn As OleDbConnection)
+    Public Sub New()
         InitializeComponent()
-        m_conn = conn
         m_table_name = strConfigureTable
     End Sub
 
@@ -159,9 +151,8 @@ Public Class frmAddButton
     End Sub
 
     Private Sub frmAddButton_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Dim tblSchema As DataTable = m_conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, New Object() {Nothing, Nothing, Nothing, Nothing})
-        Dim i As Integer
-        For i = 0 To tblSchema.Rows.Count - 1
+        Dim tblSchema As DataTable = Database.GetDataTableSchema()
+        For i As Integer = 0 To tblSchema.Rows.Count - 1
             If tblSchema.Rows(i)!TABLE_TYPE.ToString = "TABLE" Then
                 Dim strTableName As String
                 strTableName = tblSchema.Rows(i)!TABLE_NAME.ToString
@@ -173,15 +164,8 @@ Public Class frmAddButton
             End If
         Next
         If blButtonEdit Then
-            m_query = "SELECT ButtonText, TableName, DataCode, DataCodeName FROM " & m_table_name & " WHERE ButtonText = " & SingleQuote(Me.txtButtonName.Text) & ";"
-            m_data_cmd = New OleDbCommand(m_query, m_conn)
-            m_data_adapter = New OleDbDataAdapter(m_data_cmd)
-            m_data_set = New DataSet()
-            m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
-            m_data_command_builder.QuotePrefix = "["
-            m_data_command_builder.QuoteSuffix = "]"
-            m_data_adapter.Fill(m_data_set, m_table_name)
-            Dim r As DataRow = m_data_table.Rows.Item(0)
+            Dim d As DataTable = Database.GetDataTable("SELECT ButtonText, TableName, DataCode, DataCodeName FROM " & m_table_name & " WHERE ButtonText = " & SingleQuote(Me.txtButtonName.Text) & ";", m_table_name)
+            Dim r As DataRow = d.Rows.Item(0)
             If Not r Is Nothing Then
                 If r.Item("TableName") = "UserEntered" Then
                     Me.rdInputValue.Checked = True
@@ -229,15 +213,7 @@ Public Class frmAddButton
         Dim r As DataRow
         If blButtonEdit = False Then
             blNewButton = True
-            m_query = "SELECT * FROM " & m_table_name & ";"
-            m_data_cmd = New OleDbCommand(m_query, m_conn)
-            m_data_adapter = New OleDbDataAdapter(m_data_cmd)
-            m_data_set = New DataSet()
-            m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
-            m_data_command_builder.QuotePrefix = "["
-            m_data_command_builder.QuoteSuffix = "]"
-            m_data_adapter.Fill(m_data_set, m_table_name)
-            tblDrawingOrder = m_data_table
+            tblDrawingOrder = Database.GetDataTable("SELECT * FROM " & m_table_name & ";", m_table_name)
             Dim intValue As Integer = 0
             For i As Integer = 0 To tblDrawingOrder.Rows.Count - 1
                 r = tblDrawingOrder.Rows.Item(i)
@@ -257,16 +233,7 @@ Public Class frmAddButton
                     intValue = CInt(r.Item("DrawingOrder"))
                 End If
             Next
-            m_query = "SELECT * FROM " & DB_DATA_CODES_TABLE & ";"
-            m_data_cmd = New OleDbCommand(m_query, m_conn)
-            m_data_adapter = New OleDbDataAdapter(m_data_cmd)
-            m_data_set = New DataSet()
-            m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
-            m_data_command_builder.QuotePrefix = "["
-            m_data_command_builder.QuoteSuffix = "]"
-            m_data_adapter.Fill(m_data_set, m_table_name)
-            m_data_table = m_data_set.Tables(m_table_name)
-            tblDataCodes = m_data_table
+            tblDataCodes = Database.GetDataTable("SELECT * FROM " & DB_DATA_CODES_TABLE & ";", DB_DATA_CODES_TABLE)
             For i As Integer = 0 To tblDataCodes.Rows.Count - 1
                 r = tblDataCodes.Rows.Item(i)
                 If CInt(r.Item("Code")) = Me.DataCode Then
@@ -281,28 +248,12 @@ Public Class frmAddButton
             Else
                 strTableName = Me.TableName
             End If
-            strInsertQuery = "INSERT INTO " & m_table_name & _
-                "(DrawingOrder, ButtonText, TableName, DataCode, DataCodeName, ButtonColor) " & _
-                "VALUES (" & Me.DrawingOrder & ", " & SingleQuote(Me.ButtonName) & ", " & _
-                SingleQuote(strTableName) & ", " & Me.DataCode & ", " & SingleQuote(Me.FieldName) & ", 'DarkBlue')"
-            Dim oComm As New OleDbCommand(strInsertQuery, m_conn)
-            numrows = oComm.ExecuteNonQuery()
-            strInsertQuery = "INSERT INTO " & DB_DATA_CODES_TABLE & " (Code, Description) VALUES(" & Me.DataCode & ", " & SingleQuote(Me.ButtonName) & ")"
-            oComm = New OleDbCommand(strInsertQuery, m_conn)
-            oComm.ExecuteNonQuery()
-            addField()
+            Database.ExecuteNonQuery("INSERT INTO " & m_table_name & "(DrawingOrder, ButtonText, TableName, DataCode, DataCodeName, ButtonColor) " & _
+                "VALUES (" & Me.DrawingOrder & ", " & SingleQuote(Me.ButtonName) & ", " & SingleQuote(strTableName) & ", " & Me.DataCode & ", " & SingleQuote(Me.FieldName) & ", 'DarkBlue')")
+            Database.ExecuteNonQuery("ALTER TABLE data ADD COLUMN " & Me.FieldName & " TEXT(50)")
         Else
             If Me.DataCode <> Me.OldDataCode Then
-                m_query = "SELECT * FROM " & DB_DATA_CODES_TABLE & ";"
-                m_data_cmd = New OleDbCommand(m_query, m_conn)
-                m_data_adapter = New OleDbDataAdapter(m_data_cmd)
-                m_data_set = New DataSet()
-                m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
-                m_data_command_builder.QuotePrefix = "["
-                m_data_command_builder.QuoteSuffix = "]"
-                m_data_adapter.Fill(m_data_set, m_table_name)
-                m_data_table = m_data_set.Tables(m_table_name)
-                tblDataCodes = m_data_table
+                tblDataCodes = Database.GetDataTable("SELECT * FROM " & DB_DATA_CODES_TABLE & ";", DB_DATA_CODES_TABLE)
                 For i As Integer = 0 To tblDataCodes.Rows.Count - 1
                     r = tblDataCodes.Rows.Item(i)
                     If CInt(r.Item("Code")) = Me.DataCode Then
@@ -317,15 +268,8 @@ Public Class frmAddButton
             Else
                 strTableName = Me.TableName
             End If
-            Dim strUpdateQuery As String
-            strUpdateQuery = "UPDATE " & m_table_name & " SET " & _
-            "ButtonText = " & SingleQuote(Me.ButtonName) & ", " & _
-            "TableName = " & SingleQuote(strTableName) & ", " & _
-            "DataCode = " & CInt(Me.txtDataCode.Text) & ", " & _
-            "DataCodeName = " & SingleQuote(Me.FieldName) & _
-            " WHERE ButtonText = " & SingleQuote(Me.OldButtonName)
-            Dim cmdUpdate As OleDbCommand = New OleDbCommand(strUpdateQuery, m_conn)
-            cmdUpdate.ExecuteNonQuery()
+            Database.ExecuteNonQuery("UPDATE " & m_table_name & " SET ButtonText = " & SingleQuote(Me.ButtonName) & ", TableName = " & SingleQuote(strTableName) & ", " & _
+                                     "DataCode = " & CInt(Me.txtDataCode.Text) & ", DataCodeName = " & SingleQuote(Me.FieldName) & " WHERE ButtonText = " & SingleQuote(Me.OldButtonName))
             If Me.FieldName <> Me.OldFieldName Then
                 'TODO: Fix whatever this code is for..
                 'Dim cnConnection As New ADODB.Connection
@@ -349,32 +293,12 @@ Public Class frmAddButton
             strEditTextBoxNewName = txtName
         End If
         If Me.ButtonName <> Me.OldButtonName Or Me.DataCode <> Me.OldDataCode Then
-            Dim strQuery As String
-            strQuery = "UPDATE " & DB_DATA_CODES_TABLE & " SET Code = " & Me.DataCode & ", Description = " & SingleQuote(Me.ButtonName) & _
-                       " WHERE Code = " & Me.OldDataCode & " AND Description = " & SingleQuote(Me.OldButtonName)
-            Dim cmdUpdate As OleDbCommand
-            cmdUpdate = New OleDbCommand(strQuery, m_conn)
-            cmdUpdate.ExecuteNonQuery()
+            Database.ExecuteNonQuery("UPDATE " & DB_DATA_CODES_TABLE & " SET Code = " & Me.DataCode & ", Description = " & SingleQuote(Me.ButtonName) & _
+                                     " WHERE Code = " & Me.OldDataCode & " AND Description = " & SingleQuote(Me.OldButtonName))
         End If
         RaiseEvent RefreshDatabaseEvent()
         blNewButton = False
         Me.Hide()
-    End Sub
-
-    Private Sub addField()
-        Dim strQuery As String
-        strQuery = "ALTER TABLE data ADD COLUMN " & Me.FieldName & " TEXT(50)"
-        Dim alterCommand As New OleDbCommand(strQuery, m_conn)
-        Try
-            alterCommand.ExecuteNonQuery()
-            'strQuery = "SELECT * FROM data;"
-            'Dim sub_data_set As DataSet = New DataSet()
-            'Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, conn)
-            'Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-            'sub_data_adapter.Fill(sub_data_set,  DB_HABITAT_BUTTONS_TABLE )
-        Catch ex As Exception
-            MsgBox(ex.Message)
-        End Try
     End Sub
 
     Private Sub cmdCreateNewTable_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCreateNewTable.Click

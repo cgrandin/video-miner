@@ -7,7 +7,6 @@ Public Class frmConfigureSpecies
     Event SpeciesConfigurationUpdate()
 
 #Region "Fields"
-    Private m_conn As OleDbConnection
     Private m_Range As String
     Private m_Side As String
     Private m_IDConfidence As String
@@ -182,44 +181,23 @@ Public Class frmConfigureSpecies
     Dim dt As DataTable
     Dim row As DataRow
 
-    Public Sub New(conn As OleDbConnection)
+    Public Sub New()
         InitializeComponent()
-        m_conn = conn
     End Sub
 
     Private Sub frmConfigureSpecies_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        ' Create a new dataset object containing the confidence id and description
-        Dim ConfID_data_set As DataSet = New DataSet
-        Dim ConfID_db_command As OleDbCommand = New OleDbCommand("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " ORDER BY ConfidenceID;", m_conn)
-        Dim ConfID_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(ConfID_db_command)
-        ConfID_data_adapter.Fill(ConfID_data_set, DB_CONFIDENCE_IDS_TABLE)
-
-        ' Cycle through the dataset and input the confidence id and description as a value pair into the confidence combobox
-        dt = ConfID_data_set.Tables(0)
-        For Each row In dt.Rows
+        Dim d As DataTable = Database.GetDataTable("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " ORDER BY ConfidenceID;", DB_CONFIDENCE_IDS_TABLE)
+        For Each row In d.Rows
             Me.cboIDConfidence.Items.Add(New ValueDescriptionPair(row.Item(0).ToString(), row.Item(1).ToString()))
         Next
-
-        ' Create a new dataset object containing the Abundance Scale ID and description
-        Dim Abundance_Data_Set As DataSet = New DataSet
-        Dim Abundance_db_command As OleDbCommand = New OleDbCommand("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " ORDER BY ACFORScaleID;", m_conn)
-        Dim ACFOR_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(Abundance_db_command)
-        ACFOR_data_adapter.Fill(Abundance_Data_Set, DB_ABUNDANCE_TABLE)
-
-        dt = Nothing
-        row = Nothing
-
-        ' Cycle through the dataset and input the the abundace scale id and descripiton as a value pair into the abundance combobox
-        dt = Abundance_Data_Set.Tables(0)
-        For Each row In dt.Rows
+        d = Database.GetDataTable("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " ORDER BY ACFORScaleID;", DB_ABUNDANCE_TABLE)
+        For Each row In d.Rows
             cboAbundance.Items.Add(New ValueDescriptionPair(row.Item(0).ToString(), row.Item(1).ToString()))
         Next
-
         ' Add the side items to the Side combobox
         Me.cboSide.Items.Add("On Center")
         Me.cboSide.Items.Add("Port")
         Me.cboSide.Items.Add("Starboard")
-
         ' Check to see if the string values are NULL
         Me.Range = checkString(Me.Range)
         Me.Side = checkString(Me.Side)
@@ -230,7 +208,6 @@ Public Class frmConfigureSpecies
         Me.SpeciesWidth = checkString(Me.SpeciesWidth)
         Me.Length = checkString(Me.Length)
         Me.Comments = checkString(Me.Comments)
-
         ' Modify the checked property of each checkbox according to the value found in the xml configuration file
         Me.chkRange.Checked = Me.RangeChecked
         Me.chkIDConfidence.Checked = Me.IDConfidenceChecked
@@ -240,7 +217,6 @@ Public Class frmConfigureSpecies
         Me.chkWidth.Checked = Me.WidthChecked
         Me.chkLength.Checked = Me.LengthChecked
         Me.chkComments.Checked = Me.CommentsChecked
-
         ' Modify the text property of each textbox/combobox according to the value found in the xml configuration file
         Me.txtRangeValue.Text = Me.Range
         Me.cboSide.SelectedIndex = Me.Side
@@ -251,7 +227,6 @@ Public Class frmConfigureSpecies
         Me.txtWidth.Text = Me.SpeciesWidth
         Me.txtLength.Text = Me.Length
         Me.txtComments.Text = Me.Comments
-
         ' Enable or disable the corresponding control according to the state of each checkbox
         enableDisable(Me.txtRangeValue, chkRange.Checked)
         enableDisable(Me.cboSide, chkRange.Checked)
@@ -262,18 +237,15 @@ Public Class frmConfigureSpecies
         enableDisable(Me.txtWidth, chkWidth.Checked)
         enableDisable(Me.txtLength, chkLength.Checked)
         enableDisable(Me.txtComments, chkComments.Checked)
-
     End Sub
 
     ' Function to enable or disable a form based on the boolean value passed as a parameter
     Private Sub enableDisable(ByRef control As Windows.Forms.Control, ByVal blValue As Boolean)
-
         If blValue = True Then
             control.Enabled = True
         Else
             control.Enabled = False
         End If
-
     End Sub
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
@@ -282,8 +254,6 @@ Public Class frmConfigureSpecies
         If (path.StartsWith("file:\")) Then
             path = path.Substring(6)    ' Remove unnecessary substring
         End If
-
-
         Me.Range = checkString(Me.txtRangeValue.Text)
         Me.Side = checkString(Me.cboSide.SelectedIndex)
         Me.IDConfidence = checkString(Me.cboIDConfidence.Text)
@@ -293,10 +263,6 @@ Public Class frmConfigureSpecies
         Me.SpeciesWidth = checkString(Me.txtWidth.Text)
         Me.Length = checkString(Me.txtRangeValue.Text)
         Me.Comments = checkString(Me.txtComments.Text)
-
-        'CJG This needs to be done in the main form via events..
-        'strConfigFile = path & "\VideoMinerConfigurationDetails.xml"
-        'SaveConfiguration
         RaiseEvent SpeciesConfigurationUpdate()
         Me.Close()
     End Sub
@@ -305,15 +271,12 @@ Public Class frmConfigureSpecies
         Me.Close()
     End Sub
 
-
     Private Function checkString(ByVal strValue As String) As String
-
         If strValue = "" Then
             strValue = "NULL"
         ElseIf strValue = "NULL" Then
             strValue = ""
         End If
-
         Return strValue
     End Function
 

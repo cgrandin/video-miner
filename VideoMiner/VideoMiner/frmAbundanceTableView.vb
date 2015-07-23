@@ -3,17 +3,8 @@
 Public Class frmAbundanceTableView
 
 #Region "Member variables"
-    ' OLE objects
-    Private m_conn As OleDbConnection
-    Private m_data_cmd As OleDbCommand
-    Private m_data_adapter As OleDbDataAdapter
-    Private m_data_command_builder As OleDbCommandBuilder
-
-    ' Data, table, and query objects
-    Private m_query As String
     Private m_table_name As String
     Private m_data_table As DataTable
-    Private m_data_set As DataSet
 
     Private blCanceled As Boolean
     Private m_Multiple As Boolean
@@ -32,26 +23,11 @@ Public Class frmAbundanceTableView
     End Property
 #End Region
 
-
-    Public Sub New(conn As OleDbConnection)
+    Public Sub New()
         InitializeComponent()
-        m_conn = conn
         m_table_name = DB_ABUNDANCE_TABLE
-        Try
-            m_query = "select * from " & m_table_name & " order by Code Asc;"
-            m_data_cmd = New OleDbCommand(m_query, m_conn)
-            m_data_adapter = New OleDbDataAdapter(m_data_cmd)
-            m_data_set = New DataSet()
-            m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
-            m_data_command_builder.QuotePrefix = "["
-            m_data_command_builder.QuoteSuffix = "]"
-            m_data_adapter.Fill(m_data_set, m_table_name)
-            m_data_table = m_data_set.Tables(m_table_name)
-            grdAbundance.DataSource = m_data_table
-        Catch ex As Exception
-            MsgBox("There was an exception thrown while trying to load the " & m_table_name & _
-                   " table from the MS Access database into the DataGridView. Message and Stack trace:" & vbCrLf & ex.Message() & vbCrLf & ex.StackTrace)
-        End Try
+        m_data_table = Database.GetDataTable("select * from " & m_table_name & " order by Code Asc;", m_table_name)
+        grdAbundance.DataSource = m_data_table
     End Sub
 
     Private Sub TableViewForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
@@ -67,7 +43,7 @@ Public Class frmAbundanceTableView
     End Sub
 
     Private Sub grdAbundance_CellEndEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles grdAbundance.CellEndEdit
-        update_database()
+        Database.Update(m_data_table)
     End Sub
 
     Private Sub grdAbundance_SelectionChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles grdAbundance.SelectionChanged
@@ -78,15 +54,6 @@ Public Class frmAbundanceTableView
             Canceled = False
             Hide()
         End If
-    End Sub
-
-    Private Sub update_database()
-        Try
-            m_data_adapter.Update(m_data_table)
-        Catch ex As Exception
-            MsgBox("The value you entered would result in a key violation in the database table '" & m_table_name & "'" & vbCrLf & _
-            "and therefore no changes were made to the database.", MsgBoxStyle.Exclamation, "Key Violation")
-        End Try
     End Sub
 
     Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
@@ -107,8 +74,6 @@ Public Class frmAbundanceTableView
             grdAbundance.Enabled = True
             grdAbundance.DefaultCellStyle.ForeColor = Color.Black
             cmdComment.Text = "Edit Comment"
-            'TODO: Main form must access this value through event handling 
-            'myFormLibrary.frmVideoMiner.strComment = txtCommentBox.Text
         End If
     End Sub
 

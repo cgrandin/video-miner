@@ -1,22 +1,9 @@
-﻿Imports System.Data.OleDb
-
-Public Class frmConfigureButtons
+﻿Public Class frmConfigureButtons
 
 #Region "Member variables"
     Private frmAddButton As frmAddButton
-
-    ' OLE objects
-    Private m_conn As OleDbConnection
-    Private m_data_cmd As OleDbCommand
-    Private m_data_adapter As OleDbDataAdapter
-    Private m_data_command_builder As OleDbCommandBuilder
-
-    ' Data, table, and query objects
-    Private m_query As String
     Private m_table_name As String
     Private m_data_table As DataTable
-    Private m_data_set As DataSet
-
     Private m_ButtonName As String
     Private m_TableName As String
     Private m_DataCode As Integer
@@ -81,26 +68,11 @@ Public Class frmConfigureButtons
     ''' Initialize the query, and extract the data that query defines into a DataSet with corresponding DataTable.
     ''' Populate the list and set up list attributes.
     ''' </summary>
-    Public Sub New(conn As OleDbConnection)
+    Public Sub New()
         InitializeComponent()
-        m_conn = conn
         m_table_name = strConfigureTable
-        Try
-            m_query = "select * from " & m_table_name & " order by DrawingOrder Asc;"
-            'm_query = "select DrawingOrder, ButtonText, TableName, DataCode, DataCodeName, ButtonColor from " & m_table_name & " ORDER BY DrawingOrder;"
-            m_data_cmd = New OleDbCommand(m_query, m_conn)
-            m_data_adapter = New OleDbDataAdapter(m_data_cmd)
-            m_data_set = New DataSet()
-            m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
-            m_data_command_builder.QuotePrefix = "["
-            m_data_command_builder.QuoteSuffix = "]"
-            m_data_adapter.Fill(m_data_set, m_table_name)
-            m_data_table = m_data_set.Tables(m_table_name)
-            'grdEditTable.DataSource = m_data_table
-        Catch ex As Exception
-            MsgBox("There was an exception thrown while trying to load the button configuration from the " & m_table_name & _
-                   " table from the MS Access database into the DataGridView. Message and Stack trace:" & vbCrLf & ex.Message() & vbCrLf & ex.StackTrace)
-        End Try
+        m_data_table = Database.GetDataTable("select * from " & m_table_name & " order by DrawingOrder Asc;", m_table_name)
+        'grdEditTable.DataSource = m_data_table
         Dim itm As ListViewItem
         For Each r As DataRow In m_data_table.Rows
             itm = New ListViewItem
@@ -120,7 +92,6 @@ Public Class frmConfigureButtons
             .Columns.Add("Button Text", 150, HorizontalAlignment.Left)
             .Columns.Add("Referenced Table", 150, HorizontalAlignment.Left)
         End With
-
     End Sub
 
     ''' <summary>
@@ -211,7 +182,7 @@ Public Class frmConfigureButtons
     ''' </summary>
     Private Sub cmdCreateNewButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCreateNewButton.Click
         Me.UpdateDrawingOrder(m_table_name)
-        frmAddButton = New frmAddButton(m_conn)
+        frmAddButton = New frmAddButton
         frmAddButton.ShowDialog()
     End Sub
 
@@ -224,7 +195,7 @@ Public Class frmConfigureButtons
             Exit Sub
         End If
         blButtonEdit = True
-        frmAddButton = New frmAddButton(m_conn)
+        frmAddButton = New frmAddButton
         frmAddButton.Text = "Edit " & Me.lstButtons.SelectedItems.Item(0).SubItems(1).Text.ToString & " Button"
         frmAddButton.txtButtonName.Text = Me.lstButtons.SelectedItems.Item(0).SubItems(1).Text.ToString
         'Me.UpdateDrawingOrder(m_table_name)
@@ -243,36 +214,20 @@ Public Class frmConfigureButtons
     ''' Changes the database values for the 'DrawingOrder' field to reflect the change in drawing order.
     ''' </summary>
     Private Sub UpdateDrawingOrder(ByVal strTable As String)
-        Dim oComm As OleDbCommand
-        Dim query As String
         Dim strButtonName As String
-        query = "UPDATE " & strTable & " " & _
-                "SET DrawingOrder = DrawingOrder + 1000"
-        oComm = New OleDbCommand(query, m_conn)
-        oComm.ExecuteNonQuery()
+        Dim d As DataTable
+        Database.ExecuteNonQuery("UPDATE " & strTable & " SET DrawingOrder = DrawingOrder + 1000")
         If strTable = m_table_name Then
             For i As Integer = 0 To Me.lstButtons.Items.Count - 1
                 strButtonName = Me.lstButtons.Items(i).SubItems(1).Text
-                query = "UPDATE " & strTable & " " & _
-                        "SET DrawingOrder = " & i + 1 & " " & _
-                        "WHERE ButtonText = " & SingleQuote(strButtonName)
-                oComm = New OleDbCommand(query, m_conn)
-                oComm.ExecuteNonQuery()
+                Database.ExecuteNonQuery("UPDATE " & strTable & " SET DrawingOrder = " & i + 1 & " WHERE ButtonText = " & SingleQuote(strButtonName))
             Next
         Else
-            query = "SELECT ButtonText FROM " & strTable & " ORDER BY DrawingOrder ASC"
-            Dim sub_data_set As DataSet = New DataSet()
-            Dim sub_db_command As OleDbCommand = New OleDbCommand(query, m_conn)
-            Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-            sub_data_adapter.Fill(sub_data_set, m_table_name)
+            d = Database.GetDataTable("SELECT ButtonText FROM " & strTable & " ORDER BY DrawingOrder ASC", strTable)
             Dim i As Integer = 0
-            For Each r As DataRow In m_data_table.Rows
+            For Each r As DataRow In d.Rows
                 strButtonName = r.Item("ButtonText")
-                query = "UPDATE " & strTable & " " & _
-                        "SET DrawingOrder = " & i + 1 & " " & _
-                        "WHERE ButtonText = " & SingleQuote(strButtonName)
-                oComm = New OleDbCommand(query, m_conn)
-                oComm.ExecuteNonQuery()
+                Database.ExecuteNonQuery("UPDATE " & strTable & " SET DrawingOrder = " & i + 1 & " WHERE ButtonText = " & SingleQuote(strButtonName))
                 i += 1
             Next
         End If
@@ -284,6 +239,7 @@ Public Class frmConfigureButtons
     ''' Clicking this button will remove the selected button from the project, including from the database.
     ''' </summary>
     Private Sub cmdDeleteButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDeleteButton.Click
+        Dim d As DataTable
         Dim selIdx As Integer
         Try
             selIdx = Me.lstButtons.SelectedIndices.Item(0)
@@ -296,17 +252,8 @@ Public Class frmConfigureButtons
             Exit Sub
         End If
         Me.ButtonName = Me.lstButtons.Items(selIdx).SubItems(1).Text
-
-        m_query = "select * from " & m_table_name
-        m_data_cmd = New OleDbCommand(m_query, m_conn)
-        m_data_adapter = New OleDbDataAdapter(m_data_cmd)
-        m_data_set = New DataSet()
-        m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
-        m_data_command_builder.QuotePrefix = "["
-        m_data_command_builder.QuoteSuffix = "]"
-        m_data_adapter.Fill(m_data_set, m_table_name)
-        m_data_table = m_data_set.Tables(m_table_name)
-        For Each r As DataRow In m_data_table.Rows
+        d = Database.GetDataTable("select * from " & m_table_name, m_table_name)
+        For Each r As DataRow In d.Rows
             If r.Item("ButtonText") = Me.ButtonName Then
                 Me.FieldName = r.Item("DataCodeName")
                 Me.DataCode = r.Item("DataCode")
@@ -316,22 +263,8 @@ Public Class frmConfigureButtons
         If MessageBox.Show("By deleting this button the field '" & Me.FieldName & "' will be removed from the '" & DB_DATA_TABLE & "' table in the database.  Are you sure you want to delete this button?", "Delete Button", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.No Then
             Exit Sub
         End If
-        Dim oComm As OleDbCommand
-        Try
-            Dim query As String = "DELETE * FROM " & m_table_name & " WHERE ButtonText = " & SingleQuote(Me.ButtonName)
-            oComm = New OleDbCommand(query, m_conn)
-            oComm.ExecuteNonQuery()
-            query = "ALTER TABLE " & DB_DATA_TABLE & " DROP " & Me.FieldName
-            oComm = New OleDbCommand(query, m_conn)
-            oComm.ExecuteNonQuery()
-            query = "DELETE * FROM " & DB_DATA_CODES_TABLE & " WHERE Code = " & Me.DataCode
-            oComm = New OleDbCommand(query, m_conn)
-            oComm.ExecuteNonQuery()
-            Me.UpdateDrawingOrder(m_table_name)
-        Catch ex As Exception
-            MessageBox.Show("Could not delete the selected button due to the exception: " & ex.ToString, "Delete Button Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
+        Database.ExecuteNonQuery("DELETE * FROM " & m_table_name & " WHERE ButtonText = " & SingleQuote(Me.ButtonName))
+        Me.UpdateDrawingOrder(m_table_name)
         'RefreshDatabase(Me, New EventArgs)
     End Sub
 
@@ -342,6 +275,9 @@ Public Class frmConfigureButtons
     Private Sub cmdMoveToPanel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveToPanel.Click
         Dim strMoveToTable As String
         Dim strMoveToPanel As String
+        Dim d As DataTable
+        Dim r As DataRow
+
         If m_table_name = DB_HABITAT_BUTTONS_TABLE Then
             strMoveToTable = DB_TRANSECT_BUTTONS_TABLE
             strMoveToPanel = "TRANSECT DATA"
@@ -364,17 +300,9 @@ Public Class frmConfigureButtons
             End If
         End If
         Me.ButtonName = Me.lstButtons.Items(selIdx).SubItems(1).Text
+        d = Database.GetDataTable("select * from " & m_table_name, m_table_name)
         Dim strQuery As String = "select * from " & m_table_name
-        m_data_cmd = New OleDbCommand(m_query, m_conn)
-        m_data_adapter = New OleDbDataAdapter(m_data_cmd)
-        m_data_set = New DataSet()
-        m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
-        m_data_command_builder.QuotePrefix = "["
-        m_data_command_builder.QuoteSuffix = "]"
-        m_data_adapter.Fill(m_data_set, m_table_name)
-        m_data_table = m_data_set.Tables(m_table_name)
-        Dim r As DataRow
-        For Each r In m_data_table.Rows
+        For Each r In d.Rows
             If r.Item("ButtonText") = Me.ButtonName Then
                 Me.FieldName = r.Item("DataCodeName")
                 Me.DataCode = r.Item("DataCode")
@@ -382,31 +310,19 @@ Public Class frmConfigureButtons
                 Exit For
             End If
         Next
-        strQuery = "SELECT * FROM " & strMoveToTable & ";"
-        m_data_cmd = New OleDbCommand(m_query, m_conn)
-        m_data_adapter = New OleDbDataAdapter(m_data_cmd)
-        m_data_set = New DataSet()
-        m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
-        m_data_command_builder.QuotePrefix = "["
-        m_data_command_builder.QuoteSuffix = "]"
-        m_data_adapter.Fill(m_data_set, m_table_name)
-        m_data_table = m_data_set.Tables(m_table_name)
+        d = Database.GetDataTable("SELECT * FROM " & strMoveToTable & ";", strMoveToTable)
         Dim intValue As Integer = 0
-        For i As Integer = 0 To m_data_table.Rows.Count - 1
+        For i As Integer = 0 To d.Rows.Count - 1
             r = m_data_table.Rows.Item(i)
             If CInt(r.Item("DrawingOrder")) > intValue Then
                 intValue = CInt(r.Item("DrawingOrder"))
             End If
         Next
         Me.DrawingOrder = intValue + 1
-        strQuery = "INSERT INTO " & strMoveToTable & "(DrawingOrder, ButtonText, TableName, DataCode, DataCodeName, ButtonColor) " & _
-                    "VALUES (" & Me.DrawingOrder & ", " & SingleQuote(Me.ButtonName) & ", " & SingleQuote(Me.TableName) & ", " & Me.DataCode & ", " & SingleQuote(Me.FieldName) & ", 'DarkBlue')"
-        Dim oComm As New OleDbCommand(strQuery, m_conn)
-        oComm.ExecuteNonQuery()
-        strQuery = "DELETE * FROM " & m_table_name & " " & _
-                "WHERE ButtonText = " & SingleQuote(Me.ButtonName)
-        oComm = New OleDbCommand(strQuery, m_conn)
-        oComm.ExecuteNonQuery()
+        Database.ExecuteNonQuery("INSERT INTO " & strMoveToTable & "(DrawingOrder, ButtonText, TableName, DataCode, DataCodeName, ButtonColor) " & _
+                    "VALUES (" & Me.DrawingOrder & ", " & SingleQuote(Me.ButtonName) & ", " & SingleQuote(Me.TableName) & ", " & Me.DataCode & ", " & SingleQuote(Me.FieldName) & ", 'DarkBlue')")
+        Database.ExecuteNonQuery("DELETE * FROM " & m_table_name & " " & _
+                "WHERE ButtonText = " & SingleQuote(Me.ButtonName))
         Me.UpdateDrawingOrder(strMoveToTable)
         If strMoveToTable = DB_TRANSECT_BUTTONS_TABLE Then
             dictTransectFieldValues.Add(Me.ButtonName, Me.DataCode)
