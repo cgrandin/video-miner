@@ -6906,7 +6906,7 @@ SkipInsertComma:
     End Sub
 
     ''' <summary>
-    ''' Updates all GPS member variables and saves the configuration for all of them (xml file)
+    ''' Updates all GPS member variables for settings and saves the configuration for all of them (xml file)
     ''' </summary>
     Private Sub save_GPS_configuration() Handles frmGpsSettings.GPSVariablesChangedEvent
         m_strComPort = frmGpsSettings.ComPort
@@ -6928,10 +6928,18 @@ SkipInsertComma:
     Private Delegate Sub RefreshGPSStatusDelegate()
     Private marshalRefreshGPSStatus As RefreshGPSStatusDelegate = New RefreshGPSStatusDelegate(AddressOf RefreshGPSStatus)
 
+    ''' <summary>
+    ''' Refresh the member variables and labels to reflect when the the GPS data changes. 
+    ''' </summary>
+    ''' <remarks></remarks>
     Private Sub RefreshGPSStatus()
         If frmGpsSettings.IsConnected Then
             m_GPSUserTime = frmGpsSettings.GPSTime
             m_tsUserTime = frmGpsSettings.GPSTime
+            ' Get the GPS location data into Videominer member variables
+            m_GPS_X = frmGpsSettings.LatitudeString
+            m_GPS_Y = frmGpsSettings.LongitudeString
+            m_GPS_Z = frmGpsSettings.ElevationString
             lblXValue.Text = frmGpsSettings.LatitudeDegrees & Chr(&HB0) & "  " & frmGpsSettings.LatitudeMinutes & "'"
             lblYValue.Text = frmGpsSettings.LongitudeDegrees & Chr(&HB0) & "  " & frmGpsSettings.LongitudeMinutes & "'"
             lblZValue.Text = frmGpsSettings.Elevation & "m"

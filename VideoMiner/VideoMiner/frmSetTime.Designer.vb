@@ -51,7 +51,7 @@ Partial Class frmSetTime
         'rbVideoTime
         '
         Me.rbVideoTime.AutoSize = True
-        Me.rbVideoTime.Location = New System.Drawing.Point(12, 65)
+        Me.rbVideoTime.Location = New System.Drawing.Point(12, 44)
         Me.rbVideoTime.Name = "rbVideoTime"
         Me.rbVideoTime.Size = New System.Drawing.Size(85, 17)
         Me.rbVideoTime.TabIndex = 63
@@ -95,7 +95,7 @@ Partial Class frmSetTime
         'rbManualTime
         '
         Me.rbManualTime.AutoSize = True
-        Me.rbManualTime.Location = New System.Drawing.Point(12, 42)
+        Me.rbManualTime.Location = New System.Drawing.Point(12, 67)
         Me.rbManualTime.Name = "rbManualTime"
         Me.rbManualTime.Size = New System.Drawing.Size(95, 17)
         Me.rbManualTime.TabIndex = 67

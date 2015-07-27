@@ -102,8 +102,8 @@ Public Class frmSetTime
     ''' Load the form, set the time textbox up to show the current user time.
     ''' </summary>
     Private Sub frmSetTime_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        rbManualTime.Checked = True
-        m_enumWhichTime = WhichTimeEnum.Manual
+        rbVideoTime.Checked = True
+        m_enumWhichTime = WhichTimeEnum.Video
         ChangeSource(m_enumWhichTime)
     End Sub
 
@@ -120,7 +120,6 @@ Public Class frmSetTime
     ''' </summary>
     Public Sub ChangeSource(enumWhichSource As WhichTimeEnum)
         m_enumWhichTime = enumWhichSource
-
         If m_enumWhichTime = WhichTimeEnum.Manual Then
             m_tsUserTime = Zero
             txtSetTime.Enabled = True

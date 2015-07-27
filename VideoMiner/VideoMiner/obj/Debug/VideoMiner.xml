@@ -6,73 +6,7 @@ VideoMiner
 </name>
 </assembly>
 <members>
-<member name="F:VideoMiner.Database.DB_CONN_STRING">
-	<summary>
- Connection string header fragment. The full path of the MS Access database will be appended
- to this string to get the full connection string.
- </summary>
-</member><member name="F:VideoMiner.Database.m_strDatabaseFilePath">
-	<summary>
- The full-path name of the MS Access database file (mdb file).
- </summary>
-</member><member name="P:VideoMiner.Database.Name">
-	<summary>
- The full path name of the MS Access database file (.mdb file)
- </summary>
-</member><member name="P:VideoMiner.Database.ConnectionString">
-	<summary>
- The full connection string for the data source.
- </summary>
-</member><member name="P:VideoMiner.Database.IsOpen">
-	<summary>
- Whether or not the database has been opened using the Open() function
- </summary>
-</member><member name="M:VideoMiner.Database.Open">
-	<summary>
- Opens the database. Returns True if successful, false otherwise.
- </summary>
-	<returns>Boolean</returns>
-	<remarks>If an exception is thrown, a messagebox will appear and False will be returned</remarks>
-</member><member name="M:VideoMiner.Database.Close">
-	<summary>
- Closes the database. Returns True if successful, false otherwise.
- </summary>
-	<returns>Boolean</returns>
-	<remarks>If an exception is thrown, a messagebox will appear and False will be returned</remarks>
-</member><member name="M:VideoMiner.Database.GetDataTableSchema">
-	<summary>
- Runs a schema table for the MS Access database
- </summary>
-	<returns>A DataTable which holds the database schema or Nothing</returns>
-	<remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and Nothing will be returned.</remarks>
-</member><member name="M:VideoMiner.Database.GetDataTable(System.String,System.String)">
-	<summary>
- Runs a query on a given table and returns the resulting data.
- </summary>
-	<param name="query">A legal SQL query for an MS Access database</param>
-	<param name="tableName">The name of the table used in the query</param>
-	<returns>A DataTable which holds the data queried for or Nothing</returns>
-	<remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and Nothing will be returned.</remarks>
-</member><member name="M:VideoMiner.Database.ExecuteNonQuery(System.String)">
-	<summary>
- Executes a query on the database which does not return data. Examples are UPDATE, DELETE, or INSERT queries.
- Also create table queries are allowed.
- </summary>
-	<param name="query">The query to execute on the MS Access database</param>
-	<returns>True if the query was successful, false otherwise and false if an exception was thrown</returns>
-	<remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and False will be returned.</remarks>
-</member><member name="M:VideoMiner.Database.Update(System.Data.DataTable)">
-	<summary>
- Runs an update query on the data adapter with the given data_table. Used to save changes to the database table from outside.
- </summary>
-	<returns>True if successful, false otherwise</returns>
-	<remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and False will be returned.</remarks>
-</member><member name="T:VideoMiner.Database">
-	<summary>
- This module encapsulates the reading and writing to an MS Access database using the OLEDB interface
- </summary>
-	<remarks></remarks>
-</member><member name="M:VideoMiner.frmConfigureButtons.#ctor">
+<member name="M:VideoMiner.frmConfigureButtons.#ctor">
 	<summary>
  Initialize the query, and extract the data that query defines into a DataSet with corresponding DataTable.
  Populate the list and set up list attributes.
@@ -1048,6 +982,72 @@ VideoMiner
  </summary>
 	<remarks>Think hard before adding something here, especially new classes. The program should
  remain object-oriented as much as possible and adding things here will likely break that</remarks>
+</member><member name="F:VideoMiner.Database.DB_CONN_STRING">
+	<summary>
+ Connection string header fragment. The full path of the MS Access database will be appended
+ to this string to get the full connection string.
+ </summary>
+</member><member name="F:VideoMiner.Database.m_strDatabaseFilePath">
+	<summary>
+ The full-path name of the MS Access database file (mdb file).
+ </summary>
+</member><member name="P:VideoMiner.Database.Name">
+	<summary>
+ The full path name of the MS Access database file (.mdb file)
+ </summary>
+</member><member name="P:VideoMiner.Database.ConnectionString">
+	<summary>
+ The full connection string for the data source.
+ </summary>
+</member><member name="P:VideoMiner.Database.IsOpen">
+	<summary>
+ Whether or not the database has been opened using the Open() function
+ </summary>
+</member><member name="M:VideoMiner.Database.Open">
+	<summary>
+ Opens the database. Returns True if successful, false otherwise.
+ </summary>
+	<returns>Boolean</returns>
+	<remarks>If an exception is thrown, a messagebox will appear and False will be returned</remarks>
+</member><member name="M:VideoMiner.Database.Close">
+	<summary>
+ Closes the database. Returns True if successful, false otherwise.
+ </summary>
+	<returns>Boolean</returns>
+	<remarks>If an exception is thrown, a messagebox will appear and False will be returned</remarks>
+</member><member name="M:VideoMiner.Database.GetDataTableSchema">
+	<summary>
+ Runs a schema table for the MS Access database
+ </summary>
+	<returns>A DataTable which holds the database schema or Nothing</returns>
+	<remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and Nothing will be returned.</remarks>
+</member><member name="M:VideoMiner.Database.GetDataTable(System.String,System.String)">
+	<summary>
+ Runs a query on a given table and returns the resulting data.
+ </summary>
+	<param name="query">A legal SQL query for an MS Access database</param>
+	<param name="tableName">The name of the table used in the query</param>
+	<returns>A DataTable which holds the data queried for or Nothing</returns>
+	<remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and Nothing will be returned.</remarks>
+</member><member name="M:VideoMiner.Database.ExecuteNonQuery(System.String)">
+	<summary>
+ Executes a query on the database which does not return data. Examples are UPDATE, DELETE, or INSERT queries.
+ Also create table queries are allowed.
+ </summary>
+	<param name="query">The query to execute on the MS Access database</param>
+	<returns>True if the query was successful, false otherwise and false if an exception was thrown</returns>
+	<remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and False will be returned.</remarks>
+</member><member name="M:VideoMiner.Database.Update(System.Data.DataTable)">
+	<summary>
+ Runs an update query on the data adapter with the given data_table. Used to save changes to the database table from outside.
+ </summary>
+	<returns>True if successful, false otherwise</returns>
+	<remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and False will be returned.</remarks>
+</member><member name="T:VideoMiner.Database">
+	<summary>
+ This module encapsulates the reading and writing to an MS Access database using the OLEDB interface
+ </summary>
+	<remarks></remarks>
 </member><member name="T:VideoMiner.frmTableView">
 	<summary>
  This form will show a table which will be loaded from the database
@@ -1460,8 +1460,13 @@ VideoMiner
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.save_GPS_configuration">
 	<summary>
- Updates all GPS member variables and saves the configuration for all of them (xml file)
+ Updates all GPS member variables for settings and saves the configuration for all of them (xml file)
  </summary>
+</member><member name="M:VideoMiner.VideoMiner.RefreshGPSStatus">
+	<summary>
+ Refresh the member variables and labels to reflect when the the GPS data changes. 
+ </summary>
+	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.frmSetTime_RequestGPS">
 	<summary>
  The Set Time form will request GPS time, and this function handles that

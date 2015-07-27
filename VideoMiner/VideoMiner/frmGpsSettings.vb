@@ -346,6 +346,24 @@ Public Class frmGpsSettings
         End Get
     End Property
 
+    Public ReadOnly Property LatitudeString As String
+        Get
+            Return m_dblGPSX.ToString()
+        End Get
+    End Property
+
+    Public ReadOnly Property LongitudeString As String
+        Get
+            Return m_dblGPSY.ToString()
+        End Get
+    End Property
+
+    Public ReadOnly Property ElevationString As String
+        Get
+            Return m_dblGPSZ.ToString()
+        End Get
+    End Property
+
     Public ReadOnly Property LatitudeDegrees As Integer
         Get
             Return m_dblGPSX \ 100
@@ -1028,6 +1046,7 @@ Public Class frmGpsSettings
         Else
             RefreshStatus()
         End If
+
     End Sub
 
     Private Sub frmStringDataViewer_ShowChosenStringsOnly() Handles m_frmStringDataViewer.ShowChosenStringOnlyEvent
