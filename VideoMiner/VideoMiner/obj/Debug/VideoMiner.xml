@@ -1458,6 +1458,11 @@ VideoMiner
 	<summary>
  Gets the new user defined time from the set time form and call setUserTime to apply
  </summary>
+</member><member name="M:VideoMiner.VideoMiner.gps_disconnected">
+	<summary>
+ Handles the GPS disconnection. Location data are reset and the SetTime form is set up to be Video time instead.
+ </summary>
+	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.save_GPS_configuration">
 	<summary>
  Updates all GPS member variables for settings and saves the configuration for all of them (xml file)

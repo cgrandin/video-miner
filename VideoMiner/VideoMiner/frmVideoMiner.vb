@@ -6790,7 +6790,15 @@ SkipInsertComma:
         frmSetTime.ChangeSource(Global.VideoMiner.frmSetTime.WhichTimeEnum.GPS)
     End Sub
 
+    ''' <summary>
+    ''' Handles the GPS disconnection. Location data are reset and the SetTime form is set up to be Video time instead.
+    ''' </summary>
+    ''' <remarks></remarks>
     Private Sub gps_disconnected() Handles frmGpsSettings.GPSDisconnectedEvent
+        ' Clear out the last location data
+        m_GPS_X = NULL_STRING
+        m_GPS_Y = NULL_STRING
+        m_GPS_Z = NULL_STRING
         lblGPSPortValue.Text = "CLOSED"
         lblGPSPortValue.ForeColor = Color.Red
         lblGPSConnectionValue.Text = "NO GPS FIX"
@@ -6809,7 +6817,9 @@ SkipInsertComma:
         lblY.Visible = False
         lblZ.Visible = False
 
+        ' Revert to default of video time
         frmSetTime.TimeSource = Global.VideoMiner.frmSetTime.WhichTimeEnum.Video
+        frmSetTime.rbVideoTime.Checked = True
     End Sub
 
     Private Sub gps_connecting() Handles frmGpsSettings.ConnectingSerialPortEvent
