@@ -269,7 +269,7 @@
     End Sub
 
     ''' <summary>
-    ''' Clickng this button results in the first selected button being moved to the other panel.
+    ''' Clicking this button results in the first selected button being moved to the other panel.
     ''' The database will also have the entry moved from one button table to the other.
     ''' </summary>
     Private Sub cmdMoveToPanel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveToPanel.Click

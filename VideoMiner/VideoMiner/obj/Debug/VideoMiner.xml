@@ -49,7 +49,7 @@ VideoMiner
  </summary>
 </member><member name="M:VideoMiner.frmConfigureButtons.cmdMoveToPanel_Click(System.Object,System.EventArgs)">
 	<summary>
- Clickng this button results in the first selected button being moved to the other panel.
+ Clicking this button results in the first selected button being moved to the other panel.
  The database will also have the entry moved from one button table to the other.
  </summary>
 </member><member name="F:VideoMiner.frmVideoPlayer.VIDEO_TIME_FORMAT">
@@ -593,6 +593,55 @@ VideoMiner
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks></remarks>
+</member><member name="F:VideoMiner.DynamicButton.m_db_table_name">
+	<summary>
+ Name of the MS Access table associated with this button
+ </summary>
+</member><member name="F:VideoMiner.DynamicButton.m_code">
+	<summary>
+ Data code for this button as found in the lu_data_codes table.
+ This is NOT the code chosen by the user in the table view, this is the
+ code for this particular table.
+ </summary>
+</member><member name="F:VideoMiner.DynamicButton.m_code_name">
+	<summary>
+ Name of the data code (description) as found in the lu_data_codes table.
+ This is NOT the code chosen by the user in the table view, this is the
+ code for this particular table.
+ </summary>
+</member><member name="F:VideoMiner.DynamicButton.m_data_table">
+	<summary>
+ Table of data found in the m_db_table_name table in the MS Access database
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.DynamicButton.m_table_view">
+	<summary>
+ The table view of the m_data_table
+ </summary>
+</member><member name="F:VideoMiner.DynamicButton.m_dict">
+	<summary>
+ Dictionary of Key-value pairs for the first and second columns of the table m_table_name.
+ </summary>
+</member><member name="F:VideoMiner.DynamicButton.m_current_data_code">
+	<summary>
+ Currently selected code for the variable that m_table_name represents.
+ This is changed when the user selects a new row in the underlying table view form.     
+ </summary>
+</member><member name="F:VideoMiner.DynamicButton.m_current_data_code_name">
+	<summary>
+ Currently selected code name for the variable that m_table_name represents.
+ This is changed when the user selects a new row in the underlying table view form.     
+ </summary>
+</member><member name="F:VideoMiner.DynamicButton.m_current_comment">
+	<summary>
+ Currently entered comment in the frmTableView
+ </summary>
+	<remarks></remarks>
+</member><member name="T:VideoMiner.DynamicButton">
+	<summary>
+ A Videominer dynamic button. This button extends a regular button by holding the database table name, current data code, and code name.
+ </summary>
+	<remarks></remarks>
 </member><member name="M:VideoMiner.frmProjectNames.getProjectName">
 	<summary>
  Return the name of the currently chosen project name
@@ -1048,11 +1097,27 @@ VideoMiner
  This module encapsulates the reading and writing to an MS Access database using the OLEDB interface
  </summary>
 	<remarks></remarks>
-</member><member name="T:VideoMiner.frmTableView">
+</member><member name="E:VideoMiner.frmTableView.ClearSpatialInformationEvent">
 	<summary>
- This form will show a table which will be loaded from the database
+ If user presses Clear button, this will fire so that the main form can update its dynamic buttons and textboxes
  </summary>
 	<remarks></remarks>
+</member><member name="E:VideoMiner.frmTableView.DataChanged">
+	<summary>
+ If user edits the comment box, this event will be raised so that the main form can write a record to the database
+ </summary>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.frmTableView.DataGridView1_SelectionChanged(System.Object,System.EventArgs)">
+	<summary>
+ Handles the event when the user selects a row of the table. If the comment box is not empty, it will raise an event so that the main form can
+ insert a new record in the database to capture the comment.
+ </summary>
+</member><member name="T:VideoMiner.frmTableView">
+	<summary>
+ This form will show a table which is supplied in the constructor as a DataTable.
+ It will allow the suer to select a row, which will cause a query to insert the data
+ in the database
+ </summary>
 </member><member name="F:VideoMiner.VideoMiner.m_strWorkingPath">
 	<summary>
  The working directory of the software
@@ -1388,6 +1453,21 @@ VideoMiner
  </summary>
 	<param name="name">The name of the table</param>
 	<returns>True if the table was loaded successfully, false otherwise</returns>
+</member><member name="M:VideoMiner.VideoMiner.fillTransectVariableButtonPanel">
+	<summary>
+ Fill the transect button panel with the buttons defined in the MS Access database.
+ </summary>
+	<remarks>Uses the DynamicButton and DynamicTextbox classes to encapsulate button/textbox data</remarks>
+</member><member name="M:VideoMiner.VideoMiner.TransectVariableSelectionChanged(System.Object,System.EventArgs)">
+	<summary>
+ Handles the case where the user changed a selection in a code table. This may result
+ in a query being run to insert data into the database.
+ </summary>
+	<param name="sender">The DynamicButton that raised the event</param>
+</member><member name="M:VideoMiner.VideoMiner.TransectVariableButtonHandler(System.Object,System.Windows.Forms.MouseEventArgs)">
+	<summary>
+ Handles the pressing of any of the buttons in the 'TRANSECT' buttons panel.
+ </summary>
 </member><member name="M:VideoMiner.VideoMiner.fillSpeciesVariableButtonPanel">
 	<summary>
  Load one button for each record in the DB_SPECIES_BUTTONS_TABLE table into 'Species DATA' Panel.

@@ -339,9 +339,9 @@ Public Class VideoMiner
     Private intNumHabitatButtons As Integer
 
     ' Transect variables
-    Private Transect_Textboxes() As TextBox
+    Private Transect_Textboxes() As DynamicTextbox
     Private strTransectButtonCodeNames() As String
-    Private Transect_Buttons() As Button
+    Private Transect_Buttons() As DynamicButton
     Private intTransectButtonCodes() As Integer
     Private strTransectButtonTables() As String
     Private strTransectButtonUserCodeChoice() As String
@@ -2344,6 +2344,7 @@ Public Class VideoMiner
 
     Private Sub cmdDefineAllSpatialVariables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDefineAllSpatialVariables.Click
         Dim query As String = NULL_STRING
+        Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
         Dim strCode As String = NULL_STRING
         Dim strName As String = NULL_STRING
         Dim blFlag As Boolean = False
@@ -2407,7 +2408,7 @@ Public Class VideoMiner
                     dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
                     strHabitatButtonUserNameChoice(i) = strValue
                     If strValue = "-9999" Then
-                        ClearSpatial(strHabitatButtonNames(i), intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
+                        'ClearSpatial(strHabitatButtonNames(i), intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
                     Else
                         Dim _fontfamily As FontFamily
                         _fontfamily = New FontFamily(Me.ButtonFont)
@@ -2420,29 +2421,31 @@ Public Class VideoMiner
 
                 Else
 
-                    Dim sub_form As frmTableView = New frmTableView(strHabitatButtonTables(i), i, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
-                    sub_form.Multiple = True
+                    'Dim sub_form As frmTableView = New frmTableView(strHabitatButtonTables(i), i, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
+                    Dim sub_form As frmTableView = New frmTableView(New DataTable())
+                    'sub_form.Multiple = True
+
                     sub_form.ShowDialog()
-                    If Not sub_form.UserClosedForm Then
-                        strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & NULL_STRING
-                        strHabitatButtonUserCodeChoice(i) = strCode
-                        dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
-                        dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
+                    'If Not sub_form.UserClosedForm Then
+                    strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & NULL_STRING
+                    strHabitatButtonUserCodeChoice(i) = strCode
+                    dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
+                    dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
 
-                        strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & NULL_STRING
+                    strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & NULL_STRING
 
-                        If strName.Length = 0 Then
-                            strName = strCode
-                        End If
-                        strHabitatButtonUserNameChoice(i) = strName
-                        Dim _fontfamily As FontFamily
-                        _fontfamily = New FontFamily(Me.ButtonFont)
-                        textboxes(i).Text = strHabitatButtonUserNameChoice(i)
-                        textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                        textboxes(i).BackColor = Color.LightGray
-                        textboxes(i).ForeColor = Color.LimeGreen
-                        textboxes(i).TextAlign = HorizontalAlignment.Center
+                    If strName.Length = 0 Then
+                        strName = strCode
                     End If
+                    strHabitatButtonUserNameChoice(i) = strName
+                    Dim _fontfamily As FontFamily
+                    _fontfamily = New FontFamily(Me.ButtonFont)
+                    textboxes(i).Text = strHabitatButtonUserNameChoice(i)
+                    textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
+                    textboxes(i).BackColor = Color.LightGray
+                    textboxes(i).ForeColor = Color.LimeGreen
+                    textboxes(i).TextAlign = HorizontalAlignment.Center
+                    'End If
                 End If
             Next
 
@@ -2474,6 +2477,7 @@ Public Class VideoMiner
     ''' <remarks></remarks>
     Private Sub cmdDefineAllTransectVariables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDefineAllTransectVariables.Click
         Dim query As String = NULL_STRING
+        Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
         Dim strCode As String = NULL_STRING
         Dim strName As String = NULL_STRING
         Dim blFlag As Boolean = False
@@ -2532,7 +2536,7 @@ Public Class VideoMiner
                     dictTransectFieldValues(strTransectButtonCodeNames(i).ToString) = strTransectButtonUserCodeChoice(i).ToString
                     strTransectButtonUserNameChoice(i) = strValue
                     If strValue = "-9999" Then
-                        ClearSpatial(strTransectButtonNames(i), intNumTransectButtons, strTransectButtonNames, dictTransectFieldValues, strTransectButtonCodeNames, Transect_Textboxes)
+                        'ClearSpatial(strTransectButtonNames(i), intNumTransectButtons, strTransectButtonNames, dictTransectFieldValues, strTransectButtonCodeNames, Transect_Textboxes)
                     Else
                         Dim _fontfamily As FontFamily
                         _fontfamily = New FontFamily(Me.ButtonFont)
@@ -2545,30 +2549,29 @@ Public Class VideoMiner
 
 
                 Else
-
-
-                    Dim sub_form As frmTableView = New frmTableView(strTransectButtonTables(i), i, intNumTransectButtons, strTransectButtonNames, dictTransectFieldValues, strTransectButtonCodeNames, Transect_Textboxes)
-                    sub_form.Multiple = True
+                    'Dim sub_form As frmTableView = New frmTableView(strTransectButtonTables(i), i, intNumTransectButtons, strTransectButtonNames, dictTransectFieldValues, strTransectButtonCodeNames, Transect_Textboxes)
+                    Dim sub_form As frmTableView = New frmTableView(New DataTable())
+                    'sub_form.Multiple = True
                     sub_form.ShowDialog()
-                    If Not sub_form.UserClosedForm Then
-                        strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & NULL_STRING
-                        strTransectButtonUserCodeChoice(i) = strCode
-                        dictTransectFieldValues(strTransectButtonCodeNames(i).ToString) = strTransectButtonUserCodeChoice(i).ToString
+                    'If Not sub_form.UserClosedForm Then
+                    strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & NULL_STRING
+                    strTransectButtonUserCodeChoice(i) = strCode
+                    dictTransectFieldValues(strTransectButtonCodeNames(i).ToString) = strTransectButtonUserCodeChoice(i).ToString
 
-                        strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & NULL_STRING
+                    strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & NULL_STRING
 
-                        If strName.Length = 0 Then
-                            strName = strCode
-                        End If
-                        strTransectButtonUserNameChoice(i) = strName
-                        Dim _fontfamily As FontFamily
-                        _fontfamily = New FontFamily(Me.ButtonFont)
-                        Transect_Textboxes(i).Text = strTransectButtonUserNameChoice(i)
-                        Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                        Transect_Textboxes(i).BackColor = Color.LightGray
-                        Transect_Textboxes(i).ForeColor = Color.LimeGreen
-                        Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
+                    If strName.Length = 0 Then
+                        strName = strCode
                     End If
+                    strTransectButtonUserNameChoice(i) = strName
+                    Dim _fontfamily As FontFamily
+                    _fontfamily = New FontFamily(Me.ButtonFont)
+                    Transect_Textboxes(i).Text = strTransectButtonUserNameChoice(i)
+                    Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
+                    Transect_Textboxes(i).BackColor = Color.LightGray
+                    Transect_Textboxes(i).ForeColor = Color.LimeGreen
+                    Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
+                    'End If
                 End If
             Next
 
@@ -4868,16 +4871,23 @@ Public Class VideoMiner
                             GoTo InsertComma
                         End If
                     Next j
-                    For j = 0 To intNumTransectButtons - 1
-                        If strTransectButtonCodeNames(j).ToString = colTableFields.Item(i).ToString Then
-                            If dictTransectFieldValues(strTransectButtonCodeNames(j).ToString) <> "-9999" Then
-                                strQuery = strQuery & SingleQuote(dictTransectFieldValues(strTransectButtonCodeNames(j).ToString))
-                            Else
-                                strQuery = strQuery & Replace(dictTransectFieldValues(strTransectButtonCodeNames(j).ToString), "-9999", NS)
-                            End If
-                            GoTo InsertComma
+                    Dim btn As DynamicButton
+                    For Each ctl As Control In pnlTransectData.Controls
+                        If ctl.GetType() Is GetType(DynamicButton) Then
+                            btn = DirectCast(ctl, DynamicButton)
+                            strQuery = strQuery & SingleQuote(btn.CodeName)
                         End If
                     Next
+                    'For j = 0 To intNumTransectButtons - 1
+                    ' If strTransectButtonCodeNames(j).ToString = colTableFields.Item(i).ToString Then
+                    ' If dictTransectFieldValues(strTransectButtonCodeNames(j).ToString) <> "-9999" Then
+                    ' strQuery = strQuery & SingleQuote(dictTransectFieldValues(strTransectButtonCodeNames(j).ToString))
+                    ' Else
+                    ' strQuery = strQuery & Replace(dictTransectFieldValues(strTransectButtonCodeNames(j).ToString), "-9999", NS)
+                    ' End If
+                    ' GoTo InsertComma
+                    ' End If
+                    ' Next
 
             End Select
 InsertComma:
@@ -4924,23 +4934,24 @@ SkipInsertComma:
     '              sequence. Depending on what habitat value table the user is currently within, the 
     '              current value will be cleared.
     ' ==========================================================================================================
-    Public Sub ClearSpatial(ByVal strButtonName As String, ByVal intNumButtons As Integer, ByVal strButtonNames As String(), ByRef dictFieldValues As Dictionary(Of String, String), ByVal strButtonCodeNames As String(), ByRef txtTextBoxes As TextBox())
-        Dim i As Integer
-        For i = 0 To intNumButtons - 1
-            If strButtonName = strButtonNames(i) Then
-                ' Depending on the button selected, set the substrate variable to non value.
+    'Public Sub ClearSpatial(ByVal strButtonName As String, ByVal intNumButtons As Integer, ByVal strButtonNames As String(), ByRef dictFieldValues As Dictionary(Of String, String), ByVal strButtonCodeNames As String(), ByRef txtTextBoxes As TextBox())
+    Public Sub ClearSpatial(ByVal strButtonName As String, ByRef dictFieldValues As Dictionary(Of String, String), ByRef txtTextBoxes As TextBox())
+        'Dim i As Integer
+        'For i = 0 To intNumButtons - 1
+        ' If strButtonName = strButtonNames(i) Then
+        ' Depending on the button selected, set the substrate variable to non value.
 
-                dictFieldValues(strButtonCodeNames(i).ToString) = "-9999"
-                Dim _fontfamily As FontFamily
-                _fontfamily = New FontFamily(Me.ButtonFont)
-                'Set the button and text back to non value state. 
-                txtTextBoxes(i).Text = "No " & strButtonNames(i)
-                txtTextBoxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                txtTextBoxes(i).BackColor = Color.LightGray
-                txtTextBoxes(i).ForeColor = Color.Red
-                txtTextBoxes(i).TextAlign = HorizontalAlignment.Center
-            End If
-        Next
+        ' dictFieldValues(strButtonCodeNames(i).ToString) = "-9999"
+        ' Dim _fontfamily As FontFamily
+        '_fontfamily = New FontFamily(Me.ButtonFont)
+        'Set the button and text back to non value state. 
+        'txtTextBoxes(i).Text = "No " & strButtonNames(i)
+        'txtTextBoxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
+        'txtTextBoxes(i).BackColor = Color.LightGray
+        'txtTextBoxes(i).ForeColor = Color.Red
+        'txtTextBoxes(i).TextAlign = HorizontalAlignment.Center
+        'End If
+        'Next
     End Sub
 
     ' ==========================================================================================================
@@ -5074,7 +5085,7 @@ SkipInsertComma:
     ' ==========================================================================================================
     Private Sub SpatialVariableButtonHandler(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
 
-        Dim btn As Button = sender
+        Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
         Dim i As Integer
         Dim j As Integer
         Dim query As String = NULL_STRING
@@ -5151,7 +5162,7 @@ SkipInsertComma:
                             getEXIFData()
                         End If
 
-                        ClearSpatial(btn.Name, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
+                        'ClearSpatial(btn.Name, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
                         query = createInsertQuery(INDIVIDUAL_HABITAT_VARIABLE_CLEARED, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
                         Database.ExecuteNonQuery(query)
                         fetch_data()
@@ -5170,8 +5181,9 @@ SkipInsertComma:
                     End If
                     strHabitatButtonUserNameChoice(i) = strValue
                 Else
-                    Dim sub_form As frmTableView = New frmTableView(strHabitatButtonTables(i), i, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
-                    sub_form.Multiple = False
+                    'Dim sub_form As frmTableView = New frmTableView(strHabitatButtonTables(i), i, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
+                    Dim sub_form As frmTableView = New frmTableView(New DataTable())
+                    'sub_form.Multiple = False
                     sub_form.ShowDialog()
                     Try
                         If sub_form.DataGridView1.SelectedRows.Count = 0 Then
@@ -5295,6 +5307,10 @@ SkipInsertComma:
     End Function
 
 #Region "Transect Variable Functions"
+    ''' <summary>
+    ''' Fill the transect button panel with the buttons defined in the MS Access database.
+    ''' </summary>
+    ''' <remarks>Uses the DynamicButton and DynamicTextbox classes to encapsulate button/textbox data</remarks>
     Public Sub fillTransectVariableButtonPanel()
         If dictTransectFieldValues Is Nothing Then
             dictTransectFieldValues = New Dictionary(Of String, String)
@@ -5312,15 +5328,9 @@ SkipInsertComma:
         End If
         Dim d As DataTable = Database.GetDataTable("select * from " & DB_TRANSECT_BUTTONS_TABLE & " order by DrawingOrder;", DB_TRANSECT_BUTTONS_TABLE)
         intNumTransectButtons = d.Rows.Count
+        ' Need to redimension the button and textbox arrays to hold the number found in the database table
         ReDim Transect_Buttons(intNumTransectButtons)
         ReDim Transect_Textboxes(intNumTransectButtons)
-        ReDim strTransectButtonNames(intNumTransectButtons)
-        ReDim intTransectButtonCodes(intNumTransectButtons)
-        ReDim strTransectButtonTables(intNumTransectButtons)
-        ReDim strTransectButtonCodeNames(intNumTransectButtons)
-        ReDim strTransectButtonUserCodeChoice(intNumTransectButtons)
-        ReDim strTransectButtonUserNameChoice(intNumTransectButtons)
-        ReDim strTransectButtonColors(intNumTransectButtons)
         Dim h As Integer = pnlTransectData.Height
         Dim w As Integer = pnlTransectData.Width
         Dim i As Integer = 0
@@ -5331,59 +5341,24 @@ SkipInsertComma:
         Dim intMultiply As Integer = 0
 
         For Each r As DataRow In d.Rows
-            strTransectButtonNames(i) = New String(r.Item(1).ToString())
-            strTransectButtonTables(i) = New String(r.Item(2).ToString())
-            intTransectButtonCodes(i) = r.Item(3)
-            strTransectButtonCodeNames(i) = New String(r.Item(4).ToString())
-            ' Fill dictionary values with button code names and populate with empty strings
-            dictTransectFieldValues.Add(strTransectButtonCodeNames(i).ToString, -9999)
-            strTransectButtonColors(i) = New String(r.Item(5).ToString())
-            Transect_Buttons(i) = New Button()
-            Transect_Textboxes(i) = New TextBox()
-            Transect_Buttons(i).Name = strTransectButtonNames(i)
-            Dim colConvert As ColorConverter = New ColorConverter()
-            Try
-                Transect_Buttons(i).ForeColor = colConvert.ConvertFromString(strTransectButtonColors(i))
-            Catch ex As Exception
-                Transect_Buttons(i).ForeColor = Color.Black
-            End Try
-            Dim newFont As Font
-            Dim _fontfamily As FontFamily
-            _fontfamily = New FontFamily(Me.ButtonFont)
-            If _fontfamily.IsStyleAvailable(FontStyle.Regular) Then
-                newFont = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Regular)
-            ElseIf _fontfamily.IsStyleAvailable(FontStyle.Bold) Then
-                newFont = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-            ElseIf _fontfamily.IsStyleAvailable(FontStyle.Italic) Then
-                newFont = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Italic)
-            End If
-            Transect_Buttons(i).Font = newFont
-            Transect_Buttons(i).Text = strTransectButtonNames(i)
+            Transect_Buttons(i) = New DynamicButton(r.Item(1).ToString(),
+                                                    r.Item(2).ToString(),
+                                                    r.Item(3),
+                                                    r.Item(4).ToString(),
+                                                    r.Item(5).ToString(),
+                                                    Me.ButtonFont,
+                                                    Me.ButtonTextSize)
             Transect_Buttons(i).Size = New Size(sizex, sizey)
+            Transect_Textboxes(i) = New DynamicTextbox(Transect_Buttons(i).Name,
+                                                        Me.ButtonFont,
+                                                        Me.ButtonTextSize)
             Transect_Textboxes(i).Size = New Size(sizex, sizey / 2)
-            Transect_Textboxes(i).ReadOnly = True
             Dim cellsizex = sizex + gap
             Dim cellsizey = (1.5 * sizey) + gap
             Transect_Buttons(i).Location = New System.Drawing.Point(gap + (cellsizex * intMultiply), 70 + gap + (cellsizey * (i - intAdd)))
             Transect_Textboxes(i).Location = New System.Drawing.Point(gap + (cellsizex * intMultiply), (cellsizey * (i - intAdd)) + (sizey + 70 + gap))
-            Transect_Textboxes(i).Text = "No " & strTransectButtonNames(i)
-            Transect_Textboxes(i).Name = "txt" & Replace(strTransectButtonNames(i), "%", "Percent")
-            Dim strCharactersAllowed As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"
-            Dim txtName As String = Transect_Textboxes(i).Name
-            Dim Letter As String
-            For x As Integer = 0 To Transect_Textboxes(i).Name.Length - 1
-                Letter = Transect_Textboxes(i).Name.Substring(x, 1).ToUpper
-                If strCharactersAllowed.Contains(Letter) = False Then
-                    txtName = txtName.Replace(Letter, String.Empty)
-                End If
-            Next
-            Transect_Textboxes(i).Name = txtName
-            Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-            Transect_Textboxes(i).BackColor = Color.LightGray
-            Transect_Textboxes(i).ForeColor = Color.Red
-            Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
-            Transect_Textboxes(i).ReadOnly = True
             AddHandler Transect_Buttons(i).Click, AddressOf TransectVariableButtonHandler
+            AddHandler Transect_Buttons(i).SelectionChanged, AddressOf TransectVariableSelectionChanged
             pnlTransectData.Controls.Add(Transect_Buttons(i))
             pnlTransectData.Controls.Add(Transect_Textboxes(i))
             If i Mod 5 = 4 Then
@@ -5395,162 +5370,110 @@ SkipInsertComma:
         Me.cmdDefineAllTransectVariables.Visible = True
     End Sub
 
-    Private Sub TransectVariableButtonHandler(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
-        Dim btn As Button = sender
-        Dim i As Integer
-        ' Give the user the ability to cear a substrate type or percent by ctrl clicking the button
-        If My.Computer.Keyboard.CtrlKeyDown Then
-            For i = 0 To intNumTransectButtons - 1
-                If btn.Name = strTransectButtonNames(i) Then
-                    ' Depending on the button selected, set the substrate variable to non value.
-                    dictHabitatFieldValues.Item(strTransectButtonCodeNames(i).ToString) = -9999
-                    Dim _fontfamily As FontFamily
-                    _fontfamily = New FontFamily(Me.ButtonFont)
-                    'Set the button and text back to non value state. 
-                    Transect_Textboxes(i).Text = "No " & strTransectButtonNames(i)
-                    Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                    Transect_Textboxes(i).BackColor = Color.LightGray
-                    Transect_Textboxes(i).ForeColor = Color.Red
-                    Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
-                    Transect_Textboxes(i).ReadOnly = True
-                End If
-            Next
-            Exit Sub
+    ''' <summary>
+    ''' Handles the case where the user changed a selection in a code table. This may result
+    ''' in a query being run to insert data into the database.
+    ''' </summary>
+    ''' <param name="sender">The DynamicButton that raised the event</param>
+    Private Sub TransectVariableSelectionChanged(ByVal sender As Object, ByVal e As EventArgs)
+        Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
+        Dim query As String
+        If btn.Comment <> NULL_STRING Then
+            ' Insert a new record into the database
+            query = createInsertQuery(btn.Code, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
+            Database.ExecuteNonQuery(query)
+            fetch_data()
         End If
-        'Dim tc As TimeSpan = New TimeSpan(VIDEO_TIME_LABEL)
-        Dim strX As String = NS
-        Dim strY As String = NS
-        Dim strZ As String = NS
-        Dim query As String = NULL_STRING
-        ' ======================================Code by Xida Chen (begin)===========================================
-        'If they are using the video control then get the time from there.
-        ' The time code is set to be VIDEO_TIME_LABEL initially.
-        Dim strVideoTime As String = VIDEO_TIME_LABEL
-        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
-        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
-        ' do the following only when the video is open:
-        ' pause stream and get the time code
-        ' If the video is not open, then we cannot pause the
-        ' video stream, and there is no need to get the TimeCode.
-        If m_video_file_open Then
-            If frmVideoPlayer.IsPlaying Then
-                If frmVideoPlayer.IsPlaying Then
-                    blVideoWasPlaying = True
-                Else
-                    blVideoWasPlaying = False
-                End If
-                pauseVideo()
-            End If
-            'tc = getTimeCode()
-            strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
-
-        End If
-        Dim strCode As String = NULL_STRING
-        Dim strName As String = NULL_STRING
-        Dim blAquiredFix As Boolean = False
-        If booUseGPSTimeCodes Then
-            'Otherwise get the time from the NMEA string.
-            blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
-            If Not blAquiredFix Then
-                Exit Sub
-            End If
-        End If
-        strVideoTextTime = strVideoTime
-        ' If the image is open and the video is closed then get the picture information from the EXIF file
-        'If image_open And video_file_open = False Then
-
-        '    getEXIFData(strVideoTime)
-
-        'End If
-        ' ======================================Code by Xida Chen (end)===========================================
-        For i = 0 To intNumTransectButtons - 1
-            If btn.Name = strTransectButtonNames(i) Then
-                Dim _fontfamily As FontFamily
-                If strTransectButtonTables(i) = "UserEntered" Then
-                    Dim strValue As String
-                    frmAddValue = New frmAddValue(dictTransectFieldValues(strTransectButtonCodeNames(i).ToString))
-                    frmAddValue.lblExpression.Text = "Please enter a value for " & btn.Text & ":"
-                    frmAddValue.Text = btn.Text & " Entry"
-                    frmAddValue.ShowDialog()
-                    strValue = frmAddValue.strValue
-                    frmAddValue.Close()
-                    frmAddValue = Nothing
-                    strTransectButtonUserCodeChoice(i) = strValue
-                    dictTransectFieldValues(strTransectButtonCodeNames(i).ToString) = strTransectButtonUserCodeChoice(i)
-                    strTransectButtonUserNameChoice(i) = strValue
-                    If strValue = "-9999" Then
-                        ClearSpatial(strTransectButtonNames(i), intNumTransectButtons, strTransectButtonNames, dictTransectFieldValues, strTransectButtonCodeNames, Transect_Textboxes)
-                    Else
-                        'Dim _fontfamily As FontFamily
-                        _fontfamily = New FontFamily(Me.ButtonFont)
-                        Transect_Textboxes(i).Text = strTransectButtonUserNameChoice(i)
-                        Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                        Transect_Textboxes(i).BackColor = Color.LightGray
-                        Transect_Textboxes(i).ForeColor = Color.LimeGreen
-                        Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
-                    End If
-                Else
-                    Dim sub_form As frmTableView = New frmTableView(strTransectButtonTables(i), i, intNumTransectButtons, strTransectButtonNames, dictTransectFieldValues, strTransectButtonCodeNames, Transect_Textboxes)
-                    sub_form.cmdScreenCapture.Visible = False
-                    sub_form.Multiple = False
-                    sub_form.ShowDialog()
-                    Try
-                        If sub_form.DataGridView1.SelectedRows.Count = 0 Then
-                            blCleared = False
-                            Me.strComment = NULL_STRING
-                            Exit Sub
-                        End If
-                        'Console.WriteLine(DataGridView1.SelectedRows(0).Cells(0).Value)
-                        strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & NULL_STRING
-                        strTransectButtonUserCodeChoice(i) = strCode
-                        ' Depending on which button is selected, define the applicable spatial variable.
-                        ' The other varaibles are cleared to prevent subsequent records being created from
-                        ' having repeated values if the repeat check box is off.
-                        dictTransectFieldValues(strTransectButtonCodeNames(i).ToString) = strTransectButtonUserCodeChoice(i)
-                        If Me.strComment <> NULL_STRING Then
-                            query = createInsertQuery(intTransectButtonCodes(i), NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-                            Database.ExecuteNonQuery(query)
-                            fetch_data()
-                        End If
-                        Me.strComment = NULL_STRING
-                        strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & NULL_STRING
-                        If strName.Length = 0 Then
-                            strName = strCode
-                        End If
-                        strTransectButtonUserNameChoice(i) = strName
-                        'Dim _fontfamily As FontFamily
-                        _fontfamily = New FontFamily(Me.ButtonFont)
-                        Transect_Textboxes(i).Text = strTransectButtonUserNameChoice(i)
-                        Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                        Transect_Textboxes(i).BackColor = Color.LightGray
-                        Transect_Textboxes(i).ForeColor = Color.LimeGreen
-                        Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
-                    Catch ex As Exception
-                        If ex.Message.StartsWith("Syntax") Then
-                            MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-                        Else
-                            MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-                        End If
-                    End Try
-                End If
-                ''Dim _fontfamily As FontFamily
-                '_fontfamily = New FontFamily(Me.ButtonFont)
-                'Transect_Textboxes(i).Text = strTransectButtonUserNameChoice(i)
-                'Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                'Transect_Textboxes(i).BackColor = Color.LightGray
-                'Transect_Textboxes(i).ForeColor = Color.LimeGreen
-                'Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
-                If blVideoWasPlaying = True Then
-                    playVideo()
-                    blVideoWasPlaying = False
-                End If
-            End If
-        Next
-        If Not frmImage Is Nothing Then
-            frmImage.Focus()
-        End If
-        Me.ScreenCaptureName = NULL_STRING
     End Sub
+
+    ''' <summary>
+    ''' Handles the pressing of any of the buttons in the 'TRANSECT' buttons panel.
+    ''' </summary>
+    Private Sub TransectVariableButtonHandler(ByVal sender As Object, ByVal e As MouseEventArgs)
+        'Dim query, strCodeName, strCode As String
+        Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
+        Dim i As Integer
+
+        ' TODO: Fix this functionality. 
+        ' Give the user the ability to clear a substrate type or percent by ctrl clicking the button
+        'If My.Computer.Keyboard.CtrlKeyDown Then
+        ' For i = 0 To intNumTransectButtons - 1
+        ' If btnName = strTransectButtonNames(i) Then
+        ' ' Depending on the button selected, set the substrate variable to non value.
+        ' dictHabitatFieldValues.Item(strTransectButtonCodeNames(i).ToString) = -9999
+        ' _fontfamily = New FontFamily(Me.ButtonFont)
+        'Set the button and text back to non value state. 
+        ' Transect_Textboxes(i).Text = "No " & strTransectButtonNames(i)
+        ' Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
+        ' Transect_Textboxes(i).BackColor = Color.LightGray
+        ' Transect_Textboxes(i).ForeColor = Color.Red
+        ' Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
+        ' Transect_Textboxes(i).ReadOnly = True
+        ' End If
+        ' Next
+        'Exit Sub
+        'End If
+
+        If btn.Name = "UserEntered" Then
+            Dim strValue As String
+            frmAddValue = New frmAddValue(dictTransectFieldValues(strTransectButtonCodeNames(i).ToString))
+            frmAddValue.lblExpression.Text = "Please enter a value for " & btn.Text & ":"
+            frmAddValue.Text = btn.Text & " Entry"
+            frmAddValue.ShowDialog()
+            strValue = frmAddValue.strValue
+            frmAddValue.Close()
+            frmAddValue = Nothing
+            strTransectButtonUserCodeChoice(i) = strValue
+            dictTransectFieldValues(strTransectButtonCodeNames(i).ToString) = strTransectButtonUserCodeChoice(i)
+            strTransectButtonUserNameChoice(i) = strValue
+            If strValue = "-9999" Then
+                'ClearSpatial(strTransectButtonNames(i), intNumTransectButtons, strTransectButtonNames, dictTransectFieldValues, strTransectButtonCodeNames, Transect_Textboxes)
+            Else
+                Dim _fontfamily As FontFamily = New FontFamily(Me.ButtonFont)
+                Transect_Textboxes(i).Text = strTransectButtonUserNameChoice(i)
+                Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
+                Transect_Textboxes(i).BackColor = Color.LightGray
+                Transect_Textboxes(i).ForeColor = Color.LimeGreen
+                Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
+            End If
+        Else
+            btn.DataFormVisible = True
+            'strCodeName = btn.Code
+            'strCode = btn.CodeName
+
+            'query = createInsertQuery(intTransectButtonCodes(i), NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
+            'Database.ExecuteNonQuery(query)
+            'fetch_data()
+            'End If
+            'Me.strComment = NULL_STRING
+            'If strCodeName.Length = 0 Then
+            ' strCodeName = strCode
+            'End If
+            'strTransectButtonUserNameChoice(i) = strCodeName
+            'Dim _fontfamily As FontFamily = New FontFamily(Me.ButtonFont)
+            'Transect_Textboxes(i).Text = strTransectButtonUserNameChoice(i)
+            'Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
+            'Transect_Textboxes(i).BackColor = Color.LightGray
+            'Transect_Textboxes(i).ForeColor = Color.LimeGreen
+            'Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
+        End If
+        ''Dim _fontfamily As FontFamily
+        '_fontfamily = New FontFamily(Me.ButtonFont)
+        'Transect_Textboxes(i).Text = strTransectButtonUserNameChoice(i)
+        'Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
+        'Transect_Textboxes(i).BackColor = Color.LightGray
+        'Transect_Textboxes(i).ForeColor = Color.LimeGreen
+        'Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
+        'If blVideoWasPlaying = True Then
+        ' playVideo()
+        ' blVideoWasPlaying = False
+        ' End If
+        ' If Not frmImage Is Nothing Then
+        'frmImage.Focus()
+        'End If
+        'Me.ScreenCaptureName = NULL_STRING
+    End Sub
+
 
 #End Region
 
@@ -6871,7 +6794,8 @@ SkipInsertComma:
 
     Private Sub clear_spatial_information() Handles frmTableView.ClearSpatialInformationEvent
         With frmTableView
-            ClearSpatial(.SelectedButtonName, .NumButtons, .ButtonNames, .FieldValues, .ButtonCodeNames, .TextBoxes)
+            'ClearSpatial(.SelectedButtonName, .NumButtons, .ButtonNames, .FieldValues, .ButtonCodeNames, .TextBoxes)
+            'ClearSpatial(.SelectedButtonName, .FieldValues, .TextBoxes)
         End With
     End Sub
 
