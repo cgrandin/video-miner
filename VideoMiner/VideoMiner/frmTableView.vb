@@ -59,6 +59,16 @@ Public Class frmTableView
         'Me.UserClosedForm = True
     End Sub
 
+    ''' <summary>
+    ''' Capture the press of the 'X' button and hide instead of closing to avoid an exception on re-opening
+    ''' </summary>
+    Private Sub frmTableView_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If e.CloseReason = CloseReason.UserClosing Then
+            e.Cancel = True
+            Me.Hide()
+        End If
+    End Sub
+
     Private Sub TableViewForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         'Me.Text = m_strSelectedButtonName
         'm_UserClosedForm = False

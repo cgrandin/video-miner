@@ -92,7 +92,6 @@ C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\Interop.ADODB.dll
 C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\Interop.ADOX.dll
 C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\Interop.WMPLib.dll
 C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\AxInterop.WMPLib.dll
-C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.vbprojResolveAssemblyReference.cache
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\Interop.ADODB.dll
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\Interop.ADOX.dll
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\Interop.WMPLib.dll

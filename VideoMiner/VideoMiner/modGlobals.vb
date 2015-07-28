@@ -41,6 +41,7 @@ Module modGlobals
     Public Const VIDEO_TIME_DECIMAL_LABEL As String = "00:00:00.000"
     Public Const VIDEO_TIME_FORMAT As String = "{0:D2}:{1:D2}:{2:D2}.{3:D4}"
 
+    Public Const NULL_STRING As String = ""
     Public blRareSpecies As Boolean = False
 
     Public dictHabitatFieldValues As Dictionary(Of String, String)

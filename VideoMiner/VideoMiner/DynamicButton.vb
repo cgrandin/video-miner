@@ -1,5 +1,6 @@
 ﻿''' <summary>
-''' A Videominer dynamic button. This button extends a regular button by holding the database table name, current data code, and code name.
+''' A Videominer dynamic button. This button extends a regular button by holding the database table name,
+''' an instance of the DataTable, the current data code, and the code name.
 ''' </summary>
 ''' <remarks></remarks>
 Public Class DynamicButton
@@ -11,24 +12,40 @@ Public Class DynamicButton
     ''' </summary>
     Private m_db_table_name As String
     ''' <summary>
+    ''' Text to appear on the button
+    ''' </summary>
+    Private m_button_text As String
+    ''' <summary>
+    ''' Code for the button. This may not be set if the button type is for a data table.
+    ''' </summary>
+    Private m_button_code As String
+    ''' <summary>
+    ''' Name for the button code. This may not be set if the button type is for a data table.
+    ''' </summary>
+    Private m_button_code_name As String
+    ''' <summary>
+    ''' A String representing a keyboard shortcut. This is what can be pressed to trigger a Click event on the button.
+    ''' </summary>
+    Private m_keyboard_shortcut As String
+    ''' <summary>
     ''' Data code for this button as found in the lu_data_codes table.
     ''' This is NOT the code chosen by the user in the table view, this is the
     ''' code for this particular table.
     ''' </summary>
-    Private m_code As Integer
+    Private m_data_code As Integer
     ''' <summary>
     ''' Name of the data code (description) as found in the lu_data_codes table.
     ''' This is NOT the code chosen by the user in the table view, this is the
     ''' code for this particular table.
     ''' </summary>
-    Private m_code_name As String
+    Private m_data_code_name As String
     ''' <summary>
-    ''' Table of data found in the m_db_table_name table in the MS Access database
+    ''' Table of data found in the m_db_table_name table in the MS Access database. This may not be set if the button type is for a species.
     ''' </summary>
     ''' <remarks></remarks>
     Private m_data_table As DataTable
     ''' <summary>
-    ''' The table view of the m_data_table
+    ''' The table view of the m_data_table. This may not be set if the button type is for a species.
     ''' </summary>
     Private WithEvents m_table_view As frmTableView
     ''' <summary>
@@ -63,21 +80,21 @@ Public Class DynamicButton
         End Set
     End Property
 
-    Public Property Code As Integer
+    Public Property DataCode As Integer
         Get
-            Return m_code
+            Return m_data_code
         End Get
         Set(value As Integer)
-            m_code = value
+            m_data_code = value
         End Set
     End Property
 
-    Public Property CodeName As String
+    Public Property DataCodeName As String
         Get
-            Return m_code_name
+            Return m_data_code_name
         End Get
         Set(value As String)
-            m_code_name = value
+            m_data_code_name = value
         End Set
     End Property
 
@@ -115,23 +132,41 @@ Public Class DynamicButton
             Return m_table_view.Visible
         End Get
         Set(value As Boolean)
-            m_table_view.Visible = value
+            If m_db_table_name = "UserEntered" Then
+                ' TODO: Make a new form so the value can be validated here.. right now an exception is thrown and discarded
+                Try
+                    m_data_code = InputBox("Please enter a value for " & Name & ":", Name & "entry", )
+                Catch ex As Exception
+                    MessageBox.Show("Error on input, the value must be an integer.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    m_data_code = Nothing
+                End Try
+            Else
+                m_table_view.Visible = value
+            End If
         End Set
     End Property
 #End Region
 
     Public Event SelectionChanged(ByVal sender As Object, ByVal e As EventArgs)
 
-    Public Sub New(name As String, tableName As String, code As Integer, codeNm As String, foreColorString As String, buttonFont As String, buttonTextSize As Integer)
-        Me.Name = name
-        Me.Text = name
+    ''' <summary>
+    ''' Creates the object, for the case in which the button refers to a database code table.
+    ''' </summary>
+    ''' <param name="buttonText">Text to appear on the button</param>
+    ''' <param name="tableName">Name of the MS Access database table </param>
+    ''' <param name="dataCode">Code that is in the database table for this button</param>
+    ''' <param name="dataCodeName">Name of the code that is in the database table for this button</param>
+    ''' <param name="buttonColor">The microsoft color for this button's text (e.g. "DarkBlue")</param>
+    ''' <param name="buttonFont">The font to use for this button (e.g. "Microsoft Sans Serif")</param>
+    ''' <param name="buttonTextSize">The font size to use for this button's text (in pts)</param>
+    ''' <remarks></remarks>
+    Public Sub New(buttonText As String, tableName As String, dataCode As Integer, dataCodeName As String, buttonColor As String, buttonFont As String, buttonTextSize As Integer)
+        Me.Name = buttonText
+        Me.Text = buttonText
         m_db_table_name = tableName
-        m_data_table = Database.GetDataTable("select * from " & m_db_table_name, m_db_table_name)
-        m_code = code
-        m_code_name = codeNm
         Dim colConvert As ColorConverter = New ColorConverter()
         Try
-            Me.ForeColor = colConvert.ConvertFromString(foreColorString)
+            Me.ForeColor = colConvert.ConvertFromString(buttonColor)
         Catch ex As Exception
             Me.ForeColor = Color.Black
         End Try
@@ -143,19 +178,62 @@ Public Class DynamicButton
         ElseIf font_family.IsStyleAvailable(FontStyle.Italic) Then
             Me.Font = New Font(font_family, buttonTextSize, FontStyle.Italic)
         End If
-        ' Create new Table view form, but don't show it yet.
-        m_table_view = New frmTableView(m_data_table)
-        ' Populate dictionary for the given table contents
-        m_dict = New Dictionary(Of String, String)
-        For Each row As DataRow In m_data_table.Rows
-            m_dict(row.Item(1)) = row.Item(0)
-        Next
-        m_current_data_code = Nothing
-        m_current_data_code_name = Nothing
-        m_current_comment = Nothing
+        If m_db_table_name = "UserEntered" Then
+            ' In the database, the name 'UserEntered' is in place of the tablename, so we must ask user here for the code value
+            m_data_code_name = buttonText
+            m_data_code = Nothing
+        Else
+            m_data_table = Database.GetDataTable("select * from " & m_db_table_name, m_db_table_name)
+            m_data_code = dataCode
+            m_data_code_name = dataCodeName
+            ' Create new Table view form, but don't show it yet.
+            m_table_view = New frmTableView(m_data_table)
+            ' Populate dictionary for the given table contents
+            m_dict = New Dictionary(Of String, String)
+            For Each row As DataRow In m_data_table.Rows
+                m_dict(row.Item(1)) = row.Item(0)
+            Next
+        End If
     End Sub
 
-    Private Sub transectDataChanged() Handles m_table_view.DataChanged
+    ''' <summary>
+    ''' Creates the object, for the case in which the button refers to a species code.
+    ''' </summary>
+    ''' <param name="buttonText">Text to appear on the button</param>
+    ''' <param name="buttonCode">Code for the button. If species button, this is the species code</param>
+    ''' <param name="buttonCodeName">Name for the button code, (e.g. SpeciesID)</param>
+    ''' <param name="dataCode">Data Code that is in the database table for this button type</param>
+    ''' <param name="buttonColor">The microsoft color for this button's text (e.g. "DarkBlue")</param>
+    ''' <param name="keyboardShortcut">Keyboard shortcut that will run the Click event for this button</param>
+    ''' <param name="buttonFont">The font to use for this button (e.g. "Microsoft Sans Serif")</param>
+    ''' <param name="buttonTextSize">The font size to use for this button's text (in pts)</param>
+    ''' <remarks></remarks>
+    Public Sub New(buttonText As String, buttonCode As String, buttonCodeName As String, dataCode As Integer, buttonColor As String, keyboardShortcut As String, buttonFont As String, buttonTextSize As Integer)
+        Me.Name = buttonText
+        Me.Text = buttonText
+        Dim colConvert As ColorConverter = New ColorConverter()
+        Try
+            Me.ForeColor = colConvert.ConvertFromString(buttonColor)
+        Catch ex As Exception
+            Me.ForeColor = Color.Black
+        End Try
+        Dim font_family As FontFamily = New FontFamily(buttonFont)
+        If font_family.IsStyleAvailable(FontStyle.Regular) Then
+            Me.Font = New Font(font_family, buttonTextSize, FontStyle.Regular)
+        ElseIf font_family.IsStyleAvailable(FontStyle.Bold) Then
+            Me.Font = New Font(font_family, buttonTextSize, FontStyle.Bold)
+        ElseIf font_family.IsStyleAvailable(FontStyle.Italic) Then
+            Me.Font = New Font(font_family, buttonTextSize, FontStyle.Italic)
+        End If
+        m_data_table = Nothing
+        m_db_table_name = Nothing
+        m_table_view = Nothing
+        m_button_code = buttonCode
+        m_button_code_name = buttonCodeName
+        m_keyboard_shortcut = keyboardShortcut
+    End Sub
+
+    Private Sub dataChanged() Handles m_table_view.DataChanged
         m_current_data_code = m_table_view.GetCurrentlySelectedCode
         m_current_data_code_name = m_table_view.GetCurrentlySelectedCodeName
         m_current_comment = m_table_view.GetCurrentComment

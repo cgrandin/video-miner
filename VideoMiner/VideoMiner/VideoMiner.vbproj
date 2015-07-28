@@ -167,6 +167,9 @@
     <Compile Include="DynamicButton.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DynamicPanel.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DynamicTextbox.vb">
       <SubType>Component</SubType>
     </Compile>

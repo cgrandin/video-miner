@@ -136,6 +136,10 @@ Public Class VideoMiner
 #End Region
 
 #Region "Variables"
+    ' These are the dynamic panels to be added to the splitcontainers at runtime
+    Friend WithEvents pnlTransectData As DynamicPanel
+    Friend WithEvents pnlHabitatData As DynamicPanel
+    Friend WithEvents pnlSpeciesData As DynamicPanel
     ' These are the forms which this form creates and they report directly to this form only
     Private WithEvents frmSpeciesList As frmSpeciesList
     Private WithEvents frmSetTime As frmSetTime
@@ -997,7 +1001,7 @@ Public Class VideoMiner
 
         m_db_file_open = False
         m_video_file_open = False
-        db_file_unload()
+        'db_file_unload()
         video_file_unload()
         no_files_loaded()
         m_transect_name = UNNAMED_TRANSECT
@@ -1073,6 +1077,15 @@ Public Class VideoMiner
         'frmGpsSettings.ShowDialog()
         frmSetTime = New frmSetTime(m_tsUserTime)
 
+        ' Add DynamicPanels to the SplitContainerPanels
+        pnlTransectData = New DynamicPanel("TRANSECT DATA", True, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, False, True)
+        SplitContainer7.Panel1.Controls.Add(pnlTransectData)
+
+        pnlHabitatData = New DynamicPanel("HABITAT DATA", True, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, True, True)
+        SplitContainer7.Panel2.Controls.Add(pnlHabitatData)
+
+        pnlSpeciesData = New DynamicPanel("SPECIES DATA", False, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, False, , , , False)
+        SplitContainer6.Panel2.Controls.Add(pnlSpeciesData)
     End Sub
 
     ''' <summary>
@@ -1228,6 +1241,9 @@ Public Class VideoMiner
         End If
     End Function
 
+    ''' <summary>
+    ''' Test for SaveConfiguration function. Can be deleted once project complete.
+    ''' </summary>
     Private Sub testSaveConfiguration()
         m_strConfigFile = "C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\Config\VideoMinerConfigurationDetails.xml"
         SaveConfiguration("/X/Y/Z/DBP", "The Phantom Menace")
@@ -1603,13 +1619,12 @@ Public Class VideoMiner
     ''' <remarks></remarks>
     Public Sub CloseDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuCloseDatabase.Click
         blCloseDatabase = True
-        Database.Close()
         grdVideoMinerDatabase.DataSource = Nothing
         m_db_file_open = False
-        db_file_unload()
+        'db_file_unload()
+        closeDatabase()
         no_files_loaded()
-        Me.cmdDefineAllSpatialVariables.Visible = False
-        Me.cmdDefineAllTransectVariables.Visible = False
+        'Me.cmdDefineAllTransectVariables.Visible = False
         Me.cmdAddComment.Visible = False
         Me.cmdUpdateDatabase.Visible = False
         Me.cmdRevertDatabase.Visible = False
@@ -1629,7 +1644,6 @@ Public Class VideoMiner
         Me.txtTransectDate.Enabled = False
         Me.txtProjectName.Enabled = False
         Me.chkRecordEachSecond.Enabled = False
-        Me.chkRepeatVariables.Visible = False
         Me.mnuConfigureTools.Enabled = False
         Me.mnuRefreshForm.Enabled = False
         Me.KeyboardShortcutsToolStripMenuItem.Enabled = False
@@ -2342,7 +2356,7 @@ Public Class VideoMiner
         Me.cmdCloseCalendar.Visible = False
     End Sub
 
-    Private Sub cmdDefineAllSpatialVariables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDefineAllSpatialVariables.Click
+    Private Sub cmdDefineAllSpatialVariables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         Dim query As String = NULL_STRING
         Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
         Dim strCode As String = NULL_STRING
@@ -2475,7 +2489,7 @@ Public Class VideoMiner
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     ''' <remarks></remarks>
-    Private Sub cmdDefineAllTransectVariables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDefineAllTransectVariables.Click
+    Private Sub cmdDefineAllTransectVariables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         Dim query As String = NULL_STRING
         Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
         Dim strCode As String = NULL_STRING
@@ -2761,9 +2775,10 @@ Public Class VideoMiner
 
     'End Sub
 
-    Private Sub chkRepeatVariables_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkRepeatVariables.CheckedChanged
+    Private Sub chkRepeatVariables_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs)
         Dim i As Integer
-        If Me.chkRepeatVariables.Checked = True Then
+        If True Then
+            'If Me.chkRepeatVariables.Checked = True Then
             ' If the user checks the repeat box, set all original variables to temporary variables
             If Not dictHabitatFieldValues Is Nothing Or Not dictTempHabitatFieldValues Is Nothing Then
                 For i = 0 To intNumHabitatButtons - 1
@@ -2935,7 +2950,8 @@ Public Class VideoMiner
 
         Try
 
-            If Me.chkRepeatVariables.Checked = False Then
+            If True Then
+                '    If Me.chkRepeatVariables.Checked = False Then
                 For j = 0 To intNumHabitatButtons - 1
                     dictHabitatFieldValues(strHabitatButtonCodeNames(j).ToString) = "-9999"
                 Next
@@ -3591,7 +3607,6 @@ Public Class VideoMiner
         Me.txtTransectDate.Enabled = True
         Me.txtProjectName.Enabled = True
         Me.chkRecordEachSecond.Enabled = True
-        Me.chkRepeatVariables.Visible = True
         Me.mnuConfigureTools.Enabled = True
         Me.mnuRefreshForm.Enabled = True
         Me.KeyboardShortcutsToolStripMenuItem.Enabled = True
@@ -4533,43 +4548,18 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
-    ''' Set some controls to be invisible once the database has been closed, and remove the dynamic panel buttons.
+    ''' Closes the MS Access database, and resets all controls to the unloaded state.
     ''' </summary>
-    Public Sub db_file_unload()
+    Private Sub closeDatabase()
+        If Database.IsOpen Then
+            Database.Close()
+        End If
         Me.lblDatabase.Text = DB_FILE_STATUS_UNLOADED
         mnuOpenDatabase.Enabled = True
         mnuCloseDatabase.Enabled = False
-        Dim i As Integer
-        If Not IsNothing(Transect_Buttons) Then
-            For i = 0 To intNumTransectButtons - 1
-                Transect_Buttons(i).Dispose()
-                Transect_Buttons(i) = Nothing
-                Transect_Textboxes(i).Dispose()
-                Transect_Textboxes(i) = Nothing
-            Next
-            intNumTransectButtons = 0
-        End If
-        If Not IsNothing(buttons) Then
-            Do While pnlHabitatData.Controls.Count <> 0
-                pnlTransectData.Controls.RemoveAt(0)
-            Loop
-            For i = 0 To intNumHabitatButtons - 1
-                buttons(i).Dispose()
-                buttons(i) = Nothing
-                textboxes(i).Dispose()
-                textboxes(i) = Nothing
-            Next
-            intNumHabitatButtons = 0
-            ' Making the panel invisible makes the remove operations much faster
-            pnlSpeciesData.Visible = False
-            ' The Do.While is the only method that works for removing controls propery. Other methods, i.e. For..Each and For..Next
-            ' will have the index changing while the controls are being removed which will mess it up and leave some on the panel.
-            Do While pnlSpeciesData.Controls.Count <> 0
-                pnlSpeciesData.Controls.RemoveAt(0)
-            Loop
-            intNumSpeciesButtons = 0
-            pnlSpeciesData.Visible = True
-        End If
+        pnlTransectData.removeAllDynamicControls()
+        pnlHabitatData.removeAllDynamicControls()
+
     End Sub
 
     ''' <summary>
@@ -4582,10 +4572,11 @@ Public Class VideoMiner
         If Database.IsOpen Then
             m_db_filename = get_rel_filename(m_strDatabaseFilePath)
             m_db_file_open = True
-            fillTransectVariableButtonPanel()
-            fillSpatialVariableButtonPanel()
-            fillSpeciesVariableButtonPanel()
-            fillHabitatFieldsCollection()
+            pnlTransectData.fillPanel(DB_TRANSECT_BUTTONS_TABLE)
+            pnlHabitatData.fillPanel(DB_HABITAT_BUTTONS_TABLE)
+            pnlSpeciesData.fillPanel(DB_SPECIES_BUTTONS_TABLE)
+            'fillSpeciesVariableButtonPanel()
+            'fillHabitatFieldsCollection()
             fillDataCodesTable()
             db_file_load()
             If m_video_file_open Then
@@ -4875,7 +4866,7 @@ Public Class VideoMiner
                     For Each ctl As Control In pnlTransectData.Controls
                         If ctl.GetType() Is GetType(DynamicButton) Then
                             btn = DirectCast(ctl, DynamicButton)
-                            strQuery = strQuery & SingleQuote(btn.CodeName)
+                            strQuery = strQuery & SingleQuote(btn.DataCodeName)
                         End If
                     Next
                     'For j = 0 To intNumTransectButtons - 1
@@ -4905,7 +4896,8 @@ SkipInsertComma:
 
         strQuery = strQuery & ");"
 
-        If Me.chkRepeatVariables.Checked = False Then
+        'If Me.chkRepeatVariables.Checked = False Then
+        If True Then
             Dim blHasValues As Boolean = False
             If Not dictHabitatFieldValues Is Nothing Or Not dictTempHabitatFieldValues Is Nothing Then
                 For i = 0 To intNumHabitatButtons - 1
@@ -4928,553 +4920,26 @@ SkipInsertComma:
 #End Region
 
 #Region "Habitat Variable Functions"
-    ' ==========================================================================================================
-    ' Name: ClearSpatial()
-    ' Description: This sub is called when the user selects the clear button within the define all habitat values
-    '              sequence. Depending on what habitat value table the user is currently within, the 
-    '              current value will be cleared.
-    ' ==========================================================================================================
-    'Public Sub ClearSpatial(ByVal strButtonName As String, ByVal intNumButtons As Integer, ByVal strButtonNames As String(), ByRef dictFieldValues As Dictionary(Of String, String), ByVal strButtonCodeNames As String(), ByRef txtTextBoxes As TextBox())
-    Public Sub ClearSpatial(ByVal strButtonName As String, ByRef dictFieldValues As Dictionary(Of String, String), ByRef txtTextBoxes As TextBox())
-        'Dim i As Integer
-        'For i = 0 To intNumButtons - 1
-        ' If strButtonName = strButtonNames(i) Then
-        ' Depending on the button selected, set the substrate variable to non value.
-
-        ' dictFieldValues(strButtonCodeNames(i).ToString) = "-9999"
-        ' Dim _fontfamily As FontFamily
-        '_fontfamily = New FontFamily(Me.ButtonFont)
-        'Set the button and text back to non value state. 
-        'txtTextBoxes(i).Text = "No " & strButtonNames(i)
-        'txtTextBoxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-        'txtTextBoxes(i).BackColor = Color.LightGray
-        'txtTextBoxes(i).ForeColor = Color.Red
-        'txtTextBoxes(i).TextAlign = HorizontalAlignment.Center
-        'End If
-        'Next
-    End Sub
-
-    ' ==========================================================================================================
-    ' Name: fill_spatialvariable_button_panel()
-    ' Description:  Prepare panel1 once both a database and a video file are opened.
-    ' 1.) Load one button for each record in the DB_HABITAT_BUTTONS_TABLE table into Panel1.
-    ' 2.) Set the button click event to SpatialVariableButtonHandler()
-    ' ==========================================================================================================
-
-    Public Sub fillSpatialVariableButtonPanel()
-        If dictHabitatFieldValues Is Nothing Then
-            dictHabitatFieldValues = New Dictionary(Of String, String)
-        Else
-            dictHabitatFieldValues = Nothing
-            dictHabitatFieldValues = New Dictionary(Of String, String)
-        End If
-
-        If dictTempHabitatFieldValues Is Nothing Then
-            dictTempHabitatFieldValues = New Dictionary(Of String, String)
-        Else
-            dictTempHabitatFieldValues = Nothing
-            dictTempHabitatFieldValues = New Dictionary(Of String, String)
-        End If
-
-        If Me.pnlHabitatData.Controls.Count <> 0 Then
-            Dim ctl As Control
-            Dim txt As TextBox
-
-            For Each ctl In pnlHabitatData.Controls
-                If ctl.Name <> "lblHabitatData" And ctl.Name <> "cmdDefineAllSpatialVariables" And ctl.Name <> "chkRepeatVariables" Then
-                    Me.pnlHabitatData.Controls.Remove(ctl)
-                End If
-            Next
-        End If
-        Dim d As DataTable = Database.GetDataTable("select * from " & DB_HABITAT_BUTTONS_TABLE & " ORDER BY DrawingOrder;", DB_HABITAT_BUTTONS_TABLE)
-        intNumHabitatButtons = d.Rows.Count
-        ReDim buttons(intNumHabitatButtons)
-        ReDim textboxes(intNumHabitatButtons)
-        ReDim strHabitatButtonNames(intNumHabitatButtons)
-        ReDim intHabitatButtonCodes(intNumHabitatButtons)
-        ReDim strHabitatButtonTables(intNumHabitatButtons)
-        ReDim strHabitatButtonCodeNames(intNumHabitatButtons)
-        ReDim strHabitatButtonUserCodeChoice(intNumHabitatButtons)
-        ReDim strHabitatButtonUserNameChoice(intNumHabitatButtons)
-        ReDim strHabitatButtonColors(intNumHabitatButtons)
-        Dim h As Integer = pnlHabitatData.Height
-        Dim w As Integer = pnlHabitatData.Width
-        Dim i As Integer = 0
-        Dim sizex As Integer = Me.ButtonWidth
-        Dim sizey As Integer = Me.ButtonHeight
-        Dim gap As Integer = 5
-        Dim intAdd As Integer = 0
-        Dim intMultiply As Integer = 0
-        For Each r As DataRow In d.Rows
-            strHabitatButtonNames(i) = New String(r.Item(1).ToString())
-            strHabitatButtonTables(i) = New String(r.Item(2).ToString())
-            intHabitatButtonCodes(i) = r.Item(3)
-            strHabitatButtonCodeNames(i) = New String(r.Item(4).ToString())
-            ' Fill temporary dictionary values with button code names and populate with empty strings
-            dictTempHabitatFieldValues.Add(strHabitatButtonCodeNames(i).ToString, -9999)
-            dictHabitatFieldValues.Add(strHabitatButtonCodeNames(i).ToString, -9999)
-            strHabitatButtonColors(i) = New String(r.Item(5).ToString())
-            buttons(i) = New Button()
-            textboxes(i) = New TextBox()
-            buttons(i).Name = strHabitatButtonNames(i)
-            Dim colConvert As ColorConverter = New ColorConverter()
-            Try
-                buttons(i).ForeColor = colConvert.ConvertFromString(strHabitatButtonColors(i))
-            Catch ex As Exception
-                buttons(i).ForeColor = Color.Black
-            End Try
-            Dim newFont As Font
-            Dim _fontfamily As FontFamily
-            _fontfamily = New FontFamily(Me.ButtonFont)
-            If _fontfamily.IsStyleAvailable(FontStyle.Regular) Then
-                newFont = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Regular)
-            ElseIf _fontfamily.IsStyleAvailable(FontStyle.Bold) Then
-                newFont = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-            ElseIf _fontfamily.IsStyleAvailable(FontStyle.Italic) Then
-                newFont = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Italic)
-            End If
-            buttons(i).Font = newFont
-            buttons(i).Text = strHabitatButtonNames(i)
-            buttons(i).Size = New Size(sizex, sizey)
-            textboxes(i).Size = New Size(sizex, sizey / 2)
-            textboxes(i).ReadOnly = True
-            Dim cellsizex = sizex + gap
-            Dim cellsizey = (1.5 * sizey) + gap
-            buttons(i).Location = New System.Drawing.Point(gap + (cellsizex * intMultiply), 85 + gap + (cellsizey * (i - intAdd)))
-            textboxes(i).Location = New System.Drawing.Point(gap + (cellsizex * intMultiply), (cellsizey * (i - intAdd)) + (sizey + 85 + gap))
-            textboxes(i).Text = "No " & strHabitatButtonNames(i)
-            textboxes(i).Name = "txt" & Replace(strHabitatButtonNames(i), "%", "Percent")
-            Dim strCharactersAllowed As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"
-            Dim txtName As String = textboxes(i).Name
-            Dim Letter As String
-            For x As Integer = 0 To textboxes(i).Name.Length - 1
-                Letter = textboxes(i).Name.Substring(x, 1).ToUpper
-                If strCharactersAllowed.Contains(Letter) = False Then
-                    txtName = txtName.Replace(Letter, String.Empty)
-                End If
-            Next
-            textboxes(i).Name = txtName
-            textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-            textboxes(i).BackColor = Color.LightGray
-            textboxes(i).ForeColor = Color.Red
-            textboxes(i).TextAlign = HorizontalAlignment.Center
-            textboxes(i).ReadOnly = True
-            AddHandler buttons(i).Click, AddressOf SpatialVariableButtonHandler
-            pnlHabitatData.Controls.Add(buttons(i))
-            pnlHabitatData.Controls.Add(textboxes(i))
-            If i Mod 6 = 5 Then
-                intAdd += 6
-                intMultiply += 1
-            End If
-            i = i + 1
-        Next
-        Me.cmdDefineAllSpatialVariables.Visible = True
-        Me.cmdAddComment.Visible = True
-    End Sub
-
-    ' ==========================================================================================================
-    ' Name: SpatialVariableButtonHandler
-    ' Description: Called when a spatial button from Panel1 is clicked.
-    ' 1.) When a user clicks a button, pull up that buttons corresponding list of choices. For example, selecting the
-    '     relief button allows the user to select a relief type from the datbase table DB_RELIEF_TABLE.
-    ' 2.) Insert a record into the database table "data" with values for the fields:
-    '           id,TimeCode,DataCode,transect,OnBottom and the id field that corresponds to the button that was pressed.
-    '     - The id field is filleed with the user selected type (see step 1).
-    '     - The possible id fields that correspond to the buttons are (at the time these commets were written):
-    '       DataCode_name, DominantSubstrate, relief_id, complexity_id, biocover_id, biocover_thickness_id, spatial1_id
-    ' ==========================================================================================================
-    Private Sub SpatialVariableButtonHandler(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
-
-        Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
-        Dim i As Integer
-        Dim j As Integer
-        Dim query As String = NULL_STRING
-        Dim strCode As String = NULL_STRING
-        Dim strName As String = NULL_STRING
-        ' Give the user the ability to cear a substrate type or percent by ctrl clicking the button
-        If My.Computer.Keyboard.CtrlKeyDown Then
-            For i = 0 To intNumHabitatButtons - 1
-                If btn.Name = strHabitatButtonNames(i) Then
-                    ' Depending on the button selected, set the substrate variable to non value.
-
-                    dictHabitatFieldValues.Item(strHabitatButtonCodeNames(i).ToString) = -9999
-                    Dim newFont As Font
-                    Dim _fontfamily As FontFamily
-                    _fontfamily = New FontFamily(Me.ButtonFont)
-                    If _fontfamily.IsStyleAvailable(FontStyle.Regular) Then
-                        newFont = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Regular)
-                    ElseIf _fontfamily.IsStyleAvailable(FontStyle.Bold) Then
-                        newFont = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                    ElseIf _fontfamily.IsStyleAvailable(FontStyle.Italic) Then
-                        newFont = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Italic)
-                    End If
-                    'Set the button and text back to non value state. 
-                    textboxes(i).Text = "No " & strHabitatButtonNames(i)
-                    textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                    textboxes(i).BackColor = Color.LightGray
-                    textboxes(i).ForeColor = Color.Red
-                    textboxes(i).TextAlign = HorizontalAlignment.Center
-                End If
-            Next
-            Exit Sub
-        End If
-        ' ======================================Code by Xida Chen (begin)===========================================
-        'If they are using the video control then get the time from there.
-        ' The time code is set to be VIDEO_TIME_LABEL initially.
-
-        ' do the following only when the video is open:
-        ' pause stream and get the time code
-        ' If the video is not open, then we cannot pause the
-        ' video stream, and there is no need to get the TimeCode.
-        If m_video_file_open And Not booUseGPSTimeCodes Then
-            If frmVideoPlayer.IsPlaying Then
-                blVideoWasPlaying = True
-            Else
-                blVideoWasPlaying = False
-            End If
-            pauseVideo()
-        End If
-
-        ' ======================================Code by Xida Chen (end)===========================================
-        Dim strHabitatValue As String = NULL_STRING
-        For i = 0 To intNumHabitatButtons - 1
-            If btn.Name = strHabitatButtonNames(i) Then
-
-                If strHabitatButtonTables(i) = "UserEntered" Then
-                    Dim strValue As String
-                    Dim strPreviousValue As String = dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString)
-                    frmAddValue = New frmAddValue(dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString))
-                    frmAddValue.lblExpression.Text = "Please enter a value for " & btn.Text & ":"
-                    frmAddValue.Text = btn.Text & " Entry"
-                    frmAddValue.ShowDialog()
-
-                    strValue = frmAddValue.strValue
-                    frmAddValue.Close()
-                    frmAddValue = Nothing
-                    If strValue = strPreviousValue Then
-                        Exit Sub
-                    End If
-                    'strValue = InputBox("Please enter a value for " & btn.Text & " (limit 50 characters):", btn.Text & " Entry")
-                    If strValue = "-9999" Then
-                        ' If the image is open and the video is closed then get the picture information from the EXIF file
-                        If image_open And m_video_file_open = False Then
-
-                            getEXIFData()
-                        End If
-
-                        'ClearSpatial(btn.Name, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
-                        query = createInsertQuery(INDIVIDUAL_HABITAT_VARIABLE_CLEARED, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-                        Database.ExecuteNonQuery(query)
-                        fetch_data()
-                        Exit Sub
-                    End If
-
-                    strHabitatButtonUserCodeChoice(i) = strValue
-                    dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i)
-                    dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i)
-                    If Me.chkRepeatVariables.Checked = False Then
-                        For j = 0 To intNumHabitatButtons - 1
-                            If strHabitatButtonCodeNames(j).ToString <> strHabitatButtonCodeNames(i).ToString Then
-                                dictHabitatFieldValues(strHabitatButtonCodeNames(j).ToString) = "-9999"
-                            End If
-                        Next
-                    End If
-                    strHabitatButtonUserNameChoice(i) = strValue
-                Else
-                    'Dim sub_form As frmTableView = New frmTableView(strHabitatButtonTables(i), i, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
-                    Dim sub_form As frmTableView = New frmTableView(New DataTable())
-                    'sub_form.Multiple = False
-                    sub_form.ShowDialog()
-                    Try
-                        If sub_form.DataGridView1.SelectedRows.Count = 0 Then
-                            If blCleared = True Then
-
-
-                                ' If the image is open and the video is closed then get the picture information from the EXIF file
-                                If image_open And m_video_file_open = False Then
-
-                                    getEXIFData()
-
-                                End If
-
-                                query = createInsertQuery(INDIVIDUAL_HABITAT_VARIABLE_CLEARED, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-                                Database.ExecuteNonQuery(query)
-                                fetch_data()
-                            End If
-                            blCleared = False
-
-                            Exit Sub
-                        End If
-                        'Console.WriteLine(DataGridView1.SelectedRows(0).Cells(0).Value)
-                        strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & NULL_STRING
-                        strHabitatButtonUserCodeChoice(i) = strCode
-                        ' Depending on which button is selected, define the applicable spatial variable.
-                        ' The other varaibles are cleared to prevent subsequent records being created from
-                        ' having repeated values if the repeat check box is off.
-                        dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i)
-                        dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i)
-                        If Me.chkRepeatVariables.Checked = False Then
-                            For j = 0 To intNumHabitatButtons - 1
-                                If strHabitatButtonCodeNames(j).ToString <> strHabitatButtonCodeNames(i).ToString Then
-                                    dictHabitatFieldValues(strHabitatButtonCodeNames(j).ToString) = "-9999"
-                                End If
-                            Next
-                        End If
-
-                        strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & NULL_STRING
-
-                        If strName.Length = 0 Then
-                            strName = strCode
-                        End If
-                        strHabitatButtonUserNameChoice(i) = strName
-
-
-                    Catch ex As Exception
-                        If ex.Message.StartsWith("Syntax") Then
-                            MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-                        Else
-                            MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-                        End If
-
-                    End Try
-                End If
-                Dim _fontfamily As FontFamily
-                _fontfamily = New FontFamily(Me.ButtonFont)
-                textboxes(i).Text = strHabitatButtonUserNameChoice(i)
-                textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                textboxes(i).BackColor = Color.LightGray
-                textboxes(i).ForeColor = Color.LimeGreen
-                textboxes(i).TextAlign = HorizontalAlignment.Center
-                ' If the image is open and the video is closed then get the picture information from the EXIF file
-                If image_open And m_video_file_open = False Then
-
-                    getEXIFData()
-
-                End If
-
-                If VideoTime.ToString <> NULL_STRING Then
-                    Dim numrows As Integer
-
-                    query = createInsertQuery(intHabitatButtonCodes(i), NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-                    Database.ExecuteNonQuery(query)
-                    fetch_data()
-                    If blVideoWasPlaying = True Then
-                        playVideo()
-                        blVideoWasPlaying = False
-                    End If
-                Else
-                    MessageBox.Show("There is no GPS data being recieved at this time, therefore the record was not entered into the database", "No GPS Data Recieved", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                End If
-
-            End If
-        Next
-        If Not frmImage Is Nothing Then
-            frmImage.Focus()
-        End If
-        Me.ScreenCaptureName = NULL_STRING
-    End Sub
-
-
-    Public Sub fillHabitatFieldsCollection()
-        colTableFields = Nothing
-        colTableFields = New Collection
-        Dim d As DataTable = Database.GetDataTable("select * from " & DB_DATA_TABLE, DB_DATA_TABLE)
-        Dim dc As DataColumn
-        For i As Integer = 0 To d.Columns.Count - 1
-            dc = d.Columns.Item(i)
-            If dc.ColumnName = "TimeCode" Then
-                colTableFields.Add("Format(TimeCode, 'hh:mm:ss') as TimeCode")
-            ElseIf dc.ColumnName = "ReviewedDate" Then
-                colTableFields.Add("Format(ReviewedDate, 'm/dd/yyyy') as ReviewDate")
-            ElseIf dc.ColumnName = "ReviewedTime" Then
-                colTableFields.Add("Format(ReviewedTime, 'hh:mm:ss') as ReviewTime")
-            ElseIf dc.ColumnName = "ElapsedTime" Then
-                colTableFields.Add("Format(ElapsedTime, 'hh:mm:ss') as ElapsedTime")
-            Else
-                colTableFields.Add(dc.ColumnName)
-            End If
-        Next
-    End Sub
-#End Region
-
-    ''' <summary>
-    ''' Load a table in from the currently loaded MS Access database
-    ''' </summary>
-    ''' <param name="name">The name of the table</param>
-    ''' <returns>True if the table was loaded successfully, false otherwise</returns>
-    Private Function get_table(name As String) As Boolean
-        Return False
-    End Function
-
-#Region "Transect Variable Functions"
-    ''' <summary>
-    ''' Fill the transect button panel with the buttons defined in the MS Access database.
-    ''' </summary>
-    ''' <remarks>Uses the DynamicButton and DynamicTextbox classes to encapsulate button/textbox data</remarks>
-    Public Sub fillTransectVariableButtonPanel()
-        If dictTransectFieldValues Is Nothing Then
-            dictTransectFieldValues = New Dictionary(Of String, String)
-        Else
-            dictTransectFieldValues = Nothing
-            dictTransectFieldValues = New Dictionary(Of String, String)
-        End If
-        If Me.pnlTransectData.Controls.Count <> 0 Then
-            Dim ctl As Control
-            For Each ctl In pnlTransectData.Controls
-                If ctl.Name <> "lblTransectData" And ctl.Name <> "cmdDefineAllTransectVariables" Then
-                    pnlTransectData.Controls.Remove(ctl)
-                End If
-            Next
-        End If
-        Dim d As DataTable = Database.GetDataTable("select * from " & DB_TRANSECT_BUTTONS_TABLE & " order by DrawingOrder;", DB_TRANSECT_BUTTONS_TABLE)
-        intNumTransectButtons = d.Rows.Count
-        ' Need to redimension the button and textbox arrays to hold the number found in the database table
-        ReDim Transect_Buttons(intNumTransectButtons)
-        ReDim Transect_Textboxes(intNumTransectButtons)
-        Dim h As Integer = pnlTransectData.Height
-        Dim w As Integer = pnlTransectData.Width
-        Dim i As Integer = 0
-        Dim sizex As Integer = Me.ButtonWidth
-        Dim sizey As Integer = Me.ButtonHeight
-        Dim gap As Integer = 5
-        Dim intAdd As Integer = 0
-        Dim intMultiply As Integer = 0
-
-        For Each r As DataRow In d.Rows
-            Transect_Buttons(i) = New DynamicButton(r.Item(1).ToString(),
-                                                    r.Item(2).ToString(),
-                                                    r.Item(3),
-                                                    r.Item(4).ToString(),
-                                                    r.Item(5).ToString(),
-                                                    Me.ButtonFont,
-                                                    Me.ButtonTextSize)
-            Transect_Buttons(i).Size = New Size(sizex, sizey)
-            Transect_Textboxes(i) = New DynamicTextbox(Transect_Buttons(i).Name,
-                                                        Me.ButtonFont,
-                                                        Me.ButtonTextSize)
-            Transect_Textboxes(i).Size = New Size(sizex, sizey / 2)
-            Dim cellsizex = sizex + gap
-            Dim cellsizey = (1.5 * sizey) + gap
-            Transect_Buttons(i).Location = New System.Drawing.Point(gap + (cellsizex * intMultiply), 70 + gap + (cellsizey * (i - intAdd)))
-            Transect_Textboxes(i).Location = New System.Drawing.Point(gap + (cellsizex * intMultiply), (cellsizey * (i - intAdd)) + (sizey + 70 + gap))
-            AddHandler Transect_Buttons(i).Click, AddressOf TransectVariableButtonHandler
-            AddHandler Transect_Buttons(i).SelectionChanged, AddressOf TransectVariableSelectionChanged
-            pnlTransectData.Controls.Add(Transect_Buttons(i))
-            pnlTransectData.Controls.Add(Transect_Textboxes(i))
-            If i Mod 5 = 4 Then
-                intAdd += 5
-                intMultiply += 1
-            End If
-            i = i + 1
-        Next
-        Me.cmdDefineAllTransectVariables.Visible = True
-    End Sub
-
-    ''' <summary>
-    ''' Handles the case where the user changed a selection in a code table. This may result
-    ''' in a query being run to insert data into the database.
-    ''' </summary>
-    ''' <param name="sender">The DynamicButton that raised the event</param>
-    Private Sub TransectVariableSelectionChanged(ByVal sender As Object, ByVal e As EventArgs)
-        Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
-        Dim query As String
-        If btn.Comment <> NULL_STRING Then
-            ' Insert a new record into the database
-            query = createInsertQuery(btn.Code, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-            Database.ExecuteNonQuery(query)
-            fetch_data()
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' Handles the pressing of any of the buttons in the 'TRANSECT' buttons panel.
-    ''' </summary>
-    Private Sub TransectVariableButtonHandler(ByVal sender As Object, ByVal e As MouseEventArgs)
-        'Dim query, strCodeName, strCode As String
-        Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
-        Dim i As Integer
-
-        ' TODO: Fix this functionality. 
-        ' Give the user the ability to clear a substrate type or percent by ctrl clicking the button
-        'If My.Computer.Keyboard.CtrlKeyDown Then
-        ' For i = 0 To intNumTransectButtons - 1
-        ' If btnName = strTransectButtonNames(i) Then
-        ' ' Depending on the button selected, set the substrate variable to non value.
-        ' dictHabitatFieldValues.Item(strTransectButtonCodeNames(i).ToString) = -9999
-        ' _fontfamily = New FontFamily(Me.ButtonFont)
-        'Set the button and text back to non value state. 
-        ' Transect_Textboxes(i).Text = "No " & strTransectButtonNames(i)
-        ' Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-        ' Transect_Textboxes(i).BackColor = Color.LightGray
-        ' Transect_Textboxes(i).ForeColor = Color.Red
-        ' Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
-        ' Transect_Textboxes(i).ReadOnly = True
-        ' End If
-        ' Next
-        'Exit Sub
-        'End If
-
-        If btn.Name = "UserEntered" Then
-            Dim strValue As String
-            frmAddValue = New frmAddValue(dictTransectFieldValues(strTransectButtonCodeNames(i).ToString))
-            frmAddValue.lblExpression.Text = "Please enter a value for " & btn.Text & ":"
-            frmAddValue.Text = btn.Text & " Entry"
-            frmAddValue.ShowDialog()
-            strValue = frmAddValue.strValue
-            frmAddValue.Close()
-            frmAddValue = Nothing
-            strTransectButtonUserCodeChoice(i) = strValue
-            dictTransectFieldValues(strTransectButtonCodeNames(i).ToString) = strTransectButtonUserCodeChoice(i)
-            strTransectButtonUserNameChoice(i) = strValue
-            If strValue = "-9999" Then
-                'ClearSpatial(strTransectButtonNames(i), intNumTransectButtons, strTransectButtonNames, dictTransectFieldValues, strTransectButtonCodeNames, Transect_Textboxes)
-            Else
-                Dim _fontfamily As FontFamily = New FontFamily(Me.ButtonFont)
-                Transect_Textboxes(i).Text = strTransectButtonUserNameChoice(i)
-                Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                Transect_Textboxes(i).BackColor = Color.LightGray
-                Transect_Textboxes(i).ForeColor = Color.LimeGreen
-                Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
-            End If
-        Else
-            btn.DataFormVisible = True
-            'strCodeName = btn.Code
-            'strCode = btn.CodeName
-
-            'query = createInsertQuery(intTransectButtonCodes(i), NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-            'Database.ExecuteNonQuery(query)
-            'fetch_data()
-            'End If
-            'Me.strComment = NULL_STRING
-            'If strCodeName.Length = 0 Then
-            ' strCodeName = strCode
-            'End If
-            'strTransectButtonUserNameChoice(i) = strCodeName
-            'Dim _fontfamily As FontFamily = New FontFamily(Me.ButtonFont)
-            'Transect_Textboxes(i).Text = strTransectButtonUserNameChoice(i)
-            'Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-            'Transect_Textboxes(i).BackColor = Color.LightGray
-            'Transect_Textboxes(i).ForeColor = Color.LimeGreen
-            'Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
-        End If
-        ''Dim _fontfamily As FontFamily
-        '_fontfamily = New FontFamily(Me.ButtonFont)
-        'Transect_Textboxes(i).Text = strTransectButtonUserNameChoice(i)
-        'Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-        'Transect_Textboxes(i).BackColor = Color.LightGray
-        'Transect_Textboxes(i).ForeColor = Color.LimeGreen
-        'Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
-        'If blVideoWasPlaying = True Then
-        ' playVideo()
-        ' blVideoWasPlaying = False
-        ' End If
-        ' If Not frmImage Is Nothing Then
-        'frmImage.Focus()
-        'End If
-        'Me.ScreenCaptureName = NULL_STRING
-    End Sub
-
-
+    '    Public Sub fillHabitatFieldsCollection()
+    '        colTableFields = Nothing
+    '        colTableFields = New Collection
+    '    Dim d As DataTable = Database.GetDataTable("select * from " & DB_DATA_TABLE, DB_DATA_TABLE)
+    '    Dim dc As DataColumn
+    '        For i As Integer = 0 To d.Columns.Count - 1
+    '            dc = d.Columns.Item(i)
+    '            If dc.ColumnName = "TimeCode" Then
+    '                colTableFields.Add("Format(TimeCode, 'hh:mm:ss') as TimeCode")
+    '            ElseIf dc.ColumnName = "ReviewedDate" Then
+    '                colTableFields.Add("Format(ReviewedDate, 'm/dd/yyyy') as ReviewDate")
+    '            ElseIf dc.ColumnName = "ReviewedTime" Then
+    '                colTableFields.Add("Format(ReviewedTime, 'hh:mm:ss') as ReviewTime")
+    '            ElseIf dc.ColumnName = "ElapsedTime" Then
+    '                colTableFields.Add("Format(ElapsedTime, 'hh:mm:ss') as ElapsedTime")
+    '            Else
+    '                colTableFields.Add(dc.ColumnName)
+    '            End If
+    '        Next
+    '    End Sub
 #End Region
 
 #Region "Species Variable Functions"
@@ -6129,7 +5594,7 @@ SkipInsertComma:
         End If
     End Sub
 
-    Private Sub pnlSpeciesData_SizeChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles pnlSpeciesData.SizeChanged
+    Private Sub pnlSpeciesData_SizeChanged(ByVal sender As Object, ByVal e As System.EventArgs)
         If m_db_file_open Then
 
             Me.pnlSpeciesData.Controls.Clear()
@@ -6568,7 +6033,7 @@ SkipInsertComma:
 
         'End If
         grdVideoMinerDatabase.DataSource = Nothing
-        db_file_unload()
+        closeDatabase()
         'myFormLibrary.frmVideoMiner.fillTransectVariableButtonPanel()
         'myFormLibrary.frmVideoMiner.fillSpatialVariableButtonPanel()
         'myFormLibrary.frmVideoMiner.fillHabitatFieldsCollection()
@@ -6973,9 +6438,5 @@ SkipInsertComma:
         End If
     End Sub
 
-
-    Private Sub VideoMiner_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
-
-    End Sub
 
 End Class

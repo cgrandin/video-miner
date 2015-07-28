@@ -130,13 +130,6 @@ Partial Class VideoMiner
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer6 = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer7 = New System.Windows.Forms.SplitContainer()
-        Me.pnlTransectData = New System.Windows.Forms.Panel()
-        Me.cmdDefineAllTransectVariables = New System.Windows.Forms.Button()
-        Me.lblTransectData = New System.Windows.Forms.Label()
-        Me.pnlHabitatData = New System.Windows.Forms.Panel()
-        Me.cmdDefineAllSpatialVariables = New System.Windows.Forms.Button()
-        Me.lblHabitatData = New System.Windows.Forms.Label()
-        Me.chkRepeatVariables = New System.Windows.Forms.CheckBox()
         Me.pnlSpeciesEntryControls = New System.Windows.Forms.Panel()
         Me.cmdRareSpeciesLookup = New System.Windows.Forms.Button()
         Me.radQuickEntry = New System.Windows.Forms.RadioButton()
@@ -145,11 +138,10 @@ Partial Class VideoMiner
         Me.radDetailedEntry = New System.Windows.Forms.RadioButton()
         Me.lblQuickSpeciesCount = New System.Windows.Forms.Label()
         Me.txtQuickSpeciesCount = New System.Windows.Forms.TextBox()
-        Me.pnlSpeciesData = New System.Windows.Forms.Panel()
-        Me.lblSpeciesData = New System.Windows.Forms.Label()
         Me.cmdAddComment = New System.Windows.Forms.Button()
         Me.cmdNothingInPhoto = New System.Windows.Forms.Button()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.cmdRevertDatabase = New System.Windows.Forms.Button()
         Me.cmdUpdateDatabase = New System.Windows.Forms.Button()
         Me.lblDirtyData = New System.Windows.Forms.Label()
         Me.grdVideoMinerDatabase = New System.Windows.Forms.DataGridView()
@@ -159,7 +151,6 @@ Partial Class VideoMiner
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
-        Me.cmdRevertDatabase = New System.Windows.Forms.Button()
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -189,13 +180,8 @@ Partial Class VideoMiner
         Me.SplitContainer6.Panel2.SuspendLayout()
         Me.SplitContainer6.SuspendLayout()
         CType(Me.SplitContainer7, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SplitContainer7.Panel1.SuspendLayout()
-        Me.SplitContainer7.Panel2.SuspendLayout()
         Me.SplitContainer7.SuspendLayout()
-        Me.pnlTransectData.SuspendLayout()
-        Me.pnlHabitatData.SuspendLayout()
         Me.pnlSpeciesEntryControls.SuspendLayout()
-        Me.pnlSpeciesData.SuspendLayout()
         Me.Panel1.SuspendLayout()
         CType(Me.grdVideoMinerDatabase, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -1219,7 +1205,6 @@ Partial Class VideoMiner
         '
         Me.SplitContainer6.Panel2.AutoScroll = True
         Me.SplitContainer6.Panel2.Controls.Add(Me.pnlSpeciesEntryControls)
-        Me.SplitContainer6.Panel2.Controls.Add(Me.pnlSpeciesData)
         Me.SplitContainer6.Size = New System.Drawing.Size(886, 423)
         Me.SplitContainer6.SplitterDistance = 472
         Me.SplitContainer6.TabIndex = 44
@@ -1229,101 +1214,9 @@ Partial Class VideoMiner
         Me.SplitContainer7.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SplitContainer7.Location = New System.Drawing.Point(0, 0)
         Me.SplitContainer7.Name = "SplitContainer7"
-        '
-        'SplitContainer7.Panel1
-        '
-        Me.SplitContainer7.Panel1.Controls.Add(Me.pnlTransectData)
-        '
-        'SplitContainer7.Panel2
-        '
-        Me.SplitContainer7.Panel2.Controls.Add(Me.pnlHabitatData)
         Me.SplitContainer7.Size = New System.Drawing.Size(472, 423)
         Me.SplitContainer7.SplitterDistance = 236
         Me.SplitContainer7.TabIndex = 0
-        '
-        'pnlTransectData
-        '
-        Me.pnlTransectData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pnlTransectData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.pnlTransectData.Controls.Add(Me.cmdDefineAllTransectVariables)
-        Me.pnlTransectData.Controls.Add(Me.lblTransectData)
-        Me.pnlTransectData.Location = New System.Drawing.Point(0, 0)
-        Me.pnlTransectData.Name = "pnlTransectData"
-        Me.pnlTransectData.Size = New System.Drawing.Size(236, 423)
-        Me.pnlTransectData.TabIndex = 51
-        '
-        'cmdDefineAllTransectVariables
-        '
-        Me.cmdDefineAllTransectVariables.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdDefineAllTransectVariables.ForeColor = System.Drawing.Color.Blue
-        Me.cmdDefineAllTransectVariables.Location = New System.Drawing.Point(6, 19)
-        Me.cmdDefineAllTransectVariables.Name = "cmdDefineAllTransectVariables"
-        Me.cmdDefineAllTransectVariables.Size = New System.Drawing.Size(170, 44)
-        Me.cmdDefineAllTransectVariables.TabIndex = 52
-        Me.cmdDefineAllTransectVariables.Text = "Define All"
-        Me.cmdDefineAllTransectVariables.UseVisualStyleBackColor = True
-        Me.cmdDefineAllTransectVariables.Visible = False
-        '
-        'lblTransectData
-        '
-        Me.lblTransectData.AutoSize = True
-        Me.lblTransectData.Location = New System.Drawing.Point(3, 3)
-        Me.lblTransectData.Name = "lblTransectData"
-        Me.lblTransectData.Size = New System.Drawing.Size(97, 13)
-        Me.lblTransectData.TabIndex = 37
-        Me.lblTransectData.Text = "TRANSECT DATA"
-        '
-        'pnlHabitatData
-        '
-        Me.pnlHabitatData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pnlHabitatData.AutoScroll = True
-        Me.pnlHabitatData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.pnlHabitatData.Controls.Add(Me.cmdDefineAllSpatialVariables)
-        Me.pnlHabitatData.Controls.Add(Me.lblHabitatData)
-        Me.pnlHabitatData.Controls.Add(Me.chkRepeatVariables)
-        Me.pnlHabitatData.Location = New System.Drawing.Point(0, 0)
-        Me.pnlHabitatData.Margin = New System.Windows.Forms.Padding(2)
-        Me.pnlHabitatData.Name = "pnlHabitatData"
-        Me.pnlHabitatData.Size = New System.Drawing.Size(232, 423)
-        Me.pnlHabitatData.TabIndex = 36
-        '
-        'cmdDefineAllSpatialVariables
-        '
-        Me.cmdDefineAllSpatialVariables.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdDefineAllSpatialVariables.ForeColor = System.Drawing.Color.Blue
-        Me.cmdDefineAllSpatialVariables.Location = New System.Drawing.Point(6, 36)
-        Me.cmdDefineAllSpatialVariables.Name = "cmdDefineAllSpatialVariables"
-        Me.cmdDefineAllSpatialVariables.Size = New System.Drawing.Size(170, 44)
-        Me.cmdDefineAllSpatialVariables.TabIndex = 52
-        Me.cmdDefineAllSpatialVariables.Text = "Define All"
-        Me.cmdDefineAllSpatialVariables.UseVisualStyleBackColor = True
-        Me.cmdDefineAllSpatialVariables.Visible = False
-        '
-        'lblHabitatData
-        '
-        Me.lblHabitatData.AutoSize = True
-        Me.lblHabitatData.Location = New System.Drawing.Point(3, 3)
-        Me.lblHabitatData.Name = "lblHabitatData"
-        Me.lblHabitatData.Size = New System.Drawing.Size(85, 13)
-        Me.lblHabitatData.TabIndex = 37
-        Me.lblHabitatData.Text = "HABITAT DATA"
-        '
-        'chkRepeatVariables
-        '
-        Me.chkRepeatVariables.AutoSize = True
-        Me.chkRepeatVariables.Checked = True
-        Me.chkRepeatVariables.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkRepeatVariables.Location = New System.Drawing.Point(6, 19)
-        Me.chkRepeatVariables.Name = "chkRepeatVariables"
-        Me.chkRepeatVariables.Size = New System.Drawing.Size(210, 17)
-        Me.chkRepeatVariables.TabIndex = 37
-        Me.chkRepeatVariables.Text = "Repeat Habitat Data For Every Record"
-        Me.chkRepeatVariables.UseVisualStyleBackColor = True
-        Me.chkRepeatVariables.Visible = False
         '
         'pnlSpeciesEntryControls
         '
@@ -1423,29 +1316,6 @@ Partial Class VideoMiner
         Me.txtQuickSpeciesCount.TabIndex = 39
         Me.txtQuickSpeciesCount.Visible = False
         '
-        'pnlSpeciesData
-        '
-        Me.pnlSpeciesData.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pnlSpeciesData.AutoScroll = True
-        Me.pnlSpeciesData.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.pnlSpeciesData.Controls.Add(Me.lblSpeciesData)
-        Me.pnlSpeciesData.Location = New System.Drawing.Point(2, 79)
-        Me.pnlSpeciesData.Margin = New System.Windows.Forms.Padding(2)
-        Me.pnlSpeciesData.Name = "pnlSpeciesData"
-        Me.pnlSpeciesData.Size = New System.Drawing.Size(408, 344)
-        Me.pnlSpeciesData.TabIndex = 37
-        '
-        'lblSpeciesData
-        '
-        Me.lblSpeciesData.AutoSize = True
-        Me.lblSpeciesData.Location = New System.Drawing.Point(3, 3)
-        Me.lblSpeciesData.Name = "lblSpeciesData"
-        Me.lblSpeciesData.Size = New System.Drawing.Size(84, 13)
-        Me.lblSpeciesData.TabIndex = 38
-        Me.lblSpeciesData.Text = "SPECIES DATA"
-        '
         'cmdAddComment
         '
         Me.cmdAddComment.Location = New System.Drawing.Point(3, 3)
@@ -1477,9 +1347,20 @@ Partial Class VideoMiner
         Me.Panel1.Size = New System.Drawing.Size(380, 67)
         Me.Panel1.TabIndex = 60
         '
+        'cmdRevertDatabase
+        '
+        Me.cmdRevertDatabase.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdRevertDatabase.Location = New System.Drawing.Point(196, 34)
+        Me.cmdRevertDatabase.Name = "cmdRevertDatabase"
+        Me.cmdRevertDatabase.Size = New System.Drawing.Size(184, 31)
+        Me.cmdRevertDatabase.TabIndex = 60
+        Me.cmdRevertDatabase.Text = "Revert data (reload database)"
+        Me.cmdRevertDatabase.UseVisualStyleBackColor = True
+        Me.cmdRevertDatabase.Visible = False
+        '
         'cmdUpdateDatabase
         '
-        Me.cmdUpdateDatabase.Location = New System.Drawing.Point(4, 2)
+        Me.cmdUpdateDatabase.Location = New System.Drawing.Point(196, 1)
         Me.cmdUpdateDatabase.Name = "cmdUpdateDatabase"
         Me.cmdUpdateDatabase.Size = New System.Drawing.Size(184, 31)
         Me.cmdUpdateDatabase.TabIndex = 58
@@ -1492,7 +1373,7 @@ Partial Class VideoMiner
         Me.lblDirtyData.AutoSize = True
         Me.lblDirtyData.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblDirtyData.ForeColor = System.Drawing.Color.LimeGreen
-        Me.lblDirtyData.Location = New System.Drawing.Point(3, 42)
+        Me.lblDirtyData.Location = New System.Drawing.Point(54, 41)
         Me.lblDirtyData.Name = "lblDirtyData"
         Me.lblDirtyData.Size = New System.Drawing.Size(124, 24)
         Me.lblDirtyData.TabIndex = 59
@@ -1528,17 +1409,6 @@ Partial Class VideoMiner
         'tmrComputerTime
         '
         Me.tmrComputerTime.Interval = 500
-        '
-        'cmdRevertDatabase
-        '
-        Me.cmdRevertDatabase.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdRevertDatabase.Location = New System.Drawing.Point(194, 1)
-        Me.cmdRevertDatabase.Name = "cmdRevertDatabase"
-        Me.cmdRevertDatabase.Size = New System.Drawing.Size(184, 31)
-        Me.cmdRevertDatabase.TabIndex = 60
-        Me.cmdRevertDatabase.Text = "Revert data (reload database)"
-        Me.cmdRevertDatabase.UseVisualStyleBackColor = True
-        Me.cmdRevertDatabase.Visible = False
         '
         'VideoMiner
         '
@@ -1591,18 +1461,10 @@ Partial Class VideoMiner
         Me.SplitContainer6.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer6, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer6.ResumeLayout(False)
-        Me.SplitContainer7.Panel1.ResumeLayout(False)
-        Me.SplitContainer7.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer7, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer7.ResumeLayout(False)
-        Me.pnlTransectData.ResumeLayout(False)
-        Me.pnlTransectData.PerformLayout()
-        Me.pnlHabitatData.ResumeLayout(False)
-        Me.pnlHabitatData.PerformLayout()
         Me.pnlSpeciesEntryControls.ResumeLayout(False)
         Me.pnlSpeciesEntryControls.PerformLayout()
-        Me.pnlSpeciesData.ResumeLayout(False)
-        Me.pnlSpeciesData.PerformLayout()
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         CType(Me.grdVideoMinerDatabase, System.ComponentModel.ISupportInitialize).EndInit()
@@ -1654,7 +1516,6 @@ Partial Class VideoMiner
     Friend WithEvents cmdNextImage As System.Windows.Forms.Button
     Friend WithEvents cmdPreviousImage As System.Windows.Forms.Button
     Friend WithEvents txtPlaySeconds As System.Windows.Forms.TextBox
-    Friend WithEvents chkRepeatVariables As System.Windows.Forms.CheckBox
     Friend WithEvents cmdPlayForSeconds As System.Windows.Forms.Button
     Friend WithEvents txtTransectDate As System.Windows.Forms.TextBox
     Friend WithEvents chkRecordEachSecond As System.Windows.Forms.CheckBox
@@ -1674,12 +1535,6 @@ Partial Class VideoMiner
     Friend WithEvents SplitContainer7 As System.Windows.Forms.SplitContainer
     Friend WithEvents mnthCalendar As System.Windows.Forms.MonthCalendar
     Friend WithEvents cmdCloseCalendar As System.Windows.Forms.Button
-    Friend WithEvents pnlTransectData As System.Windows.Forms.Panel
-    Friend WithEvents lblTransectData As System.Windows.Forms.Label
-    Friend WithEvents pnlHabitatData As System.Windows.Forms.Panel
-    Friend WithEvents lblHabitatData As System.Windows.Forms.Label
-    Friend WithEvents pnlSpeciesData As System.Windows.Forms.Panel
-    Friend WithEvents lblSpeciesData As System.Windows.Forms.Label
     Friend WithEvents mnuConfigureTools As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ConfigureSpeciesEventToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents txtQuickSpeciesCount As System.Windows.Forms.TextBox
@@ -1721,8 +1576,6 @@ Partial Class VideoMiner
     Friend WithEvents RelayConfigurationToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents txtNMEA As System.Windows.Forms.TextBox
     Friend WithEvents DisableHabitatButtonsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents cmdDefineAllTransectVariables As System.Windows.Forms.Button
-    Friend WithEvents cmdDefineAllSpatialVariables As System.Windows.Forms.Button
     Friend WithEvents cmdUpdateDatabase As System.Windows.Forms.Button
     Friend WithEvents ConfigureButtonFormatToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents cmdScreenCapture As System.Windows.Forms.Button

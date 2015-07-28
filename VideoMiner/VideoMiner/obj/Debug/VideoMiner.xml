@@ -52,6 +52,94 @@ VideoMiner
  Clicking this button results in the first selected button being moved to the other panel.
  The database will also have the entry moved from one button table to the other.
  </summary>
+</member><member name="F:VideoMiner.DynamicPanel.m_label">
+	<summary>
+ Panel label, typically which kind of data are stored in panel buttons
+ </summary>
+</member><member name="F:VideoMiner.DynamicPanel.m_repeat_for_every_record">
+	<summary>
+ If checked, the data will be recorded for every insert
+ </summary>
+	<remarks>This may or may not be shown in the panel</remarks>
+</member><member name="F:VideoMiner.DynamicPanel.m_define_all_button">
+	<summary>
+ The 'DEFINE ALL' button which simply opens all dynamic buttons on the panel up in succession,
+ allowing the user to define all attributes at once.
+ </summary>
+	<remarks>This may or may not be shown in the panel</remarks>
+</member><member name="F:VideoMiner.DynamicPanel.m_numDynamicButtons">
+	<summary>
+ The number of dynamic buttons currently on the panel
+ </summary>
+</member><member name="F:VideoMiner.DynamicPanel.m_dynamic_buttons">
+	<summary>
+ Array of Dynamic buttons. This will be redimensioned at runtime
+ </summary>
+</member><member name="F:VideoMiner.DynamicPanel.m_dynamic_textboxes">
+	<summary>
+ Array of Dynamic textboxes. This will be redimensioned at runtime. This is the same length as the m_dynamic_buttons array
+ </summary>
+</member><member name="F:VideoMiner.DynamicPanel.m_y_offset">
+	<summary>
+ Lets the fillPanel functioin know at what vertical level to start placing dynamic buttons
+ </summary>
+</member><member name="F:VideoMiner.DynamicPanel.m_gap">
+	<summary>
+ Gap between dynamic buttons (and the other controls)
+ </summary>
+</member><member name="F:VideoMiner.DynamicPanel.m_num_static_controls">
+	<summary>
+ The number of non-dynamic controls on the panel, i.e. label and repeat checkbox and DEFINE ALL button would make 3.
+ </summary>
+</member><member name="F:VideoMiner.DynamicPanel.m_show_text_boxes">
+	<summary>
+ If True, accompanying DynamicTextboxes will be show under the DynamicButtons.
+ </summary>
+</member><member name="M:VideoMiner.DynamicPanel.#ctor(System.String,System.Boolean,System.Int32,System.Int32,System.String,System.Int32,System.Boolean,System.Boolean,System.Int32,System.Int32,System.Boolean)">
+	<summary>
+ Create the DynamicPanel object.
+ </summary>
+	<param name="strPanelName">Name for the Panel.</param>
+	<param name="blIncludeDefineAllButton">True if you want to include a 'Define All' button.</param>
+	<param name="intButtonWidth">The width of all the buttons on the panel.</param>
+	<param name="intButtonHeight">The height of all the buttons on the panel.</param>
+	<param name="strButtonFont">The font for all the buttons on the panel.</param>
+	<param name="intButtonTextSize">The font size (pts) for all the buttons on the panel.</param>
+	<param name="blIncludeRepeatCheckbox">True if you want to include a 'Repeat for each record' Checkbox on the panel.</param>
+	<param name="blRepeatIsChecked">If True, the 'Repeat for each record' checkbox will be checked on creation.</param>
+	<param name="intRepeatWidth">Width of the 'Repeat for each record' checkbox.</param>
+	<param name="intRepeatHeight">Height of the 'Repeat for each record' checkbox.</param>
+	<param name="showTextBoxes">If True, accompanying DynamicTextboxes will be show under the DynamicButtons.</param>
+</member><member name="M:VideoMiner.DynamicPanel.fillPanel(System.String)">
+	<summary>
+ Fills the panel with the buttons described in the MS Access table given by strTableName
+ </summary>
+	<param name="strTableName">Name of the button description table in the MS Access database</param>
+</member><member name="M:VideoMiner.DynamicPanel.removeAllDynamicControls">
+	<summary>
+ Removes all dynamic controls (DynamicButton and DynamicTextbox controls) from the panel.
+ </summary>
+</member><member name="M:VideoMiner.DynamicPanel.ButtonHandler(System.Object,System.Windows.Forms.MouseEventArgs)">
+	<summary>
+ Handles the pressing of any of the dynamic buttons in the panel.
+ </summary>
+</member><member name="M:VideoMiner.DynamicPanel.SelectionChanged(System.Object,System.EventArgs)">
+	<summary>
+ Handles the case where the user changed a selection in a code table. This may result
+ in a query being run to insert data into the database.
+ </summary>
+	<param name="sender">The DynamicButton that raised the event</param>
+</member><member name="M:VideoMiner.DynamicPanel.DefineAll(System.Object,System.EventArgs)">
+	<summary>
+ When user clicks the 'DEFINE ALL' button, it is the same as if they clicked all the dynamic buttons in sequence.
+ This is a convinience button.
+ </summary>
+</member><member name="T:VideoMiner.DynamicPanel">
+	<summary>
+ A panel which supports loading of dynamic buttons and dynamic textboxes and may include a
+ 'DEFINE ALL' button which runs the Click events for each button in the panel in succession.
+ </summary>
+	<remarks></remarks>
 </member><member name="F:VideoMiner.frmVideoPlayer.VIDEO_TIME_FORMAT">
 	<summary>
  Default format for the time labels
@@ -597,13 +685,29 @@ VideoMiner
 	<summary>
  Name of the MS Access table associated with this button
  </summary>
-</member><member name="F:VideoMiner.DynamicButton.m_code">
+</member><member name="F:VideoMiner.DynamicButton.m_button_text">
+	<summary>
+ Text to appear on the button
+ </summary>
+</member><member name="F:VideoMiner.DynamicButton.m_button_code">
+	<summary>
+ Code for the button. This may not be set if the button type is for a data table.
+ </summary>
+</member><member name="F:VideoMiner.DynamicButton.m_button_code_name">
+	<summary>
+ Name for the button code. This may not be set if the button type is for a data table.
+ </summary>
+</member><member name="F:VideoMiner.DynamicButton.m_keyboard_shortcut">
+	<summary>
+ A String representing a keyboard shortcut. This is what can be pressed to trigger a Click event on the button.
+ </summary>
+</member><member name="F:VideoMiner.DynamicButton.m_data_code">
 	<summary>
  Data code for this button as found in the lu_data_codes table.
  This is NOT the code chosen by the user in the table view, this is the
  code for this particular table.
  </summary>
-</member><member name="F:VideoMiner.DynamicButton.m_code_name">
+</member><member name="F:VideoMiner.DynamicButton.m_data_code_name">
 	<summary>
  Name of the data code (description) as found in the lu_data_codes table.
  This is NOT the code chosen by the user in the table view, this is the
@@ -611,12 +715,12 @@ VideoMiner
  </summary>
 </member><member name="F:VideoMiner.DynamicButton.m_data_table">
 	<summary>
- Table of data found in the m_db_table_name table in the MS Access database
+ Table of data found in the m_db_table_name table in the MS Access database. This may not be set if the button type is for a species.
  </summary>
 	<remarks></remarks>
 </member><member name="F:VideoMiner.DynamicButton.m_table_view">
 	<summary>
- The table view of the m_data_table
+ The table view of the m_data_table. This may not be set if the button type is for a species.
  </summary>
 </member><member name="F:VideoMiner.DynamicButton.m_dict">
 	<summary>
@@ -637,9 +741,35 @@ VideoMiner
  Currently entered comment in the frmTableView
  </summary>
 	<remarks></remarks>
+</member><member name="M:VideoMiner.DynamicButton.#ctor(System.String,System.String,System.Int32,System.String,System.String,System.String,System.Int32)">
+	<summary>
+ Creates the object, for the case in which the button refers to a database code table.
+ </summary>
+	<param name="buttonText">Text to appear on the button</param>
+	<param name="tableName">Name of the MS Access database table </param>
+	<param name="dataCode">Code that is in the database table for this button</param>
+	<param name="dataCodeName">Name of the code that is in the database table for this button</param>
+	<param name="buttonColor">The microsoft color for this button's text (e.g. "DarkBlue")</param>
+	<param name="buttonFont">The font to use for this button (e.g. "Microsoft Sans Serif")</param>
+	<param name="buttonTextSize">The font size to use for this button's text (in pts)</param>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.DynamicButton.#ctor(System.String,System.String,System.String,System.Int32,System.String,System.String,System.String,System.Int32)">
+	<summary>
+ Creates the object, for the case in which the button refers to a species code.
+ </summary>
+	<param name="buttonText">Text to appear on the button</param>
+	<param name="buttonCode">Code for the button. If species button, this is the species code</param>
+	<param name="buttonCodeName">Name for the button code, (e.g. SpeciesID)</param>
+	<param name="dataCode">Data Code that is in the database table for this button type</param>
+	<param name="buttonColor">The microsoft color for this button's text (e.g. "DarkBlue")</param>
+	<param name="keyboardShortcut">Keyboard shortcut that will run the Click event for this button</param>
+	<param name="buttonFont">The font to use for this button (e.g. "Microsoft Sans Serif")</param>
+	<param name="buttonTextSize">The font size to use for this button's text (in pts)</param>
+	<remarks></remarks>
 </member><member name="T:VideoMiner.DynamicButton">
 	<summary>
- A Videominer dynamic button. This button extends a regular button by holding the database table name, current data code, and code name.
+ A Videominer dynamic button. This button extends a regular button by holding the database table name,
+ an instance of the DataTable, the current data code, and the code name.
  </summary>
 	<remarks></remarks>
 </member><member name="M:VideoMiner.frmProjectNames.getProjectName">
@@ -1107,6 +1237,10 @@ VideoMiner
  If user edits the comment box, this event will be raised so that the main form can write a record to the database
  </summary>
 	<remarks></remarks>
+</member><member name="M:VideoMiner.frmTableView.frmTableView_FormClosing(System.Object,System.Windows.Forms.FormClosingEventArgs)">
+	<summary>
+ Capture the press of the 'X' button and hide instead of closing to avoid an exception on re-opening
+ </summary>
 </member><member name="M:VideoMiner.frmTableView.DataGridView1_SelectionChanged(System.Object,System.EventArgs)">
 	<summary>
  Handles the event when the user selects a row of the table. If the comment box is not empty, it will raise an event so that the main form can
@@ -1243,6 +1377,10 @@ VideoMiner
 	<param name="xPath">An XPath String representing the XML node name</param>
 	<param name="strValue">The value to save in the node represented by xPath</param>
 	<returns>A Boolean representing success or failure</returns>
+</member><member name="M:VideoMiner.VideoMiner.testSaveConfiguration">
+	<summary>
+ Test for SaveConfiguration function. Can be deleted once project complete.
+ </summary>
 </member><member name="M:VideoMiner.VideoMiner.DeleteXMLNode(System.String,System.String)">
 	<summary>
  Delete a node represented by the string 'xPath'
@@ -1416,9 +1554,9 @@ VideoMiner
 	<summary>
  Enable some controls when the database is opened
  </summary>
-</member><member name="M:VideoMiner.VideoMiner.db_file_unload">
+</member><member name="M:VideoMiner.VideoMiner.closeDatabase">
 	<summary>
- Set some controls to be invisible once the database has been closed, and remove the dynamic panel buttons.
+ Closes the MS Access database, and resets all controls to the unloaded state.
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.openDatabase">
 	<summary>
@@ -1447,27 +1585,6 @@ VideoMiner
 	<param name="strIdConfidence">Confidence value for species ID. See table DB_CONFIDENCE_IDS_TABLE (1=high,2=med,3=low)</param>
 	<param name="strComment">Video reviewer's comments</param>
 	<remarks></remarks>
-</member><member name="M:VideoMiner.VideoMiner.get_table(System.String)">
-	<summary>
- Load a table in from the currently loaded MS Access database
- </summary>
-	<param name="name">The name of the table</param>
-	<returns>True if the table was loaded successfully, false otherwise</returns>
-</member><member name="M:VideoMiner.VideoMiner.fillTransectVariableButtonPanel">
-	<summary>
- Fill the transect button panel with the buttons defined in the MS Access database.
- </summary>
-	<remarks>Uses the DynamicButton and DynamicTextbox classes to encapsulate button/textbox data</remarks>
-</member><member name="M:VideoMiner.VideoMiner.TransectVariableSelectionChanged(System.Object,System.EventArgs)">
-	<summary>
- Handles the case where the user changed a selection in a code table. This may result
- in a query being run to insert data into the database.
- </summary>
-	<param name="sender">The DynamicButton that raised the event</param>
-</member><member name="M:VideoMiner.VideoMiner.TransectVariableButtonHandler(System.Object,System.Windows.Forms.MouseEventArgs)">
-	<summary>
- Handles the pressing of any of the buttons in the 'TRANSECT' buttons panel.
- </summary>
 </member><member name="M:VideoMiner.VideoMiner.fillSpeciesVariableButtonPanel">
 	<summary>
  Load one button for each record in the DB_SPECIES_BUTTONS_TABLE table into 'Species DATA' Panel.
