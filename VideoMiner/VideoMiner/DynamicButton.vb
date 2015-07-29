@@ -8,6 +8,11 @@ Public Class DynamicButton
 
 #Region "Member variables"
     ''' <summary>
+    ''' A unique key so that this DynamicButton can be linked to a corresponding DynamicTextbox later.
+    ''' One and only one DynamicTextbox will have the same control code as this.
+    ''' </summary>
+    Private m_control_code As Integer
+    ''' <summary>
     ''' Name of the MS Access table associated with this button
     ''' </summary>
     Private m_db_table_name As String
@@ -71,6 +76,14 @@ Public Class DynamicButton
 #End Region
 
 #Region "Properties"
+    Public Property ControlCode As Integer
+        Get
+            Return m_control_code
+        End Get
+        Set(value As Integer)
+            m_control_code = value
+        End Set
+    End Property
     Public Property TableName As String
         Get
             Return m_db_table_name
@@ -98,7 +111,7 @@ Public Class DynamicButton
         End Set
     End Property
 
-    Public Property Comment As String
+    Public Property DataComment As String
         Get
             Return m_current_comment
         End Get
@@ -160,7 +173,8 @@ Public Class DynamicButton
     ''' <param name="buttonFont">The font to use for this button (e.g. "Microsoft Sans Serif")</param>
     ''' <param name="buttonTextSize">The font size to use for this button's text (in pts)</param>
     ''' <remarks></remarks>
-    Public Sub New(buttonText As String, tableName As String, dataCode As Integer, dataCodeName As String, buttonColor As String, buttonFont As String, buttonTextSize As Integer)
+    Public Sub New(controlCode As Integer, buttonText As String, tableName As String, dataCode As Integer, dataCodeName As String, buttonColor As String, buttonFont As String, buttonTextSize As Integer)
+        Me.ControlCode = controlCode
         Me.Name = buttonText
         Me.Text = buttonText
         m_db_table_name = tableName
@@ -208,7 +222,8 @@ Public Class DynamicButton
     ''' <param name="buttonFont">The font to use for this button (e.g. "Microsoft Sans Serif")</param>
     ''' <param name="buttonTextSize">The font size to use for this button's text (in pts)</param>
     ''' <remarks></remarks>
-    Public Sub New(buttonText As String, buttonCode As String, buttonCodeName As String, dataCode As Integer, buttonColor As String, keyboardShortcut As String, buttonFont As String, buttonTextSize As Integer)
+    Public Sub New(controlCode As Integer, buttonText As String, buttonCode As String, buttonCodeName As String, dataCode As Integer, buttonColor As String, keyboardShortcut As String, buttonFont As String, buttonTextSize As Integer)
+        Me.ControlCode = controlCode
         Me.Name = buttonText
         Me.Text = buttonText
         Dim colConvert As ColorConverter = New ColorConverter()
@@ -233,10 +248,37 @@ Public Class DynamicButton
         m_keyboard_shortcut = keyboardShortcut
     End Sub
 
-    Private Sub dataChanged() Handles m_table_view.DataChanged
-        m_current_data_code = m_table_view.GetCurrentlySelectedCode
-        m_current_data_code_name = m_table_view.GetCurrentlySelectedCodeName
-        m_current_comment = m_table_view.GetCurrentComment
+    ''' <summary>
+    ''' Handle the changing by the user of the lookup table code found in frmTableView, and fire an event to the parent.
+    ''' </summary>
+    ''' <param name="comment">The comment supplied by the user. Can be the empty string.</param>
+    Private Sub dataChanged(comment As String) Handles m_table_view.DataChanged
+        DataCode = m_table_view.SelectedCode
+        DataCodeName = m_table_view.SelectedCodeName
+        DataComment = m_table_view.Comment
+        ' Chain this event to the main form where a query can be run to place the changes in the database if necessary (if comment <> "").
         RaiseEvent SelectionChanged(Me, EventArgs.Empty)
     End Sub
+
+    ''' <summary>
+    ''' Handle the clearing of the data field in the table by resetting the DataCode and DataComment to Nothing and
+    ''' firing an event to signal the parent.
+    ''' </summary>
+    Private Sub clearSpatialData() Handles m_table_view.ClearSpatialInformationEvent
+        DataCode = -1
+        DataCodeName = Nothing
+        DataComment = NULL_STRING
+        RaiseEvent SelectionChanged(Me, EventArgs.Empty)
+    End Sub
+
+    Public Sub clickMe(sender As Object, e As MouseEventArgs) Handles Me.Click
+        ' TODO: Fix this functionality. 
+        ' Give the user the ability to clear a substrate type or percent by ctrl clicking the button
+        If My.Computer.Keyboard.CtrlKeyDown Then
+            clearSpatialData()
+        Else
+            Me.DataFormVisible = True
+        End If
+    End Sub
+
 End Class

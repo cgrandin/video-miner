@@ -1,9 +1,29 @@
 ﻿Public Class DynamicTextbox
     Inherits TextBox
 
-    Public Sub New(name As String, buttonFont As String, buttonTextSize As Integer)
-        Me.Name = "txt" & Replace(name, "%", "Percent")
+    ''' <summary>
+    ''' A unique key so that this DynamicTextbox can be linked to a corresponding DynamicButton later.
+    ''' One and only one DynamicButton will have the same control code as this.
+    ''' </summary>
+    Private m_control_code As Integer
+    Private m_text As String
+
+    Public Property ControlCode As String
+        Get
+            Return m_control_code
+        End Get
+        Set(value As String)
+            m_control_code = value
+        End Set
+    End Property
+
+    Public Sub New(controlCode As Integer, name As String, buttonFont As String, buttonTextSize As Integer)
+        Me.ControlCode = controlCode
+        'Me.Name = "txt" & Replace(name, "%", "Percent")
+        Me.Name = name
+        m_text = name
         Me.Text = "No " & name
+        'm_data_code_name = dataCodeName
         Dim strCharactersAllowed As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"
         Dim txtName As String = name
         Dim Letter As String
@@ -29,4 +49,13 @@
         Me.Font = New Font(font_family, buttonTextSize, FontStyle.Bold)
     End Sub
 
+    Public Sub setNoData()
+        Me.Text = "No " & m_text
+        Me.ForeColor = Color.Red
+    End Sub
+
+    Public Sub setData(text As String)
+        Me.Text = text
+        Me.ForeColor = Color.Green
+    End Sub
 End Class

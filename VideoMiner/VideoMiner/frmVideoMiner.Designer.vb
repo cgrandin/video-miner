@@ -151,6 +151,7 @@ Partial Class VideoMiner
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
+        Me.SplitContainer8 = New System.Windows.Forms.SplitContainer()
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -184,6 +185,9 @@ Partial Class VideoMiner
         Me.pnlSpeciesEntryControls.SuspendLayout()
         Me.Panel1.SuspendLayout()
         CType(Me.grdVideoMinerDatabase, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.SplitContainer8, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SplitContainer8.Panel1.SuspendLayout()
+        Me.SplitContainer8.SuspendLayout()
         Me.SuspendLayout()
         '
         'mnStrVideoMinerMenu
@@ -1204,9 +1208,9 @@ Partial Class VideoMiner
         'SplitContainer6.Panel2
         '
         Me.SplitContainer6.Panel2.AutoScroll = True
-        Me.SplitContainer6.Panel2.Controls.Add(Me.pnlSpeciesEntryControls)
+        Me.SplitContainer6.Panel2.Controls.Add(Me.SplitContainer8)
         Me.SplitContainer6.Size = New System.Drawing.Size(886, 423)
-        Me.SplitContainer6.SplitterDistance = 472
+        Me.SplitContainer6.SplitterDistance = 394
         Me.SplitContainer6.TabIndex = 44
         '
         'SplitContainer7
@@ -1214,14 +1218,12 @@ Partial Class VideoMiner
         Me.SplitContainer7.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SplitContainer7.Location = New System.Drawing.Point(0, 0)
         Me.SplitContainer7.Name = "SplitContainer7"
-        Me.SplitContainer7.Size = New System.Drawing.Size(472, 423)
-        Me.SplitContainer7.SplitterDistance = 236
+        Me.SplitContainer7.Size = New System.Drawing.Size(394, 423)
+        Me.SplitContainer7.SplitterDistance = 197
         Me.SplitContainer7.TabIndex = 0
         '
         'pnlSpeciesEntryControls
         '
-        Me.pnlSpeciesEntryControls.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pnlSpeciesEntryControls.AutoScroll = True
         Me.pnlSpeciesEntryControls.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.pnlSpeciesEntryControls.Controls.Add(Me.cmdRareSpeciesLookup)
@@ -1231,9 +1233,10 @@ Partial Class VideoMiner
         Me.pnlSpeciesEntryControls.Controls.Add(Me.radDetailedEntry)
         Me.pnlSpeciesEntryControls.Controls.Add(Me.lblQuickSpeciesCount)
         Me.pnlSpeciesEntryControls.Controls.Add(Me.txtQuickSpeciesCount)
-        Me.pnlSpeciesEntryControls.Location = New System.Drawing.Point(1, 0)
+        Me.pnlSpeciesEntryControls.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnlSpeciesEntryControls.Location = New System.Drawing.Point(0, 0)
         Me.pnlSpeciesEntryControls.Name = "pnlSpeciesEntryControls"
-        Me.pnlSpeciesEntryControls.Size = New System.Drawing.Size(409, 79)
+        Me.pnlSpeciesEntryControls.Size = New System.Drawing.Size(488, 79)
         Me.pnlSpeciesEntryControls.TabIndex = 38
         '
         'cmdRareSpeciesLookup
@@ -1410,6 +1413,22 @@ Partial Class VideoMiner
         '
         Me.tmrComputerTime.Interval = 500
         '
+        'SplitContainer8
+        '
+        Me.SplitContainer8.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SplitContainer8.Location = New System.Drawing.Point(0, 0)
+        Me.SplitContainer8.Margin = New System.Windows.Forms.Padding(0)
+        Me.SplitContainer8.Name = "SplitContainer8"
+        Me.SplitContainer8.Orientation = System.Windows.Forms.Orientation.Horizontal
+        '
+        'SplitContainer8.Panel1
+        '
+        Me.SplitContainer8.Panel1.Controls.Add(Me.pnlSpeciesEntryControls)
+        Me.SplitContainer8.Size = New System.Drawing.Size(488, 423)
+        Me.SplitContainer8.SplitterDistance = 79
+        Me.SplitContainer8.SplitterWidth = 1
+        Me.SplitContainer8.TabIndex = 0
+        '
         'VideoMiner
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1468,6 +1487,9 @@ Partial Class VideoMiner
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         CType(Me.grdVideoMinerDatabase, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.SplitContainer8.Panel1.ResumeLayout(False)
+        CType(Me.SplitContainer8, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.SplitContainer8.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1603,5 +1625,6 @@ Partial Class VideoMiner
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
     Friend WithEvents cmdAddComment As System.Windows.Forms.Button
     Friend WithEvents cmdRevertDatabase As System.Windows.Forms.Button
+    Friend WithEvents SplitContainer8 As System.Windows.Forms.SplitContainer
 
 End Class

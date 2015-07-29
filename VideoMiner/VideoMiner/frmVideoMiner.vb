@@ -1084,8 +1084,10 @@ Public Class VideoMiner
         pnlHabitatData = New DynamicPanel("HABITAT DATA", True, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, True, True)
         SplitContainer7.Panel2.Controls.Add(pnlHabitatData)
 
-        pnlSpeciesData = New DynamicPanel("SPECIES DATA", False, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, False, , , , False)
-        SplitContainer6.Panel2.Controls.Add(pnlSpeciesData)
+        pnlSpeciesData = New DynamicPanel("SPECIES DATA", False, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, False)
+        pnlSpeciesData.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
+        pnlSpeciesData.Dock = DockStyle.Fill
+        SplitContainer8.Panel2.Controls.Add(pnlSpeciesData)
     End Sub
 
     ''' <summary>
@@ -4559,7 +4561,7 @@ Public Class VideoMiner
         mnuCloseDatabase.Enabled = False
         pnlTransectData.removeAllDynamicControls()
         pnlHabitatData.removeAllDynamicControls()
-
+        pnlSpeciesData.removeAllDynamicControls()
     End Sub
 
     ''' <summary>
@@ -6437,6 +6439,5 @@ SkipInsertComma:
             End If
         End If
     End Sub
-
 
 End Class

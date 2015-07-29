@@ -1,6 +1,6 @@
 ''' <summary>
 ''' This form will show a table which is supplied in the constructor as a DataTable.
-''' It will allow the suer to select a row, which will cause a query to insert the data
+''' It will allow the user to select a row, which will cause a query to insert the data
 ''' in the database
 ''' </summary>
 Public Class frmTableView
@@ -8,25 +8,45 @@ Public Class frmTableView
     Private m_data_table As DataTable
 
 #Region "Properties"
-    Public ReadOnly Property GetCurrentlySelectedCode As String
+    ''' <summary>
+    ''' If a row is selected, return the first cell's value from that row.
+    ''' If no row is selected, return the empty string.
+    ''' </summary>
+    Public ReadOnly Property SelectedCode As String
         Get
-            Return DataGridView1.SelectedRows(0).Cells(0).Value.ToString()
+            If DataGridView1.SelectedRows.Count = 1 Then
+                Return DataGridView1.SelectedRows(0).Cells(0).Value.ToString()
+            Else
+                Return NULL_STRING
+            End If
         End Get
     End Property
 
-    Public ReadOnly Property GetCurrentlySelectedCodeName As String
+    ''' <summary>
+    ''' If a row is selected, return the second cell's value from that row
+    ''' If no row is selected, return the empty string.
+    ''' </summary>
+    Public ReadOnly Property SelectedCodeName As String
         Get
-            Return DataGridView1.SelectedRows(0).Cells(1).Value.ToString()
+            If DataGridView1.SelectedRows.Count = 1 Then
+                Return DataGridView1.SelectedRows(0).Cells(1).Value.ToString()
+            Else
+                Return NULL_STRING
+            End If
         End Get
     End Property
 
-    Public ReadOnly Property GetCurrentComment As String
+    ''' <summary>
+    ''' Return the contents of the comment box, which may be an empty string.
+    ''' </summary>
+    Public ReadOnly Property Comment As String
         Get
             Return txtCommentBox.Text
         End Get
     End Property
 #End Region
 
+#Region "Events"
     ''' <summary>
     ''' If user presses Clear button, this will fire so that the main form can update its dynamic buttons and textboxes
     ''' </summary>
@@ -36,8 +56,10 @@ Public Class frmTableView
     ''' <summary>
     ''' If user edits the comment box, this event will be raised so that the main form can write a record to the database
     ''' </summary>
+    ''' <param name="comment">A comment as input by user into the comment box, or the empty string if there is no comment.</param>
     ''' <remarks></remarks>
-    Public Event DataChanged()
+    Public Event DataChanged(comment As String)
+#End Region
 
     'Public Sub New(ByVal table As String, ByRef dictFieldValues As Dictionary(Of String, String))
     Public Sub New(data_table As DataTable)
@@ -45,8 +67,6 @@ Public Class frmTableView
         InitializeComponent()
         m_data_table = data_table
         DataGridView1.DataSource = m_data_table
-
-        ' Add any initialization after the InitializeComponent() call.
         DataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
         DataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
         Controls.Add(DataGridView1)
@@ -95,9 +115,7 @@ Public Class frmTableView
     ''' </summary>
     Private Sub DataGridView1_SelectionChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles DataGridView1.SelectionChanged
         If DataGridView1.SelectedRows.Count = 1 Then
-            If txtCommentBox.Text <> "" Then
-                RaiseEvent DataChanged()
-            End If
+            RaiseEvent DataChanged(txtCommentBox.Text)
             Me.Hide()
         End If
     End Sub
@@ -108,31 +126,11 @@ Public Class frmTableView
 
     Private Sub btnClear_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnClear.Click
         RaiseEvent ClearSpatialInformationEvent()
-        blCleared = True
         Me.Hide()
     End Sub
 
-    '    Private Sub cmdComment_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
-    '        If Me.cmdComment.Text = "Edit Comment" Then
-    '            txtCommentBox.Enabled = True
-    '            Me.btnClear.Enabled = False
-    '            Me.btnSkipSpatial.Enabled = False
-    '            Me.DataGridView1.Enabled = False
-    '            Me.DataGridView1.DefaultCellStyle.ForeColor = Color.Gray
-    '            Me.cmdComment.Text = "Done"
-    '        Else
-    '            txtCommentBox.Enabled = False
-    '            Me.btnClear.Enabled = True
-    '            Me.btnSkipSpatial.Enabled = True
-    '            Me.DataGridView1.Enabled = True
-    '            Me.DataGridView1.DefaultCellStyle.ForeColor = Color.Black
-    '            Me.cmdComment.Text = "Edit Comment"
-    'TODO: Make sure a comment here is put into the table in the DataGridView in the main form
-    '        End If
-    '    End Sub
-
     Private Sub cmdScreenCapture_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdScreenCapture.Click
-        'TODO: Screen capturee... not sure why though
+        'TODO: Screen capture... not sure why though
         'myFormLibrary.frmVideoMiner.blScreenCaptureCalled = True
         'myFormLibrary.frmVideoMiner.mnuCapScr_Click(sender, e)
         'myFormLibrary.frmVideoMiner.blScreenCaptureCalled = False

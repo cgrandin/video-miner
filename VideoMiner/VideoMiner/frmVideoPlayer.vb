@@ -236,7 +236,7 @@ Public Class frmVideoPlayer
     ''' </summary>
     Event PlayEvent()
     ''' <summary>
-    ''' This event is triggered when the user stops the video from within this
+    ''' This event is triggered when the user stops the video from within this form.
     ''' </summary>
     Event StopEvent()
     ''' <summary>
@@ -297,7 +297,6 @@ Public Class frmVideoPlayer
         'Else
         ' Make sure to stop video so it's not running in the background
         plyrVideoPlayer.Stop()
-        'myFormLibrary.frmVideoMiner.strPreviousClipTime = myFormLibrary.frmVideoMiner.txtTime.Text
         tmrVideo.Stop()
         RaiseEvent ClosingEvent()
         'End If

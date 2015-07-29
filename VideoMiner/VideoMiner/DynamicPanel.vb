@@ -30,7 +30,7 @@ Public Class DynamicPanel
     ''' <summary>
     ''' The number of dynamic buttons currently on the panel
     ''' </summary>
-    Private m_numDynamicButtons As Integer
+    Private m_num_dynamic_buttons As Integer
     ''' <summary>
     ''' Array of Dynamic buttons. This will be redimensioned at runtime
     ''' </summary>
@@ -52,10 +52,32 @@ Public Class DynamicPanel
     ''' </summary>
     Private m_num_static_controls As Integer
     ''' <summary>
-    ''' If True, accompanying DynamicTextboxes will be show under the DynamicButtons.
+    ''' Distinguishes between the two types of data this panel can hold, DynamicButtons linked to database table
+    ''' data (lookup tables stored as type DataTable) or singular data which are not a DataTable, and have a keyboard shortcut.
+    ''' Typically the singular type is used for species code entry buttons.
     ''' </summary>
-    Private m_show_text_boxes As Boolean
+    Public Enum WhichTypeEnum
+        DataTable
+        Singular
+    End Enum
+    ''' <summary>
+    ''' Holds the enumeration type for this instance
+    ''' </summary>
+    Private m_which_type As WhichTypeEnum
+#End Region
 
+#Region "Properties"
+    ''' <summary>
+    ''' Enumeration type for this instance. See WhichTypeEnum for descriptions.
+    ''' </summary>
+    Public Property WhichType As WhichTypeEnum
+        Get
+            Return m_which_type
+        End Get
+        Set(value As WhichTypeEnum)
+            m_which_type = value
+        End Set
+    End Property
 #End Region
 
     ''' <summary>
@@ -71,18 +93,16 @@ Public Class DynamicPanel
     ''' <param name="blRepeatIsChecked">If True, the 'Repeat for each record' checkbox will be checked on creation.</param>
     ''' <param name="intRepeatWidth">Width of the 'Repeat for each record' checkbox.</param>
     ''' <param name="intRepeatHeight">Height of the 'Repeat for each record' checkbox.</param>
-    ''' <param name="showTextBoxes">If True, accompanying DynamicTextboxes will be show under the DynamicButtons.</param>
     Public Sub New(strPanelName As String, Optional blIncludeDefineAllButton As Boolean = True, Optional intButtonWidth As Integer = 170, Optional intButtonHeight As Integer = 44,
                    Optional strButtonFont As String = "Microsoft Sans Serif", Optional intButtonTextSize As Integer = 8,
                    Optional blIncludeRepeatCheckbox As Boolean = False, Optional blRepeatIsChecked As Boolean = True, Optional intRepeatWidth As Integer = 210,
-                   Optional intRepeatHeight As Integer = 17, Optional showTextBoxes As Boolean = True)
+                   Optional intRepeatHeight As Integer = 17)
 
         m_label = Nothing
         m_repeat_for_every_record = Nothing
         m_define_all_button = Nothing
-        m_show_text_boxes = showTextBoxes
         m_y_offset = 0
-        m_gap = 5
+        m_gap = 2
 
         'Panel label load
         m_label = New Label()
@@ -148,7 +168,7 @@ Public Class DynamicPanel
         Me.Controls.Add(m_label)
 
         Me.AutoScroll = True
-        m_numDynamicButtons = 0
+        m_num_dynamic_buttons = 0
 
     End Sub
 
@@ -168,67 +188,91 @@ Public Class DynamicPanel
         End If
 
         Dim d As DataTable = Database.GetDataTable("select * from " & strTableName & " order by DrawingOrder;", strTableName)
-        m_numDynamicButtons = d.Rows.Count
-        ReDim m_dynamic_buttons(m_numDynamicButtons)
-        If m_show_text_boxes Then
-            ReDim m_dynamic_textboxes(m_numDynamicButtons)
+        m_num_dynamic_buttons = d.Rows.Count
+        ReDim m_dynamic_buttons(m_num_dynamic_buttons)
+        If WhichType = WhichTypeEnum.DataTable Then
+            ReDim m_dynamic_textboxes(m_num_dynamic_buttons)
         End If
-
-        Dim h As Integer = Me.Height
-        Dim w As Integer = Me.Width
         Dim i As Integer = 0
-        Dim sizex As Integer = m_button_width
-        Dim sizey As Integer = m_button_height
-        Dim intAdd As Integer = 0
-        Dim intMultiply As Integer = 0
 
+        ' TODO: There should be a better way than using a 7 here. Maybe another field in the database telling the class what it is.
+        If d.Columns.Count = 7 Then
+            Me.WhichType = WhichTypeEnum.Singular
+        Else
+            Me.WhichType = WhichTypeEnum.DataTable
+        End If
         For Each r As DataRow In d.Rows
-            If d.Columns.Count = 7 Then
-                ' It's a species button table or similar
-                m_dynamic_buttons(i) = New DynamicButton(r.Item(1).ToString(),
-                                                      r.Item(2).ToString(),
-                                                      r.Item(3).ToString(),
-                                                      r.Item(4),
-                                                      r.Item(5).ToString(),
-                                                      r.Item(6).ToString(),
-                                                      m_button_font,
-                                                      m_button_text_size)
+            If WhichType = WhichTypeEnum.Singular Then
+                ' It's a singular-data button
+                m_dynamic_buttons(i) = New DynamicButton(r.Item(0),
+                                                         r.Item(1).ToString(),
+                                                         r.Item(2).ToString(),
+                                                         r.Item(3).ToString(),
+                                                         r.Item(4),
+                                                         r.Item(5).ToString(),
+                                                         r.Item(6).ToString(),
+                                                         m_button_font,
+                                                         m_button_text_size)
             Else
-                ' It's a table-based button
-                m_dynamic_buttons(i) = New DynamicButton(r.Item(1).ToString(),
+                ' It's a table-data button
+                m_dynamic_buttons(i) = New DynamicButton(r.Item(0),
+                                                         r.Item(1).ToString(),
                                                          r.Item(2).ToString(),
                                                          r.Item(3),
                                                          r.Item(4).ToString(),
                                                          r.Item(5).ToString(),
                                                          m_button_font,
                                                          m_button_text_size)
+                m_dynamic_textboxes(i) = New DynamicTextbox(r.Item(0), r.Item(1).ToString(), m_button_font, m_button_text_size)
             End If
-            m_dynamic_buttons(i).Size = New Size(sizex, sizey)
-            If m_show_text_boxes Then
-                m_dynamic_textboxes(i) = New DynamicTextbox(m_dynamic_buttons(i).Name,
-                                                            m_button_font,
-                                                            m_button_text_size)
-                m_dynamic_textboxes(i).Size = New Size(sizex, sizey / 2)
-            End If
-            Dim cellsizex = sizex + m_gap
-            Dim cellsizey = (1.5 * sizey) + m_gap
-            m_dynamic_buttons(i).Location = New System.Drawing.Point(m_gap + (cellsizex * intMultiply), m_y_offset + m_gap + (cellsizey * (i - intAdd)))
-            If m_show_text_boxes Then
-                m_dynamic_textboxes(i).Location = New System.Drawing.Point(m_gap + (cellsizex * intMultiply), (cellsizey * (i - intAdd)) + (sizey + m_y_offset + m_gap))
-            End If
-            AddHandler m_dynamic_buttons(i).Click, AddressOf ButtonHandler
             AddHandler m_dynamic_buttons(i).SelectionChanged, AddressOf SelectionChanged
-            Me.Controls.Add(m_dynamic_buttons(i))
-            If m_show_text_boxes Then
-                Me.Controls.Add(m_dynamic_textboxes(i))
-            End If
-            If i Mod 5 = 4 Then
-                intAdd += 5
-                intMultiply += 1
-            End If
-            i = i + 1
+            i += 1
         Next
+        placeControls()
+    End Sub
 
+    ''' <summary>
+    ''' Place the controls in the panel in a grid fashion. The two different enumeration types require two different algorithms,
+    ''' because one includes textboxes and one doesn't
+    ''' </summary>
+    Private Sub placeControls()
+        Dim h As Integer = Me.Height
+        Dim w As Integer = Me.Width
+        Dim sizex As Integer = m_button_width
+        Dim sizey As Integer = m_button_height
+        Dim intAdd As Integer = 0
+        Dim intMultiply As Integer = 0
+        Dim intCountPerRow As Integer
+        Dim cellsizex As Integer = sizex + m_gap
+        Dim cellsizey As Integer = sizey + m_gap
+        intCountPerRow = Math.Floor(w / (cellsizex))
+        If WhichType = WhichTypeEnum.Singular Then
+            For i As Integer = 0 To m_num_dynamic_buttons - 1
+                m_dynamic_buttons(i).Size = New Size(sizex, sizey)
+                m_dynamic_buttons(i).Location = New System.Drawing.Point(m_gap + (cellsizex * (i - intAdd)), m_y_offset + (cellsizey * intMultiply))
+                Me.Controls.Add(m_dynamic_buttons(i))
+                If i Mod intCountPerRow = intCountPerRow - 1 Then
+                    intAdd += intCountPerRow
+                    intMultiply += 1
+                End If
+            Next
+        ElseIf WhichType = WhichTypeEnum.DataTable Then
+            For i As Integer = 0 To m_num_dynamic_buttons - 1
+                m_dynamic_buttons(i).Size = New Size(sizex, sizey)
+                m_dynamic_textboxes(i).Size = New Size(sizex, sizey / 2)
+                cellsizex = sizex + m_gap
+                cellsizey = (1.5 * sizey) + m_gap
+                'm_dynamic_buttons(i).Location = New System.Drawing.Point(m_gap + (cellsizex * intMultiply), m_y_offset + m_gap + (cellsizey * (i - intAdd)))
+                m_dynamic_buttons(i).Location = New System.Drawing.Point(m_gap + (cellsizex * intMultiply), m_y_offset + (cellsizey * (i - intAdd)))
+                m_dynamic_textboxes(i).Location = New System.Drawing.Point(m_gap + (cellsizex * intMultiply), (cellsizey * (i - intAdd)) + (sizey + m_y_offset + m_gap))
+                Me.Controls.Add(m_dynamic_buttons(i))
+                Me.Controls.Add(m_dynamic_textboxes(i))
+                If i Mod 5 = 4 Then
+                    intAdd += 5
+                    intMultiply += 1
+                End If
+            Next
+        End If
     End Sub
 
     ''' <summary>
@@ -247,42 +291,27 @@ Public Class DynamicPanel
     End Sub
 
     ''' <summary>
-    ''' Handles the pressing of any of the dynamic buttons in the panel.
-    ''' </summary>
-    Private Sub ButtonHandler(ByVal sender As Object, ByVal e As MouseEventArgs)
-        Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
-        Dim i As Integer
-        ' TODO: Fix this functionality. 
-        ' Give the user the ability to clear a substrate type or percent by ctrl clicking the button
-        'If My.Computer.Keyboard.CtrlKeyDown Then
-        ' For i = 0 To intNumTransectButtons - 1
-        ' If btnName = strTransectButtonNames(i) Then
-        ' ' Depending on the button selected, set the substrate variable to non value.
-        ' dictHabitatFieldValues.Item(strTransectButtonCodeNames(i).ToString) = -9999
-        ' _fontfamily = New FontFamily(Me.ButtonFont)
-        'Set the button and text back to non value state. 
-        ' Transect_Textboxes(i).Text = "No " & strTransectButtonNames(i)
-        ' Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-        ' Transect_Textboxes(i).BackColor = Color.LightGray
-        ' Transect_Textboxes(i).ForeColor = Color.Red
-        ' Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
-        ' Transect_Textboxes(i).ReadOnly = True
-        ' End If
-        ' Next
-        'Exit Sub
-        'End If
-        btn.DataFormVisible = True
-    End Sub
-
-    ''' <summary>
     ''' Handles the case where the user changed a selection in a code table. This may result
     ''' in a query being run to insert data into the database.
     ''' </summary>
     ''' <param name="sender">The DynamicButton that raised the event</param>
     Private Sub SelectionChanged(ByVal sender As Object, ByVal e As EventArgs)
         Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
+        ' Find associated DynamicTextbox, so we can change the text to reflect the change
+        For i As Integer = 0 To m_num_dynamic_buttons - 1
+            If m_dynamic_textboxes(i).ControlCode = btn.ControlCode Then
+                If btn.DataCodeName Is Nothing Then
+                    ' The data have been cleared, so change the textbox to reflect this
+                    m_dynamic_textboxes(i).setNoData()
+                Else
+                    m_dynamic_textboxes(i).setData(btn.DataCodeName)
+                End If
+            End If
+        Next
+
+
         Dim query As String
-        If btn.Comment <> "" Then
+        If btn.DataComment <> "" Then
             ' Insert a new record into the database
             'query = createInsertQuery(btn.Code, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
             'Database.ExecuteNonQuery(query)

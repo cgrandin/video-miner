@@ -67,7 +67,7 @@ VideoMiner
  allowing the user to define all attributes at once.
  </summary>
 	<remarks>This may or may not be shown in the panel</remarks>
-</member><member name="F:VideoMiner.DynamicPanel.m_numDynamicButtons">
+</member><member name="F:VideoMiner.DynamicPanel.m_num_dynamic_buttons">
 	<summary>
  The number of dynamic buttons currently on the panel
  </summary>
@@ -91,11 +91,21 @@ VideoMiner
 	<summary>
  The number of non-dynamic controls on the panel, i.e. label and repeat checkbox and DEFINE ALL button would make 3.
  </summary>
-</member><member name="F:VideoMiner.DynamicPanel.m_show_text_boxes">
+</member><member name="T:VideoMiner.DynamicPanel.WhichTypeEnum">
 	<summary>
- If True, accompanying DynamicTextboxes will be show under the DynamicButtons.
+ Distinguishes between the two types of data this panel can hold, DynamicButtons linked to database table
+ data (lookup tables stored as type DataTable) or singular data which are not a DataTable, and have a keyboard shortcut.
+ Typically the singular type is used for species code entry buttons.
  </summary>
-</member><member name="M:VideoMiner.DynamicPanel.#ctor(System.String,System.Boolean,System.Int32,System.Int32,System.String,System.Int32,System.Boolean,System.Boolean,System.Int32,System.Int32,System.Boolean)">
+</member><member name="F:VideoMiner.DynamicPanel.m_which_type">
+	<summary>
+ Holds the enumeration type for this instance
+ </summary>
+</member><member name="P:VideoMiner.DynamicPanel.WhichType">
+	<summary>
+ Enumeration type for this instance. See WhichTypeEnum for descriptions.
+ </summary>
+</member><member name="M:VideoMiner.DynamicPanel.#ctor(System.String,System.Boolean,System.Int32,System.Int32,System.String,System.Int32,System.Boolean,System.Boolean,System.Int32,System.Int32)">
 	<summary>
  Create the DynamicPanel object.
  </summary>
@@ -109,19 +119,19 @@ VideoMiner
 	<param name="blRepeatIsChecked">If True, the 'Repeat for each record' checkbox will be checked on creation.</param>
 	<param name="intRepeatWidth">Width of the 'Repeat for each record' checkbox.</param>
 	<param name="intRepeatHeight">Height of the 'Repeat for each record' checkbox.</param>
-	<param name="showTextBoxes">If True, accompanying DynamicTextboxes will be show under the DynamicButtons.</param>
 </member><member name="M:VideoMiner.DynamicPanel.fillPanel(System.String)">
 	<summary>
  Fills the panel with the buttons described in the MS Access table given by strTableName
  </summary>
 	<param name="strTableName">Name of the button description table in the MS Access database</param>
+</member><member name="M:VideoMiner.DynamicPanel.placeControls">
+	<summary>
+ Place the controls in the panel in a grid fashion. The two different enumeration types require two different algorithms,
+ because one includes textboxes and one doesn't
+ </summary>
 </member><member name="M:VideoMiner.DynamicPanel.removeAllDynamicControls">
 	<summary>
  Removes all dynamic controls (DynamicButton and DynamicTextbox controls) from the panel.
- </summary>
-</member><member name="M:VideoMiner.DynamicPanel.ButtonHandler(System.Object,System.Windows.Forms.MouseEventArgs)">
-	<summary>
- Handles the pressing of any of the dynamic buttons in the panel.
  </summary>
 </member><member name="M:VideoMiner.DynamicPanel.SelectionChanged(System.Object,System.EventArgs)">
 	<summary>
@@ -283,7 +293,7 @@ VideoMiner
  </summary>
 </member><member name="E:VideoMiner.frmVideoPlayer.StopEvent">
 	<summary>
- This event is triggered when the user stops the video from within this
+ This event is triggered when the user stops the video from within this form.
  </summary>
 </member><member name="E:VideoMiner.frmVideoPlayer.VideoEndedEvent">
 	<summary>
@@ -681,6 +691,11 @@ VideoMiner
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks></remarks>
+</member><member name="F:VideoMiner.DynamicButton.m_control_code">
+	<summary>
+ A unique key so that this DynamicButton can be linked to a corresponding DynamicTextbox later.
+ One and only one DynamicTextbox will have the same control code as this.
+ </summary>
 </member><member name="F:VideoMiner.DynamicButton.m_db_table_name">
 	<summary>
  Name of the MS Access table associated with this button
@@ -741,7 +756,7 @@ VideoMiner
  Currently entered comment in the frmTableView
  </summary>
 	<remarks></remarks>
-</member><member name="M:VideoMiner.DynamicButton.#ctor(System.String,System.String,System.Int32,System.String,System.String,System.String,System.Int32)">
+</member><member name="M:VideoMiner.DynamicButton.#ctor(System.Int32,System.String,System.String,System.Int32,System.String,System.String,System.String,System.Int32)">
 	<summary>
  Creates the object, for the case in which the button refers to a database code table.
  </summary>
@@ -753,7 +768,7 @@ VideoMiner
 	<param name="buttonFont">The font to use for this button (e.g. "Microsoft Sans Serif")</param>
 	<param name="buttonTextSize">The font size to use for this button's text (in pts)</param>
 	<remarks></remarks>
-</member><member name="M:VideoMiner.DynamicButton.#ctor(System.String,System.String,System.String,System.Int32,System.String,System.String,System.String,System.Int32)">
+</member><member name="M:VideoMiner.DynamicButton.#ctor(System.Int32,System.String,System.String,System.String,System.Int32,System.String,System.String,System.String,System.Int32)">
 	<summary>
  Creates the object, for the case in which the button refers to a species code.
  </summary>
@@ -766,12 +781,27 @@ VideoMiner
 	<param name="buttonFont">The font to use for this button (e.g. "Microsoft Sans Serif")</param>
 	<param name="buttonTextSize">The font size to use for this button's text (in pts)</param>
 	<remarks></remarks>
+</member><member name="M:VideoMiner.DynamicButton.dataChanged(System.String)">
+	<summary>
+ Handle the changing by the user of the lookup table code found in frmTableView, and fire an event to the parent.
+ </summary>
+	<param name="comment">The comment supplied by the user. Can be the empty string.</param>
+</member><member name="M:VideoMiner.DynamicButton.clearSpatialData">
+	<summary>
+ Handle the clearing of the data field in the table by resetting the DataCode and DataComment to Nothing and
+ firing an event to signal the parent.
+ </summary>
 </member><member name="T:VideoMiner.DynamicButton">
 	<summary>
  A Videominer dynamic button. This button extends a regular button by holding the database table name,
  an instance of the DataTable, the current data code, and the code name.
  </summary>
 	<remarks></remarks>
+</member><member name="F:VideoMiner.DynamicTextbox.m_control_code">
+	<summary>
+ A unique key so that this DynamicTextbox can be linked to a corresponding DynamicButton later.
+ One and only one DynamicButton will have the same control code as this.
+ </summary>
 </member><member name="M:VideoMiner.frmProjectNames.getProjectName">
 	<summary>
  Return the name of the currently chosen project name
@@ -1227,6 +1257,20 @@ VideoMiner
  This module encapsulates the reading and writing to an MS Access database using the OLEDB interface
  </summary>
 	<remarks></remarks>
+</member><member name="P:VideoMiner.frmTableView.SelectedCode">
+	<summary>
+ If a row is selected, return the first cell's value from that row.
+ If no row is selected, return the empty string.
+ </summary>
+</member><member name="P:VideoMiner.frmTableView.SelectedCodeName">
+	<summary>
+ If a row is selected, return the second cell's value from that row
+ If no row is selected, return the empty string.
+ </summary>
+</member><member name="P:VideoMiner.frmTableView.Comment">
+	<summary>
+ Return the contents of the comment box, which may be an empty string.
+ </summary>
 </member><member name="E:VideoMiner.frmTableView.ClearSpatialInformationEvent">
 	<summary>
  If user presses Clear button, this will fire so that the main form can update its dynamic buttons and textboxes
@@ -1236,6 +1280,7 @@ VideoMiner
 	<summary>
  If user edits the comment box, this event will be raised so that the main form can write a record to the database
  </summary>
+	<param name="comment">A comment as input by user into the comment box, or the empty string if there is no comment.</param>
 	<remarks></remarks>
 </member><member name="M:VideoMiner.frmTableView.frmTableView_FormClosing(System.Object,System.Windows.Forms.FormClosingEventArgs)">
 	<summary>
@@ -1249,7 +1294,7 @@ VideoMiner
 </member><member name="T:VideoMiner.frmTableView">
 	<summary>
  This form will show a table which is supplied in the constructor as a DataTable.
- It will allow the suer to select a row, which will cause a query to insert the data
+ It will allow the user to select a row, which will cause a query to insert the data
  in the database
  </summary>
 </member><member name="F:VideoMiner.VideoMiner.m_strWorkingPath">
