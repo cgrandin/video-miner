@@ -54,10 +54,6 @@ Public Class DynamicButton
     ''' </summary>
     Private WithEvents m_table_view As frmTableView
     ''' <summary>
-    ''' Dictionary of Key-value pairs for the first and second columns of the table m_table_name.
-    ''' </summary>
-    Private m_dict As Dictionary(Of String, String)
-    ''' <summary>
     ''' Currently selected code for the variable that m_table_name represents.
     ''' This is changed when the user selects a new row in the underlying table view form.     
     ''' </summary>
@@ -134,12 +130,6 @@ Public Class DynamicButton
         End Set
     End Property
 
-    Public ReadOnly Property Dictionary As Dictionary(Of String, String)
-        Get
-            Return m_dict
-        End Get
-    End Property
-
     Public Property DataFormVisible As Boolean
         Get
             Return m_table_view.Visible
@@ -197,16 +187,11 @@ Public Class DynamicButton
             m_data_code_name = buttonText
             m_data_code = Nothing
         Else
-            m_data_table = Database.GetDataTable("select * from " & m_db_table_name, m_db_table_name)
+            m_data_table = Database.GetDataTable("select * from " & m_db_table_name & " order by 1;", m_db_table_name)
             m_data_code = dataCode
             m_data_code_name = dataCodeName
             ' Create new Table view form, but don't show it yet.
-            m_table_view = New frmTableView(m_data_table)
-            ' Populate dictionary for the given table contents
-            m_dict = New Dictionary(Of String, String)
-            For Each row As DataRow In m_data_table.Rows
-                m_dict(row.Item(1)) = row.Item(0)
-            Next
+            m_table_view = New frmTableView(Me.Text, m_data_table)
         End If
     End Sub
 
@@ -268,17 +253,33 @@ Public Class DynamicButton
         DataCode = -1
         DataCodeName = Nothing
         DataComment = NULL_STRING
+        m_table_view.clearSelection()
         RaiseEvent SelectionChanged(Me, EventArgs.Empty)
     End Sub
 
+    ''' <summary>
+    ''' Click event handler. If Ctrl-clicked, the selection will be cleared. If left-clicked, the data form will be shown.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Public Sub clickMe(sender As Object, e As MouseEventArgs) Handles Me.Click
-        ' TODO: Fix this functionality. 
-        ' Give the user the ability to clear a substrate type or percent by ctrl clicking the button
         If My.Computer.Keyboard.CtrlKeyDown Then
-            clearSpatialData()
+            If Not IsNothing(m_table_view) Then
+                clearSpatialData()
+            End If
         Else
             Me.DataFormVisible = True
         End If
     End Sub
 
+    ''' <summary>
+    ''' Places the table view forms in the center of the screen.
+    ''' </summary>
+    Private Sub myLocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
+        If Not IsNothing(m_table_view) Then
+            m_table_view.StartPosition = FormStartPosition.Manual
+            m_table_view.Location = System.Windows.Forms.Cursor.Position
+        End If
+    End Sub
 End Class

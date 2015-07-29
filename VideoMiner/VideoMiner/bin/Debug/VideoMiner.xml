@@ -737,10 +737,6 @@ VideoMiner
 	<summary>
  The table view of the m_data_table. This may not be set if the button type is for a species.
  </summary>
-</member><member name="F:VideoMiner.DynamicButton.m_dict">
-	<summary>
- Dictionary of Key-value pairs for the first and second columns of the table m_table_name.
- </summary>
 </member><member name="F:VideoMiner.DynamicButton.m_current_data_code">
 	<summary>
  Currently selected code for the variable that m_table_name represents.
@@ -790,6 +786,17 @@ VideoMiner
 	<summary>
  Handle the clearing of the data field in the table by resetting the DataCode and DataComment to Nothing and
  firing an event to signal the parent.
+ </summary>
+</member><member name="M:VideoMiner.DynamicButton.clickMe(System.Object,System.Windows.Forms.MouseEventArgs)">
+	<summary>
+ Click event handler. If Ctrl-clicked, the selection will be cleared. If left-clicked, the data form will be shown.
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:VideoMiner.DynamicButton.myLocationChanged(System.Object,System.EventArgs)">
+	<summary>
+ Places the table view forms in the center of the screen.
  </summary>
 </member><member name="T:VideoMiner.DynamicButton">
 	<summary>
@@ -1290,6 +1297,10 @@ VideoMiner
 	<summary>
  Handles the event when the user selects a row of the table. If the comment box is not empty, it will raise an event so that the main form can
  insert a new record in the database to capture the comment.
+ </summary>
+</member><member name="M:VideoMiner.frmTableView.btnClear_Click(System.Object,System.EventArgs)">
+	<summary>
+ If the clear button is pressed, clear the selected row so that there is no selection, and raise an event to the parent.
  </summary>
 </member><member name="T:VideoMiner.frmTableView">
 	<summary>

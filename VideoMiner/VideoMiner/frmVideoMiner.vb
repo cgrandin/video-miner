@@ -2438,7 +2438,7 @@ Public Class VideoMiner
                 Else
 
                     'Dim sub_form As frmTableView = New frmTableView(strHabitatButtonTables(i), i, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
-                    Dim sub_form As frmTableView = New frmTableView(New DataTable())
+                    Dim sub_form As frmTableView = New frmTableView("", New DataTable())
                     'sub_form.Multiple = True
 
                     sub_form.ShowDialog()
@@ -2566,7 +2566,7 @@ Public Class VideoMiner
 
                 Else
                     'Dim sub_form As frmTableView = New frmTableView(strTransectButtonTables(i), i, intNumTransectButtons, strTransectButtonNames, dictTransectFieldValues, strTransectButtonCodeNames, Transect_Textboxes)
-                    Dim sub_form As frmTableView = New frmTableView(New DataTable())
+                    Dim sub_form As frmTableView = New frmTableView("", New DataTable())
                     'sub_form.Multiple = True
                     sub_form.ShowDialog()
                     'If Not sub_form.UserClosedForm Then

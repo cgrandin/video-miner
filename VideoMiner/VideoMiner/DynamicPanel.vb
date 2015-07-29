@@ -262,7 +262,6 @@ Public Class DynamicPanel
                 m_dynamic_textboxes(i).Size = New Size(sizex, sizey / 2)
                 cellsizex = sizex + m_gap
                 cellsizey = (1.5 * sizey) + m_gap
-                'm_dynamic_buttons(i).Location = New System.Drawing.Point(m_gap + (cellsizex * intMultiply), m_y_offset + m_gap + (cellsizey * (i - intAdd)))
                 m_dynamic_buttons(i).Location = New System.Drawing.Point(m_gap + (cellsizex * intMultiply), m_y_offset + (cellsizey * (i - intAdd)))
                 m_dynamic_textboxes(i).Location = New System.Drawing.Point(m_gap + (cellsizex * intMultiply), (cellsizey * (i - intAdd)) + (sizey + m_y_offset + m_gap))
                 Me.Controls.Add(m_dynamic_buttons(i))
@@ -308,15 +307,6 @@ Public Class DynamicPanel
                 End If
             End If
         Next
-
-
-        Dim query As String
-        If btn.DataComment <> "" Then
-            ' Insert a new record into the database
-            'query = createInsertQuery(btn.Code, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-            'Database.ExecuteNonQuery(query)
-            'fetch_data()
-        End If
     End Sub
 
     ''' <summary>
@@ -324,8 +314,8 @@ Public Class DynamicPanel
     ''' This is a convinience button.
     ''' </summary>
     Private Sub DefineAll(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        For Each btn As DynamicButton In m_dynamic_buttons
-            btn.DataFormVisible = True
+        For i As Integer = 0 To m_num_dynamic_buttons - 1
+            m_dynamic_buttons(i).DataFormVisible = True
         Next
     End Sub
 

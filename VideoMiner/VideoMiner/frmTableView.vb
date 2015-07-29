@@ -4,7 +4,6 @@
 ''' in the database
 ''' </summary>
 Public Class frmTableView
-    Private m_table_name As String
     Private m_data_table As DataTable
 
 #Region "Properties"
@@ -61,15 +60,16 @@ Public Class frmTableView
     Public Event DataChanged(comment As String)
 #End Region
 
-    'Public Sub New(ByVal table As String, ByRef dictFieldValues As Dictionary(Of String, String))
-    Public Sub New(data_table As DataTable)
-        ' This is required by the Windows Form Designer.
+    Public Sub New(titleText As String, dataTable As DataTable)
         InitializeComponent()
-        m_data_table = data_table
+        Me.Text = titleText
+        m_data_table = dataTable
         DataGridView1.DataSource = m_data_table
         DataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
         DataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
+        DataGridView1.MultiSelect = False
         Controls.Add(DataGridView1)
+
         'If intCurrentSpatialVariable <> 8888 Then
         ' m_strSelectedButtonName = strButtonNames(intCurrentSpatialVariable)
         ' End If
@@ -90,23 +90,12 @@ Public Class frmTableView
     End Sub
 
     Private Sub TableViewForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        'Me.Text = m_strSelectedButtonName
-        'm_UserClosedForm = False
         Me.btnSkipSpatial.Visible = True
         Me.btnClear.Visible = True
         Me.Width = DataGridView1.Width
         Me.Height = (DataGridView1.RowCount + 3) * DataGridView1.Rows(0).Height
         Me.txtCommentBox.Text = VideoMiner.strComment
         Refresh()
-    End Sub
-
-    Private Sub DataGridView1_CellBeginEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellCancelEventArgs) Handles DataGridView1.CellBeginEdit
-        'e.Cancel = True
-        'MsgBox("This table is read only. Select a row to make your choice", MsgBoxStyle.Information, "Read only")
-    End Sub
-
-    Private Sub DataGridView1_CellEndEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles DataGridView1.CellEndEdit
-        'Database.Update(m_data_table)
     End Sub
 
     ''' <summary>
@@ -124,7 +113,11 @@ Public Class frmTableView
         Me.Hide()
     End Sub
 
+    ''' <summary>
+    ''' If the clear button is pressed, clear the selected row so that there is no selection, and raise an event to the parent.
+    ''' </summary>
     Private Sub btnClear_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnClear.Click
+        clearSelection()
         RaiseEvent ClearSpatialInformationEvent()
         Me.Hide()
     End Sub
@@ -136,4 +129,8 @@ Public Class frmTableView
         'myFormLibrary.frmVideoMiner.blScreenCaptureCalled = False
     End Sub
 
+    Public Sub clearSelection()
+
+        DataGridView1.ClearSelection()
+    End Sub
 End Class
