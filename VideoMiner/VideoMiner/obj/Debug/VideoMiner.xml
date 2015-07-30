@@ -110,8 +110,8 @@ VideoMiner
  Dictionary of key/value pairs that hold the currently selected data (most recently-pressed button's data) for this panel.
  If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
  not just the most recently-pressed button's data.
- The first parameter is the name of the field in the database table lu_data. The tuple is a pair of data code (from lu_data_codes)
- and the data value to be inserted.
+ The first parameter is the name of the field in the database table lu_data. The tuple is a triplet of data code (from lu_data_codes),
+ the data value to be inserted, and a boolean for whether or not the item was the one pressed (in case there are more than one in the dictionary).
  </summary>
 </member><member name="F:VideoMiner.DynamicPanel.m_data_code">
 	<summary>
@@ -1586,7 +1586,7 @@ VideoMiner
  database table, and plays the video again.
  </summary>
 	<remarks></remarks>
-</member><member name="M:VideoMiner.VideoMiner.buttonDataChanged(System.Collections.Generic.Dictionary{System.String,System.Tuple{System.String,System.String}})">
+</member><member name="M:VideoMiner.VideoMiner.buttonDataChanged(System.Collections.Generic.Dictionary{System.String,System.Tuple{System.String,System.String,System.Boolean}})">
 	<summary>
  Handle the changing of button data (transect and habitat buttons only) by creating an insert query and saving to the database
  </summary>
@@ -1674,7 +1674,7 @@ VideoMiner
  Fetch the data table from the MS Access database into the DataGridView and sets the next unique ID that the database can recieve.
  </summary>
 	<remarks>Order of the rows will be by decending primary key ('ID' field)</remarks>
-</member><member name="M:VideoMiner.VideoMiner.createInsertQuery(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+</member><member name="M:VideoMiner.VideoMiner.createInsertQueryOLD(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
 	<summary>
  Creates a string which is an 'INSERT INTO' query in access database format.
  </summary>
@@ -1690,11 +1690,6 @@ VideoMiner
 	<param name="strAbundance">Abundance of the species seen (TODO:update this definition)</param>
 	<param name="strIdConfidence">Confidence value for species ID. See table DB_CONFIDENCE_IDS_TABLE (1=high,2=med,3=low)</param>
 	<param name="strComment">Video reviewer's comments</param>
-	<remarks></remarks>
-</member><member name="M:VideoMiner.VideoMiner.fillSpeciesVariableButtonPanel">
-	<summary>
- Load one button for each record in the DB_SPECIES_BUTTONS_TABLE table into 'Species DATA' Panel.
- </summary>
 	<remarks></remarks>
 </member><member name="F:VideoMiner.VideoMiner.rowWasGood">
 	<summary>

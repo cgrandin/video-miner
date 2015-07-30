@@ -67,15 +67,15 @@ Public Class DynamicPanel
     ''' <summary>
     ''' A tuple for the Dictionary object, m_dict.
     ''' </summary>
-    Private m_tuple As Tuple(Of String, String)
+    Private m_tuple As Tuple(Of String, String, Boolean)
     ''' <summary>
     ''' Dictionary of key/value pairs that hold the currently selected data (most recently-pressed button's data) for this panel.
     ''' If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
     ''' not just the most recently-pressed button's data.
-    ''' The first parameter is the name of the field in the database table lu_data. The tuple is a pair of data code (from lu_data_codes)
-    ''' and the data value to be inserted.
+    ''' The first parameter is the name of the field in the database table lu_data. The tuple is a triplet of data code (from lu_data_codes),
+    ''' the data value to be inserted, and a boolean for whether or not the item was the one pressed (in case there are more than one in the dictionary).
     ''' </summary>
-    Private m_dict As Dictionary(Of String, Tuple(Of String, String))
+    Private m_dict As Dictionary(Of String, Tuple(Of String, String, Boolean))
     ''' <summary>
     ''' Data code used for table-based data. e.g. table lu_survey_mode is associated with data code 9 in the lu_data_codes table
     ''' </summary>
@@ -100,7 +100,7 @@ Public Class DynamicPanel
     ''' Dictionary of key/value pairs that hold the currently selected data (most recently-pressed button's data) for this panel.
     ''' If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
     ''' not just the most recently-pressed button's data.
-    Public ReadOnly Property Data As Dictionary(Of String, Tuple(Of String, String))
+    Public ReadOnly Property Data As Dictionary(Of String, Tuple(Of String, String, Boolean))
         Get
             Return m_dict
         End Get
@@ -109,7 +109,7 @@ Public Class DynamicPanel
 #End Region
 
 #Region "Events"
-    Public Event DataChanged(dict As Dictionary(Of String, Tuple(Of String, String)))
+    Public Event DataChanged(dict As Dictionary(Of String, Tuple(Of String, String, Boolean)))
 #End Region
 
     ''' <summary>
@@ -135,8 +135,8 @@ Public Class DynamicPanel
         m_define_all_button = Nothing
         m_y_offset = 0
         m_gap = 2
-        m_tuple = New Tuple(Of String, String)(Nothing, Nothing)
-        m_dict = New Dictionary(Of String, Tuple(Of String, String))
+        m_tuple = New Tuple(Of String, String, Boolean)(Nothing, Nothing, False)
+        m_dict = New Dictionary(Of String, Tuple(Of String, String, Boolean))
 
         'Panel label load`
         m_label = New Label()
@@ -359,22 +359,22 @@ Public Class DynamicPanel
         m_dict.Clear()
         If IsNothing(m_repeat_for_every_record) Then
             ' One button's data
-            m_tuple = New Tuple(Of String, String)(btn.DataCode, btn.DataValue)
+            m_tuple = New Tuple(Of String, String, Boolean)(btn.DataCode, btn.DataValue, True)
             m_dict.Add(btn.DataCodeName, m_tuple)
         ElseIf Not m_repeat_for_every_record.Checked Then
             ' One button's data
             If btn.DataValue <> 0 Then
-                m_tuple = New Tuple(Of String, String)(btn.DataCode, btn.DataValue)
+                m_tuple = New Tuple(Of String, String, Boolean)(btn.DataCode, btn.DataValue, True)
                 m_dict.Add(btn.DataCodeName, m_tuple)
             End If
             Else
                 ' All button's data
                 For i As Integer = 0 To m_num_dynamic_buttons - 1
                     ' If the button has data selected...
-                    If m_dynamic_buttons(i).DataValue <> 0 Then
-                        m_tuple = New Tuple(Of String, String)(m_dynamic_buttons(i).DataCode, m_dynamic_buttons(i).DataValue)
-                        m_dict.Add(m_dynamic_buttons(i).DataCodeName, m_tuple)
-                    End If
+                If m_dynamic_buttons(i).DataValue <> 0 Then
+                    m_tuple = New Tuple(Of String, String, Boolean)(m_dynamic_buttons(i).DataCode, m_dynamic_buttons(i).DataValue, btn.Name = m_dynamic_buttons(i).Name)
+                    m_dict.Add(m_dynamic_buttons(i).DataCodeName, m_tuple)
+                End If
                 Next
             End If
     End Sub

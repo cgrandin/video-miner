@@ -133,6 +133,11 @@ Public Class VideoMiner
     Public Const INDIVIDUAL_HABITAT_VARIABLE_CLEARED As String = "888"
     Public Const ALL_HABITAT_VARIABLES_CLEARED As String = "999"
 
+    Public Const ON_OFF_BOTTOM_NOT_ASSIGNED As Integer = -1
+    Public Const SPECIES_ID_NOT_ASSIGNED As Integer = -1
+    Public Const SPECIES_NAME_NOT_ASSIGNED As String = NULL_STRING
+    Public Const SPECIES_COUNT_NOT_ASSIGNED As Integer = -1
+
 #End Region
 
 #Region "Variables"
@@ -1520,7 +1525,7 @@ Public Class VideoMiner
                         If r.Item("KeyboardShortcut").ToString = strKeyboardShortcut Then
                             intIndex = CInt(r.Item("DrawingOrder")) - 1
                             If Not speciesButtons(intIndex) Is Nothing Then
-                                SpeciesVariableButtonHandler(speciesButtons(intIndex), Nothing)
+                                'SpeciesVariableButtonHandler(speciesButtons(intIndex), Nothing)
                             End If
                             Exit For
                         End If
@@ -1770,8 +1775,8 @@ Public Class VideoMiner
         Dim numrows As Integer
         Dim query As String = NULL_STRING
         Try
-            query = createInsertQuery(start_or_end, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-            Database.ExecuteNonQuery(query)
+            'query = createInsertQuery(start_or_end, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
+            'Database.ExecuteNonQuery(query)
             fetch_data()
         Catch ex As Exception
             If ex.Message.StartsWith("Syntax") Then
@@ -1845,16 +1850,15 @@ Public Class VideoMiner
     ''' Handle the changing of button data (transect and habitat buttons only) by creating an insert query and saving to the database
     ''' </summary>
     ''' <param name="dict">Dictionary of Key/value pairs for the data. Key=dataCodeName, Value=dataCode</param>
-    Private Sub buttonDataChanged(dict As Dictionary(Of String, Tuple(Of String, String))) Handles pnlHabitatData.DataChanged, pnlTransectData.DataChanged
+    Private Sub buttonDataChanged(dict As Dictionary(Of String, Tuple(Of String, String, Boolean))) Handles pnlHabitatData.DataChanged, pnlTransectData.DataChanged
         ' MsgBox("Arrived in Videominer.vb with dictionary:" & dict.ToString())
-
+        createInsertQuery(dict)
     End Sub
 
     Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEdit.Click
         frmSpeciesList = New frmSpeciesList
         frmSpeciesList.ShowDialog()
         pnlSpeciesData.Controls.Clear()
-        fillSpeciesVariableButtonPanel()
     End Sub
 
     Public Sub mnuCapScr_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuCapScr.Click
@@ -2420,8 +2424,8 @@ Public Class VideoMiner
                     intVideoStopCounter = 0
                     intPreviousVideoSeconds = intVideoSeconds
 
-                    query = createInsertQuery(NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-                    Database.ExecuteNonQuery(query)
+                    'query = createInsertQuery(NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
+                    'Database.ExecuteNonQuery(query)
                     fetch_data()
                     Exit Sub
                 End If
@@ -2444,8 +2448,8 @@ Public Class VideoMiner
                     Exit Sub
                 Else
                     intPreviousGPSSeconds = intGPSSeconds
-                    query = createInsertQuery(NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-                    Database.ExecuteNonQuery(query)
+                    'query = createInsertQuery(NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
+                    ' Database.ExecuteNonQuery(query)
                     fetch_data()
                 End If
             End If
@@ -2725,8 +2729,8 @@ Public Class VideoMiner
                 ' Insert new record in database
                 Dim numrows As Integer
 
-                query = createInsertQuery(COMMENT_ADDED, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-                Database.ExecuteNonQuery(query)
+                'query = createInsertQuery(COMMENT_ADDED, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
+                'Database.ExecuteNonQuery(query)
                 fetch_data()
             Else
                 MessageBox.Show("There is no GPS data being recieved at this time, therefore the record was not entered into the database", "No GPS Data Recieved", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -2796,8 +2800,8 @@ Public Class VideoMiner
                     ' Insert new record in database
                     Dim numrows As Integer
 
-                    query = createInsertQuery(NOTHING_IN_PHOTO, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-                    Database.ExecuteNonQuery(query)
+                    'query = createInsertQuery(NOTHING_IN_PHOTO, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
+                    'Database.ExecuteNonQuery(query)
                     fetch_data()
                 Else
                     MessageBox.Show("There is no GPS data being recieved at this time, therefore the record was not entered into the database", "No GPS Data Recieved", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -3425,8 +3429,8 @@ Public Class VideoMiner
             Dim query As String = NULL_STRING
 
             Try
-                query = createInsertQuery(ON_OFF_BOTTOM, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-                Database.ExecuteNonQuery(query)
+                'query = createInsertQuery(ON_OFF_BOTTOM, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
+                'Database.ExecuteNonQuery(query)
                 fetch_data()
             Catch ex As Exception
                 If ex.Message.StartsWith("Syntax") Then
@@ -4351,49 +4355,6 @@ Public Class VideoMiner
         End If
     End Sub
 
-    Private Sub fillDataCodesTable()
-        Dim clDataCodes As New Collection
-        Dim clDataCodeDescriptions As New Collection
-        'Dim strQuery As String
-        'Dim tblDataCodes As DataTable
-        'Dim oComm As OleDbCommand
-        Dim d As DataTable
-        Dim r As DataRow
-        If Database.ExecuteNonQuery("DELETE * FROM " & DB_DATA_CODES_TABLE & " WHERE Code > 4 AND Code < 555;") Then
-            d = Database.GetDataTable("SELECT * FROM " & DB_HABITAT_BUTTONS_TABLE & ";", DB_HABITAT_BUTTONS_TABLE)
-            For Each r In d.Rows
-                clDataCodes.Add(r.Item("DataCode"))
-                clDataCodeDescriptions.Add(r.Item("ButtonText"))
-            Next
-            d = Database.GetDataTable("SELECT * FROM " & DB_TRANSECT_BUTTONS_TABLE & ";", DB_TRANSECT_BUTTONS_TABLE)
-            For Each r In d.Rows
-                clDataCodes.Add(r.Item("DataCode"))
-                clDataCodeDescriptions.Add(r.Item("ButtonText"))
-            Next
-            d = Database.GetDataTable("SELECT * FROM " & DB_SPECIES_BUTTONS_TABLE & " WHERE DataCode <> 4;", DB_SPECIES_BUTTONS_TABLE)
-            For Each r In d.Rows
-                clDataCodes.Add(r.Item("DataCode"))
-                clDataCodeDescriptions.Add(r.Item("ButtonText"))
-            Next
-            d = Database.GetDataTable("SELECT * FROM " & DB_DATA_CODES_TABLE & ";", DB_DATA_CODES_TABLE)
-            Dim i As Integer
-            For Each r In d.Rows
-                For i = 1 To clDataCodes.Count
-                    If r.Item("Code") = clDataCodes.Item(i) Then
-                        clDataCodes.Remove(i)
-                        clDataCodeDescriptions.Remove(i)
-                        i -= 1
-                    End If
-                Next
-            Next
-            For i = 1 To clDataCodes.Count
-                If Not Database.ExecuteNonQuery("INSERT INTO " & DB_DATA_CODES_TABLE & " (Code, Description) VALUES(" & clDataCodes.Item(i) & ", " & SingleQuote(clDataCodeDescriptions.Item(i)) & ")") Then
-                    CloseDatabase_Click(Nothing, Nothing)
-                End If
-            Next
-        End If
-    End Sub
-
     ''' <summary>
     ''' Fetch the data table from the MS Access database into the DataGridView and sets the next unique ID that the database can recieve.
     ''' </summary>
@@ -4419,6 +4380,51 @@ Public Class VideoMiner
         blupdateColumns = True
     End Sub
 
+
+    Private Function createInsertQuery(dictTransect As Dictionary(Of String, Tuple(Of String, String, Boolean)))
+        Dim names As String = "insert into " & DB_DATA_TABLE & " (ID,"
+        Dim values As String = "values(" & m_db_id_num & ","
+
+        If m_project_name <> NULL_STRING Then
+            names = names & "ProjectName,"
+            values = values & SingleQuote(m_project_name) & ","
+        End If
+
+        If Not IsNothing(m_transect_date) Then
+            names = names & "TransectDate,"
+            values = values & SingleQuote(m_transect_date) & ","
+        End If
+
+        'Dim tsTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
+        'If tsTime <> Zero Then
+        ' Dim dt As DateTime = m_transect_date + tsTime
+        ' Dim st As String = pad0(tsTime.Hours) & ":" & pad0(tsTime.Minutes) & ":" & pad0(tsTime.Seconds)
+        ' Dim std As String = pad0(tsTime.Hours) & ":" & pad0(tsTime.Minutes) & ":" & pad0(tsTime.Seconds) & "." & pad0(tsTime.Milliseconds)
+        ' names = names & "Format(TimeCode, 'hh:mm:ss') as TimeCode,TextTime,TextTimeDecimal,"
+        ' values = values & SingleQuote(dt) & "," & SingleQuote(st) & "," & SingleQuote(std) & ","
+        ' End If
+
+        For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In dictTransect
+            names = names & kvp.Key.ToString() & ","
+            values = values & kvp.Value.Item1.ToString() & ","
+        Next
+        ' TODO: All the rest!!! Testing dict first
+        'If is_on_bottom <> ON_OFF_BOTTOM_NOT_ASSIGNED Then
+        ' names = names & "OnBottom,"
+        ' values = values & is_on_bottom.ToString()
+        ' End If
+
+        'If strSpeciesCode <> SPECIES_ID_NOT_ASSIGNED Then
+        ' names = names & "SpeciesID,"
+        ' values = values & strSpeciesCode
+        ' End If
+
+        'If strSpeciesName <> SPECIES_NAME_NOT_ASSIGNED Then
+        ' names = names & "SpeciesID,"
+        ' values = values & strSpeciesCode
+        'End If
+    End Function
+
     ''' <summary>
     ''' Creates a string which is an 'INSERT INTO' query in access database format.
     ''' </summary>
@@ -4435,13 +4441,12 @@ Public Class VideoMiner
     ''' <param name="strIdConfidence">Confidence value for species ID. See table DB_CONFIDENCE_IDS_TABLE (1=high,2=med,3=low)</param>
     ''' <param name="strComment">Video reviewer's comments</param>
     ''' <remarks></remarks>
-    Private Function createInsertQuery(strDataCode As String, strSpeciesName As String, _
+    Private Function createInsertQueryOLD(strDataCode As String, strSpeciesName As String, _
                                        strSpeciesCode As String, strSpeciesCount As String, strSide As String, strRange As String, _
                                        strLength As String, strHeight As String, strWidth As String, strAbundance As String,
                                        strIdConfidence As String, strComment As String) As String
         Dim i As Integer
         Dim j As Integer
-
         Dim strQuery As String = "INSERT INTO " & DB_DATA_TABLE & "(ID,TransectDate,TimeCode,TextTime,TextTimeDecimal,TimeSource,ProjectName,TransectName,OnBottom," & _
                                  "DominantSubstrate,DominantPercent,SubdominantSubstrate,SubdominantPercent,SurveyModeID,ReliefID,DisturbanceID,ProtocolID," & _
                                  "ImageQualityID,SpeciesName,SpeciesID,SpeciesCount,Side,Range,Length,Height,Width,Abundance,IDConfidence,Comment,DataCode," & _
@@ -4450,62 +4455,6 @@ Public Class VideoMiner
         ' Parse through all the field names in the collection and attach the associated variables with the field names
         For i = 1 To colTableFields.Count
             Select Case colTableFields.Item(i).ToString
-                Case "ID"
-                    strQuery = strQuery & m_db_id_num
-                Case "ProjectName"
-                    If m_project_name = NULL_STRING Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & SingleQuote(m_project_name)
-                    End If
-                Case "TransectName"
-                    If m_transect_name = NULL_STRING Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & SingleQuote(m_transect_name)
-                    End If
-                Case "TransectDate"
-                    Try
-                        strQuery = strQuery & SingleQuote(m_transect_date)
-                    Catch ex As Exception
-                        strQuery = strQuery & NS
-                    End Try
-                Case "Format(TimeCode, 'hh:mm:ss') as TimeCode"
-                    Dim tsTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
-                    If tsTime = Zero Then
-                        strQuery = strQuery & NS
-                    Else
-                        Dim dt As DateTime = m_transect_date + tsTime
-                        strQuery = strQuery & SingleQuote(dt) '& ", " & SingleQuote(strVideoTime)
-                    End If
-                Case "TextTime"
-                    Dim tsTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
-                    If tsTime = Zero Then
-                        strQuery = strQuery & NS
-                    Else
-                        Dim strTextTime As String = pad0(tsTime.Hours) & ":" & pad0(tsTime.Minutes) & ":" & pad0(tsTime.Seconds)
-                        strQuery = strQuery & SingleQuote(strTextTime)
-                    End If
-                Case "TextTimeDecimal"
-                    Dim tsTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
-                    If tsTime = Zero Then
-                        strQuery = strQuery & NS
-                    Else
-                        Dim strDecimalTime As String = pad0(tsTime.Hours) & ":" & pad0(tsTime.Minutes) & ":" & pad0(tsTime.Seconds) & "." & pad0(tsTime.Milliseconds)
-                        strQuery = strQuery & SingleQuote(strDecimalTime)
-                    End If
-                Case "OnBottom"
-                    If is_on_bottom = -9999 Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & is_on_bottom
-                    End If
-                Case "SpeciesID"
-                    If strSpeciesCode = NS Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & SingleQuote(strSpeciesCode)
-                    End If
                 Case "SpeciesName"
                     If strSpeciesName = NS Then
                         strQuery = strQuery & NS
@@ -4681,382 +4630,6 @@ SkipInsertComma:
         End If
         Return strQuery
     End Function
-#End Region
-
-#Region "Habitat Variable Functions"
-    '    Public Sub fillHabitatFieldsCollection()
-    '        colTableFields = Nothing
-    '        colTableFields = New Collection
-    '    Dim d As DataTable = Database.GetDataTable("select * from " & DB_DATA_TABLE, DB_DATA_TABLE)
-    '    Dim dc As DataColumn
-    '        For i As Integer = 0 To d.Columns.Count - 1
-    '            dc = d.Columns.Item(i)
-    '            If dc.ColumnName = "TimeCode" Then
-    '                colTableFields.Add("Format(TimeCode, 'hh:mm:ss') as TimeCode")
-    '            ElseIf dc.ColumnName = "ReviewedDate" Then
-    '                colTableFields.Add("Format(ReviewedDate, 'm/dd/yyyy') as ReviewDate")
-    '            ElseIf dc.ColumnName = "ReviewedTime" Then
-    '                colTableFields.Add("Format(ReviewedTime, 'hh:mm:ss') as ReviewTime")
-    '            ElseIf dc.ColumnName = "ElapsedTime" Then
-    '                colTableFields.Add("Format(ElapsedTime, 'hh:mm:ss') as ElapsedTime")
-    '            Else
-    '                colTableFields.Add(dc.ColumnName)
-    '            End If
-    '        Next
-    '    End Sub
-#End Region
-
-#Region "Species Variable Functions"
-    ''' <summary>
-    ''' Load one button for each record in the DB_SPECIES_BUTTONS_TABLE table into 'Species DATA' Panel.
-    ''' </summary>
-    ''' <remarks></remarks>
-    Public Sub fillSpeciesVariableButtonPanel()
-        Dim d As DataTable = Database.GetDataTable("select * from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", DB_SPECIES_BUTTONS_TABLE)
-        intNumSpeciesButtons = d.Rows.Count
-        ReDim speciesButtons(intNumSpeciesButtons)
-        ReDim strSpeciesButtonNames(intNumSpeciesButtons)
-        ReDim strSpeciesButtonCodes(intNumSpeciesButtons)
-        ReDim strSpeciesButtonCodeNames(intNumSpeciesButtons)
-        ReDim intSpeciesButtonUserCodeChoice(intNumSpeciesButtons)
-        ReDim strSpeciesButtonUserNameChoice(intNumSpeciesButtons)
-        ReDim strSpeciesButtonColors(intNumSpeciesButtons)
-        Dim h As Integer = pnlSpeciesData.Height
-        Dim w As Integer = pnlSpeciesData.Width
-        Dim i As Integer = 0
-        Dim sizex As Integer = Me.ButtonWidth
-        Dim sizey As Integer = Me.ButtonHeight
-        Dim gap As Integer = 5
-        Dim intAdd As Integer = 0
-        Dim intMultiply As Integer = 0
-        Dim strButtonText As String = NULL_STRING
-        Dim intCountPerRow As Integer
-        Dim cellsizex As Integer = sizex + gap
-        Dim cellsizey As Integer = sizey + gap
-        intCountPerRow = Math.Floor(w / (cellsizex))
-        For Each r As DataRow In d.Rows
-            strSpeciesButtonNames(i) = New String(r.Item(1).ToString())
-            strSpeciesButtonCodes(i) = New String(r.Item(2).ToString())
-            strSpeciesButtonCodeNames(i) = New String(r.Item(4).ToString())
-            strSpeciesButtonColors(i) = New String(r.Item(5).ToString())
-            speciesButtons(i) = New Button()
-            speciesButtons(i).Name = strSpeciesButtonNames(i)
-            speciesButtons(i).TabStop = False
-            Dim colConvert As ColorConverter = New ColorConverter()
-            Try
-                Dim c As Color = DirectCast(colConvert.ConvertFromString(strSpeciesButtonColors(i)), Color)
-                speciesButtons(i).ForeColor = c
-            Catch ex As Exception
-                speciesButtons(i).ForeColor = Color.Black
-            End Try
-            Dim newFont As Font
-            Dim _fontfamily As FontFamily
-            _fontfamily = New FontFamily(Me.ButtonFont)
-            If _fontfamily.IsStyleAvailable(FontStyle.Regular) Then
-                newFont = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Regular)
-            ElseIf _fontfamily.IsStyleAvailable(FontStyle.Bold) Then
-                newFont = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-            ElseIf _fontfamily.IsStyleAvailable(FontStyle.Italic) Then
-                newFont = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Italic)
-            End If
-            speciesButtons(i).Font = newFont
-            If r.Item("KeyboardShortcut").ToString <> NULL_STRING Then
-                strButtonText = strSpeciesButtonNames(i) & " (" & r.Item("KeyboardShortcut") & ")"
-            Else
-                strButtonText = strSpeciesButtonNames(i)
-            End If
-            'If i <= 11 Then
-            '    strButtonText = strSpeciesButtonNames(i) & " (F" & i + 1 & ")"
-            'Else
-            '    
-            'End If
-            speciesButtons(i).Text = strButtonText
-            speciesButtons(i).Size = New Size(sizex, sizey)
-            'speciesButtons(i).Location = New System.Drawing.Point(gap + (cellsizex * intMultiply), 20 + gap + (cellsizey * (i - intAdd)))
-            speciesButtons(i).Location = New System.Drawing.Point(gap + (cellsizex * (i - intAdd)), 10 + gap + (cellsizey * intMultiply))
-            AddHandler speciesButtons(i).Click, AddressOf SpeciesVariableButtonHandler
-            pnlSpeciesData.Controls.Add(speciesButtons(i))
-            If i Mod intCountPerRow = intCountPerRow - 1 Then
-                intAdd += intCountPerRow
-                intMultiply += 1
-            End If
-            i = i + 1
-        Next
-    End Sub
-
-    ' ==========================================================================================================
-    ' Name: SpeciesVariableButtonHandler
-    ' Description: Called when a species button from Panel2 is clicked. The button click event is dependant on the 
-    '              Radio button selection for detailed vs quick entry. 
-    '
-    '     If the detailed entry radio button radDetailedEntry is selected:
-    ' 1.) Open the form SpeciesEventForm and prompt the user to enter information about the species sighting 
-    '     in the video such as Range, Height, count etc which will be added to the database in step 2.
-    ' 2.) Insert a record into the database table "data" with variables for the fields: id,TimeCode,DataCode,transect,
-    '     OnBottom,SpeciesID,SpeciesCount,Side,Length,range,IDConfidence,Abundance,height,width
-    '
-    '     If the quick entry radio button radQuickEntry is selected:
-    ' 1.) Insert a record into the database table "data" with variables for the fields: id,TimeCode,DataCode,transect,
-    '     OnBottom,SpeciesID,SpeciesCount,Side,Length,range,IDConfidence,Abundance,height,width.
-    '       - Values of 0(zero) will be entered into the table for values that would have been defined by the user in
-    '         the SpeciesEventForm if they had selected detailed entry.
-    ' ==========================================================================================================
-    ' ==========================================================================================================
-    Public Sub SpeciesVariableButtonHandler(ByVal sender As Object, ByVal e As EventArgs)
-        '        If blHandled = True Then
-        ' blHandled = False
-        ' Exit Sub
-        ' End If
-
-        Dim btn As Button = sender
-        Dim i As Integer
-
-        Dim query As String = NULL_STRING
-
-        ' The GPRMC NMEA String does not contain elevation values. Enter null into database
-        ' if GPRMC is the chosen string type.
-        'Dim regKey As RegistryKey = Registry.CurrentUser.CreateSubKey("Software\VideoMiner")
-        'Dim strGPSStringType As String = regKey.GetValue("GPSStringType")
-
-        ' ======================================Code by Xida Chen (begin)===========================================
-        ' If they are using the video control then get the time from there.
-        ' The time code is set to be VIDEO_TIME_LABEL initially.
-        Dim strVideoTime As String = VIDEO_TIME_LABEL
-        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
-        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
-        ' do the following only when the video is open:
-        ' pause stream and get the time code
-        ' If the video is not open, then we cannot pause the
-        ' video stream, and there is no need to get the TimeCode.
-        If m_video_file_open Then
-            If frmVideoPlayer.IsPlaying Then
-                pauseVideo()
-            End If
-            strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
-        ElseIf booUseExternalVideo Then
-            strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
-        End If
-        ' ======================================Code by Xida Chen (end)===========================================
-        Dim numrows As Integer
-        Dim oComm As OleDbCommand
-        Dim strWidth As String = NULL_STRING
-        Dim blAquiredFix As Boolean = False
-        '        If booUseGPSTimeCodes Then
-        ' 'Otherwise get the time from the NMEA string.
-        '
-        '        blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
-        '        If Not blAquiredFix Then
-        ' Exit Sub
-        ' End If
-        ' End If
-        strVideoTextTime = strVideoTime
-        If blRareSpecies = False Then
-            For i = 0 To intNumSpeciesButtons - 1
-                If btn.Name = strSpeciesButtonNames(i) Then
-                    Dim d As DataTable = Database.GetDataTable("SELECT ButtonText, DataCode FROM " & DB_SPECIES_BUTTONS_TABLE & " WHERE ButtonCode = " & SingleQuote(strSpeciesButtonCodes(i)), DB_SPECIES_BUTTONS_TABLE)
-                    Dim strSpecies_Name As String = d.Rows(0).Item("ButtonText")
-                    intSpeciesButtonUserCodeChoice(i) = d.Rows(0).Item("DataCode")
-
-                    If Me.radDetailedEntry.Checked Then
-                        frmSpeciesEvent = New frmSpeciesEvent(RangeChecked, IDConfidenceChecked, AbundanceChecked, CountChecked, HeightChecked, WidthChecked, LengthChecked, CommentsChecked, _
-                                                              Range, Side, IDConfidence, Abundance, Count, Height, Width, Length, Comments)
-                        frmSpeciesEvent.Location = New System.Drawing.Point(btn.Location.X, btn.Location.Y)
-                        frmSpeciesEvent.SpeciesName = strSpeciesButtonNames(i)
-                        frmSpeciesEvent.ShowDialog()
-                        If blSpeciesValuesSet Then
-                            Try
-                                ' If an image is open and the video is closed then get the picture information from the EXIF file
-                                If image_open And m_video_file_open = False Then
-                                    getEXIFData()
-                                    strVideoTextTime = strVideoTime
-                                End If
-                                strSpeciesButtonUserNameChoice(i) = 666
-                                If m_tsUserTime.ToString() <> NULL_STRING Then
-                                    ' Insert new record in database
-                                    If Me.SpeciesWidth Is Nothing Then
-                                        strWidth = NS
-                                    Else
-                                        strWidth = Me.SpeciesWidth
-                                    End If
-                                    strSpeciesCode = Me.SpeciesCode
-                                    strSpeciesCount = Me.Count
-                                    If Me.Side = "0" Then
-                                        strSide = NULL_STRING
-                                    Else
-                                        strSide = Me.Side
-                                    End If
-                                    strRange = Me.Range
-                                    strLength = Me.Length
-                                    strHeight = Me.SpeciesHeight
-                                    strWidth = Me.SpeciesWidth
-                                    strAbundance = Me.Abundance
-                                    strIdConfidence = Me.IDConfidence
-                                    strComment = Me.Comments
-                                    'If transect_date = NULL_STRING Then
-                                    query = createInsertQuery(intSpeciesButtonUserCodeChoice(i), strSpecies_Name, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
-                                    Database.ExecuteNonQuery(query)
-                                    Me.ScreenCaptureName = NULL_STRING
-                                    fetch_data()
-                                Else
-                                    MessageBox.Show("There is no GPS data being recieved at this time, therefore the record was not entered into the database", "No GPS Data Recieved", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                                End If
-                            Catch ex As Exception
-                                If ex.Message.StartsWith("Syntax") Then
-                                    MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-                                Else
-                                    MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-                                End If
-                            End Try
-                        End If
-                    ElseIf radQuickEntry.Checked Then 'quick entry
-                        'intSpeciesButtonUserCodeChoice(i) = aDataReader("DataCode")
-                        Try
-                            ' If an image is open and the video is closed then get the picture information from the EXIF file
-                            If image_open And m_video_file_open = False Then
-                                getEXIFData()
-                                strVideoTextTime = strVideoTime
-                            End If
-                            strSpeciesButtonUserNameChoice(i) = 666
-                            strSpeciesCode = strSpeciesButtonCodes(i)
-                            strSpeciesCount = strQuickEntryCount
-                            query = createInsertQuery(intSpeciesButtonUserCodeChoice(i), strSpecies_Name, strSpeciesCode, strSpeciesCount, NS, NS, NS, NS, NS, NS, NS, NS)
-                            Database.ExecuteNonQuery(query)
-                            fetch_data()
-                        Catch ex As Exception
-                            If ex.Message.StartsWith("Syntax") Then
-                                MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-                            Else
-                                MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-                            End If
-                        End Try
-                    ElseIf radAbundanceEntry.Checked Then
-                        Try
-                            frmAbundanceTableView = New frmAbundanceTableView
-                            frmAbundanceTableView.ShowDialog()
-                            ' If an image is open and the video is closed then get the picture information from the EXIF file
-                            If image_open And m_video_file_open = False Then
-                                getEXIFData()
-                                strVideoTextTime = strVideoTime
-                            End If
-                            If frmAbundanceTableView.Canceled = False Then
-                                If frmAbundanceTableView.grdAbundance.SelectedRows.Count <> 0 Then
-                                    strSpeciesButtonUserNameChoice(i) = 666
-                                    strSpeciesCode = strSpeciesButtonCodes(i)
-                                    strAbundance = frmAbundanceTableView.grdAbundance.SelectedRows(0).Cells(0).Value
-                                    If frmAbundanceTableView.txtCommentBox.Text <> NULL_STRING Or frmAbundanceTableView.txtCommentBox.Text <> "Comment" Then
-                                        strComment = frmAbundanceTableView.txtCommentBox.Text
-                                    Else
-                                        strComment = NS
-                                    End If
-                                    query = createInsertQuery(intSpeciesButtonUserCodeChoice(i), strSpecies_Name, strSpeciesCode, NS, NS, NS, NS, NS, NS, strAbundance, NS, strComment)
-                                    Database.ExecuteNonQuery(query)
-                                    fetch_data()
-                                    frmAbundanceTableView.Close()
-                                End If
-                            End If
-                        Catch ex As Exception
-                            If ex.Message.StartsWith("Syntax") Then
-                                MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-                            Else
-                                MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-                            End If
-                        End Try
-                    End If
-                End If
-            Next
-        Else
-            'If booUseGPSTimeCodes Then
-            ' blAquiredFix = getGPSData()
-            ' If Not blAquiredFix Then
-            ' Exit Sub
-            'End If
-        End If
-        strVideoTextTime = strVideoTime
-        frmSpeciesEvent = New frmSpeciesEvent(RangeChecked, IDConfidenceChecked, AbundanceChecked, CountChecked, HeightChecked, WidthChecked, LengthChecked, CommentsChecked, _
-                                              Range, Side, IDConfidence, Abundance, Count, Height, Width, Length, Comments)
-        frmSpeciesEvent.Location = New System.Drawing.Point(btn.Location.X, btn.Location.Y)
-        frmSpeciesEvent.SpeciesName = Me.SpeciesName
-        frmSpeciesEvent.SpeciesCode = Me.SpeciesCode
-        frmSpeciesEvent.ShowDialog()
-        If blSpeciesCancelled = True Then
-            blSpeciesCancelled = False
-            Exit Sub
-        End If
-        If blSpeciesValuesSet Then
-            Try
-                ' If an image is open and the video is closed then get the picture information from the EXIF file
-                If image_open And m_video_file_open = False Then
-                    getEXIFData()
-                    strVideoTextTime = strVideoTime
-                End If
-                strSpeciesButtonUserNameChoice(i) = 666
-                If m_tsUserTime.ToString() <> NULL_STRING Then
-                    ' Insert new record in database
-                    If Me.SpeciesWidth Is Nothing Then
-                        strWidth = NS
-                    Else
-                        strWidth = Me.SpeciesWidth
-                    End If
-                    strSpeciesCount = Me.Count
-                    If Me.Side = "0" Then
-                        strSide = NULL_STRING
-                    Else
-                        strSide = Me.Side
-                    End If
-                    strRange = Me.Range
-                    strLength = Me.Length
-                    strHeight = Me.SpeciesHeight
-                    strWidth = Me.SpeciesWidth
-                    strAbundance = Me.Abundance
-                    strIdConfidence = Me.IDConfidence
-                    strComment = Me.Comments
-                    'If transect_date = NULL_STRING Then
-                    query = createInsertQuery(SPECIES_EVENT, Me.SpeciesName, Me.SpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
-                    Database.ExecuteNonQuery(query)
-                    fetch_data()
-                Else
-                    MessageBox.Show("There is no GPS data being recieved at this time, therefore the record was not entered into the database", "No GPS Data Recieved", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                End If
-            Catch ex As Exception
-                If ex.Message.StartsWith("Syntax") Then
-                    MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-                Else
-                    MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-                End If
-            End Try
-        End If
-
-        If Not frmImage Is Nothing Then
-            frmImage.Focus()
-        End If
-        If Not frmVideoPlayer Is Nothing Then
-            If Me.chkResumeVideo.Checked Then
-                playVideo()
-            End If
-        End If
-    End Sub
-
-    'Public Sub GetSettingsFromFile()
-    '    RangeChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Range/Displayed")
-    '    IDConfidenceChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/IDConfidence/Displayed")
-    '    AbundanceChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Abundance/Displayed")
-    '    CountChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Count/Displayed")
-    '    HeightChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Height/Displayed")
-    '    WidthChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Width/Displayed")
-    '    LengthChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Length/Displayed")
-    '    CommentsChecked = GetConfiguration("/DetailedSpeciesEventConfiguration/Comments/Displayed")
-
-    '    Range = GetConfiguration("/DetailedSpeciesEventConfiguration/Range/DefaultValue")
-    '    Side = GetConfiguration("/DetailedSpeciesEventConfiguration/Side/DefaultValue")
-    '    IDConfidence = GetConfiguration("/DetailedSpeciesEventConfiguration/IDConfidence/DefaultValue")
-    '    Abundance = GetConfiguration("/DetailedSpeciesEventConfiguration/Abundance/DefaultValue")
-    '    Count = GetConfiguration("/DetailedSpeciesEventConfiguration/Count/DefaultValue")
-    '    SpeciesHeight = GetConfiguration("/DetailedSpeciesEventConfiguration/Height/DefaultValue")
-    '    SpeciesWidth = GetConfiguration("/DetailedSpeciesEventConfiguration/Width/DefaultValue")
-    '    Length = GetConfiguration("/DetailedSpeciesEventConfiguration/Length/DefaultValue")
-    '    Comments = GetConfiguration("/DetailedSpeciesEventConfiguration/Comments/DefaultValue")
-    'End Sub
-
 #End Region
 
     Private Sub txtPlaySeconds_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtPlaySeconds.KeyPress
@@ -5362,7 +4935,6 @@ SkipInsertComma:
         If m_db_file_open Then
 
             Me.pnlSpeciesData.Controls.Clear()
-            fillSpeciesVariableButtonPanel()
         End If
     End Sub
 
@@ -6011,7 +5583,7 @@ SkipInsertComma:
         Else
             SpeciesName = frmRareSpeciesLookup.lblCommonNameValue.Text
         End If
-        SpeciesVariableButtonHandler(Me, Nothing)
+        'SpeciesVariableButtonHandler(Me, Nothing)
     End Sub
 
     Private Sub relay_configuration_changed() Handles frmRelayConfiguration.RelayConfigurationChangedEvent
