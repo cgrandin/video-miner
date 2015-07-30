@@ -2,7 +2,7 @@ Chris Grandin
 October 2014 - December 2015
 Changes to VideoMiner code
 
-1. Vlc.DotNet Player control
+1. Vlc.DotNet Player control:
 
   A. Added the Vlc.DotNet player control, downloaded from http://vlcdotnet.codeplex.com/
      This was a major rewrite, as the control has completely different methods and behaviours
@@ -54,6 +54,13 @@ Changes to VideoMiner code
    function, the node 'z' and all nodes required ('x' and subnode 'y') will be created recursively.
    See CreateXMLNode() in frmVideoMiner.vb. Also made constants for common XML strings to avoid having
    long strings in the code.
-   
 
+July 2015 - Present
+
+5. Added new classes DynamicButton, DynamicTextbox, and DynamicPanel which each extend the base control
+   classes. These classes improve encapsulation dramatically, allowing for the removal of thousands
+   of lines of redundant spaghetti code. The new classes form the following parent/child relationships:
+   Videominer -> DynamicPanel -> DynamicButton and DynamicTextbox -> frmTableView. The DynamicPanel
+   also allows for two types, one for buttons linked to database tables, and one with sinigular values
+   (species buttons).
 

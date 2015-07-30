@@ -262,6 +262,11 @@ Public Class VideoMiner
     ''' Holds the data table for the actual project data being recorded
     ''' </summary>
     Private m_data_table As DataTable
+    ''' <summary>
+    ''' Holds the data code table for the project. This will be passed to the various DynamicPanels
+    ''' so that they can link their data to the proper data code
+    ''' </summary>
+    Private m_data_codes_table As DataTable
     Private m_db_file_open As Boolean
     Private m_db_filename As String
     Private m_db_id_num As Long
@@ -1836,6 +1841,15 @@ Public Class VideoMiner
 
     End Sub
 
+    ''' <summary>
+    ''' Handle the changing of button data (transect and habitat buttons only) by creating an insert query and saving to the database
+    ''' </summary>
+    ''' <param name="dict">Dictionary of Key/value pairs for the data. Key=dataCodeName, Value=dataCode</param>
+    Private Sub buttonDataChanged(dict As Dictionary(Of String, Tuple(Of String, String))) Handles pnlHabitatData.DataChanged, pnlTransectData.DataChanged
+        ' MsgBox("Arrived in Videominer.vb with dictionary:" & dict.ToString())
+
+    End Sub
+
     Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEdit.Click
         frmSpeciesList = New frmSpeciesList
         frmSpeciesList.ShowDialog()
@@ -2356,258 +2370,6 @@ Public Class VideoMiner
     Private Sub cmdCloseCalendar_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCloseCalendar.Click
         Me.mnthCalendar.Visible = False
         Me.cmdCloseCalendar.Visible = False
-    End Sub
-
-    Private Sub cmdDefineAllSpatialVariables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        Dim query As String = NULL_STRING
-        Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
-        Dim strCode As String = NULL_STRING
-        Dim strName As String = NULL_STRING
-        Dim blFlag As Boolean = False
-        Dim blAquiredFix As Boolean = False
-        'If they are using the video control then get the time from there.
-        ' The time code is set to be VIDEO_TIME_LABEL initially.
-        Dim strVideoTime As String = VIDEO_TIME_LABEL
-        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
-        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
-        ' do the following only when the video is open:
-        ' pause stream and get the time code
-        ' If the video is not open, then we cannot pause the
-        ' video stream, and there is no need to get the TimeCode.
-        If m_video_file_open Then
-            If frmVideoPlayer.IsPlaying Then
-                blVideoWasPlaying = True
-                pauseVideo()
-            Else
-                blVideoWasPlaying = False
-            End If
-            strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
-            strVideoTextTime = strVideoTime
-        End If
-
-        If booUseGPSTimeCodes Then
-            'Otherwise get the time from the NMEA string.
-
-            ' The GPRMC NMEA String does not contain elevation values. Enter null into database
-            ' if GPRMC is the chosen string type.
-            blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, "", "", "")
-            If Not blAquiredFix Then
-                Exit Sub
-            End If
-        End If
-        strVideoTextTime = strVideoTime
-        ' If an image is open and a video is closed, get the photo information from the EXIF file
-        If image_open And m_video_file_open = False Then
-            getEXIFData()
-            strVideoTextTime = strVideoTime
-        End If
-
-        Try
-
-            Dim i As Integer
-            For i = 0 To strHabitatButtonCodeNames.Length - 2
-
-                If strHabitatButtonTables(i) = "UserEntered" Then
-                    Dim strValue As String
-                    frmAddValue = New frmAddValue(dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString))
-                    frmAddValue.lblExpression.Text = "Please enter a value for " & strHabitatButtonNames(i) & ":"
-                    frmAddValue.Text = strHabitatButtonNames(i) & " Entry"
-                    frmAddValue.cmdCancel.Text = "Skip"
-                    frmAddValue.ShowDialog()
-
-                    strValue = frmAddValue.strValue
-
-                    strHabitatButtonUserCodeChoice(i) = strValue
-                    frmAddValue.Close()
-                    frmAddValue = Nothing
-                    dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
-                    dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
-                    strHabitatButtonUserNameChoice(i) = strValue
-                    If strValue = "-9999" Then
-                        'ClearSpatial(strHabitatButtonNames(i), intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
-                    Else
-                        Dim _fontfamily As FontFamily
-                        _fontfamily = New FontFamily(Me.ButtonFont)
-                        textboxes(i).Text = strHabitatButtonUserNameChoice(i)
-                        textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                        textboxes(i).BackColor = Color.LightGray
-                        textboxes(i).ForeColor = Color.LimeGreen
-                        textboxes(i).TextAlign = HorizontalAlignment.Center
-                    End If
-
-                Else
-
-                    'Dim sub_form As frmTableView = New frmTableView(strHabitatButtonTables(i), i, intNumHabitatButtons, strHabitatButtonNames, dictHabitatFieldValues, strHabitatButtonCodeNames, textboxes)
-                    Dim sub_form As frmTableView = New frmTableView("", New DataTable())
-                    'sub_form.Multiple = True
-
-                    sub_form.ShowDialog()
-                    'If Not sub_form.UserClosedForm Then
-                    strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & NULL_STRING
-                    strHabitatButtonUserCodeChoice(i) = strCode
-                    dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
-                    dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = strHabitatButtonUserCodeChoice(i).ToString
-
-                    strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & NULL_STRING
-
-                    If strName.Length = 0 Then
-                        strName = strCode
-                    End If
-                    strHabitatButtonUserNameChoice(i) = strName
-                    Dim _fontfamily As FontFamily
-                    _fontfamily = New FontFamily(Me.ButtonFont)
-                    textboxes(i).Text = strHabitatButtonUserNameChoice(i)
-                    textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                    textboxes(i).BackColor = Color.LightGray
-                    textboxes(i).ForeColor = Color.LimeGreen
-                    textboxes(i).TextAlign = HorizontalAlignment.Center
-                    'End If
-                End If
-            Next
-
-            query = createInsertQuery(ALL_HABITAT_VARIABLES_CLEARED, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-            Me.ScreenCaptureName = NULL_STRING
-            Dim numrows As Integer
-            Database.ExecuteNonQuery(query)
-            fetch_data()
-            If blVideoWasPlaying = True Then
-                playVideo()
-                blVideoWasPlaying = False
-            End If
-
-        Catch ex As Exception
-            If ex.Message.StartsWith("Syntax") Then
-                MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-            Else
-                MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-            End If
-        End Try
-    End Sub
-
-    ''' <summary>
-    ''' When user clicks this button, it is the same as if they clicked all the transect variable buttons in sequence.
-    ''' This is a convinience button.
-    ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
-    ''' <remarks></remarks>
-    Private Sub cmdDefineAllTransectVariables_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        Dim query As String = NULL_STRING
-        Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
-        Dim strCode As String = NULL_STRING
-        Dim strName As String = NULL_STRING
-        Dim blFlag As Boolean = False
-        Dim blAquiredFix As Boolean = False
-        'If they are using the video control then get the time from there.
-        ' The time code is set to be VIDEO_TIME_LABEL initially.
-        Dim strVideoTime As String = VIDEO_TIME_LABEL
-        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
-        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
-        ' do the following only when the video is open:
-        ' pause stream and get the time code
-        ' If the video is not open, then we cannot pause the
-        ' video stream, and there is no need to get the TimeCode.
-        If m_video_file_open Then
-            If frmVideoPlayer.IsPlaying Then
-                blVideoWasPlaying = True
-                pauseVideo()
-            Else
-                blVideoWasPlaying = False
-            End If
-            strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
-        End If
-
-        If booUseGPSTimeCodes Then
-            'Otherwise get the time from the NMEA string.
-
-            ' The GPRMC NMEA String does not contain elevation values. Enter null into database
-            ' if GPRMC is the chosen string type.
-            blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, "", "", "")
-            If Not blAquiredFix Then
-                Exit Sub
-            End If
-        End If
-        strVideoTextTime = strVideoTime
-        ' If an image is open and a video is closed, get the photo information from the EXIF file
-        If image_open And m_video_file_open = False Then
-            getEXIFData()
-            strVideoTextTime = strVideoTime
-        End If
-        Try
-            Dim i As Integer
-            For i = 0 To strTransectButtonCodeNames.Length - 2
-
-                If strTransectButtonTables(i) = "UserEntered" Then
-                    Dim strValue As String
-                    frmAddValue = New frmAddValue(dictTransectFieldValues(strTransectButtonCodeNames(i).ToString))
-                    frmAddValue.lblExpression.Text = "Please enter a value for " & strTransectButtonNames(i) & ":"
-                    frmAddValue.Text = strTransectButtonNames(i) & " Entry"
-                    frmAddValue.cmdCancel.Text = "Skip"
-                    frmAddValue.ShowDialog()
-
-                    strValue = frmAddValue.strValue
-                    frmAddValue.Close()
-                    frmAddValue = Nothing
-                    strTransectButtonUserCodeChoice(i) = strValue
-                    dictTransectFieldValues(strTransectButtonCodeNames(i).ToString) = strTransectButtonUserCodeChoice(i).ToString
-                    strTransectButtonUserNameChoice(i) = strValue
-                    If strValue = "-9999" Then
-                        'ClearSpatial(strTransectButtonNames(i), intNumTransectButtons, strTransectButtonNames, dictTransectFieldValues, strTransectButtonCodeNames, Transect_Textboxes)
-                    Else
-                        Dim _fontfamily As FontFamily
-                        _fontfamily = New FontFamily(Me.ButtonFont)
-                        Transect_Textboxes(i).Text = strTransectButtonUserNameChoice(i)
-                        Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                        Transect_Textboxes(i).BackColor = Color.LightGray
-                        Transect_Textboxes(i).ForeColor = Color.LimeGreen
-                        Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
-                    End If
-
-
-                Else
-                    'Dim sub_form As frmTableView = New frmTableView(strTransectButtonTables(i), i, intNumTransectButtons, strTransectButtonNames, dictTransectFieldValues, strTransectButtonCodeNames, Transect_Textboxes)
-                    Dim sub_form As frmTableView = New frmTableView("", New DataTable())
-                    'sub_form.Multiple = True
-                    sub_form.ShowDialog()
-                    'If Not sub_form.UserClosedForm Then
-                    strCode = sub_form.DataGridView1.SelectedRows(0).Cells(0).Value & NULL_STRING
-                    strTransectButtonUserCodeChoice(i) = strCode
-                    dictTransectFieldValues(strTransectButtonCodeNames(i).ToString) = strTransectButtonUserCodeChoice(i).ToString
-
-                    strName = sub_form.DataGridView1.SelectedRows(0).Cells(1).Value & NULL_STRING
-
-                    If strName.Length = 0 Then
-                        strName = strCode
-                    End If
-                    strTransectButtonUserNameChoice(i) = strName
-                    Dim _fontfamily As FontFamily
-                    _fontfamily = New FontFamily(Me.ButtonFont)
-                    Transect_Textboxes(i).Text = strTransectButtonUserNameChoice(i)
-                    Transect_Textboxes(i).Font = New Font(_fontfamily, Me.ButtonTextSize, FontStyle.Bold)
-                    Transect_Textboxes(i).BackColor = Color.LightGray
-                    Transect_Textboxes(i).ForeColor = Color.LimeGreen
-                    Transect_Textboxes(i).TextAlign = HorizontalAlignment.Center
-                    'End If
-                End If
-            Next
-
-            If Me.strComment <> NULL_STRING Then
-                query = createInsertQuery(intTransectButtonCodes(i), NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-                Database.ExecuteNonQuery(query)
-                fetch_data()
-            End If
-            Me.strComment = NULL_STRING
-            If blVideoWasPlaying = True Then
-                playVideo()
-                blVideoWasPlaying = False
-            End If
-        Catch ex As Exception
-            If ex.Message.StartsWith("Syntax") Then
-                MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-            Else
-                MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-            End If
-        End Try
     End Sub
 
     Private Sub tmrRecordPerSecond_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrRecordPerSecond.Tick
@@ -4577,9 +4339,7 @@ Public Class VideoMiner
             pnlTransectData.fillPanel(DB_TRANSECT_BUTTONS_TABLE)
             pnlHabitatData.fillPanel(DB_HABITAT_BUTTONS_TABLE)
             pnlSpeciesData.fillPanel(DB_SPECIES_BUTTONS_TABLE)
-            'fillSpeciesVariableButtonPanel()
-            'fillHabitatFieldsCollection()
-            fillDataCodesTable()
+            'fillDataCodesTable()
             db_file_load()
             If m_video_file_open Then
                 files_loaded()
@@ -4641,6 +4401,8 @@ Public Class VideoMiner
     Private Sub fetch_data()
         m_data_table = Database.GetDataTable("SELECT * FROM " & DB_DATA_TABLE & " ORDER BY ID DESC;", DB_DATA_TABLE) ' DESC is important here, see comment below on m_db_id_num
         grdVideoMinerDatabase.DataSource = m_data_table
+        m_data_codes_table = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE & " order by 1;", DB_DATA_CODES_TABLE)
+
         Dim intIDColumn As Integer = 0
         If m_data_table.Rows.Count > 0 Then
             m_db_id_num = m_data_table.Rows(0).Item(intIDColumn) + 1 ' m_db_id_num is the next unique primary key to use in inserting data into database (assumes decending order)
@@ -6257,13 +6019,6 @@ SkipInsertComma:
         RelaySetup = frmRelayConfiguration.RelaySetup
         ParallelCom = frmRelayConfiguration.ParallelCom
         ParallelBaud = frmRelayConfiguration.ParallelBaud
-    End Sub
-
-    Private Sub clear_spatial_information() Handles frmTableView.ClearSpatialInformationEvent
-        With frmTableView
-            'ClearSpatial(.SelectedButtonName, .NumButtons, .ButtonNames, .FieldValues, .ButtonCodeNames, .TextBoxes)
-            'ClearSpatial(.SelectedButtonName, .FieldValues, .TextBoxes)
-        End With
     End Sub
 
     Private Sub right_arrow_pressed() Handles frmVideoPlayer.RightArrowPressedEvent

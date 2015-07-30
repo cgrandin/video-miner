@@ -64,6 +64,24 @@ Public Class DynamicPanel
     ''' Holds the enumeration type for this instance
     ''' </summary>
     Private m_which_type As WhichTypeEnum
+    ''' <summary>
+    ''' A tuple for the Dictionary object, m_dict.
+    ''' </summary>
+    Private m_tuple As Tuple(Of String, String)
+    ''' <summary>
+    ''' Dictionary of key/value pairs that hold the currently selected data (most recently-pressed button's data) for this panel.
+    ''' If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
+    ''' not just the most recently-pressed button's data.
+    ''' The first parameter is the name of the field in the database table lu_data. The tuple is a pair of data code (from lu_data_codes)
+    ''' and the data value to be inserted.
+    ''' </summary>
+    Private m_dict As Dictionary(Of String, Tuple(Of String, String))
+    ''' <summary>
+    ''' Data code used for table-based data. e.g. table lu_survey_mode is associated with data code 9 in the lu_data_codes table
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_data_code As Integer
+
 #End Region
 
 #Region "Properties"
@@ -78,6 +96,20 @@ Public Class DynamicPanel
             m_which_type = value
         End Set
     End Property
+
+    ''' Dictionary of key/value pairs that hold the currently selected data (most recently-pressed button's data) for this panel.
+    ''' If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
+    ''' not just the most recently-pressed button's data.
+    Public ReadOnly Property Data As Dictionary(Of String, Tuple(Of String, String))
+        Get
+            Return m_dict
+        End Get
+    End Property
+
+#End Region
+
+#Region "Events"
+    Public Event DataChanged(dict As Dictionary(Of String, Tuple(Of String, String)))
 #End Region
 
     ''' <summary>
@@ -93,8 +125,8 @@ Public Class DynamicPanel
     ''' <param name="blRepeatIsChecked">If True, the 'Repeat for each record' checkbox will be checked on creation.</param>
     ''' <param name="intRepeatWidth">Width of the 'Repeat for each record' checkbox.</param>
     ''' <param name="intRepeatHeight">Height of the 'Repeat for each record' checkbox.</param>
-    Public Sub New(strPanelName As String, Optional blIncludeDefineAllButton As Boolean = True, Optional intButtonWidth As Integer = 170, Optional intButtonHeight As Integer = 44,
-                   Optional strButtonFont As String = "Microsoft Sans Serif", Optional intButtonTextSize As Integer = 8,
+    Public Sub New(strPanelName As String, Optional blIncludeDefineAllButton As Boolean = True, Optional intButtonWidth As Integer = 170,
+                   Optional intButtonHeight As Integer = 44, Optional strButtonFont As String = "Microsoft Sans Serif", Optional intButtonTextSize As Integer = 8,
                    Optional blIncludeRepeatCheckbox As Boolean = False, Optional blRepeatIsChecked As Boolean = True, Optional intRepeatWidth As Integer = 210,
                    Optional intRepeatHeight As Integer = 17)
 
@@ -103,8 +135,10 @@ Public Class DynamicPanel
         m_define_all_button = Nothing
         m_y_offset = 0
         m_gap = 2
+        m_tuple = New Tuple(Of String, String)(Nothing, Nothing)
+        m_dict = New Dictionary(Of String, Tuple(Of String, String))
 
-        'Panel label load
+        'Panel label load`
         m_label = New Label()
         m_label.Name = "lblPanel"
         m_label.Text = strPanelName
@@ -136,6 +170,8 @@ Public Class DynamicPanel
             m_y_offset = m_repeat_for_every_record.Bottom + m_gap
             m_repeat_for_every_record.Visible = False
             m_num_static_controls += 1
+        Else
+            m_repeat_for_every_record = Nothing
         End If
         If blIncludeDefineAllButton Then
             m_define_all_button = New Button()
@@ -158,6 +194,8 @@ Public Class DynamicPanel
             m_define_all_button.Visible = False
             AddHandler m_define_all_button.Click, AddressOf DefineAll
             Me.Controls.Add(m_define_all_button)
+        Else
+            m_define_all_button = Nothing
         End If
         If blIncludeRepeatCheckbox Then
             Me.Controls.Add(m_repeat_for_every_record)
@@ -225,7 +263,7 @@ Public Class DynamicPanel
                                                          m_button_text_size)
                 m_dynamic_textboxes(i) = New DynamicTextbox(r.Item(0), r.Item(1).ToString(), m_button_font, m_button_text_size)
             End If
-            AddHandler m_dynamic_buttons(i).SelectionChanged, AddressOf SelectionChanged
+            AddHandler m_dynamic_buttons(i).DataChanged, AddressOf PanelDataChanged
             i += 1
         Next
         placeControls()
@@ -294,19 +332,51 @@ Public Class DynamicPanel
     ''' in a query being run to insert data into the database.
     ''' </summary>
     ''' <param name="sender">The DynamicButton that raised the event</param>
-    Private Sub SelectionChanged(ByVal sender As Object, ByVal e As EventArgs)
+    Private Sub PanelDataChanged(ByVal sender As Object, ByVal e As EventArgs)
         Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
         ' Find associated DynamicTextbox, so we can change the text to reflect the change
         For i As Integer = 0 To m_num_dynamic_buttons - 1
             If m_dynamic_textboxes(i).ControlCode = btn.ControlCode Then
-                If btn.DataCodeName Is Nothing Then
+                If btn.DataValue = 0 Then
                     ' The data have been cleared, so change the textbox to reflect this
                     m_dynamic_textboxes(i).setNoData()
                 Else
-                    m_dynamic_textboxes(i).setData(btn.DataCodeName)
+                    m_dynamic_textboxes(i).setData(btn.DataDescription)
+                    buildDictionary(btn)
+                    RaiseEvent DataChanged(m_dict)
                 End If
             End If
         Next
+    End Sub
+
+    ''' <summary>
+    ''' Build the dictionary of key/value pairs. This will be one item if the checkbox is nothing or not checked
+    ''' and all items if the checkbox is checked.
+    ''' </summary>
+    ''' <param name="btn">The button to build the dictionary for, unless the checkbox is checked in which case this is ignored.</param>
+    Private Sub buildDictionary(btn As DynamicButton)
+        ' Clear the dictionary from the previous time if necessary
+        m_dict.Clear()
+        If IsNothing(m_repeat_for_every_record) Then
+            ' One button's data
+            m_tuple = New Tuple(Of String, String)(btn.DataCode, btn.DataValue)
+            m_dict.Add(btn.DataCodeName, m_tuple)
+        ElseIf Not m_repeat_for_every_record.Checked Then
+            ' One button's data
+            If btn.DataValue <> 0 Then
+                m_tuple = New Tuple(Of String, String)(btn.DataCode, btn.DataValue)
+                m_dict.Add(btn.DataCodeName, m_tuple)
+            End If
+            Else
+                ' All button's data
+                For i As Integer = 0 To m_num_dynamic_buttons - 1
+                    ' If the button has data selected...
+                    If m_dynamic_buttons(i).DataValue <> 0 Then
+                        m_tuple = New Tuple(Of String, String)(m_dynamic_buttons(i).DataCode, m_dynamic_buttons(i).DataValue)
+                        m_dict.Add(m_dynamic_buttons(i).DataCodeName, m_tuple)
+                    End If
+                Next
+            End If
     End Sub
 
     ''' <summary>

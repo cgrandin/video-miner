@@ -50,7 +50,7 @@ Public Class frmTableView
     ''' If user presses Clear button, this will fire so that the main form can update its dynamic buttons and textboxes
     ''' </summary>
     ''' <remarks></remarks>
-    Public Event ClearSpatialInformationEvent()
+    Public Event ClearEvent()
 
     ''' <summary>
     ''' If user edits the comment box, this event will be raised so that the main form can write a record to the database
@@ -68,6 +68,8 @@ Public Class frmTableView
         DataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
         DataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
         DataGridView1.MultiSelect = False
+        ' TODO: Make the grid editable and linked to database
+        DataGridView1.ReadOnly = True
         Controls.Add(DataGridView1)
 
         'If intCurrentSpatialVariable <> 8888 Then
@@ -94,7 +96,7 @@ Public Class frmTableView
         Me.btnClear.Visible = True
         Me.Width = DataGridView1.Width
         Me.Height = (DataGridView1.RowCount + 3) * DataGridView1.Rows(0).Height
-        Me.txtCommentBox.Text = VideoMiner.strComment
+        'Me.txtCommentBox.Text = VideoMiner.strComment
         Refresh()
     End Sub
 
@@ -118,7 +120,7 @@ Public Class frmTableView
     ''' </summary>
     Private Sub btnClear_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnClear.Click
         clearSelection()
-        RaiseEvent ClearSpatialInformationEvent()
+        RaiseEvent ClearEvent()
         Me.Hide()
     End Sub
 
@@ -129,8 +131,11 @@ Public Class frmTableView
         'myFormLibrary.frmVideoMiner.blScreenCaptureCalled = False
     End Sub
 
+    ''' <summary>
+    ''' Clear the datagrid selection and empty the comment box
+    ''' </summary>
     Public Sub clearSelection()
-
         DataGridView1.ClearSelection()
+        txtCommentBox.Clear()
     End Sub
 End Class

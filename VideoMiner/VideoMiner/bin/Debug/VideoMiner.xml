@@ -101,10 +101,32 @@ VideoMiner
 	<summary>
  Holds the enumeration type for this instance
  </summary>
+</member><member name="F:VideoMiner.DynamicPanel.m_tuple">
+	<summary>
+ A tuple for the Dictionary object, m_dict.
+ </summary>
+</member><member name="F:VideoMiner.DynamicPanel.m_dict">
+	<summary>
+ Dictionary of key/value pairs that hold the currently selected data (most recently-pressed button's data) for this panel.
+ If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
+ not just the most recently-pressed button's data.
+ The first parameter is the name of the field in the database table lu_data. The tuple is a pair of data code (from lu_data_codes)
+ and the data value to be inserted.
+ </summary>
+</member><member name="F:VideoMiner.DynamicPanel.m_data_code">
+	<summary>
+ Data code used for table-based data. e.g. table lu_survey_mode is associated with data code 9 in the lu_data_codes table
+ </summary>
+	<remarks></remarks>
 </member><member name="P:VideoMiner.DynamicPanel.WhichType">
 	<summary>
  Enumeration type for this instance. See WhichTypeEnum for descriptions.
  </summary>
+</member><member name="P:VideoMiner.DynamicPanel.Data">
+ Dictionary of key/value pairs that hold the currently selected data (most recently-pressed button's data) for this panel.
+ If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
+ not just the most recently-pressed button's data.
+
 </member><member name="M:VideoMiner.DynamicPanel.#ctor(System.String,System.Boolean,System.Int32,System.Int32,System.String,System.Int32,System.Boolean,System.Boolean,System.Int32,System.Int32)">
 	<summary>
  Create the DynamicPanel object.
@@ -133,12 +155,18 @@ VideoMiner
 	<summary>
  Removes all dynamic controls (DynamicButton and DynamicTextbox controls) from the panel.
  </summary>
-</member><member name="M:VideoMiner.DynamicPanel.SelectionChanged(System.Object,System.EventArgs)">
+</member><member name="M:VideoMiner.DynamicPanel.PanelDataChanged(System.Object,System.EventArgs)">
 	<summary>
  Handles the case where the user changed a selection in a code table. This may result
  in a query being run to insert data into the database.
  </summary>
 	<param name="sender">The DynamicButton that raised the event</param>
+</member><member name="M:VideoMiner.DynamicPanel.buildDictionary(VideoMiner.DynamicButton)">
+	<summary>
+ Build the dictionary of key/value pairs. This will be one item if the checkbox is nothing or not checked
+ and all items if the checkbox is checked.
+ </summary>
+	<param name="btn">The button to build the dictionary for, unless the checkbox is checked in which case this is ignored.</param>
 </member><member name="M:VideoMiner.DynamicPanel.DefineAll(System.Object,System.EventArgs)">
 	<summary>
  When user clicks the 'DEFINE ALL' button, it is the same as if they clicked all the dynamic buttons in sequence.
@@ -728,6 +756,14 @@ VideoMiner
  This is NOT the code chosen by the user in the table view, this is the
  code for this particular table.
  </summary>
+</member><member name="F:VideoMiner.DynamicButton.m_data_code_description">
+	<summary>
+ A description of the data code
+ </summary>
+</member><member name="F:VideoMiner.DynamicButton.m_data_value">
+	<summary>
+ The value of the chosen data, i.e.e from row selection in a table, entry such as Field of View, or from clicking a species event button.
+ </summary>
 </member><member name="F:VideoMiner.DynamicButton.m_data_table">
 	<summary>
  Table of data found in the m_db_table_name table in the MS Access database. This may not be set if the button type is for a species.
@@ -752,6 +788,14 @@ VideoMiner
  Currently entered comment in the frmTableView
  </summary>
 	<remarks></remarks>
+</member><member name="P:VideoMiner.DynamicButton.DataCode">
+	<summary>
+ Data code used for table-based data. e.g. table lu_survey_mode is associated with data code 9 in the lu_data_codes table
+ </summary>
+</member><member name="E:VideoMiner.DynamicButton.DataChanged">
+	<summary>
+ Fired when the button data has changed.
+ </summary>
 </member><member name="M:VideoMiner.DynamicButton.#ctor(System.Int32,System.String,System.String,System.Int32,System.String,System.String,System.String,System.Int32)">
 	<summary>
  Creates the object, for the case in which the button refers to a database code table.
@@ -766,10 +810,10 @@ VideoMiner
 	<remarks></remarks>
 </member><member name="M:VideoMiner.DynamicButton.#ctor(System.Int32,System.String,System.String,System.String,System.Int32,System.String,System.String,System.String,System.Int32)">
 	<summary>
- Creates the object, for the case in which the button refers to a species code.
+ Creates the object, for the case in which the button refers to a singular datum (such as species code).
  </summary>
 	<param name="buttonText">Text to appear on the button</param>
-	<param name="buttonCode">Code for the button. If species button, this is the species code</param>
+	<param name="buttonCode">Code for the button. If singulars button, this is the (species) code</param>
 	<param name="buttonCodeName">Name for the button code, (e.g. SpeciesID)</param>
 	<param name="dataCode">Data Code that is in the database table for this button type</param>
 	<param name="buttonColor">The microsoft color for this button's text (e.g. "DarkBlue")</param>
@@ -777,12 +821,12 @@ VideoMiner
 	<param name="buttonFont">The font to use for this button (e.g. "Microsoft Sans Serif")</param>
 	<param name="buttonTextSize">The font size to use for this button's text (in pts)</param>
 	<remarks></remarks>
-</member><member name="M:VideoMiner.DynamicButton.dataChanged(System.String)">
+</member><member name="M:VideoMiner.DynamicButton.dataHasChanged(System.String)">
 	<summary>
  Handle the changing by the user of the lookup table code found in frmTableView, and fire an event to the parent.
  </summary>
 	<param name="comment">The comment supplied by the user. Can be the empty string.</param>
-</member><member name="M:VideoMiner.DynamicButton.clearSpatialData">
+</member><member name="M:VideoMiner.DynamicButton.clearData">
 	<summary>
  Handle the clearing of the data field in the table by resetting the DataCode and DataComment to Nothing and
  firing an event to signal the parent.
@@ -1278,7 +1322,7 @@ VideoMiner
 	<summary>
  Return the contents of the comment box, which may be an empty string.
  </summary>
-</member><member name="E:VideoMiner.frmTableView.ClearSpatialInformationEvent">
+</member><member name="E:VideoMiner.frmTableView.ClearEvent">
 	<summary>
  If user presses Clear button, this will fire so that the main form can update its dynamic buttons and textboxes
  </summary>
@@ -1301,6 +1345,10 @@ VideoMiner
 </member><member name="M:VideoMiner.frmTableView.btnClear_Click(System.Object,System.EventArgs)">
 	<summary>
  If the clear button is pressed, clear the selected row so that there is no selection, and raise an event to the parent.
+ </summary>
+</member><member name="M:VideoMiner.frmTableView.clearSelection">
+	<summary>
+ Clear the datagrid selection and empty the comment box
  </summary>
 </member><member name="T:VideoMiner.frmTableView">
 	<summary>
@@ -1405,6 +1453,11 @@ VideoMiner
 </member><member name="F:VideoMiner.VideoMiner.m_data_table">
 	<summary>
  Holds the data table for the actual project data being recorded
+ </summary>
+</member><member name="F:VideoMiner.VideoMiner.m_data_codes_table">
+	<summary>
+ Holds the data code table for the project. This will be passed to the various DynamicPanels
+ so that they can link their data to the proper data code
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.frmVideoMiner_Load(System.Object,System.EventArgs)">
 	<summary>
@@ -1533,6 +1586,11 @@ VideoMiner
  database table, and plays the video again.
  </summary>
 	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.buttonDataChanged(System.Collections.Generic.Dictionary{System.String,System.Tuple{System.String,System.String}})">
+	<summary>
+ Handle the changing of button data (transect and habitat buttons only) by creating an insert query and saving to the database
+ </summary>
+	<param name="dict">Dictionary of Key/value pairs for the data. Key=dataCodeName, Value=dataCode</param>
 </member><member name="M:VideoMiner.VideoMiner.newProjectName">
 	<summary>
  Add a new project name to the XML file when the user changes it inside frmProjectNames
@@ -1545,14 +1603,6 @@ VideoMiner
 	<summary>
  Delete the project name currently selected in the frmProjectName form.
  </summary>
-</member><member name="M:VideoMiner.VideoMiner.cmdDefineAllTransectVariables_Click(System.Object,System.EventArgs)">
-	<summary>
- When user clicks this button, it is the same as if they clicked all the transect variable buttons in sequence.
- This is a convinience button.
- </summary>
-	<param name="sender"></param>
-	<param name="e"></param>
-	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.openSession">
 	<summary>
  Open a session which has saved the previous state of the program in VideoMiner Session file (*.xml)
