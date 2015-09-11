@@ -690,6 +690,20 @@ VideoMiner
  Append the string to the textbox
  </summary>
 	<remarks>Only appends if the form is visible and not "paused"</remarks>
+</member><member name="M:VideoMiner.frmEditSpecies.#ctor">
+	<summary>
+ In this constructor, the various comboboxes will be populated so that it only happens once. There are over 7000 records in the species table and this will speed things up in the program.
+ </summary>
+</member><member name="M:VideoMiner.frmEditSpecies.PopulateSpeciesLists(System.Windows.Forms.ComboBox@,System.Data.DataTable@)">
+	<summary>
+ Fill the combobox with a given column's contents
+ </summary>
+	<param name="cboBox">A reference to the combobox to populate</param>
+	<param name="dataTable">A single column data table containing values that you want to fill the combobox with</param>
+</member><member name="T:VideoMiner.frmEditSpecies">
+	<summary>
+ This form class allows the user to add a new species to the database table 'videominer_species_buttons' or to edit properties of an existing species
+ </summary>
 </member><member name="M:VideoMiner.Point.GetPoint">
 	<summary>
  Get a point location from a NMEA string

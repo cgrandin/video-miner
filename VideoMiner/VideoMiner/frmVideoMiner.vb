@@ -951,6 +951,7 @@ Public Class VideoMiner
 
     Public Sub New()
         InitializeComponent()
+        frmSpeciesList = New frmSpeciesList
     End Sub
 
     Protected Overrides Sub Finalize()
@@ -1861,8 +1862,7 @@ Public Class VideoMiner
     ''' and to delete them, edit them, or add new ones.
     ''' </summary>
     Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEdit.Click
-        frmSpeciesList = New frmSpeciesList
-        frmSpeciesList.ShowDialog()
+        frmSpeciesList.Show()
     End Sub
 
     ''' <summary>

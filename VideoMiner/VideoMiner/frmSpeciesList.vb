@@ -24,6 +24,7 @@ Public Class frmSpeciesList
             .Columns.Add("Species Code", 90, HorizontalAlignment.Left)
             .Columns.Add("Taxonomic Code", 110, HorizontalAlignment.Left)
         End With
+        frmEditSpecies = New frmEditSpecies
     End Sub
 
     ''' <summary>
@@ -135,17 +136,13 @@ Public Class frmSpeciesList
     End Sub
 
     Private Sub cmdInsertNew_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdInsertNew.Click
-        'Me.UpdateDrawingOrder()
-        'frmEditSpecies.txtSpeciesBtnTxt.Enabled = False
-        frmEditSpecies = New frmEditSpecies
         With frmEditSpecies
             .OriginalSpeciesName = ""
             .OriginalSpeciesCode = ""
             .cboCommonName.Text = ""
-            .cboLatinName.Text = ""
             .cboScientificName.Text = ""
             .Edit_Insert = "Insert"
-            .ShowDialog()
+            .Show()
         End With
     End Sub
 
@@ -159,7 +156,6 @@ Public Class frmSpeciesList
             With frmEditSpecies
                 .Edit_Insert = "Edit"
                 .cboCommonName.Text = ""
-                .cboLatinName.Text = ""
                 .cboScientificName.Text = ""
             End With
             'Me.UpdateDrawingOrder()
@@ -271,4 +267,10 @@ Public Class frmSpeciesList
         lstSpecies.DoDragDrop(lstSpecies.SelectedItems, DragDropEffects.Move)
     End Sub
 
+    Private Sub me_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If e.CloseReason = CloseReason.UserClosing Then
+            e.Cancel = True
+            Me.Hide()
+        End If
+    End Sub
 End Class

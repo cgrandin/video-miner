@@ -1,38 +1,42 @@
 Imports System.Data.OleDb
-
+''' <summary>
+''' This form class allows the user to add a new species to the database table 'videominer_species_buttons' or to edit properties of an existing species
+''' </summary>
 Public Class frmEditSpecies
-    Private m_conn As OleDbConnection
     Private WithEvents frmCreateKeyboardShortcut As frmCreateKeyboardShortcut
-    Private m_OriginalSpeciesName As String
-    Private m_OpriginalSpeciesCode As String
-    Private m_SpeciesName As String
+    Private m_conn As OleDbConnection
+    Private m_species_table As DataTable
+    Private m_originalSpeciesName As String
+    Private m_opriginalSpeciesCode As String
+    Private m_speciesName As String
     Private m_selIdx As Integer
-    Private m_Edit_Insert As String = "Insert"
+    Private m_edit_Insert As String = "Insert"
 
+#Region "Properties"
     Public Property OriginalSpeciesName() As String
         Get
-            Return m_OriginalSpeciesName
+            Return m_originalSpeciesName
         End Get
         Set(ByVal value As String)
-            m_OriginalSpeciesName = value
+            m_originalSpeciesName = value
         End Set
     End Property
 
     Public Property Edit_Insert() As String
         Get
-            Return m_Edit_Insert
+            Return m_edit_Insert
         End Get
         Set(ByVal value As String)
-            m_Edit_Insert = value
+            m_edit_Insert = value
         End Set
     End Property
 
     Public Property OriginalSpeciesCode() As String
         Get
-            Return m_OpriginalSpeciesCode
+            Return m_opriginalSpeciesCode
         End Get
         Set(ByVal value As String)
-            m_OpriginalSpeciesCode = value
+            m_opriginalSpeciesCode = value
         End Set
     End Property
 
@@ -44,13 +48,19 @@ Public Class frmEditSpecies
             m_selIdx = value
         End Set
     End Property
+#End Region
 
+    ''' <summary>
+    ''' In this constructor, the various comboboxes will be populated so that it only happens once. There are over 7000 records in the species table and this will speed things up in the program.
+    ''' </summary>
+    Public Sub New()
+        InitializeComponent()
+
+    End Sub
 
     Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-
-        Me.Close()
-        Me.Dispose()
-
+        Me.Hide()
+        'Me.Dispose()
     End Sub
 
     Private Sub added_new_shortcut() Handles frmCreateKeyboardShortcut.AddedNewShortcut
@@ -58,127 +68,118 @@ Public Class frmEditSpecies
     End Sub
 
     Private Sub frmEditSpecies_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Try
-            Dim strQuery As String
-            Dim strColor As String
-            If Edit_Insert = "Edit" Then
+        Dim strScienceName As String = "SELECT DISTINCT ScientificName FROM " & DB_SPECIES_CODE_TABLE & " ORDER BY ScientificName;"
+        m_species_table = Database.GetDataTable(strScienceName, DB_SPECIES_CODE_TABLE)
+        PopulateSpeciesLists(Me.cboScientificName, m_species_table)
 
-                strQuery = "SELECT DrawingOrder, ButtonText, ButtonCode, ButtonColor, KeyboardShortcut " & _
-                            "FROM " & DB_SPECIES_BUTTONS_TABLE & _
-                            " WHERE DrawingOrder = " & selIdx + 1
+        Dim strCommonName As String = "SELECT DISTINCT CommonName FROM " & DB_SPECIES_CODE_TABLE & " ORDER BY CommonName;"
+        m_species_table = Database.GetDataTable(strCommonName, DB_SPECIES_CODE_TABLE)
+        PopulateSpeciesLists(Me.cboCommonName, m_species_table)
+        'Try
+        '    Dim strQuery As String
+        '    Dim strColor As String
+        '    If Edit_Insert = "Edit" Then
 
-                Dim cmd As OleDbCommand = New OleDbCommand(strQuery, m_conn)
-                Dim aDataReader As OleDb.OleDbDataReader
-                aDataReader = cmd.ExecuteReader
+        '        strQuery = "SELECT DrawingOrder, ButtonText, ButtonCode, ButtonColor, KeyboardShortcut " & _
+        '                    "FROM " & DB_SPECIES_BUTTONS_TABLE & _
+        '                    " WHERE DrawingOrder = " & selIdx + 1
 
-                While aDataReader.Read()
-                    If Not IsDBNull(aDataReader("ButtonText")) Then
-                        Me.txtSpeciesBtnTxt.Text = aDataReader("ButtonText")
-                    End If
-                    If Not IsDBNull(aDataReader("ButtonCode")) Then
-                        Me.txtSpeciesCode.Text = aDataReader("ButtonCode")
-                    End If
-                    If Not IsDBNull(aDataReader("KeyboardShortcut")) Then
-                        Me.txtKeyboardShortcut.Text = aDataReader("KeyboardShortcut")
-                    End If
-                    If Not IsDBNull(aDataReader("ButtonColor")) Then
-                        strColor = aDataReader("ButtonColor")
-                    End If
-                End While
+        '        Dim cmd As OleDbCommand = New OleDbCommand(strQuery, m_conn)
+        '        Dim aDataReader As OleDb.OleDbDataReader
+        '        aDataReader = cmd.ExecuteReader
 
-                aDataReader.Close()
-                aDataReader = Nothing
+        '        While aDataReader.Read()
+        '            If Not IsDBNull(aDataReader("ButtonText")) Then
+        '                Me.txtSpeciesBtnTxt.Text = aDataReader("ButtonText")
+        '            End If
+        '            If Not IsDBNull(aDataReader("ButtonCode")) Then
+        '                Me.txtSpeciesCode.Text = aDataReader("ButtonCode")
+        '            End If
+        '            If Not IsDBNull(aDataReader("KeyboardShortcut")) Then
+        '                Me.txtKeyboardShortcut.Text = aDataReader("KeyboardShortcut")
+        '            End If
+        '            If Not IsDBNull(aDataReader("ButtonColor")) Then
+        '                strColor = aDataReader("ButtonColor")
+        '            End If
+        '        End While
 
-                cmd.Dispose()
-                cmd = Nothing
-            ElseIf Edit_Insert = "Insert" Then
-                Me.txtSpeciesBtnTxt.Text = ""
-                Me.txtSpeciesCode.Text = ""
-            End If
+        '        aDataReader.Close()
+        '        aDataReader = Nothing
 
-            strQuery = "SELECT DISTINCT ScientificName FROM " & DB_SPECIES_CODE_TABLE & _
-                       "ORDER BY ScientificName;"
-
-            Me.cboScientificName.Items.Clear()
-            PopulateSpeciesLists(Me.cboScientificName, strQuery)
-
-            'strQuery = "SELECT DISTINCT LatinName FROM " & DB_SPECIES_CODE_TABLE & _
-            '           "ORDER BY LatinName;"
-
-            'Me.cboLatinName.Items.Clear()
-            'PopulateSpeciesLists(Me.cboLatinName, strQuery)
-
-            strQuery = "SELECT DISTINCT CommonName FROM " & DB_SPECIES_CODE_TABLE & _
-                       "ORDER BY CommonName;"
-
-            Me.cboCommonName.Items.Clear()
-            PopulateSpeciesLists(Me.cboCommonName, strQuery)
-
-            strQuery = "SELECT TaxonomyClassLevelCode FROM " & DB_SPECIES_CODE_TABLE & " WHERE SpeciesCode = " & SingleQuote(Me.txtSpeciesCode.Text) & ";"
-
-            Dim sub_data_set As DataSet = New DataSet()
-            Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, m_conn)
-            Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-            sub_data_adapter.Fill(sub_data_set, DB_SPECIES_CODE_TABLE)
-
-            Dim dt As DataTable
-            Dim r As DataRow
-
-            dt = sub_data_set.Tables.Item(0)
-            For Each r In dt.Rows
-                If Not IsDBNull(r.Item("TaxonomyClassLevelCode")) Then
-                    Me.txtTaxonomicLevel.Text = r.Item("TaxonomyClassLevelCode")
-                End If
-            Next
+        '        cmd.Dispose()
+        '        cmd = Nothing
+        '    ElseIf Edit_Insert = "Insert" Then
+        '        Me.txtSpeciesBtnTxt.Text = ""
+        '        Me.txtSpeciesCode.Text = ""
+        '    End If
 
 
-            strQuery = "SELECT Color FROM " & DB_BUTTON_COLORS_TABLE & ";"
 
-            sub_data_set = New DataSet()
-            sub_db_command = New OleDbCommand(strQuery, m_conn)
-            sub_data_adapter = New OleDbDataAdapter(sub_db_command)
-            sub_data_adapter.Fill(sub_data_set, DB_BUTTON_COLORS_TABLE)
+        '    strQuery = "SELECT TaxonomyClassLevelCode FROM " & DB_SPECIES_CODE_TABLE & " WHERE SpeciesCode = " & SingleQuote(Me.txtSpeciesCode.Text) & ";"
 
-            dt = sub_data_set.Tables.Item(0)
+        '    Dim sub_data_set As DataSet = New DataSet()
+        '    Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, m_conn)
+        '    Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
+        '    sub_data_adapter.Fill(sub_data_set, DB_SPECIES_CODE_TABLE)
 
-            For Each r In dt.Rows
-                Me.cboButtonColors.Items.Add(r.Item("Color"))
-            Next
+        '    Dim dt As DataTable
+        '    Dim r As DataRow
+
+        '    dt = sub_data_set.Tables.Item(0)
+        '    For Each r In dt.Rows
+        '        If Not IsDBNull(r.Item("TaxonomyClassLevelCode")) Then
+        '            Me.txtTaxonomicLevel.Text = r.Item("TaxonomyClassLevelCode")
+        '        End If
+        '    Next
 
 
-            Me.cboButtonColors.SelectedItem = strColor
-            Me.txtSpeciesCode.ForeColor = Color.Black
-            Me.txtSpeciesCode.BackColor = Color.White
-            Me.txtTaxonomicLevel.ForeColor = Color.Black
-            Me.txtTaxonomicLevel.BackColor = Color.White
-            Me.txtKeyboardShortcut.ForeColor = Color.Black
-            Me.txtKeyboardShortcut.BackColor = Color.White
-        Catch ex As Exception
-            MsgBox(ex.StackTrace)
-        End Try
+        '    strQuery = "SELECT Color FROM " & DB_BUTTON_COLORS_TABLE & ";"
+
+        '    sub_data_set = New DataSet()
+        '    sub_db_command = New OleDbCommand(strQuery, m_conn)
+        '    sub_data_adapter = New OleDbDataAdapter(sub_db_command)
+        '    sub_data_adapter.Fill(sub_data_set, DB_BUTTON_COLORS_TABLE)
+
+        '    dt = sub_data_set.Tables.Item(0)
+
+        '    For Each r In dt.Rows
+        '        Me.cboButtonColors.Items.Add(r.Item("Color"))
+        '    Next
+
+
+        '    Me.cboButtonColors.SelectedItem = strColor
+        '    Me.txtSpeciesCode.ForeColor = Color.Black
+        '    Me.txtSpeciesCode.BackColor = Color.White
+        '    Me.txtTaxonomicLevel.ForeColor = Color.Black
+        '    Me.txtTaxonomicLevel.BackColor = Color.White
+        '    Me.txtKeyboardShortcut.ForeColor = Color.Black
+        '    Me.txtKeyboardShortcut.BackColor = Color.White
+        'Catch ex As Exception
+        '    MsgBox(ex.StackTrace)
+        'End Try
 
     End Sub
 
-    Private Sub PopulateSpeciesLists(ByRef cboBox As ComboBox, ByVal strQuery As String)
+    ''' <summary>
+    ''' Fill the combobox with a given column's contents
+    ''' </summary>
+    ''' <param name="cboBox">A reference to the combobox to populate</param>
+    ''' <param name="dataTable">A single column data table containing values that you want to fill the combobox with</param>
+    Private Sub PopulateSpeciesLists(ByRef cboBox As ComboBox, ByRef dataTable As DataTable)
+        With cboBox
+            .DataSource = dataTable
+            .DisplayMember = dataTable.Columns(0).ColumnName
+            .ValueMember = dataTable.Columns(0).ColumnName
+            .SelectedIndex = 0
+        End With
+        'cboBox.DataSource = dataTable
+        'For Each r As DataRow In dataTable.Rows
+        'cboBox.Items.Add(r.Item(0).ToString())
 
-        Dim sub_data_set As DataSet = New DataSet()
-        Dim sub_db_command As OleDbCommand = New OleDbCommand(strQuery, m_conn)
-        Dim sub_data_adapter As OleDbDataAdapter = New OleDbDataAdapter(sub_db_command)
-        sub_data_adapter.Fill(sub_data_set, DB_SPECIES_CODE_TABLE)
-        Dim r As DataRow
-        Dim d As DataTable
-        d = sub_data_set.Tables(0)
-
-        For Each r In d.Rows
-            'Debug.WriteLine(r.Item("CommonName").ToString())
-            If r.Item(0).ToString().Trim().Length > 0 Then
-                cboBox.Items.Add(r.Item(0).ToString())
-            End If
-        Next
-
-        'Me.txtSpeciesCode.Text = Me.OriginalSpeciesCode
-        'Me.cboCommonName.Text = Me.OriginalSpeciesName
-
+        'If r.Item(0).ToString().Trim().Length > 0 Then
+        ' cboBox.Items.Add(r.Item(0).ToString())
+        ' End If
+        'Next
     End Sub
 
     Private Sub cmdOk_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOk.Click
@@ -306,17 +307,17 @@ Public Class frmEditSpecies
 
     End Sub
 
-    Private Sub cboCommonName_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboCommonName.SelectedIndexChanged
+    Private Sub cboCommonName_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) 'Handles cboCommonName.SelectedIndexChanged
 
-        m_SpeciesName = Me.cboCommonName.Text
+        m_speciesName = Me.cboCommonName.Text
 
-        If m_SpeciesName.Length > 0 Then
+        If m_speciesName.Length > 0 Then
 
-            Me.txtSpeciesBtnTxt.Text = m_SpeciesName
+            Me.txtSpeciesBtnTxt.Text = m_speciesName
 
             Dim strQuery As String
             strQuery = "SELECT DISTINCT SpeciesCode, TaxonomyClassLevelCode FROM " & DB_SPECIES_CODE_TABLE & _
-                       "WHERE CommonName = " & DoubleQuote(m_SpeciesName) & _
+                       "WHERE CommonName = " & DoubleQuote(m_speciesName) & _
                        "ORDER BY SpeciesCode;"
 
             'Me.cboLatinName.SelectedIndex = -1
@@ -328,20 +329,19 @@ Public Class frmEditSpecies
 
     End Sub
 
-    Private Sub cboScientificName_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboScientificName.SelectedIndexChanged
+    Private Sub cboScientificName_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) 'Handles cboScientificName.SelectedIndexChanged
 
-        m_SpeciesName = Me.cboScientificName.Text
+        m_speciesName = Me.cboScientificName.Text
 
-        If m_SpeciesName.Length > 0 Then
+        If m_speciesName.Length > 0 Then
 
-            Me.txtSpeciesBtnTxt.Text = m_SpeciesName
+            Me.txtSpeciesBtnTxt.Text = m_speciesName
 
             Dim strQuery As String
             strQuery = "SELECT DISTINCT SpeciesCode, TaxonomyClassLevelCode FROM " & DB_SPECIES_CODE_TABLE & _
-                       "WHERE ScientificName = " & DoubleQuote(m_SpeciesName) & _
+                       "WHERE ScientificName = " & DoubleQuote(m_speciesName) & _
                        "ORDER BY SpeciesCode;"
 
-            Me.cboLatinName.SelectedIndex = -1
             Me.cboCommonName.SelectedIndex = -1
             Me.txtSpeciesCode.Text = ""
 
@@ -433,6 +433,13 @@ Public Class frmEditSpecies
         frmCreateKeyboardShortcut.KeyboardShortcut = Me.txtKeyboardShortcut.Text
 
         frmCreateKeyboardShortcut.ShowDialog()
+    End Sub
+
+    Private Sub me_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If e.CloseReason = CloseReason.UserClosing Then
+            e.Cancel = True
+            Me.Hide()
+        End If
     End Sub
 
 End Class
