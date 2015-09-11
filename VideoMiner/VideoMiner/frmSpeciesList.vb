@@ -1,8 +1,14 @@
+''' <summary>
+''' This form allows the user to change the order and/or information about the species in the database table 'videominer_species_buttons'. It also allows
+''' for new species to be enetered (new buttons) or for species to be deleted (removes buttons).
+''' </summary>
+''' <remarks>The changes made by the user are enacted by first making changes to the database, then firing an event to the main videominer form, where the dynamic panel will be
+''' deleted and recreated using the constructor code found in the DynamicPanel class.</remarks>
 Public Class frmSpeciesList
 
     Dim frmEditSpecies As frmEditSpecies
 
-    Event RefreshDatabaseEvent()
+    Event SpeciesButtonsChangedEvent()
 
     Public Sub New()
         InitializeComponent()
@@ -38,47 +44,71 @@ Public Class frmSpeciesList
         Next
     End Sub
 
+    ''' <summary>
+    ''' Move the selected row up by one, and make this change in the database. If the selected item is the first one, do nothing.
+    ''' </summary>
     Private Sub cmdMoveUp_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveUp.Click
         If Me.lstSpecies.SelectedItems.Count > 0 Then
             Dim intSelectedIndex As Integer
             intSelectedIndex = Me.lstSpecies.SelectedItems(0).Index
-            MoveListViewItem(intSelectedIndex - 1)
+            If intSelectedIndex > 0 Then
+                MoveListViewItem(intSelectedIndex - 1)
+            End If
         Else
             MsgBox("Please select a species from the list")
         End If
     End Sub
 
+    ''' <summary>
+    ''' Move the selected row down by one, and make this change in the database. If the selected item is the last one, do nothing.
+    ''' </summary>
     Private Sub cmdMoveDown_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveDown.Click
         If Me.lstSpecies.SelectedItems.Count > 0 Then
             Dim intSelectedIndex As Integer
             intSelectedIndex = Me.lstSpecies.SelectedItems(0).Index
-            MoveListViewItem(intSelectedIndex + 1)
+            If intSelectedIndex < Me.lstSpecies.Items.Count - 1 Then
+                MoveListViewItem(intSelectedIndex + 1)
+            End If
         Else
             MsgBox("Please select a species from the list")
         End If
 
     End Sub
 
+    ''' <summary>
+    ''' Move the selected row up to the top, and make this change in the database. If the selected item is the first one, do nothing.
+    ''' </summary>
     Private Sub cmdMoveToTop_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveToTop.Click
         If Me.lstSpecies.SelectedItems.Count > 0 Then
             Dim intSelectedIndex As Integer
             intSelectedIndex = Me.lstSpecies.SelectedItems(0).Index
-            MoveListViewItem(0)
+            If intSelectedIndex > 0 Then
+                MoveListViewItem(0)
+            End If
         Else
             MsgBox("Please select a species from the list")
         End If
     End Sub
 
+    ''' <summary>
+    ''' Move the selected row down to the bottom, and make this change in the database. If the selected item is the last one, do nothing.
+    ''' </summary>
     Private Sub cmdMoveToBottom_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveToBottom.Click
         If Me.lstSpecies.SelectedItems.Count > 0 Then
             Dim intSelectedIndex As Integer
             intSelectedIndex = Me.lstSpecies.SelectedItems(0).Index
-            MoveListViewItem(Me.lstSpecies.Items.Count - 1)
+            If intSelectedIndex < Me.lstSpecies.Items.Count - 1 Then
+                MoveListViewItem(Me.lstSpecies.Items.Count - 1)
+            End If
         Else
             MsgBox("Please select a species from the list")
         End If
     End Sub
 
+    ''' <summary>
+    ''' Moves the selected item from wherever it is to the given index.
+    ''' </summary>
+    ''' <param name="moveToIndex">Index to move the selected item to. 0 is the first element.</param>
     Private Sub MoveListViewItem(ByVal moveToIndex As Integer)
         Me.lstSpecies.Focus()
         Dim index As Integer = 0
@@ -91,62 +121,7 @@ Public Class frmSpeciesList
         Me.lstSpecies.Items(moveToIndex).Focused = True
         Me.lstSpecies.EnsureVisible(moveToIndex)
         Me.lstSpecies.Refresh()
-
-        'Dim i As Integer
-        'Dim cache As String
-        'Dim selIdx As Integer
-
-        'With Me.lstSpecies
-        '    If .SelectedIndices.Count = 0 Then
-        '        Exit Sub
-        '    Else
-        '        selIdx = .SelectedIndices.Item(0)
-        '    End If
-
-        '    If moveUp Then
-        '        ' ignore moveup of row(0)
-        '        If selIdx = 0 Then
-        '            Exit Sub
-        '        End If
-
-        '        ' move the subitems for the previous row
-        '        ' to cache so we can move the selected row up
-        '        Dim strFields As String = ""
-
-        '        For i = 0 To .Items(selIdx).SubItems.Count - 1
-        '            cache = .Items(selIdx - 1).SubItems(i).Text
-
-        '            .Items(selIdx - 1).SubItems(i).Text = .Items(selIdx).SubItems(i).Text
-        '            .Items(selIdx).SubItems(i).Text = cache
-        '        Next
-        '        .Items(selIdx - 1).Selected = True
-        '        .Items(selIdx - 1).Focused = True
-        '        .EnsureVisible(selIdx - 1)
-        '        .Refresh()
-        '        .Focus()
-        '    Else
-        '        ' ignore move down of last row
-        '        If selIdx = .Items.Count - 1 Then
-        '            Exit Sub
-        '        End If
-        '        ' move the subitems for the next row
-        '        ' to cache so we can move the selected row down
-        '        For i = 0 To .Items(selIdx).SubItems.Count - 1
-        '            cache = .Items(selIdx + 1).SubItems(i).Text
-        '            .Items(selIdx + 1).SubItems(i).Text = .Items(selIdx).SubItems(i).Text
-        '            .Items(selIdx).SubItems(i).Text = cache
-        '        Next
-
-        '        .Items(selIdx + 1).Selected = True
-        '        .Items(selIdx + 1).Focused = True
-        '        .EnsureVisible(selIdx)
-        '        .Refresh()
-        '        .Focus()
-        '    End If
-        'End With
-
         UpdateDrawingOrder()
-
     End Sub
 
     Private Sub cmdInsertNew_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdInsertNew.Click
@@ -200,6 +175,10 @@ Public Class frmSpeciesList
         Me.Hide()
     End Sub
 
+    ''' <summary>
+    ''' Change the database to relect the user change in order in the list. Once the database has been modified, raise an event to the main form so that
+    ''' the dynamic panel can be redrawn.
+    ''' </summary>
     Private Sub UpdateDrawingOrder()
         Dim strSpeciesName As String
         Dim strSpeciesCode As String
@@ -210,7 +189,7 @@ Public Class frmSpeciesList
             Database.ExecuteNonQuery("UPDATE " & DB_SPECIES_BUTTONS_TABLE & " SET DrawingOrder = " & i + 1 & " " & _
                     "WHERE ButtonText = " & DoubleQuote(strSpeciesName) & " AND ButtonCode = " & DoubleQuote(strSpeciesCode))
         Next
-        RaiseEvent RefreshDatabaseEvent()
+        RaiseEvent SpeciesButtonsChangedEvent()
     End Sub
 
     Private Sub cmdDelete_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDelete.Click

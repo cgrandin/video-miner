@@ -141,6 +141,10 @@ VideoMiner
 	<param name="blRepeatIsChecked">If True, the 'Repeat for each record' checkbox will be checked on creation.</param>
 	<param name="intRepeatWidth">Width of the 'Repeat for each record' checkbox.</param>
 	<param name="intRepeatHeight">Height of the 'Repeat for each record' checkbox.</param>
+</member><member name="M:VideoMiner.DynamicPanel.Dispose(System.Boolean)">
+	<summary>
+ Destructor. Dispose of dynamic arrays of DynamicButtons and Textboxes correctly
+ </summary>
 </member><member name="M:VideoMiner.DynamicPanel.fillPanel(System.String)">
 	<summary>
  Fills the panel with the buttons described in the MS Access table given by strTableName
@@ -1596,6 +1600,16 @@ VideoMiner
  Handle the changing of button data (transect and habitat buttons only) by creating an insert query and saving to the database
  </summary>
 	<param name="dict">Dictionary of Key/value pairs for the data. Key=dataCodeName, Value=dataCode</param>
+</member><member name="M:VideoMiner.VideoMiner.cmdEdit_Click(System.Object,System.EventArgs)">
+	<summary>
+ Brings up the edit species dialog (frmSpeciesList) which allows the user to change the order of the species buttons
+ and to delete them, edit them, or add new ones.
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.speciesButtonsChanged">
+	<summary>
+ When the user has changed the species buttons from the frmSpeciesEvent form, this function will remove and re-add the DynamicPanel
+ which contains the species buttons.
+ </summary>
 </member><member name="M:VideoMiner.VideoMiner.newProjectName">
 	<summary>
  Add a new project name to the XML file when the user changes it inside frmProjectNames
@@ -1806,6 +1820,39 @@ VideoMiner
 	<summary>
  This is the main form for the program, and instantiates most of the other forms.
  </summary>
+</member><member name="M:VideoMiner.frmSpeciesList.cmdMoveUp_Click(System.Object,System.EventArgs)">
+	<summary>
+ Move the selected row up by one, and make this change in the database. If the selected item is the first one, do nothing.
+ </summary>
+</member><member name="M:VideoMiner.frmSpeciesList.cmdMoveDown_Click(System.Object,System.EventArgs)">
+	<summary>
+ Move the selected row down by one, and make this change in the database. If the selected item is the last one, do nothing.
+ </summary>
+</member><member name="M:VideoMiner.frmSpeciesList.cmdMoveToTop_Click(System.Object,System.EventArgs)">
+	<summary>
+ Move the selected row up to the top, and make this change in the database. If the selected item is the first one, do nothing.
+ </summary>
+</member><member name="M:VideoMiner.frmSpeciesList.cmdMoveToBottom_Click(System.Object,System.EventArgs)">
+	<summary>
+ Move the selected row down to the bottom, and make this change in the database. If the selected item is the last one, do nothing.
+ </summary>
+</member><member name="M:VideoMiner.frmSpeciesList.MoveListViewItem(System.Int32)">
+	<summary>
+ Moves the selected item from wherever it is to the given index.
+ </summary>
+	<param name="moveToIndex">Index to move the selected item to. 0 is the first element.</param>
+</member><member name="M:VideoMiner.frmSpeciesList.UpdateDrawingOrder">
+	<summary>
+ Change the database to relect the user change in order in the list. Once the database has been modified, raise an event to the main form so that
+ the dynamic panel can be redrawn.
+ </summary>
+</member><member name="T:VideoMiner.frmSpeciesList">
+	<summary>
+ This form allows the user to change the order and/or information about the species in the database table 'videominer_species_buttons'. It also allows
+ for new species to be enetered (new buttons) or for species to be deleted (removes buttons).
+ </summary>
+	<remarks>The changes made by the user are enacted by first making changes to the database, then firing an event to the main videominer form, where the dynamic panel will be
+ deleted and recreated using the constructor code found in the DynamicPanel class.</remarks>
 </member>
 </members>
 </doc>

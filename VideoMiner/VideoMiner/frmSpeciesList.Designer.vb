@@ -19,142 +19,142 @@ Partial Class frmSpeciesList
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        lstSpecies = New System.Windows.Forms.ListView
-        cmdOk = New System.Windows.Forms.Button
-        cmdMoveUp = New System.Windows.Forms.Button
-        cmdMoveDown = New System.Windows.Forms.Button
-        cmdInsertNew = New System.Windows.Forms.Button
-        cmdEdit = New System.Windows.Forms.Button
-        cmdDelete = New System.Windows.Forms.Button
-        cmdMoveToTop = New System.Windows.Forms.Button
-        cmdMoveToBottom = New System.Windows.Forms.Button
-        SuspendLayout()
+        Me.lstSpecies = New System.Windows.Forms.ListView()
+        Me.cmdOk = New System.Windows.Forms.Button()
+        Me.cmdMoveUp = New System.Windows.Forms.Button()
+        Me.cmdMoveDown = New System.Windows.Forms.Button()
+        Me.cmdInsertNew = New System.Windows.Forms.Button()
+        Me.cmdEdit = New System.Windows.Forms.Button()
+        Me.cmdDelete = New System.Windows.Forms.Button()
+        Me.cmdMoveToTop = New System.Windows.Forms.Button()
+        Me.cmdMoveToBottom = New System.Windows.Forms.Button()
+        Me.SuspendLayout()
         '
         'lstSpecies
         '
-        lstSpecies.AllowDrop = True
-        lstSpecies.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        lstSpecies.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lstSpecies.FullRowSelect = True
-        lstSpecies.HideSelection = False
-        lstSpecies.Location = New System.Drawing.Point(2, 3)
-        lstSpecies.MultiSelect = False
-        lstSpecies.Name = "lstSpecies"
-        lstSpecies.Size = New System.Drawing.Size(378, 284)
-        lstSpecies.TabIndex = 3
-        lstSpecies.UseCompatibleStateImageBehavior = False
-        lstSpecies.View = System.Windows.Forms.View.Details
+        Me.lstSpecies.AllowDrop = True
+        Me.lstSpecies.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lstSpecies.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lstSpecies.FullRowSelect = True
+        Me.lstSpecies.HideSelection = False
+        Me.lstSpecies.Location = New System.Drawing.Point(2, 3)
+        Me.lstSpecies.MultiSelect = False
+        Me.lstSpecies.Name = "lstSpecies"
+        Me.lstSpecies.Size = New System.Drawing.Size(378, 284)
+        Me.lstSpecies.TabIndex = 3
+        Me.lstSpecies.UseCompatibleStateImageBehavior = False
+        Me.lstSpecies.View = System.Windows.Forms.View.Details
         '
         'cmdOk
         '
-        cmdOk.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        cmdOk.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        cmdOk.Location = New System.Drawing.Point(105, 335)
-        cmdOk.Name = "cmdOk"
-        cmdOk.Size = New System.Drawing.Size(92, 23)
-        cmdOk.TabIndex = 4
-        cmdOk.Text = "OK"
-        cmdOk.UseVisualStyleBackColor = True
+        Me.cmdOk.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.cmdOk.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdOk.Location = New System.Drawing.Point(139, 335)
+        Me.cmdOk.Name = "cmdOk"
+        Me.cmdOk.Size = New System.Drawing.Size(112, 27)
+        Me.cmdOk.TabIndex = 4
+        Me.cmdOk.Text = "OK"
+        Me.cmdOk.UseVisualStyleBackColor = True
         '
         'cmdMoveUp
         '
-        cmdMoveUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        cmdMoveUp.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        cmdMoveUp.Location = New System.Drawing.Point(386, 104)
-        cmdMoveUp.Name = "cmdMoveUp"
-        cmdMoveUp.Size = New System.Drawing.Size(113, 23)
-        cmdMoveUp.TabIndex = 5
-        cmdMoveUp.Text = "Move Up"
-        cmdMoveUp.UseVisualStyleBackColor = True
+        Me.cmdMoveUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdMoveUp.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdMoveUp.Location = New System.Drawing.Point(386, 95)
+        Me.cmdMoveUp.Name = "cmdMoveUp"
+        Me.cmdMoveUp.Size = New System.Drawing.Size(113, 27)
+        Me.cmdMoveUp.TabIndex = 5
+        Me.cmdMoveUp.Text = "Move Up"
+        Me.cmdMoveUp.UseVisualStyleBackColor = True
         '
         'cmdMoveDown
         '
-        cmdMoveDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        cmdMoveDown.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        cmdMoveDown.Location = New System.Drawing.Point(386, 133)
-        cmdMoveDown.Name = "cmdMoveDown"
-        cmdMoveDown.Size = New System.Drawing.Size(113, 23)
-        cmdMoveDown.TabIndex = 6
-        cmdMoveDown.Text = "Move Down"
-        cmdMoveDown.UseVisualStyleBackColor = True
+        Me.cmdMoveDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdMoveDown.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdMoveDown.Location = New System.Drawing.Point(386, 130)
+        Me.cmdMoveDown.Name = "cmdMoveDown"
+        Me.cmdMoveDown.Size = New System.Drawing.Size(113, 27)
+        Me.cmdMoveDown.TabIndex = 6
+        Me.cmdMoveDown.Text = "Move Down"
+        Me.cmdMoveDown.UseVisualStyleBackColor = True
         '
         'cmdInsertNew
         '
-        cmdInsertNew.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        cmdInsertNew.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        cmdInsertNew.Location = New System.Drawing.Point(2, 293)
-        cmdInsertNew.Name = "cmdInsertNew"
-        cmdInsertNew.Size = New System.Drawing.Size(92, 23)
-        cmdInsertNew.TabIndex = 7
-        cmdInsertNew.Text = "Insert New"
-        cmdInsertNew.UseVisualStyleBackColor = True
+        Me.cmdInsertNew.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.cmdInsertNew.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdInsertNew.Location = New System.Drawing.Point(2, 293)
+        Me.cmdInsertNew.Name = "cmdInsertNew"
+        Me.cmdInsertNew.Size = New System.Drawing.Size(112, 27)
+        Me.cmdInsertNew.TabIndex = 7
+        Me.cmdInsertNew.Text = "Insert New"
+        Me.cmdInsertNew.UseVisualStyleBackColor = True
         '
         'cmdEdit
         '
-        cmdEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        cmdEdit.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        cmdEdit.Location = New System.Drawing.Point(105, 293)
-        cmdEdit.Name = "cmdEdit"
-        cmdEdit.Size = New System.Drawing.Size(92, 23)
-        cmdEdit.TabIndex = 8
-        cmdEdit.Text = "Edit"
-        cmdEdit.UseVisualStyleBackColor = True
+        Me.cmdEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.cmdEdit.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdEdit.Location = New System.Drawing.Point(139, 293)
+        Me.cmdEdit.Name = "cmdEdit"
+        Me.cmdEdit.Size = New System.Drawing.Size(112, 27)
+        Me.cmdEdit.TabIndex = 8
+        Me.cmdEdit.Text = "Edit"
+        Me.cmdEdit.UseVisualStyleBackColor = True
         '
         'cmdDelete
         '
-        cmdDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        cmdDelete.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        cmdDelete.Location = New System.Drawing.Point(207, 293)
-        cmdDelete.Name = "cmdDelete"
-        cmdDelete.Size = New System.Drawing.Size(92, 23)
-        cmdDelete.TabIndex = 9
-        cmdDelete.Text = "Delete"
-        cmdDelete.UseVisualStyleBackColor = True
+        Me.cmdDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.cmdDelete.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdDelete.Location = New System.Drawing.Point(268, 293)
+        Me.cmdDelete.Name = "cmdDelete"
+        Me.cmdDelete.Size = New System.Drawing.Size(112, 27)
+        Me.cmdDelete.TabIndex = 9
+        Me.cmdDelete.Text = "Delete"
+        Me.cmdDelete.UseVisualStyleBackColor = True
         '
         'cmdMoveToTop
         '
-        cmdMoveToTop.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        cmdMoveToTop.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        cmdMoveToTop.Location = New System.Drawing.Point(386, 65)
-        cmdMoveToTop.Name = "cmdMoveToTop"
-        cmdMoveToTop.Size = New System.Drawing.Size(113, 23)
-        cmdMoveToTop.TabIndex = 5
-        cmdMoveToTop.Text = "Move To Top"
-        cmdMoveToTop.UseVisualStyleBackColor = True
+        Me.cmdMoveToTop.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdMoveToTop.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdMoveToTop.Location = New System.Drawing.Point(386, 61)
+        Me.cmdMoveToTop.Name = "cmdMoveToTop"
+        Me.cmdMoveToTop.Size = New System.Drawing.Size(113, 27)
+        Me.cmdMoveToTop.TabIndex = 5
+        Me.cmdMoveToTop.Text = "Move To Top"
+        Me.cmdMoveToTop.UseVisualStyleBackColor = True
         '
         'cmdMoveToBottom
         '
-        cmdMoveToBottom.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        cmdMoveToBottom.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        cmdMoveToBottom.Location = New System.Drawing.Point(386, 172)
-        cmdMoveToBottom.Name = "cmdMoveToBottom"
-        cmdMoveToBottom.Size = New System.Drawing.Size(113, 23)
-        cmdMoveToBottom.TabIndex = 6
-        cmdMoveToBottom.Text = "Move To Bottom"
-        cmdMoveToBottom.UseVisualStyleBackColor = True
+        Me.cmdMoveToBottom.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdMoveToBottom.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdMoveToBottom.Location = New System.Drawing.Point(386, 165)
+        Me.cmdMoveToBottom.Name = "cmdMoveToBottom"
+        Me.cmdMoveToBottom.Size = New System.Drawing.Size(113, 27)
+        Me.cmdMoveToBottom.TabIndex = 6
+        Me.cmdMoveToBottom.Text = "Move To Bottom"
+        Me.cmdMoveToBottom.UseVisualStyleBackColor = True
         '
         'frmSpeciesList
         '
-        AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        ClientSize = New System.Drawing.Size(511, 370)
-        Controls.Add(cmdDelete)
-        Controls.Add(cmdEdit)
-        Controls.Add(cmdInsertNew)
-        Controls.Add(cmdMoveToBottom)
-        Controls.Add(cmdMoveDown)
-        Controls.Add(cmdMoveToTop)
-        Controls.Add(cmdMoveUp)
-        Controls.Add(cmdOk)
-        Controls.Add(lstSpecies)
-        KeyPreview = True
-        MaximizeBox = False
-        MinimizeBox = False
-        Name = "frmSpeciesList"
-        Text = "Species List"
-        ResumeLayout(False)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(511, 370)
+        Me.Controls.Add(Me.cmdDelete)
+        Me.Controls.Add(Me.cmdEdit)
+        Me.Controls.Add(Me.cmdInsertNew)
+        Me.Controls.Add(Me.cmdMoveToBottom)
+        Me.Controls.Add(Me.cmdMoveDown)
+        Me.Controls.Add(Me.cmdMoveToTop)
+        Me.Controls.Add(Me.cmdMoveUp)
+        Me.Controls.Add(Me.cmdOk)
+        Me.Controls.Add(Me.lstSpecies)
+        Me.KeyPreview = True
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "frmSpeciesList"
+        Me.Text = "Species List"
+        Me.ResumeLayout(False)
 
     End Sub
     Friend WithEvents lstSpecies As System.Windows.Forms.ListView

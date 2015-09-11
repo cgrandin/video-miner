@@ -211,6 +211,17 @@ Public Class DynamicPanel
     End Sub
 
     ''' <summary>
+    ''' Destructor. Dispose of dynamic arrays of DynamicButtons and Textboxes correctly
+    ''' </summary>
+    Protected Overridable Overloads Sub Dispose(ByVal disposing As Boolean)
+        If Not IsDisposed Then
+            If disposing Then
+
+            End If
+        End If
+    End Sub
+
+    ''' <summary>
     ''' Fills the panel with the buttons described in the MS Access table given by strTableName
     ''' </summary>
     ''' <param name="strTableName">Name of the button description table in the MS Access database</param>
@@ -367,16 +378,16 @@ Public Class DynamicPanel
                 m_tuple = New Tuple(Of String, String, Boolean)(btn.DataCode, btn.DataValue, True)
                 m_dict.Add(btn.DataCodeName, m_tuple)
             End If
-            Else
-                ' All button's data
-                For i As Integer = 0 To m_num_dynamic_buttons - 1
-                    ' If the button has data selected...
+        Else
+            ' All button's data
+            For i As Integer = 0 To m_num_dynamic_buttons - 1
+                ' If the button has data selected...
                 If m_dynamic_buttons(i).DataValue <> 0 Then
                     m_tuple = New Tuple(Of String, String, Boolean)(m_dynamic_buttons(i).DataCode, m_dynamic_buttons(i).DataValue, btn.Name = m_dynamic_buttons(i).Name)
                     m_dict.Add(m_dynamic_buttons(i).DataCodeName, m_tuple)
                 End If
-                Next
-            End If
+            Next
+        End If
     End Sub
 
     ''' <summary>

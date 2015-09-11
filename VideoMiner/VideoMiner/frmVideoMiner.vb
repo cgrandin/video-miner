@@ -1671,7 +1671,7 @@ Public Class VideoMiner
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub mnuRefreshForm_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuRefreshForm.Click
-        refresh_database()
+        'refresh_database()
     End Sub
 
     ' ==========================================================================================================
@@ -1856,10 +1856,31 @@ Public Class VideoMiner
         fetch_data()
     End Sub
 
+    ''' <summary>
+    ''' Brings up the edit species dialog (frmSpeciesList) which allows the user to change the order of the species buttons
+    ''' and to delete them, edit them, or add new ones.
+    ''' </summary>
     Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEdit.Click
         frmSpeciesList = New frmSpeciesList
         frmSpeciesList.ShowDialog()
         pnlSpeciesData.Controls.Clear()
+    End Sub
+
+    ''' <summary>
+    ''' When the user has changed the species buttons from the frmSpeciesEvent form, this function will remove and re-add the DynamicPanel
+    ''' which contains the species buttons.
+    ''' </summary>
+    Private Sub speciesButtonsChanged() Handles frmSpeciesList.SpeciesButtonsChangedEvent
+        'pnlSpeciesData.Dispose()
+        'Me.SuspendLayout()
+        pnlSpeciesData.fillPanel(DB_SPECIES_BUTTONS_TABLE)
+        'Me.Controls.Remove(pnlSpeciesData)
+        'pnlSpeciesData = Nothing
+        'pnlSpeciesData = New DynamicPanel("SPECIES DATA", False, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, False)
+        'pnlSpeciesData.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
+        'pnlSpeciesData.Dock = DockStyle.Fill
+        'SplitContainer8.Panel2.Controls.Add(pnlSpeciesData)
+        'Me.ResumeLayout()
     End Sub
 
     Public Sub mnuCapScr_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuCapScr.Click
@@ -5285,11 +5306,11 @@ SkipInsertComma:
         frmEditLookupTable.ShowDialog()
     End Sub
 
-    Private Sub refresh_database() Handles frmConfigureButtons.RefreshDatabaseEvent, frmKeyboardCommands.RefreshDatabaseEvent, frmSpeciesList.RefreshDatabaseEvent
-        blupdateColumns = False
-        RefreshDatabase()
-        blupdateColumns = True
-    End Sub
+    'Private Sub refresh_database() Handles frmConfigureButtons.RefreshDatabaseEvent, frmKeyboardCommands.RefreshDatabaseEvent, frmSpeciesList.RefreshDatabaseEvent
+    '    blupdateColumns = False
+    '    RefreshDatabase()
+    '    blupdateColumns = True
+    'End Sub
 
     Private Sub update_buttons() Handles frmConfigureButtons.UpdateButtons
         Dim txt As TextBox
