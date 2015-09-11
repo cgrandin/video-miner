@@ -1852,7 +1852,8 @@ Public Class VideoMiner
     ''' <param name="dict">Dictionary of Key/value pairs for the data. Key=dataCodeName, Value=dataCode</param>
     Private Sub buttonDataChanged(dict As Dictionary(Of String, Tuple(Of String, String, Boolean))) Handles pnlHabitatData.DataChanged, pnlTransectData.DataChanged
         ' MsgBox("Arrived in Videominer.vb with dictionary:" & dict.ToString())
-        createInsertQuery(dict)
+        runInsertQuery(dict)
+        fetch_data()
     End Sub
 
     Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEdit.Click
@@ -4360,9 +4361,9 @@ Public Class VideoMiner
     ''' </summary>
     ''' <remarks>Order of the rows will be by decending primary key ('ID' field)</remarks>
     Private Sub fetch_data()
+        m_data_codes_table = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE & " order by 1;", DB_DATA_CODES_TABLE)
         m_data_table = Database.GetDataTable("SELECT * FROM " & DB_DATA_TABLE & " ORDER BY ID DESC;", DB_DATA_TABLE) ' DESC is important here, see comment below on m_db_id_num
         grdVideoMinerDatabase.DataSource = m_data_table
-        m_data_codes_table = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE & " order by 1;", DB_DATA_CODES_TABLE)
 
         Dim intIDColumn As Integer = 0
         If m_data_table.Rows.Count > 0 Then
@@ -4380,10 +4381,15 @@ Public Class VideoMiner
         blupdateColumns = True
     End Sub
 
-
-    Private Function createInsertQuery(dictTransect As Dictionary(Of String, Tuple(Of String, String, Boolean)))
+    ''' <summary>
+    ''' Creates and runs an 'INSERT INTO' query on the database for all of the given items in the dictionary. Each item will be incorporated into a single query for insertion.
+    ''' </summary>
+    ''' <param name="dictTransect">A Dictionary object of Key/Value pairs where the keys are field names as found in the main 'data' table in the database, and the values are a pair
+    ''' of codes, the first one being the data code for the field being recorded to in the 'data' table and teh second being the data code itself as chosen by the user.</param>
+    Private Sub runInsertQuery(dictTransect As Dictionary(Of String, Tuple(Of String, String, Boolean)))
         Dim names As String = "insert into " & DB_DATA_TABLE & " (ID,"
         Dim values As String = "values(" & m_db_id_num & ","
+        Dim strQuery As String
 
         If m_project_name <> NULL_STRING Then
             names = names & "ProjectName,"
@@ -4393,6 +4399,15 @@ Public Class VideoMiner
         If Not IsNothing(m_transect_date) Then
             names = names & "TransectDate,"
             values = values & SingleQuote(m_transect_date) & ","
+        End If
+
+        If Not IsNothing(m_tsUserTime) Then
+            names = names & "TextTime,"
+            Dim tmp As TimeSpan = m_tsUserTime
+            If Not IsNothing(frmVideoPlayer) Then
+                tmp = tmp + frmVideoPlayer.CurrentVideoTime
+            End If
+            values = values & SingleQuote(tmp.ToString("dd\.hh\:mm\:ss\.fff")) & ","
         End If
 
         'Dim tsTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
@@ -4405,25 +4420,20 @@ Public Class VideoMiner
         ' End If
 
         For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In dictTransect
+            ' Key is the name of the field as found in the 'data' table. For example, ProtocolID.
             names = names & kvp.Key.ToString() & ","
-            values = values & kvp.Value.Item1.ToString() & ","
+            ' Item1 of the value part is the code for the data field. For example, in the lu_data_codes table, Protocol is code 14.
+            ' Item2 is the data code itself as found in each lookup (lu) table in the database. For example, in the lu_protocol table,
+            '       this code would be one of 1, 2, 3, or 4.
+            values = values & kvp.Value.Item2.ToString() & ","
         Next
-        ' TODO: All the rest!!! Testing dict first
-        'If is_on_bottom <> ON_OFF_BOTTOM_NOT_ASSIGNED Then
-        ' names = names & "OnBottom,"
-        ' values = values & is_on_bottom.ToString()
-        ' End If
+        ' Replace the last character in the names and values strings, which are commas, with a right parenthesis.
+        names = names.Substring(0, names.Length - 1) & ")"
+        values = values.Substring(0, values.Length - 1) & ")"
+        strQuery = names & values
 
-        'If strSpeciesCode <> SPECIES_ID_NOT_ASSIGNED Then
-        ' names = names & "SpeciesID,"
-        ' values = values & strSpeciesCode
-        ' End If
-
-        'If strSpeciesName <> SPECIES_NAME_NOT_ASSIGNED Then
-        ' names = names & "SpeciesID,"
-        ' values = values & strSpeciesCode
-        'End If
-    End Function
+        Database.ExecuteNonQuery(strQuery)
+    End Sub
 
     ''' <summary>
     ''' Creates a string which is an 'INSERT INTO' query in access database format.

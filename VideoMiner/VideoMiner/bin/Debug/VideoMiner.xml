@@ -719,6 +719,11 @@ VideoMiner
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks></remarks>
+</member><member name="F:VideoMiner.DynamicButton.UNINITIALIZED_DATA_VALUE">
+	<summary>
+ The default, uninitialized value for the DataValue property
+ </summary>
+	<remarks>This is set in the constructors</remarks>
 </member><member name="F:VideoMiner.DynamicButton.m_control_code">
 	<summary>
  A unique key so that this DynamicButton can be linked to a corresponding DynamicTextbox later.
@@ -1674,6 +1679,12 @@ VideoMiner
  Fetch the data table from the MS Access database into the DataGridView and sets the next unique ID that the database can recieve.
  </summary>
 	<remarks>Order of the rows will be by decending primary key ('ID' field)</remarks>
+</member><member name="M:VideoMiner.VideoMiner.runInsertQuery(System.Collections.Generic.Dictionary{System.String,System.Tuple{System.String,System.String,System.Boolean}})">
+	<summary>
+ Creates and runs an 'INSERT INTO' query on the database for all of the given items in the dictionary. Each item will be incorporated into a single query for insertion.
+ </summary>
+	<param name="dictTransect">A Dictionary object of Key/Value pairs where the keys are field names as found in the main 'data' table in the database, and the values are a pair
+ of codes, the first one being the data code for the field being recorded to in the 'data' table and teh second being the data code itself as chosen by the user.</param>
 </member><member name="M:VideoMiner.VideoMiner.createInsertQueryOLD(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
 	<summary>
  Creates a string which is an 'INSERT INTO' query in access database format.

@@ -6,6 +6,12 @@
 Public Class DynamicButton
     Inherits Button
 
+    ''' <summary>
+    ''' The default, uninitialized value for the DataValue property
+    ''' </summary>
+    ''' <remarks>This is set in the constructors</remarks>
+    Public Const UNINITIALIZED_DATA_VALUE = -1
+
 #Region "Member variables"
     ''' <summary>
     ''' A unique key so that this DynamicButton can be linked to a corresponding DynamicTextbox later.
@@ -241,6 +247,7 @@ Public Class DynamicButton
                 End If
             Next
         End If
+        DataValue = UNINITIALIZED_DATA_VALUE
     End Sub
 
     ''' <summary>
@@ -279,6 +286,7 @@ Public Class DynamicButton
         m_button_code = buttonCode
         m_button_code_name = buttonCodeName
         m_keyboard_shortcut = keyboardShortcut
+        DataValue = UNINITIALIZED_DATA_VALUE
     End Sub
 
     ''' <summary>
@@ -298,7 +306,7 @@ Public Class DynamicButton
     ''' firing an event to signal the parent.
     ''' </summary>
     Private Sub clearData() Handles m_table_view.ClearEvent
-        DataValue = 0
+        DataValue = UNINITIALIZED_DATA_VALUE
         DataComment = NULL_STRING
         m_table_view.clearSelection()
         RaiseEvent DataChanged(Me, EventArgs.Empty)

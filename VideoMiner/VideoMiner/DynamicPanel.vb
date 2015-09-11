@@ -337,7 +337,7 @@ Public Class DynamicPanel
         ' Find associated DynamicTextbox, so we can change the text to reflect the change
         For i As Integer = 0 To m_num_dynamic_buttons - 1
             If m_dynamic_textboxes(i).ControlCode = btn.ControlCode Then
-                If btn.DataValue = 0 Then
+                If btn.DataValue = DynamicButton.UNINITIALIZED_DATA_VALUE Then
                     ' The data have been cleared, so change the textbox to reflect this
                     m_dynamic_textboxes(i).setNoData()
                 Else
@@ -363,7 +363,7 @@ Public Class DynamicPanel
             m_dict.Add(btn.DataCodeName, m_tuple)
         ElseIf Not m_repeat_for_every_record.Checked Then
             ' One button's data
-            If btn.DataValue <> 0 Then
+            If btn.DataValue <> DynamicButton.UNINITIALIZED_DATA_VALUE Then
                 m_tuple = New Tuple(Of String, String, Boolean)(btn.DataCode, btn.DataValue, True)
                 m_dict.Add(btn.DataCodeName, m_tuple)
             End If
