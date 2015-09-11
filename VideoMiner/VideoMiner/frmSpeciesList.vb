@@ -26,7 +26,17 @@ Public Class frmSpeciesList
         End With
     End Sub
 
+    ''' <summary>
+    ''' Fires when the List becomes active, and calls a function to fill the list from the database.
+    ''' </summary>
     Private Sub frmSpeciesList_Activated(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Activated
+        fillSpeciesList()
+    End Sub
+
+    ''' <summary>
+    ''' Fills in the species list from the database
+    ''' </summary>
+    Private Sub fillSpeciesList()
         Dim taxRow As DataRow
         Dim taxData As DataTable
         Dim itm As ListViewItem
@@ -55,7 +65,7 @@ Public Class frmSpeciesList
                 MoveListViewItem(intSelectedIndex - 1)
             End If
         Else
-            MsgBox("Please select a species from the list")
+            MessageBox.Show("Please select a species from the list first.", "No item selected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
 
@@ -70,7 +80,7 @@ Public Class frmSpeciesList
                 MoveListViewItem(intSelectedIndex + 1)
             End If
         Else
-            MsgBox("Please select a species from the list")
+            MessageBox.Show("Please select a species from the list first.", "No item selected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
 
     End Sub
@@ -86,7 +96,7 @@ Public Class frmSpeciesList
                 MoveListViewItem(0)
             End If
         Else
-            MsgBox("Please select a species from the list")
+            MessageBox.Show("Please select a species from the list first.", "No item selected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
 
@@ -101,7 +111,7 @@ Public Class frmSpeciesList
                 MoveListViewItem(Me.lstSpecies.Items.Count - 1)
             End If
         Else
-            MsgBox("Please select a species from the list")
+            MessageBox.Show("Please select a species from the list first.", "No item selected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
 
@@ -170,11 +180,6 @@ Public Class frmSpeciesList
 
     End Sub
 
-    Private Sub cmdOk_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOk.Click
-        Me.UpdateDrawingOrder()
-        Me.Hide()
-    End Sub
-
     ''' <summary>
     ''' Change the database to relect the user change in order in the list. Once the database has been modified, raise an event to the main form so that
     ''' the dynamic panel can be redrawn.
@@ -192,29 +197,29 @@ Public Class frmSpeciesList
         RaiseEvent SpeciesButtonsChangedEvent()
     End Sub
 
+    ''' <summary>
+    ''' When the user clicks the delete button, whatever list item is selected will be deleted from the database and removed from the button collection.
+    ''' A confirmation dialog will be issued first.
+    ''' </summary>
     Private Sub cmdDelete_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDelete.Click
-        Dim selIdx As Integer
-        Try
-            selIdx = Me.lstSpecies.SelectedIndices.Item(0)
-        Catch ex As Exception
-            selIdx = 0
-        End Try
-
         If Me.lstSpecies.SelectedItems.Count = 0 Then
-            MsgBox("Please select a species from the list")
+            MessageBox.Show("Please select a species from the list first.", "No item selected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
-        Dim dr As DialogResult
-        dr = MessageBox.Show("Are you sure you want to delete this species button?", "Delete Species Button", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
-        If dr = Windows.Forms.DialogResult.No Then
-            Exit Sub
+        If Me.lstSpecies.SelectedItems.Count > 0 Then
+            Dim selIdx As Integer = Me.lstSpecies.SelectedItems(0).Index
+            Dim dr As DialogResult = MessageBox.Show("Are you sure you want to delete this species button?", "Delete Species Button", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+            If dr = Windows.Forms.DialogResult.No Then
+                Exit Sub
+            End If
+            Dim strSpeciesName As String = Me.lstSpecies.Items(selIdx).SubItems(1).Text
+            Dim strSpeciesCode As String = Me.lstSpecies.Items(selIdx).SubItems(2).Text
+            Database.ExecuteNonQuery("DELETE * FROM " & DB_SPECIES_BUTTONS_TABLE & " WHERE ButtonText = " & SingleQuote(strSpeciesName) & " AND " & _
+                    " ButtonCode = " & SingleQuote(strSpeciesCode))
+            ' Redraw the buttons and refill the list with the fresh data which has one item removed.
+            UpdateDrawingOrder()
+            fillSpeciesList()
         End If
-        Me.UpdateDrawingOrder()
-        Dim strSpeciesName As String = Me.lstSpecies.Items(selIdx).SubItems(1).Text
-        Dim strSpeciesCode As String = Me.lstSpecies.Items(selIdx).SubItems(2).Text
-        Database.ExecuteNonQuery("DELETE * FROM " & DB_SPECIES_BUTTONS_TABLE & " WHERE ButtonText = " & SingleQuote(strSpeciesName) & " AND " & _
-                " ButtonCode = " & SingleQuote(strSpeciesCode))
-        frmSpeciesList_Activated(Nothing, Nothing)
     End Sub
 
     Private Sub lstSpecies_DragDrop(ByVal sender As Object, ByVal e As System.Windows.Forms.DragEventArgs) Handles lstSpecies.DragDrop

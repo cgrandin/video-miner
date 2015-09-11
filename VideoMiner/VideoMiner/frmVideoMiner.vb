@@ -1863,7 +1863,6 @@ Public Class VideoMiner
     Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEdit.Click
         frmSpeciesList = New frmSpeciesList
         frmSpeciesList.ShowDialog()
-        pnlSpeciesData.Controls.Clear()
     End Sub
 
     ''' <summary>
@@ -1871,22 +1870,12 @@ Public Class VideoMiner
     ''' which contains the species buttons.
     ''' </summary>
     Private Sub speciesButtonsChanged() Handles frmSpeciesList.SpeciesButtonsChangedEvent
-        'pnlSpeciesData.Dispose()
-        'Me.SuspendLayout()
         pnlSpeciesData.fillPanel(DB_SPECIES_BUTTONS_TABLE)
-        'Me.Controls.Remove(pnlSpeciesData)
-        'pnlSpeciesData = Nothing
-        'pnlSpeciesData = New DynamicPanel("SPECIES DATA", False, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, False)
-        'pnlSpeciesData.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
-        'pnlSpeciesData.Dock = DockStyle.Fill
-        'SplitContainer8.Panel2.Controls.Add(pnlSpeciesData)
-        'Me.ResumeLayout()
     End Sub
 
     Public Sub mnuCapScr_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuCapScr.Click
         ' Capture the screen, as well as writing a transection to the database.
         ' The value of all the field in the transaction are set to be 0.
-
     End Sub
 
     ' ==========================================================================================================

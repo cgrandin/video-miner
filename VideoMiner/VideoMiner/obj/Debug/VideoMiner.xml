@@ -1820,6 +1820,14 @@ VideoMiner
 	<summary>
  This is the main form for the program, and instantiates most of the other forms.
  </summary>
+</member><member name="M:VideoMiner.frmSpeciesList.frmSpeciesList_Activated(System.Object,System.EventArgs)">
+	<summary>
+ Fires when the List becomes active, and calls a function to fill the list from the database.
+ </summary>
+</member><member name="M:VideoMiner.frmSpeciesList.fillSpeciesList">
+	<summary>
+ Fills in the species list from the database
+ </summary>
 </member><member name="M:VideoMiner.frmSpeciesList.cmdMoveUp_Click(System.Object,System.EventArgs)">
 	<summary>
  Move the selected row up by one, and make this change in the database. If the selected item is the first one, do nothing.
@@ -1845,6 +1853,11 @@ VideoMiner
 	<summary>
  Change the database to relect the user change in order in the list. Once the database has been modified, raise an event to the main form so that
  the dynamic panel can be redrawn.
+ </summary>
+</member><member name="M:VideoMiner.frmSpeciesList.cmdDelete_Click(System.Object,System.EventArgs)">
+	<summary>
+ When the user clicks the delete button, whatever list item is selected will be deleted from the database and removed from the button collection.
+ A confirmation dialog will be issued first.
  </summary>
 </member><member name="T:VideoMiner.frmSpeciesList">
 	<summary>

@@ -20,7 +20,6 @@ Partial Class frmSpeciesList
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.lstSpecies = New System.Windows.Forms.ListView()
-        Me.cmdOk = New System.Windows.Forms.Button()
         Me.cmdMoveUp = New System.Windows.Forms.Button()
         Me.cmdMoveDown = New System.Windows.Forms.Button()
         Me.cmdInsertNew = New System.Windows.Forms.Button()
@@ -42,21 +41,10 @@ Partial Class frmSpeciesList
         Me.lstSpecies.Location = New System.Drawing.Point(2, 3)
         Me.lstSpecies.MultiSelect = False
         Me.lstSpecies.Name = "lstSpecies"
-        Me.lstSpecies.Size = New System.Drawing.Size(378, 284)
+        Me.lstSpecies.Size = New System.Drawing.Size(378, 483)
         Me.lstSpecies.TabIndex = 3
         Me.lstSpecies.UseCompatibleStateImageBehavior = False
         Me.lstSpecies.View = System.Windows.Forms.View.Details
-        '
-        'cmdOk
-        '
-        Me.cmdOk.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.cmdOk.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdOk.Location = New System.Drawing.Point(139, 335)
-        Me.cmdOk.Name = "cmdOk"
-        Me.cmdOk.Size = New System.Drawing.Size(112, 27)
-        Me.cmdOk.TabIndex = 4
-        Me.cmdOk.Text = "OK"
-        Me.cmdOk.UseVisualStyleBackColor = True
         '
         'cmdMoveUp
         '
@@ -84,7 +72,7 @@ Partial Class frmSpeciesList
         '
         Me.cmdInsertNew.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.cmdInsertNew.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdInsertNew.Location = New System.Drawing.Point(2, 293)
+        Me.cmdInsertNew.Location = New System.Drawing.Point(2, 492)
         Me.cmdInsertNew.Name = "cmdInsertNew"
         Me.cmdInsertNew.Size = New System.Drawing.Size(112, 27)
         Me.cmdInsertNew.TabIndex = 7
@@ -95,7 +83,7 @@ Partial Class frmSpeciesList
         '
         Me.cmdEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.cmdEdit.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdEdit.Location = New System.Drawing.Point(139, 293)
+        Me.cmdEdit.Location = New System.Drawing.Point(139, 492)
         Me.cmdEdit.Name = "cmdEdit"
         Me.cmdEdit.Size = New System.Drawing.Size(112, 27)
         Me.cmdEdit.TabIndex = 8
@@ -106,7 +94,7 @@ Partial Class frmSpeciesList
         '
         Me.cmdDelete.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.cmdDelete.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdDelete.Location = New System.Drawing.Point(268, 293)
+        Me.cmdDelete.Location = New System.Drawing.Point(268, 492)
         Me.cmdDelete.Name = "cmdDelete"
         Me.cmdDelete.Size = New System.Drawing.Size(112, 27)
         Me.cmdDelete.TabIndex = 9
@@ -139,7 +127,7 @@ Partial Class frmSpeciesList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(511, 370)
+        Me.ClientSize = New System.Drawing.Size(511, 525)
         Me.Controls.Add(Me.cmdDelete)
         Me.Controls.Add(Me.cmdEdit)
         Me.Controls.Add(Me.cmdInsertNew)
@@ -147,7 +135,6 @@ Partial Class frmSpeciesList
         Me.Controls.Add(Me.cmdMoveDown)
         Me.Controls.Add(Me.cmdMoveToTop)
         Me.Controls.Add(Me.cmdMoveUp)
-        Me.Controls.Add(Me.cmdOk)
         Me.Controls.Add(Me.lstSpecies)
         Me.KeyPreview = True
         Me.MaximizeBox = False
@@ -158,7 +145,6 @@ Partial Class frmSpeciesList
 
     End Sub
     Friend WithEvents lstSpecies As System.Windows.Forms.ListView
-    Friend WithEvents cmdOk As System.Windows.Forms.Button
     Friend WithEvents cmdMoveUp As System.Windows.Forms.Button
     Friend WithEvents cmdMoveDown As System.Windows.Forms.Button
     Friend WithEvents cmdInsertNew As System.Windows.Forms.Button
