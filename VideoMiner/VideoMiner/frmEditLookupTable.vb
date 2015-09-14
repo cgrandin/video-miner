@@ -74,7 +74,8 @@ Public Class frmEditLookupTable
     End Sub
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
-        Database.Update(m_data_table)
+        '''TODO: Fix the table name here. It will break the code for the update because I used DB_DATA_TABLE here temporarily
+        Database.Update(m_data_table, DB_DATA_TABLE)
         Me.Hide()
     End Sub
 

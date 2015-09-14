@@ -43,7 +43,7 @@ Public Class frmAbundanceTableView
     End Sub
 
     Private Sub grdAbundance_CellEndEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles grdAbundance.CellEndEdit
-        Database.Update(m_data_table)
+        Database.Update(m_data_table, DB_DATA_TABLE)
     End Sub
 
     Private Sub grdAbundance_SelectionChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles grdAbundance.SelectionChanged

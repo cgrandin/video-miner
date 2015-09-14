@@ -19,7 +19,16 @@ Public Module Database
     Private m_conn As OleDbConnection
     Private m_data_table As DataTable
     Private m_data_cmd As OleDbCommand
-    Private m_data_adapter As OleDbDataAdapter
+    ''' <summary>
+    ''' The data adapter for the 'data' table in the database
+    ''' </summary>
+    ''' <remarks>A seperate data adapter is needed for each table which may be modified by the Update function</remarks>
+    Private m_data_adapter_data As OleDbDataAdapter
+    ''' <summary>
+    ''' The data adapter for the 'species_buttons' table in the database
+    ''' </summary>
+    ''' <remarks>A seperate data adapter is needed for each table which may be modified by the Update function</remarks>
+    Private m_data_adapter_species_buttons As OleDbDataAdapter
     Private m_data_command_builder As OleDbCommandBuilder
     Private m_data_set As DataSet
     Private m_data_binding As BindingSource
@@ -121,18 +130,27 @@ Public Module Database
     ''' <returns>A DataTable which holds the data queried for or Nothing</returns>
     ''' <remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and Nothing will be returned.</remarks>
     Public Function GetDataTable(query As String, tableName As String) As DataTable
+        Dim data_adapter As OleDbDataAdapter
         If Not IsOpen Then
             MessageBox.Show("The database has not been opened yet.", "Database not open", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return Nothing
         End If
         Try
             m_data_cmd = New OleDbCommand(query, m_conn)
-            m_data_adapter = New OleDbDataAdapter(m_data_cmd)
+            If tableName = DB_DATA_TABLE Then
+                m_data_adapter_data = New OleDbDataAdapter(m_data_cmd)
+            Else
+                data_adapter = New OleDbDataAdapter(m_data_cmd)
+            End If
             m_data_set = New DataSet()
-            m_data_command_builder = New OleDbCommandBuilder(m_data_adapter)
+            m_data_command_builder = New OleDbCommandBuilder(m_data_adapter_data)
             m_data_command_builder.QuotePrefix = "["
             m_data_command_builder.QuoteSuffix = "]"
-            m_data_adapter.Fill(m_data_set, tableName)
+            If tableName = DB_DATA_TABLE Then
+                m_data_adapter_data.Fill(m_data_set, tableName)
+            Else
+                data_adapter.Fill(m_data_set, tableName)
+            End If
             m_data_table = m_data_set.Tables(tableName)
         Catch ex As Exception
             MessageBox.Show("Error fetching data from database. Check that the table " & tableName & " exists and is able to support the query submitted." & _
@@ -170,9 +188,12 @@ Public Module Database
     ''' </summary>
     ''' <returns>True if successful, false otherwise</returns>
     ''' <remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and False will be returned.</remarks>
-    Public Function Update(data_table As DataTable) As Boolean
+    Public Function Update(data_table As DataTable, tableName As String) As Boolean
         Try
-            m_data_adapter.Update(data_table)
+            ''' THIS IS THE PROBLEM!! THIS ADAPTER HAS BEEN RESET ON EVERY CALL TO GETDATATABLE
+            If tableName = DB_DATA_TABLE Then
+                m_data_adapter_data.Update(data_table)
+            End If
         Catch ex As Exception
             MessageBox.Show("Error executing update on database table." & vbCrLf & vbCrLf & "Exception:" & _
                             vbCrLf & ex.Message, "Error loading data from query", MessageBoxButtons.OK, MessageBoxIcon.Error)

@@ -1274,6 +1274,16 @@ VideoMiner
 	<summary>
  The full-path name of the MS Access database file (mdb file).
  </summary>
+</member><member name="F:VideoMiner.Database.m_data_adapter_data">
+	<summary>
+ The data adapter for the 'data' table in the database
+ </summary>
+	<remarks>A seperate data adapter is needed for each table which may be modified by the Update function</remarks>
+</member><member name="F:VideoMiner.Database.m_data_adapter_species_buttons">
+	<summary>
+ The data adapter for the 'species_buttons' table in the database
+ </summary>
+	<remarks>A seperate data adapter is needed for each table which may be modified by the Update function</remarks>
 </member><member name="P:VideoMiner.Database.Name">
 	<summary>
  The full path name of the MS Access database file (.mdb file)
@@ -1320,7 +1330,7 @@ VideoMiner
 	<param name="query">The query to execute on the MS Access database</param>
 	<returns>True if the query was successful, false otherwise and false if an exception was thrown</returns>
 	<remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and False will be returned.</remarks>
-</member><member name="M:VideoMiner.Database.Update(System.Data.DataTable)">
+</member><member name="M:VideoMiner.Database.Update(System.Data.DataTable,System.String)">
 	<summary>
  Runs an update query on the data adapter with the given data_table. Used to save changes to the database table from outside.
  </summary>

@@ -5158,7 +5158,7 @@ SkipInsertComma:
     ''' updated inside the actual database.
     ''' </summary>
     Private Sub cmdUpdateDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUpdateDatabase.Click
-        Database.Update(m_data_table)
+        Database.Update(m_data_table, DB_DATA_TABLE)
         lblDirtyData.ForeColor = Color.LimeGreen
         lblDirtyData.Text = "Data synced"
         For i As Integer = 0 To grdVideoMinerDatabase.RowCount - 1
