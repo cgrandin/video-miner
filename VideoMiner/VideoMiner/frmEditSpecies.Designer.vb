@@ -26,8 +26,6 @@ Partial Class frmEditSpecies
         Me.cmdCancel = New System.Windows.Forms.Button()
         Me.cboCommonName = New System.Windows.Forms.ComboBox()
         Me.cboScientificName = New System.Windows.Forms.ComboBox()
-        Me.radCommonName = New System.Windows.Forms.RadioButton()
-        Me.radScientificName = New System.Windows.Forms.RadioButton()
         Me.lblSpeciesBtnTxt = New System.Windows.Forms.Label()
         Me.txtSpeciesBtnTxt = New System.Windows.Forms.TextBox()
         Me.cboButtonColors = New System.Windows.Forms.ComboBox()
@@ -37,6 +35,8 @@ Partial Class frmEditSpecies
         Me.txtKeyboardShortcut = New System.Windows.Forms.TextBox()
         Me.lblKeyboardShortcut = New System.Windows.Forms.Label()
         Me.cmdChange = New System.Windows.Forms.Button()
+        Me.lblSpeciesCommonName = New System.Windows.Forms.Label()
+        Me.lblSpeciesScientificName = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'Label1
@@ -65,7 +65,7 @@ Partial Class frmEditSpecies
         Me.txtSpeciesCode.MaxLength = 50
         Me.txtSpeciesCode.Name = "txtSpeciesCode"
         Me.txtSpeciesCode.ReadOnly = True
-        Me.txtSpeciesCode.Size = New System.Drawing.Size(85, 21)
+        Me.txtSpeciesCode.Size = New System.Drawing.Size(111, 21)
         Me.txtSpeciesCode.TabIndex = 3
         Me.txtSpeciesCode.TabStop = False
         Me.txtSpeciesCode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
@@ -73,7 +73,7 @@ Partial Class frmEditSpecies
         'cmdOk
         '
         Me.cmdOk.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdOk.Location = New System.Drawing.Point(136, 281)
+        Me.cmdOk.Location = New System.Drawing.Point(136, 243)
         Me.cmdOk.Name = "cmdOk"
         Me.cmdOk.Size = New System.Drawing.Size(87, 23)
         Me.cmdOk.TabIndex = 4
@@ -83,7 +83,7 @@ Partial Class frmEditSpecies
         'cmdCancel
         '
         Me.cmdCancel.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdCancel.Location = New System.Drawing.Point(229, 281)
+        Me.cmdCancel.Location = New System.Drawing.Point(229, 243)
         Me.cmdCancel.Name = "cmdCancel"
         Me.cmdCancel.Size = New System.Drawing.Size(87, 23)
         Me.cmdCancel.TabIndex = 5
@@ -101,35 +101,12 @@ Partial Class frmEditSpecies
         '
         'cboScientificName
         '
-        Me.cboScientificName.Enabled = False
         Me.cboScientificName.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cboScientificName.FormattingEnabled = True
         Me.cboScientificName.Location = New System.Drawing.Point(17, 129)
         Me.cboScientificName.Name = "cboScientificName"
         Me.cboScientificName.Size = New System.Drawing.Size(411, 21)
         Me.cboScientificName.TabIndex = 8
-        '
-        'radCommonName
-        '
-        Me.radCommonName.AutoSize = True
-        Me.radCommonName.Checked = True
-        Me.radCommonName.Location = New System.Drawing.Point(17, 59)
-        Me.radCommonName.Name = "radCommonName"
-        Me.radCommonName.Size = New System.Drawing.Size(159, 17)
-        Me.radCommonName.TabIndex = 11
-        Me.radCommonName.TabStop = True
-        Me.radCommonName.Text = "Species Common Name:"
-        Me.radCommonName.UseVisualStyleBackColor = True
-        '
-        'radScientificName
-        '
-        Me.radScientificName.AutoSize = True
-        Me.radScientificName.Location = New System.Drawing.Point(17, 109)
-        Me.radScientificName.Name = "radScientificName"
-        Me.radScientificName.Size = New System.Drawing.Size(160, 17)
-        Me.radScientificName.TabIndex = 12
-        Me.radScientificName.Text = "Species Scientific Name:"
-        Me.radScientificName.UseVisualStyleBackColor = True
         '
         'lblSpeciesBtnTxt
         '
@@ -152,16 +129,16 @@ Partial Class frmEditSpecies
         '
         Me.cboButtonColors.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
         Me.cboButtonColors.FormattingEnabled = True
-        Me.cboButtonColors.Location = New System.Drawing.Point(122, 169)
+        Me.cboButtonColors.Location = New System.Drawing.Point(278, 169)
         Me.cboButtonColors.Name = "cboButtonColors"
-        Me.cboButtonColors.Size = New System.Drawing.Size(121, 22)
+        Me.cboButtonColors.Size = New System.Drawing.Size(150, 22)
         Me.cboButtonColors.TabIndex = 16
         '
         'lblButtonColor
         '
         Me.lblButtonColor.AutoSize = True
         Me.lblButtonColor.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblButtonColor.Location = New System.Drawing.Point(119, 153)
+        Me.lblButtonColor.Location = New System.Drawing.Point(278, 153)
         Me.lblButtonColor.Name = "lblButtonColor"
         Me.lblButtonColor.Size = New System.Drawing.Size(80, 13)
         Me.lblButtonColor.TabIndex = 2
@@ -171,7 +148,7 @@ Partial Class frmEditSpecies
         '
         Me.lblTaxonomicLevel.AutoSize = True
         Me.lblTaxonomicLevel.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTaxonomicLevel.Location = New System.Drawing.Point(262, 153)
+        Me.lblTaxonomicLevel.Location = New System.Drawing.Point(131, 153)
         Me.lblTaxonomicLevel.Name = "lblTaxonomicLevel"
         Me.lblTaxonomicLevel.Size = New System.Drawing.Size(105, 13)
         Me.lblTaxonomicLevel.TabIndex = 2
@@ -180,18 +157,18 @@ Partial Class frmEditSpecies
         'txtTaxonomicLevel
         '
         Me.txtTaxonomicLevel.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtTaxonomicLevel.Location = New System.Drawing.Point(265, 170)
+        Me.txtTaxonomicLevel.Location = New System.Drawing.Point(133, 170)
         Me.txtTaxonomicLevel.MaxLength = 50
         Me.txtTaxonomicLevel.Name = "txtTaxonomicLevel"
         Me.txtTaxonomicLevel.ReadOnly = True
-        Me.txtTaxonomicLevel.Size = New System.Drawing.Size(85, 21)
+        Me.txtTaxonomicLevel.Size = New System.Drawing.Size(136, 21)
         Me.txtTaxonomicLevel.TabIndex = 3
         Me.txtTaxonomicLevel.TabStop = False
         Me.txtTaxonomicLevel.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'txtKeyboardShortcut
         '
-        Me.txtKeyboardShortcut.Location = New System.Drawing.Point(17, 223)
+        Me.txtKeyboardShortcut.Location = New System.Drawing.Point(17, 213)
         Me.txtKeyboardShortcut.Name = "txtKeyboardShortcut"
         Me.txtKeyboardShortcut.ReadOnly = True
         Me.txtKeyboardShortcut.Size = New System.Drawing.Size(100, 21)
@@ -200,7 +177,7 @@ Partial Class frmEditSpecies
         'lblKeyboardShortcut
         '
         Me.lblKeyboardShortcut.AutoSize = True
-        Me.lblKeyboardShortcut.Location = New System.Drawing.Point(14, 207)
+        Me.lblKeyboardShortcut.Location = New System.Drawing.Point(14, 197)
         Me.lblKeyboardShortcut.Name = "lblKeyboardShortcut"
         Me.lblKeyboardShortcut.Size = New System.Drawing.Size(113, 13)
         Me.lblKeyboardShortcut.TabIndex = 18
@@ -208,26 +185,44 @@ Partial Class frmEditSpecies
         '
         'cmdChange
         '
-        Me.cmdChange.Location = New System.Drawing.Point(123, 221)
+        Me.cmdChange.Location = New System.Drawing.Point(123, 211)
         Me.cmdChange.Name = "cmdChange"
         Me.cmdChange.Size = New System.Drawing.Size(75, 23)
         Me.cmdChange.TabIndex = 19
         Me.cmdChange.Text = "Change"
         Me.cmdChange.UseVisualStyleBackColor = True
         '
+        'lblSpeciesCommonName
+        '
+        Me.lblSpeciesCommonName.AutoSize = True
+        Me.lblSpeciesCommonName.Location = New System.Drawing.Point(17, 61)
+        Me.lblSpeciesCommonName.Name = "lblSpeciesCommonName"
+        Me.lblSpeciesCommonName.Size = New System.Drawing.Size(138, 13)
+        Me.lblSpeciesCommonName.TabIndex = 20
+        Me.lblSpeciesCommonName.Text = "Species Common Name"
+        '
+        'lblSpeciesScientificName
+        '
+        Me.lblSpeciesScientificName.AutoSize = True
+        Me.lblSpeciesScientificName.Location = New System.Drawing.Point(17, 110)
+        Me.lblSpeciesScientificName.Name = "lblSpeciesScientificName"
+        Me.lblSpeciesScientificName.Size = New System.Drawing.Size(139, 13)
+        Me.lblSpeciesScientificName.TabIndex = 21
+        Me.lblSpeciesScientificName.Text = "Species Scientific Name"
+        '
         'frmEditSpecies
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(440, 326)
+        Me.ClientSize = New System.Drawing.Size(440, 272)
+        Me.Controls.Add(Me.lblSpeciesScientificName)
+        Me.Controls.Add(Me.lblSpeciesCommonName)
         Me.Controls.Add(Me.cmdChange)
         Me.Controls.Add(Me.lblKeyboardShortcut)
         Me.Controls.Add(Me.txtKeyboardShortcut)
         Me.Controls.Add(Me.cboButtonColors)
         Me.Controls.Add(Me.txtSpeciesBtnTxt)
         Me.Controls.Add(Me.lblSpeciesBtnTxt)
-        Me.Controls.Add(Me.radScientificName)
-        Me.Controls.Add(Me.radCommonName)
         Me.Controls.Add(Me.cboScientificName)
         Me.Controls.Add(Me.cboCommonName)
         Me.Controls.Add(Me.cmdCancel)
@@ -255,8 +250,6 @@ Partial Class frmEditSpecies
     Friend WithEvents cmdCancel As System.Windows.Forms.Button
     Friend WithEvents cboCommonName As System.Windows.Forms.ComboBox
     Friend WithEvents cboScientificName As System.Windows.Forms.ComboBox
-    Friend WithEvents radCommonName As System.Windows.Forms.RadioButton
-    Friend WithEvents radScientificName As System.Windows.Forms.RadioButton
     Friend WithEvents lblSpeciesBtnTxt As System.Windows.Forms.Label
     Friend WithEvents txtSpeciesBtnTxt As System.Windows.Forms.TextBox
     Friend WithEvents cboButtonColors As System.Windows.Forms.ComboBox
@@ -266,4 +259,6 @@ Partial Class frmEditSpecies
     Friend WithEvents txtKeyboardShortcut As System.Windows.Forms.TextBox
     Friend WithEvents lblKeyboardShortcut As System.Windows.Forms.Label
     Friend WithEvents cmdChange As System.Windows.Forms.Button
+    Friend WithEvents lblSpeciesCommonName As System.Windows.Forms.Label
+    Friend WithEvents lblSpeciesScientificName As System.Windows.Forms.Label
 End Class

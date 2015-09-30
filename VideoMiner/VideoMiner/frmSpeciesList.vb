@@ -6,7 +6,7 @@
 ''' deleted and recreated using the constructor code found in the DynamicPanel class.</remarks>
 Public Class frmSpeciesList
 
-    Dim frmEditSpecies As frmEditSpecies
+    Dim WithEvents frmEditSpecies As frmEditSpecies
 
     Event SpeciesButtonsChangedEvent()
 
@@ -135,44 +135,47 @@ Public Class frmSpeciesList
         UpdateDrawingOrder()
     End Sub
 
+    ''' <summary>
+    ''' Bring up the EditSpecies form. If there is a current selection in the species list, the species code will be sent to the form so it can
+    ''' populate itself with the correct values. If there is no selection, the records will be blank and the user can enter a new species button.
+    ''' </summary>
     Private Sub cmdInsertNew_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdInsertNew.Click
-        With frmEditSpecies
-            .OriginalSpeciesName = ""
-            .OriginalSpeciesCode = ""
-            .cboCommonName.Text = ""
-            .cboScientificName.Text = ""
-            .Edit_Insert = "Insert"
-            .Show()
-        End With
+        ' This should maybe be in the cmdEdit_Click function below
+        If lstSpecies.SelectedItems.Count > 0 Then
+            frmEditSpecies.SpeciesCode = lstSpecies.SelectedItems(0).SubItems(1).ToString
+            frmEditSpecies.FillControlsUsingSpeciesCode()
+        End If
+        frmEditSpecies.Show()
+        'With frmEditSpecies
+        ' .cboCommonName.Text = ""
+        ' .cboScientificName.Text = ""
+        ' .Show()
+        ' End With
     End Sub
 
     Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEdit.Click
-        Try
-            If Me.lstSpecies.SelectedItems.Count = 0 Then
-                MsgBox("Please select a species from the list")
-                Exit Sub
-            End If
-            frmEditSpecies = New frmEditSpecies
-            With frmEditSpecies
-                .Edit_Insert = "Edit"
-                .cboCommonName.Text = ""
-                .cboScientificName.Text = ""
-            End With
-            'Me.UpdateDrawingOrder()
+        'Try
+        '   If Me.lstSpecies.SelectedItems.Count = 0 Then
+        ' MsgBox("Please select a species from the list")
+        ' Exit Sub
+        ' End If
+        'frmEditSpecies = New frmEditSpecies
+        'With frmEditSpecies
+        ' .cboCommonName.Text = ""
+        ' .cboScientificName.Text = ""
+        ' End With
+        'Me.UpdateDrawingOrder()
 
-            Dim selIdx As Integer = Me.lstSpecies.SelectedIndices.Item(0)
-            Dim strOriginalSpeciesName As String = Me.lstSpecies.Items(selIdx).SubItems(1).Text
-            Dim strOriginalSpeciesCode As String = Me.lstSpecies.Items(selIdx).SubItems(2).Text
+        ' Dim selIdx As Integer = Me.lstSpecies.SelectedIndices.Item(0)
+        ' Dim strOriginalSpeciesName As String = Me.lstSpecies.Items(selIdx).SubItems(1).Text
+        ' Dim strOriginalSpeciesCode As String = Me.lstSpecies.Items(selIdx).SubItems(2).Text
 
-            With frmEditSpecies
-                .selIdx = selIdx
-                .OriginalSpeciesName = strOriginalSpeciesName
-                .OriginalSpeciesCode = strOriginalSpeciesCode
-                .ShowDialog()
-            End With
-        Catch ex As Exception
-            MsgBox(ex.Message)
-        End Try
+        'With frmEditSpecies
+        ' .ShowDialog()
+        ' End With
+        'Catch ex As Exception
+        '    MsgBox(ex.Message)
+        'End Try
 
     End Sub
 
@@ -216,6 +219,13 @@ Public Class frmSpeciesList
             UpdateDrawingOrder()
             fillSpeciesList()
         End If
+    End Sub
+
+    ''' <summary>
+    ''' Handles the case in which the user has changed something about the species buttons layout using the edit species buttons form.
+    ''' </summary>
+    Private Sub buttonsModified() Handles frmEditSpecies.SpeciesButtonsModified
+        RaiseEvent SpeciesButtonsChangedEvent()
     End Sub
 
     Private Sub lstSpecies_DragDrop(ByVal sender As Object, ByVal e As System.Windows.Forms.DragEventArgs) Handles lstSpecies.DragDrop

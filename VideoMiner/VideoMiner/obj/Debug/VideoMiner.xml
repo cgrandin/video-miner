@@ -690,16 +690,105 @@ VideoMiner
  Append the string to the textbox
  </summary>
 	<remarks>Only appends if the form is visible and not "paused"</remarks>
+</member><member name="F:VideoMiner.frmEditSpecies.m_speciesName">
+	<summary>
+ The currently selected species name
+ </summary>
+</member><member name="F:VideoMiner.frmEditSpecies.m_speciesScienceName">
+	<summary>
+ The currently selected species scientific name
+ </summary>
+</member><member name="F:VideoMiner.frmEditSpecies.m_speciesCode">
+	<summary>
+ The currently selected species code
+ </summary>
+</member><member name="F:VideoMiner.frmEditSpecies.m_speciesTaxCode">
+	<summary>
+ The currently selected species' taxonomic level code
+ </summary>
+</member><member name="F:VideoMiner.frmEditSpecies.m_buttonColor">
+	<summary>
+ The currently selected button color
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.frmEditSpecies.m_button_text">
+	<summary>
+ The button text to be used for the species code
+ </summary>
+	<remarks></remarks>
+</member><member name="F:VideoMiner.frmEditSpecies.m_keyboard_shortcut">
+	<summary>
+ The text representing a .NET keyboard shortcut
+ </summary>
+	<remarks></remarks>
+</member><member name="P:VideoMiner.frmEditSpecies.SpeciesName">
+	<summary>
+ Returns the currently selected species' common name. Will return null string if there is no selection.
+ </summary>
+</member><member name="P:VideoMiner.frmEditSpecies.SpeciesScienceName">
+	<summary>
+ Returns the currently selected species' scientific name. Will return null string if there is no selection.
+ </summary>
+</member><member name="P:VideoMiner.frmEditSpecies.SpeciesCode">
+	<summary>
+ Returns the currently selected species' species code. Will return null string if there is no selection.
+ </summary>
+</member><member name="P:VideoMiner.frmEditSpecies.SpeciesTaxCode">
+	<summary>
+ Returns the currently selected species' taxonomy family code. Will return null string if there is no selection.
+ </summary>
+</member><member name="P:VideoMiner.frmEditSpecies.ButtonColor">
+	<summary>
+ Returns the currently selected button color. Will return null string if there is no selection.
+ </summary>
+</member><member name="P:VideoMiner.frmEditSpecies.ButtonText">
+	<summary>
+ Returns the currently selected button color. Will return null string if there is no selection.
+ </summary>
+</member><member name="P:VideoMiner.frmEditSpecies.KeyboardShortcut">
+	<summary>
+ Returns a text representation of the current keyboard shortcut for this species. Will return null string if there isn't one set up.
+ </summary>
 </member><member name="M:VideoMiner.frmEditSpecies.#ctor">
 	<summary>
  In this constructor, the various comboboxes will be populated so that it only happens once. There are over 7000 records in the species table and this will speed things up in the program.
  </summary>
-</member><member name="M:VideoMiner.frmEditSpecies.PopulateSpeciesLists(System.Windows.Forms.ComboBox@,System.Data.DataTable@)">
+</member><member name="M:VideoMiner.frmEditSpecies.PopulateComboBox(System.Windows.Forms.ComboBox@,System.Data.DataTable@)">
 	<summary>
  Fill the combobox with a given column's contents
  </summary>
 	<param name="cboBox">A reference to the combobox to populate</param>
 	<param name="dataTable">A single column data table containing values that you want to fill the combobox with</param>
+</member><member name="M:VideoMiner.frmEditSpecies.cboButtonColors_DrawItem(System.Object,System.Windows.Forms.DrawItemEventArgs)">
+	<summary>
+ Custom draw function for the button colors combobox so that the color names appear as the colors themselves.
+ </summary>
+</member><member name="M:VideoMiner.frmEditSpecies.cmdOk_Click(System.Object,System.EventArgs)">
+	<summary>
+ When user presses OK, either add a new record to the database table videominer_species_buttons or change one already present.
+ </summary>
+</member><member name="M:VideoMiner.frmEditSpecies.GetNextSequenceId">
+	<summary>
+ Get the next unique ID from the species buttons table so that the new button can be inserted properly into the database table.
+ </summary>
+</member><member name="M:VideoMiner.frmEditSpecies.cboCommonName_SelectionChangeCommitted(System.Object,System.EventArgs)">
+	<summary>
+ Whenever the selected index chages for the Common Name, set the other controls to match the Common Name.
+ </summary>
+</member><member name="M:VideoMiner.frmEditSpecies.cboScientificName_SelectionChangeCommitted(System.Object,System.EventArgs)">
+	<summary>
+ Whenever the selected index chages for the Common Name, set the other controls to match the Common Name.
+ </summary>
+</member><member name="M:VideoMiner.frmEditSpecies.cboButtonColor_SelectionChangeCommitted(System.Object,System.EventArgs)">
+	<summary>
+ Handles the case when the user chages the selection in the Button Colors combobox. Simply sets a member variable when changed.
+ If the selection is null, DarkSlateGray will be used as the default
+ </summary>
+</member><member name="M:VideoMiner.frmEditSpecies.FillControlsUsingSpeciesCode">
+	<summary>
+ Fills the controls based on the current species code. Used from a parent form when it wants to populate the fields automatically with a supplied
+ species code value.
+ </summary>
 </member><member name="T:VideoMiner.frmEditSpecies">
 	<summary>
  This form class allows the user to add a new species to the database table 'videominer_species_buttons' or to edit properties of an existing species
@@ -1873,6 +1962,11 @@ VideoMiner
  Moves the selected item from wherever it is to the given index.
  </summary>
 	<param name="moveToIndex">Index to move the selected item to. 0 is the first element.</param>
+</member><member name="M:VideoMiner.frmSpeciesList.cmdInsertNew_Click(System.Object,System.EventArgs)">
+	<summary>
+ Bring up the EditSpecies form. If there is a current selection in the species list, the species code will be sent to the form so it can
+ populate itself with the correct values. If there is no selection, the records will be blank and the user can enter a new species button.
+ </summary>
 </member><member name="M:VideoMiner.frmSpeciesList.UpdateDrawingOrder">
 	<summary>
  Change the database to relect the user change in order in the list. Once the database has been modified, raise an event to the main form so that
@@ -1882,6 +1976,10 @@ VideoMiner
 	<summary>
  When the user clicks the delete button, whatever list item is selected will be deleted from the database and removed from the button collection.
  A confirmation dialog will be issued first.
+ </summary>
+</member><member name="M:VideoMiner.frmSpeciesList.buttonsModified">
+	<summary>
+ Handles the case in which the user has changed something about the species buttons layout using the edit species buttons form.
  </summary>
 </member><member name="T:VideoMiner.frmSpeciesList">
 	<summary>
