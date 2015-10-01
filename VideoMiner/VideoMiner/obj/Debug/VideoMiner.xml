@@ -793,6 +793,14 @@ VideoMiner
 	<summary>
  Clears out all controls of their current values and resets member variables to a freshly loaded default state.
  </summary>
+</member><member name="M:VideoMiner.frmEditSpecies.me_FormClosing(System.Object,System.Windows.Forms.FormClosingEventArgs)">
+	<summary>
+ Capture the event when the user presses the 'X' button top right. Instead of closing the form, just hide it.
+ </summary>
+</member><member name="M:VideoMiner.frmEditSpecies.txtSpeciesBtnTxt_TextChanged(System.Object,System.EventArgs)">
+	<summary>
+ If the user types custom text into the button text texbox, this handles that and sets the appropriate member variable.
+ </summary>
 </member><member name="T:VideoMiner.frmEditSpecies">
 	<summary>
  This form class allows the user to add a new species to the database table 'videominer_species_buttons' or to edit properties of an existing species

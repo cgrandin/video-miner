@@ -23,6 +23,7 @@ Public Class frmSpeciesList
             .Columns.Add("Button Text", 157, HorizontalAlignment.Left)
             .Columns.Add("Species Code", 90, HorizontalAlignment.Left)
             .Columns.Add("Taxonomic Code", 110, HorizontalAlignment.Left)
+            .Columns.Add("Shortcut Key", 90, HorizontalAlignment.Left)
         End With
         frmEditSpecies = New frmEditSpecies
     End Sub
@@ -42,7 +43,7 @@ Public Class frmSpeciesList
         Dim taxData As DataTable
         Dim itm As ListViewItem
         Me.lstSpecies.Items.Clear()
-        Dim d As DataTable = Database.GetDataTable("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", DB_SPECIES_BUTTONS_TABLE)
+        Dim d As DataTable = Database.GetDataTable("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor, KeyboardShortcut from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", DB_SPECIES_BUTTONS_TABLE)
         For Each r As DataRow In d.Rows
             itm = New ListViewItem
             itm.Text = ""
@@ -51,6 +52,7 @@ Public Class frmSpeciesList
             taxData = Database.GetDataTable("Select SpeciesCode, TaxonomyClassLevelCode from " & DB_SPECIES_CODE_TABLE & " WHERE SpeciesCode = " & SingleQuote(r.Item("ButtonCode")) & ";", DB_SPECIES_CODE_TABLE)
             taxRow = taxData.Rows.Item(0)
             itm.SubItems.Add(taxRow.Item("TaxonomyClassLevelCode").ToString())
+            itm.SubItems.Add(r.Item("KeyboardShortcut").ToString())
             Me.lstSpecies.Items.Add(itm)
         Next
     End Sub

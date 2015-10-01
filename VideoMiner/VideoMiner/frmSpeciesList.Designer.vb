@@ -41,7 +41,7 @@ Partial Class frmSpeciesList
         Me.lstSpecies.Location = New System.Drawing.Point(2, 3)
         Me.lstSpecies.MultiSelect = False
         Me.lstSpecies.Name = "lstSpecies"
-        Me.lstSpecies.Size = New System.Drawing.Size(378, 483)
+        Me.lstSpecies.Size = New System.Drawing.Size(474, 483)
         Me.lstSpecies.TabIndex = 3
         Me.lstSpecies.UseCompatibleStateImageBehavior = False
         Me.lstSpecies.View = System.Windows.Forms.View.Details
@@ -50,7 +50,7 @@ Partial Class frmSpeciesList
         '
         Me.cmdMoveUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdMoveUp.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdMoveUp.Location = New System.Drawing.Point(386, 37)
+        Me.cmdMoveUp.Location = New System.Drawing.Point(482, 37)
         Me.cmdMoveUp.Name = "cmdMoveUp"
         Me.cmdMoveUp.Size = New System.Drawing.Size(113, 27)
         Me.cmdMoveUp.TabIndex = 5
@@ -61,7 +61,7 @@ Partial Class frmSpeciesList
         '
         Me.cmdMoveDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdMoveDown.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdMoveDown.Location = New System.Drawing.Point(386, 72)
+        Me.cmdMoveDown.Location = New System.Drawing.Point(482, 72)
         Me.cmdMoveDown.Name = "cmdMoveDown"
         Me.cmdMoveDown.Size = New System.Drawing.Size(113, 27)
         Me.cmdMoveDown.TabIndex = 6
@@ -105,7 +105,7 @@ Partial Class frmSpeciesList
         '
         Me.cmdMoveToTop.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdMoveToTop.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdMoveToTop.Location = New System.Drawing.Point(386, 3)
+        Me.cmdMoveToTop.Location = New System.Drawing.Point(482, 3)
         Me.cmdMoveToTop.Name = "cmdMoveToTop"
         Me.cmdMoveToTop.Size = New System.Drawing.Size(113, 27)
         Me.cmdMoveToTop.TabIndex = 5
@@ -116,7 +116,7 @@ Partial Class frmSpeciesList
         '
         Me.cmdMoveToBottom.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdMoveToBottom.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdMoveToBottom.Location = New System.Drawing.Point(386, 107)
+        Me.cmdMoveToBottom.Location = New System.Drawing.Point(482, 107)
         Me.cmdMoveToBottom.Name = "cmdMoveToBottom"
         Me.cmdMoveToBottom.Size = New System.Drawing.Size(113, 27)
         Me.cmdMoveToBottom.TabIndex = 6
@@ -127,7 +127,7 @@ Partial Class frmSpeciesList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(511, 525)
+        Me.ClientSize = New System.Drawing.Size(607, 525)
         Me.Controls.Add(Me.cmdDelete)
         Me.Controls.Add(Me.cmdEdit)
         Me.Controls.Add(Me.cmdInsertNew)

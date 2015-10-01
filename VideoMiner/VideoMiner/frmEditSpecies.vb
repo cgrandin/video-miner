@@ -388,6 +388,9 @@ Public Class frmEditSpecies
         frmCreateKeyboardShortcut.ShowDialog()
     End Sub
 
+    ''' <summary>
+    ''' Capture the event when the user presses the 'X' button top right. Instead of closing the form, just hide it.
+    ''' </summary>
     Private Sub me_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If e.CloseReason = CloseReason.UserClosing Then
             e.Cancel = True
@@ -395,6 +398,9 @@ Public Class frmEditSpecies
         End If
     End Sub
 
+    ''' <summary>
+    ''' If the user types custom text into the button text texbox, this handles that and sets the appropriate member variable.
+    ''' </summary>
     Private Sub txtSpeciesBtnTxt_TextChanged(sender As Object, e As EventArgs) Handles txtSpeciesBtnTxt.TextChanged
         m_button_text = txtSpeciesBtnTxt.Text
     End Sub
