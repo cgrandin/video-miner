@@ -136,47 +136,27 @@ Public Class frmSpeciesList
     End Sub
 
     ''' <summary>
-    ''' Bring up the EditSpecies form. If there is a current selection in the species list, the species code will be sent to the form so it can
-    ''' populate itself with the correct values. If there is no selection, the records will be blank and the user can enter a new species button.
+    ''' Bring up the EditSpecies form with empty fields.
     ''' </summary>
     Private Sub cmdInsertNew_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdInsertNew.Click
-        ' This should maybe be in the cmdEdit_Click function below
-        If lstSpecies.SelectedItems.Count > 0 Then
-            frmEditSpecies.SpeciesCode = lstSpecies.SelectedItems(0).SubItems(1).ToString
-            frmEditSpecies.FillControlsUsingSpeciesCode()
-        End If
         frmEditSpecies.Show()
-        'With frmEditSpecies
-        ' .cboCommonName.Text = ""
-        ' .cboScientificName.Text = ""
-        ' .Show()
-        ' End With
+        frmEditSpecies.ClearControls()
     End Sub
 
+    ''' <summary>
+    ''' When the user clicks the 'Edit' button, the species code will be set in the frmEditSpecies and then a command run to fill the fields in
+    ''' with the corresponding information from the database for that species code. Then the form will be shown.
+    ''' </summary>
     Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEdit.Click
-        'Try
-        '   If Me.lstSpecies.SelectedItems.Count = 0 Then
-        ' MsgBox("Please select a species from the list")
-        ' Exit Sub
-        ' End If
-        'frmEditSpecies = New frmEditSpecies
-        'With frmEditSpecies
-        ' .cboCommonName.Text = ""
-        ' .cboScientificName.Text = ""
-        ' End With
-        'Me.UpdateDrawingOrder()
-
-        ' Dim selIdx As Integer = Me.lstSpecies.SelectedIndices.Item(0)
-        ' Dim strOriginalSpeciesName As String = Me.lstSpecies.Items(selIdx).SubItems(1).Text
-        ' Dim strOriginalSpeciesCode As String = Me.lstSpecies.Items(selIdx).SubItems(2).Text
-
-        'With frmEditSpecies
-        ' .ShowDialog()
-        ' End With
-        'Catch ex As Exception
-        '    MsgBox(ex.Message)
-        'End Try
-
+        If lstSpecies.SelectedItems.Count > 0 Then
+            ' Here, the Show() function has to be called first, in order for the form to redraw itself with the new values.
+            ' If you put it after the call to FillControlsUsingSpeciesCode, it will not fill them in the first time the form is shown.
+            frmEditSpecies.Show()
+            frmEditSpecies.SpeciesCode = lstSpecies.SelectedItems(0).SubItems(2).Text
+            frmEditSpecies.FillControlsUsingSpeciesCode()
+        Else
+            MessageBox.Show("Please select a species to change button variables for.", "Select row", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
+        End If
     End Sub
 
     ''' <summary>

@@ -239,6 +239,7 @@ Partial Class frmEditSpecies
         Me.MinimizeBox = False
         Me.Name = "frmEditSpecies"
         Me.Text = "Edit Species"
+        Me.TopMost = True
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

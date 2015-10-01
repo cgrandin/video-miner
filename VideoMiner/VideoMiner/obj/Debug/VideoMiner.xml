@@ -786,8 +786,12 @@ VideoMiner
  </summary>
 </member><member name="M:VideoMiner.frmEditSpecies.FillControlsUsingSpeciesCode">
 	<summary>
- Fills the controls based on the current species code. Used from a parent form when it wants to populate the fields automatically with a supplied
+ Fills the controls based on the current species code. Usually used from a parent form when it wants to populate the fields automatically with a supplied
  species code value.
+ </summary>
+</member><member name="M:VideoMiner.frmEditSpecies.ClearControls">
+	<summary>
+ Clears out all controls of their current values and resets member variables to a freshly loaded default state.
  </summary>
 </member><member name="T:VideoMiner.frmEditSpecies">
 	<summary>
@@ -1964,8 +1968,12 @@ VideoMiner
 	<param name="moveToIndex">Index to move the selected item to. 0 is the first element.</param>
 </member><member name="M:VideoMiner.frmSpeciesList.cmdInsertNew_Click(System.Object,System.EventArgs)">
 	<summary>
- Bring up the EditSpecies form. If there is a current selection in the species list, the species code will be sent to the form so it can
- populate itself with the correct values. If there is no selection, the records will be blank and the user can enter a new species button.
+ Bring up the EditSpecies form with empty fields.
+ </summary>
+</member><member name="M:VideoMiner.frmSpeciesList.cmdEdit_Click(System.Object,System.EventArgs)">
+	<summary>
+ When the user clicks the 'Edit' button, the species code will be set in the frmEditSpecies and then a command run to fill the fields in
+ with the corresponding information from the database for that species code. Then the form will be shown.
  </summary>
 </member><member name="M:VideoMiner.frmSpeciesList.UpdateDrawingOrder">
 	<summary>

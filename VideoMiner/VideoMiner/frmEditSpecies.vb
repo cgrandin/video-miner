@@ -124,13 +124,8 @@ Public Class frmEditSpecies
     End Sub
 
     Private Sub frmEditSpecies_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        ' Initialize currently selected species to null or empty string since user has not yet made a selection.
-        m_speciesName = ""
-        m_speciesScienceName = ""
-        m_speciesCode = ""
-        m_speciesTaxCode = ""
-        m_buttonColor = "DarkSlateGray"
-        m_keyboard_shortcut = ""
+        ' Initialize member variables and controls to default state.
+        ClearControls()
 
         ' The WHERE <> """" in the following three queries remove any null string species names from the lists
         Dim strQuery As String = "SELECT DISTINCT ScientificName FROM " & DB_SPECIES_CODE_TABLE & " WHERE ScientificName <> """" ORDER BY 1;"
@@ -181,7 +176,6 @@ Public Class frmEditSpecies
     Private Sub cmdOk_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOk.Click
         If Me.txtSpeciesCode.Text.Length = 0 Then
             MessageBox.Show("Please provide a species code.", "Species Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-            'Me.txtSpeciesCode.Focus()
             Exit Sub
         End If
 
@@ -198,9 +192,10 @@ Public Class frmEditSpecies
                            ", ButtonCode = " & DoubleQuote(SpeciesCode) & _
                            ", ButtonColor = " & DoubleQuote(ButtonColor) & _
                            ", KeyboardShortcut = " & DoubleQuote(KeyboardShortcut) & _
-                           " WHERE ButtonText = " & DoubleQuote(SpeciesName) & _
-                           " AND ButtonCode = " & DoubleQuote(SpeciesCode) & ";"
+                           " WHERE ButtonCode = " & DoubleQuote(SpeciesCode) & ";"
                 Database.ExecuteNonQuery(strQuery)
+                RaiseEvent SpeciesButtonsModified()
+                Me.Hide()
             End If
             Exit Sub
         End If
@@ -309,40 +304,81 @@ Public Class frmEditSpecies
     End Sub
 
     ''' <summary>
-    ''' Fills the controls based on the current species code. Used from a parent form when it wants to populate the fields automatically with a supplied
+    ''' Fills the controls based on the current species code. Usually used from a parent form when it wants to populate the fields automatically with a supplied
     ''' species code value.
     ''' </summary>
     Public Sub FillControlsUsingSpeciesCode()
+        Dim index As Integer
         If SpeciesCode <> "" Then
-            ' Get the current setup for this species
+            ' Get the current button setup variables for this species
             Dim strQuery As String = "SELECT DISTINCT ButtonText, ButtonCode, ButtonColor, KeyboardShortcut FROM " & DB_SPECIES_BUTTONS_TABLE & _
-                                     " WHERE ButtonCode = " & DoubleQuote(SpeciesCode) & " ORDER BY ButtonCode;"
+                                     " WHERE ButtonCode = " & DoubleQuote(SpeciesCode) & ";"
             Dim selected_table As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_BUTTONS_TABLE)
 
             ' Get the other data from the species code table for this species.
             Dim strQueryExtra As String = "SELECT DISTINCT CommonName, ScientificName, TaxonomyClassLevelCode FROM " & DB_SPECIES_CODE_TABLE & _
-                                          " WHERE SpeciesCode = " & DoubleQuote(SpeciesCode) & " ORDER BY SpeciesCode;"
-            Dim selected_table_extra As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_CODE_TABLE)
+                                          " WHERE SpeciesCode = " & DoubleQuote(SpeciesCode) & ";"
+            Dim selected_table_extra As DataTable = Database.GetDataTable(strQueryExtra, DB_SPECIES_CODE_TABLE)
 
             m_button_text = selected_table.Rows(0)("ButtonText")
             m_buttonColor = selected_table.Rows(0)("ButtonColor")
-            m_keyboard_shortcut = selected_table.Rows(0)("KeyboardShortcut")
+
+            ' Set the keyboard shortcut, if one exists
+            If IsDBNull(selected_table.Rows(0)("KeyboardShortcut")) Then
+                m_keyboard_shortcut = ""
+            Else
+                m_keyboard_shortcut = selected_table.Rows(0)("KeyboardShortcut")
+            End If
 
             m_speciesScienceName = selected_table_extra.Rows(0)("ScientificName")
-            m_speciesName = selected_table_extra.Rows(0)("CommonName")
             m_speciesTaxCode = selected_table_extra.Rows(0)("TaxonomyClassLevelCode")
 
-            txtSpeciesBtnTxt.Text = ButtonText
-            txtSpeciesCode.Text = SpeciesCode
-            txtTaxonomicLevel.Text = m_speciesTaxCode
+            ' Set the Common name combobox. If no common name, then display 'No common name available' instead
+            If IsDBNull(selected_table_extra.Rows(0)("CommonName")) Then
+                m_speciesName = ""
+                cboCommonName.Text = "No common name available"
+            Else
+                m_speciesName = selected_table_extra.Rows(0)("CommonName")
+                index = cboCommonName.FindStringExact(SpeciesName)
+                cboCommonName.SelectedIndex = index
+            End If
 
-            Dim index As Integer = cboCommonName.FindStringExact(m_speciesName)
-            cboCommonName.SelectedIndex = index
-
-            index = cboScientificName.FindStringExact(m_speciesScienceName)
+            ' Set the Scientific name combobox
+            index = cboScientificName.FindStringExact(SpeciesScienceName)
             cboScientificName.SelectedIndex = index
 
+            ' Set the button color combobox
+            index = cboButtonColors.FindStringExact(ButtonColor)
+            cboButtonColors.SelectedIndex = index
+
+            ' Set the textboxes
+            txtSpeciesBtnTxt.Text = ButtonText
+            txtSpeciesCode.Text = SpeciesCode
+            txtTaxonomicLevel.Text = SpeciesTaxCode
+            txtKeyboardShortcut.Text = KeyboardShortcut
         End If
+    End Sub
+
+    ''' <summary>
+    ''' Clears out all controls of their current values and resets member variables to a freshly loaded default state.
+    ''' </summary>
+    Public Sub ClearControls()
+        m_speciesName = ""
+        m_speciesScienceName = ""
+        m_speciesCode = ""
+        m_speciesTaxCode = ""
+        m_buttonColor = "DarkSlateGray"
+        m_keyboard_shortcut = ""
+
+        cboCommonName.SelectedIndex = -1
+        cboCommonName.Text = "" ' In case the last thing in the box was "No common name available" which is at position -1.
+        cboScientificName.SelectedIndex = -1
+        cboButtonColors.SelectedIndex = -1
+
+        txtSpeciesBtnTxt.Text = ""
+        txtKeyboardShortcut.Text = ""
+        txtSpeciesCode.Text = ""
+        txtTaxonomicLevel.Text = ""
     End Sub
 
     Private Sub cmdChange_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdChange.Click

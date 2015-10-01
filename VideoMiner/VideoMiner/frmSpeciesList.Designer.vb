@@ -50,7 +50,7 @@ Partial Class frmSpeciesList
         '
         Me.cmdMoveUp.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdMoveUp.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdMoveUp.Location = New System.Drawing.Point(386, 95)
+        Me.cmdMoveUp.Location = New System.Drawing.Point(386, 37)
         Me.cmdMoveUp.Name = "cmdMoveUp"
         Me.cmdMoveUp.Size = New System.Drawing.Size(113, 27)
         Me.cmdMoveUp.TabIndex = 5
@@ -61,7 +61,7 @@ Partial Class frmSpeciesList
         '
         Me.cmdMoveDown.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdMoveDown.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdMoveDown.Location = New System.Drawing.Point(386, 130)
+        Me.cmdMoveDown.Location = New System.Drawing.Point(386, 72)
         Me.cmdMoveDown.Name = "cmdMoveDown"
         Me.cmdMoveDown.Size = New System.Drawing.Size(113, 27)
         Me.cmdMoveDown.TabIndex = 6
@@ -105,7 +105,7 @@ Partial Class frmSpeciesList
         '
         Me.cmdMoveToTop.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdMoveToTop.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdMoveToTop.Location = New System.Drawing.Point(386, 61)
+        Me.cmdMoveToTop.Location = New System.Drawing.Point(386, 3)
         Me.cmdMoveToTop.Name = "cmdMoveToTop"
         Me.cmdMoveToTop.Size = New System.Drawing.Size(113, 27)
         Me.cmdMoveToTop.TabIndex = 5
@@ -116,7 +116,7 @@ Partial Class frmSpeciesList
         '
         Me.cmdMoveToBottom.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdMoveToBottom.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdMoveToBottom.Location = New System.Drawing.Point(386, 165)
+        Me.cmdMoveToBottom.Location = New System.Drawing.Point(386, 107)
         Me.cmdMoveToBottom.Name = "cmdMoveToBottom"
         Me.cmdMoveToBottom.Size = New System.Drawing.Size(113, 27)
         Me.cmdMoveToBottom.TabIndex = 6
@@ -141,6 +141,7 @@ Partial Class frmSpeciesList
         Me.MinimizeBox = False
         Me.Name = "frmSpeciesList"
         Me.Text = "Species List"
+        Me.TopMost = True
         Me.ResumeLayout(False)
 
     End Sub
