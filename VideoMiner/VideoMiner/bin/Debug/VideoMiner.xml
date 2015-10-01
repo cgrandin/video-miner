@@ -575,6 +575,68 @@ VideoMiner
 	<summary>
  Processes a click of the OK button or when the Enter key is pressed. Verifies that the time in the textbox it of correct format and if so, Raises the TimeChanged Event before hiding the form.
  </summary>
+</member><member name="F:VideoMiner.frmRareSpeciesLookup.m_species_table">
+	<summary>
+ Holds the data from queries issued to the database
+ </summary>
+</member><member name="F:VideoMiner.frmRareSpeciesLookup.m_speciesName">
+	<summary>
+ The currently selected species name
+ </summary>
+</member><member name="F:VideoMiner.frmRareSpeciesLookup.m_speciesScienceName">
+	<summary>
+ The currently selected species scientific name
+ </summary>
+</member><member name="F:VideoMiner.frmRareSpeciesLookup.m_speciesCode">
+	<summary>
+ The currently selected species code
+ </summary>
+</member><member name="F:VideoMiner.frmRareSpeciesLookup.m_speciesTaxCode">
+	<summary>
+ The currently selected species' taxonomic level code
+ </summary>
+</member><member name="P:VideoMiner.frmRareSpeciesLookup.SpeciesName">
+	<summary>
+ Returns the currently selected species' common name. Will return null string if there is no selection.
+ </summary>
+</member><member name="P:VideoMiner.frmRareSpeciesLookup.SpeciesScienceName">
+	<summary>
+ Returns the currently selected species' scientific name. Will return null string if there is no selection.
+ </summary>
+</member><member name="P:VideoMiner.frmRareSpeciesLookup.SpeciesCode">
+	<summary>
+ Returns the currently selected species' species code. Will return null string if there is no selection.
+ </summary>
+</member><member name="M:VideoMiner.frmRareSpeciesLookup.PopulateComboBox(System.Windows.Forms.ComboBox@,System.Data.DataTable@)">
+	<summary>
+ Fill the combobox with a given column's contents
+ </summary>
+	<param name="cboBox">A reference to the combobox to populate</param>
+	<param name="dataTable">A single column data table containing values that you want to fill the combobox with</param>
+</member><member name="M:VideoMiner.frmRareSpeciesLookup.ClearControls">
+	<summary>
+ Clears out all controls of their current values and resets member variables to a freshly loaded default state.
+ </summary>
+</member><member name="M:VideoMiner.frmRareSpeciesLookup.cboCommonName_SelectionChangeCommitted(System.Object,System.EventArgs)">
+	<summary>
+ Whenever the selected index chages for the Common Name, set the other controls to match the Common Name.
+ </summary>
+</member><member name="M:VideoMiner.frmRareSpeciesLookup.cboScientificName_SelectionChangeCommitted(System.Object,System.EventArgs)">
+	<summary>
+ Whenever the selected index chages for the Common Name, set the other controls to match the Common Name.
+ </summary>
+</member><member name="M:VideoMiner.frmRareSpeciesLookup.cmdOK_Click(System.Object,System.EventArgs)">
+	<summary>
+ If the user has selected a species, this will fire an event telling the main form to record a record in the data table in the database.
+ </summary>
+</member><member name="M:VideoMiner.frmRareSpeciesLookup.cmdCancel_Click(System.Object,System.EventArgs)">
+	<summary>
+ If user presses the cancel button, just hide the form since it is modeless.
+ </summary>
+</member><member name="M:VideoMiner.frmRareSpeciesLookup.me_FormClosing(System.Object,System.Windows.Forms.FormClosingEventArgs)">
+	<summary>
+ Capture the event when the user presses the 'X' button top right. Instead of closing the form, just hide it.
+ </summary>
 </member><member name="P:VideoMiner.My.Resources.Resources.ResourceManager">
 	<summary>
   Returns the cached ResourceManager instance used by this class.
@@ -781,7 +843,7 @@ VideoMiner
  </summary>
 </member><member name="M:VideoMiner.frmEditSpecies.cboButtonColor_SelectionChangeCommitted(System.Object,System.EventArgs)">
 	<summary>
- Handles the case when the user chages the selection in the Button Colors combobox. Simply sets a member variable when changed.
+ Handles the case when the user changes the selection in the Button Colors combobox. Simply sets a member variable when changed.
  If the selection is null, DarkSlateGray will be used as the default
  </summary>
 </member><member name="M:VideoMiner.frmEditSpecies.FillControlsUsingSpeciesCode">
@@ -1841,6 +1903,10 @@ VideoMiner
 	<param name="strIdConfidence">Confidence value for species ID. See table DB_CONFIDENCE_IDS_TABLE (1=high,2=med,3=low)</param>
 	<param name="strComment">Video reviewer's comments</param>
 	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.cmdRareSpeciesLookup_Click(System.Object,System.EventArgs)">
+	<summary>
+ For looking up and saving to the database a rare species (one not on the species buttons).
+ </summary>
 </member><member name="F:VideoMiner.VideoMiner.rowWasGood">
 	<summary>
  Whether or not the row is synced properly with the database. Used when the user edits a cell value. The cell's row

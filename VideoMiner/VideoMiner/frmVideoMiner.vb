@@ -1099,6 +1099,9 @@ Public Class VideoMiner
         pnlSpeciesData.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         pnlSpeciesData.Dock = DockStyle.Fill
         SplitContainer8.Panel2.Controls.Add(pnlSpeciesData)
+
+        ' Create this form once, since it loads comboboxes with large amounts of data.
+        frmRareSpeciesLookup = New frmRareSpeciesLookup
     End Sub
 
     ''' <summary>
@@ -4670,15 +4673,11 @@ SkipInsertComma:
         End If
     End Sub
 
+    ''' <summary>
+    ''' For looking up and saving to the database a rare species (one not on the species buttons).
+    ''' </summary>
     Private Sub cmdRareSpeciesLookup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdRareSpeciesLookup.Click
-
-        Try
-            frmRareSpeciesLookup = New frmRareSpeciesLookup
-            frmRareSpeciesLookup.ShowDialog()
-        Catch ex As Exception
-
-            frmRareSpeciesLookup.ShowDialog()
-        End Try
+        frmRareSpeciesLookup.Show()
     End Sub
 
     Private Sub KeyboardShortcutsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles KeyboardShortcutsToolStripMenuItem.Click

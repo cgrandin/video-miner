@@ -3,6 +3,7 @@ Imports System.Data.OleDb
 ''' This form class allows the user to add a new species to the database table 'videominer_species_buttons' or to edit properties of an existing species
 ''' </summary>
 Public Class frmEditSpecies
+
     Private WithEvents frmCreateKeyboardShortcut As frmCreateKeyboardShortcut
     Private m_species_table As DataTable
     Private m_button_colors_table As DataTable
@@ -291,7 +292,7 @@ Public Class frmEditSpecies
     End Sub
 
     ''' <summary>
-    ''' Handles the case when the user chages the selection in the Button Colors combobox. Simply sets a member variable when changed.
+    ''' Handles the case when the user changes the selection in the Button Colors combobox. Simply sets a member variable when changed.
     ''' If the selection is null, DarkSlateGray will be used as the default
     ''' </summary>
     Private Sub cboButtonColor_SelectionChangeCommitted(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboButtonColors.SelectionChangeCommitted
