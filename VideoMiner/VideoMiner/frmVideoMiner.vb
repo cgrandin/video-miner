@@ -5510,18 +5510,18 @@ SkipInsertComma:
         Comments = frmConfigureSpecies.Comments
     End Sub
 
-    Private Sub species_button_configuration_changed() Handles frmSpeciesEvent.SpeciesButtonConfigurationChangedEvent
-        Range = frmSpeciesEvent.Range
-        Side = frmSpeciesEvent.Side
-        IDConfidence = frmSpeciesEvent.IDConfidence
-        Abundance = frmSpeciesEvent.Abundance
-        Count = frmSpeciesEvent.Count
-        SpeciesHeight = frmSpeciesEvent.SpeciesHeight
-        SpeciesWidth = frmSpeciesEvent.SpeciesWidth
-        Length = frmSpeciesEvent.Length
-        Comments = frmSpeciesEvent.Comments
-        SpeciesCode = frmSpeciesEvent.SpeciesCode
-    End Sub
+    'Private Sub species_button_configuration_changed() Handles frmSpeciesEvent.SpeciesButtonConfigurationChangedEvent
+    'Range = frmSpeciesEvent.Range
+    'Side = frmSpeciesEvent.Side
+    'IDConfidence = frmSpeciesEvent.IDConfidence
+    'Abundance = frmSpeciesEvent.Abundance
+    'Count = frmSpeciesEvent.Count
+    'SpeciesHeight = frmSpeciesEvent.SpeciesHeight
+    'SpeciesWidth = frmSpeciesEvent.SpeciesWidth
+    'Length = frmSpeciesEvent.Length
+    'Comments = frmSpeciesEvent.Comments
+    'SpeciesCode = frmSpeciesEvent.SpeciesCode
+    'End Sub
 
     Private Sub gps_connected() Handles frmGpsSettings.GPSConnectedEvent
         lblGPSPortValue.Text = "OPEN"

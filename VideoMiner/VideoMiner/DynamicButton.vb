@@ -6,6 +6,8 @@
 Public Class DynamicButton
     Inherits Button
 
+    Dim WithEvents frmSpeciesEvent As frmSpeciesEvent
+
     ''' <summary>
     ''' The default, uninitialized value for the DataValue property
     ''' </summary>
@@ -86,6 +88,7 @@ Public Class DynamicButton
 #End Region
 
 #Region "Properties"
+
     Public Property ControlCode As Integer
         Get
             Return m_control_code
@@ -94,12 +97,22 @@ Public Class DynamicButton
             m_control_code = value
         End Set
     End Property
+
     Public Property TableName As String
         Get
             Return m_db_table_name
         End Get
         Set(value As String)
             m_db_table_name = value
+        End Set
+    End Property
+
+    Public Property ButtonCode As String
+        Get
+            Return m_button_code
+        End Get
+        Set(value As String)
+            m_button_code = value
         End Set
     End Property
 
@@ -179,7 +192,11 @@ Public Class DynamicButton
                     m_data_code = Nothing
                 End Try
             Else
-                m_table_view.Visible = value
+                ' The check here for nothing distinguishes between the species buttons and the other (habitat and transect buttons).
+                ' If m_table_view is nothing, the handler Button_Click which was added dynamically will be run for the species event buttons only
+                If m_table_view IsNot Nothing Then
+                    m_table_view.Visible = value
+                End If
             End If
         End Set
     End Property
@@ -287,6 +304,15 @@ Public Class DynamicButton
         m_button_code_name = buttonCodeName
         m_keyboard_shortcut = keyboardShortcut
         DataValue = UNINITIALIZED_DATA_VALUE
+        ' The species event form is unique for each dynamic button and is created once when the dynamic button is created
+        frmSpeciesEvent = New frmSpeciesEvent(buttonText)
+        ' Handler for when the user presses a species button, it should just call up the Species Event form with the button's data sent as sender
+        AddHandler Me.Click, AddressOf Me.Button_Click
+    End Sub
+
+    Private Sub Button_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        frmSpeciesEvent.Show()
+        'MessageBox.Show("Pressed a button: " & sender.ToString(), "TEST", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
     ''' <summary>

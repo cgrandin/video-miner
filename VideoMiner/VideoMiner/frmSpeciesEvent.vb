@@ -1,218 +1,6 @@
-' ==========================================================================================================
-' Name: SpeciesEventForm
-' Description: This is a form that is loaded when the user selects a species from panel 2 while 
-'              reviewing a video if detailed entry radio button is selected. The user can enter 
-'              details about the sighting such as side, range,count, length, id confidence, 
-'              height, and width. 
-' ==========================================================================================================
-Imports System.Data.OleDb
+Imports System.Text.RegularExpressions
 
 Public Class frmSpeciesEvent
-
-    Event SpeciesButtonConfigurationChangedEvent()
-
-#Region "Fields"
-    Private m_SpeciesName As String
-    Private m_SpeciesCode As String
-
-    Private m_RangeChecked As Boolean
-    Private m_IDConfidenceChecked As Boolean
-    Private m_AbundanceChecked As Boolean
-    Private m_CountChecked As Boolean
-    Private m_HeightChecked As Boolean
-    Private m_WidthChecked As Boolean
-    Private m_LengthChecked As Boolean
-    Private m_CommentsChecked As Boolean
-
-    Private m_Range As String
-    Private m_Side As String
-    Private m_IDConfidence As String
-    Private m_Abundance As String
-    Private m_Count As String
-    Private m_Height As String
-    Private m_Width As String
-    Private m_Length As String
-    Private m_Comments As String
-
-#End Region
-
-#Region "Properties"
-
-    Public Property SpeciesName() As String
-        Get
-            Return m_SpeciesName
-        End Get
-        Set(ByVal value As String)
-            m_SpeciesName = value
-        End Set
-    End Property
-
-    Public Property SpeciesCode() As String
-        Get
-            Return m_SpeciesCode
-        End Get
-        Set(ByVal value As String)
-            m_SpeciesCode = value
-        End Set
-    End Property
-
-
-    Public Property RangeChecked() As Boolean
-        Get
-            Return m_RangeChecked
-        End Get
-        Set(ByVal value As Boolean)
-            m_RangeChecked = value
-        End Set
-    End Property
-
-    Public Property IDConfidenceChecked() As Boolean
-        Get
-            Return m_IDConfidenceChecked
-        End Get
-        Set(ByVal value As Boolean)
-            m_IDConfidenceChecked = value
-        End Set
-    End Property
-
-    Public Property AbundanceChecked() As Boolean
-        Get
-            Return m_AbundanceChecked
-        End Get
-        Set(ByVal value As Boolean)
-            m_AbundanceChecked = value
-        End Set
-    End Property
-
-    Public Property CountChecked() As Boolean
-        Get
-            Return m_CountChecked
-        End Get
-        Set(ByVal value As Boolean)
-            m_CountChecked = value
-        End Set
-    End Property
-
-    Public Property HeightChecked() As Boolean
-        Get
-            Return m_HeightChecked
-        End Get
-        Set(ByVal value As Boolean)
-            m_HeightChecked = value
-        End Set
-    End Property
-
-    Public Property WidthChecked() As Boolean
-        Get
-            Return m_WidthChecked
-        End Get
-        Set(ByVal value As Boolean)
-            m_WidthChecked = value
-        End Set
-    End Property
-
-    Public Property LengthChecked() As Boolean
-        Get
-            Return m_LengthChecked
-        End Get
-        Set(ByVal value As Boolean)
-            m_LengthChecked = value
-        End Set
-    End Property
-
-    Public Property CommentsChecked() As Boolean
-        Get
-            Return m_CommentsChecked
-        End Get
-        Set(ByVal value As Boolean)
-            m_CommentsChecked = value
-        End Set
-    End Property
-
-
-    Public Property Range() As String
-        Get
-            Return m_Range
-        End Get
-        Set(ByVal value As String)
-            m_Range = value
-        End Set
-    End Property
-
-    Public Property Side() As String
-        Get
-            Return m_Side
-        End Get
-        Set(ByVal value As String)
-            m_Side = value
-        End Set
-    End Property
-
-    Public Property IDConfidence() As String
-        Get
-            Return m_IDConfidence
-        End Get
-        Set(ByVal value As String)
-            m_IDConfidence = value
-        End Set
-    End Property
-
-    Public Property Abundance() As String
-        Get
-            Return m_Abundance
-        End Get
-        Set(ByVal value As String)
-            m_Abundance = value
-        End Set
-    End Property
-
-    Public Property Count() As String
-        Get
-            Return m_Count
-        End Get
-        Set(ByVal value As String)
-            m_Count = value
-        End Set
-    End Property
-
-    Public Property SpeciesHeight() As String
-        Get
-            Return m_Height
-        End Get
-        Set(ByVal value As String)
-            m_Height = value
-        End Set
-    End Property
-
-    Public Property SpeciesWidth() As String
-        Get
-            Return m_Width
-        End Get
-        Set(ByVal value As String)
-            m_Width = value
-        End Set
-    End Property
-
-    Public Property Length() As String
-        Get
-            Return m_Length
-        End Get
-        Set(ByVal value As String)
-            m_Length = value
-        End Set
-    End Property
-
-    Public Property Comments() As String
-        Get
-            Return m_Comments
-        End Get
-        Set(ByVal value As String)
-            m_Comments = value
-        End Set
-    End Property
-
-
-#End Region
 
     Private Const NULL_STRING As String = ""
     Private Const COUNT_STRING As String = "1"
@@ -223,371 +11,658 @@ Public Class frmSpeciesEvent
 
     Private centerButtonPressed As Boolean
     Private values_set As Boolean
-    Private clControlNames As New Collection
-    Private clControlValues As New Collection
-    Private clLabelNames As New Collection
+    'Private clControlNames As New Collection
+    'Private clControlValues As New Collection
+    'Private clLabelNames As New Collection
+
+#Region "Member variables"
+    Private m_speciesName As String
+    Private m_speciesCode As String
+
+    'Private m_RangeChecked As Boolean
+    'Private m_IDConfidenceChecked As Boolean
+    'Private m_AbundanceChecked As Boolean
+    'Private m_CountChecked As Boolean
+    'Private m_HeightChecked As Boolean
+    'Private m_WidthChecked As Boolean
+    'Private m_LengthChecked As Boolean
+    'Private m_CommentsChecked As Boolean
+
+    'Private m_Range As String
+    'Private m_Side As String
+    'Private m_IDConfidence As String
+    'Private m_Abundance As String
+    'Private m_Count As String
+    'Private m_Height As String
+    'Private m_Width As String
+    'Private m_Length As String
+    'Private m_Comments As String
+#End Region
+
+    Event SpeciesButtonConfigurationChangedEvent()
+
+#Region "Properties"
+
+    Public Property SpeciesName() As String
+        Get
+            Return m_speciesName
+        End Get
+        Set(ByVal value As String)
+            m_speciesName = value
+        End Set
+    End Property
+
+    Public Property SpeciesCode() As String
+        Get
+            Return m_speciesCode
+        End Get
+        Set(ByVal value As String)
+            m_speciesCode = value
+        End Set
+    End Property
 
 
-    Public Sub New(blRangeChecked As Boolean, blIDConfidenceChecked As Boolean, blAbundanceChecked As Boolean, blCountChecked As Boolean, blHeightChecked As Boolean, _
-                   blWidthChecked As Boolean, blLengthChecked As Boolean, blCommentsChecked As Boolean, _
-                   strRange As String, strSide As String, strIDConfidence As String, strAbundance As String, strCount As String, strHeight As String, _
-                   strWidth As String, strLength As String, strComments As String)
+    'Public Property RangeChecked() As Boolean
+    '    Get
+    '        Return m_RangeChecked
+    '    End Get
+    '    Set(ByVal value As Boolean)
+    '        m_RangeChecked = value
+    '    End Set
+    'End Property
+
+    'Public Property IDConfidenceChecked() As Boolean
+    '    Get
+    '        Return m_IDConfidenceChecked
+    '    End Get
+    '    Set(ByVal value As Boolean)
+    '        m_IDConfidenceChecked = value
+    '    End Set
+    'End Property
+
+    'Public Property AbundanceChecked() As Boolean
+    '    Get
+    '        Return m_AbundanceChecked
+    '    End Get
+    '    Set(ByVal value As Boolean)
+    '        m_AbundanceChecked = value
+    '    End Set
+    'End Property
+
+    'Public Property CountChecked() As Boolean
+    '    Get
+    '        Return m_CountChecked
+    '    End Get
+    '    Set(ByVal value As Boolean)
+    '        m_CountChecked = value
+    '    End Set
+    'End Property
+
+    'Public Property HeightChecked() As Boolean
+    '    Get
+    '        Return m_HeightChecked
+    '    End Get
+    '    Set(ByVal value As Boolean)
+    '        m_HeightChecked = value
+    '    End Set
+    'End Property
+
+    'Public Property WidthChecked() As Boolean
+    '    Get
+    '        Return m_WidthChecked
+    '    End Get
+    '    Set(ByVal value As Boolean)
+    '        m_WidthChecked = value
+    '    End Set
+    'End Property
+
+    'Public Property LengthChecked() As Boolean
+    '    Get
+    '        Return m_LengthChecked
+    '    End Get
+    '    Set(ByVal value As Boolean)
+    '        m_LengthChecked = value
+    '    End Set
+    'End Property
+
+    'Public Property CommentsChecked() As Boolean
+    '    Get
+    '        Return m_CommentsChecked
+    '    End Get
+    '    Set(ByVal value As Boolean)
+    '        m_CommentsChecked = value
+    '    End Set
+    'End Property
+
+
+    'Public Property Range() As String
+    '    Get
+    '        Return m_Range
+    '    End Get
+    '    Set(ByVal value As String)
+    '        m_Range = value
+    '    End Set
+    'End Property
+
+    'Public Property Side() As String
+    '    Get
+    '        Return m_Side
+    '    End Get
+    '    Set(ByVal value As String)
+    '        m_Side = value
+    '    End Set
+    'End Property
+
+    'Public Property IDConfidence() As String
+    '    Get
+    '        Return m_IDConfidence
+    '    End Get
+    '    Set(ByVal value As String)
+    '        m_IDConfidence = value
+    '    End Set
+    'End Property
+
+    'Public Property Abundance() As String
+    '    Get
+    '        Return m_Abundance
+    '    End Get
+    '    Set(ByVal value As String)
+    '        m_Abundance = value
+    '    End Set
+    'End Property
+
+    'Public Property Count() As String
+    '    Get
+    '        Return m_Count
+    '    End Get
+    '    Set(ByVal value As String)
+    '        m_Count = value
+    '    End Set
+    'End Property
+
+    'Public Property SpeciesHeight() As String
+    '    Get
+    '        Return m_Height
+    '    End Get
+    '    Set(ByVal value As String)
+    '        m_Height = value
+    '    End Set
+    'End Property
+
+    'Public Property SpeciesWidth() As String
+    '    Get
+    '        Return m_Width
+    '    End Get
+    '    Set(ByVal value As String)
+    '        m_Width = value
+    '    End Set
+    'End Property
+
+    'Public Property Length() As String
+    '    Get
+    '        Return m_Length
+    '    End Get
+    '    Set(ByVal value As String)
+    '        m_Length = value
+    '    End Set
+    'End Property
+
+    'Public Property Comments() As String
+    '    Get
+    '        Return m_Comments
+    '    End Get
+    '    Set(ByVal value As String)
+    '        m_Comments = value
+    '    End Set
+    'End Property
+
+
+#End Region
+
+    Public Sub New(species_name As String)
         InitializeComponent()
-        Me.RangeChecked = blRangeChecked
-        Me.IDConfidenceChecked = blIDConfidenceChecked
-        Me.AbundanceChecked = blAbundanceChecked
-        Me.CountChecked = blCountChecked
-        Me.HeightChecked = blHeightChecked
-        Me.WidthChecked = blWidthChecked
-        Me.LengthChecked = blLengthChecked
-        Me.CommentsChecked = blCommentsChecked
+        SpeciesName = species_name
+        Me.Text = "Species Event - " & SpeciesName
+        'Me.RangeChecked = True
+        'Me.IDConfidenceChecked = True
+        'Me.AbundanceChecked = True
+        'Me.CountChecked = True
+        'Me.HeightChecked = True
+        'Me.WidthChecked = True
+        'Me.LengthChecked = True
+        'Me.CommentsChecked = True
 
-        Me.Range = strRange
-        Me.Side = strSide
-        Me.IDConfidence = strIDConfidence
-        Me.Abundance = strAbundance
-        Me.Count = strCount
-        Me.SpeciesHeight = strHeight
-        Me.SpeciesWidth = strWidth
-        Me.Length = strLength
-        Me.Comments = strComments
-
+        'Me.Range = ""
+        'Me.Side = "On Center"
+        'Me.IDConfidence = "High"
+        'Me.Abundance = "Abundant"
+        'Me.Count = "1"
+        'Me.SpeciesHeight = ""
+        'Me.SpeciesWidth = ""
+        'Me.Length = ""
+        'Me.Comments = ""
     End Sub
 
-    Private Sub loadCollection()
-        If Me.RangeChecked Then
-            clControlNames.Add("txtRange")
-            clControlNames.Add("cboSide")
-            clControlValues.Add(Range)
-            clControlValues.Add(Side)
-            clLabelNames.Add("Range")
-            clLabelNames.Add("Side")
-        End If
+    'Public Sub New(blRangeChecked As Boolean, blIDConfidenceChecked As Boolean, blAbundanceChecked As Boolean, blCountChecked As Boolean, blHeightChecked As Boolean, _
+    '               blWidthChecked As Boolean, blLengthChecked As Boolean, blCommentsChecked As Boolean, _
+    '               strRange As String, strSide As String, strIDConfidence As String, strAbundance As String, strCount As String, strHeight As String, _
+    '               strWidth As String, strLength As String, strComments As String)
+    '    InitializeComponent()
+    '    Me.RangeChecked = blRangeChecked
+    '    Me.IDConfidenceChecked = blIDConfidenceChecked
+    '    Me.AbundanceChecked = blAbundanceChecked
+    '    Me.CountChecked = blCountChecked
+    '    Me.HeightChecked = blHeightChecked
+    '    Me.WidthChecked = blWidthChecked
+    '    Me.LengthChecked = blLengthChecked
+    '    Me.CommentsChecked = blCommentsChecked
 
-        If Me.IDConfidenceChecked Then
-            clControlNames.Add("cboIDConfidence")
-            clControlValues.Add(IDConfidence)
-            clLabelNames.Add("ID Confidence")
-        End If
+    '   Me.Range = strRange
+    '   Me.Side = strSide
+    '   Me.IDConfidence = strIDConfidence
+    '   Me.Abundance = strAbundance
+    '   Me.Count = strCount
+    '   Me.SpeciesHeight = strHeight
+    '   Me.SpeciesWidth = strWidth
+    '   Me.Length = strLength
+    '   Me.Comments = strComments
 
-        If Me.AbundanceChecked Then
-            clControlNames.Add("cboAbundance")
-            clControlValues.Add(Abundance)
-            clLabelNames.Add("Abundance")
-        End If
+    '    End Sub
 
-        If Me.CountChecked Then
-            clControlNames.Add("txtCount")
-            clControlValues.Add(Count)
-            clLabelNames.Add("Count")
-        End If
+    'Private Sub loadCollection()
+    '    If Me.RangeChecked Then
+    '        clControlNames.Add("txtRange")
+    '        clControlNames.Add("cboSide")
+    '        clControlValues.Add(Range)
+    '        clControlValues.Add(Side)
+    '        clLabelNames.Add("Range")
+    '        clLabelNames.Add("Side")
+    '    End If
 
-        If Me.HeightChecked Then
-            clControlNames.Add("txtHeight")
-            clControlValues.Add(SpeciesHeight)
-            clLabelNames.Add("Height")
-        End If
+    '    If Me.IDConfidenceChecked Then
+    '        clControlNames.Add("cboIDConfidence")
+    '        clControlValues.Add(IDConfidence)
+    '        clLabelNames.Add("ID Confidence")
+    '    End If
 
-        If Me.WidthChecked Then
-            clControlNames.Add("txtWidth")
-            clControlValues.Add(SpeciesWidth)
-            clLabelNames.Add("Width")
-        End If
+    '    If Me.AbundanceChecked Then
+    '        clControlNames.Add("cboAbundance")
+    '        clControlValues.Add(Abundance)
+    '        clLabelNames.Add("Abundance")
+    '    End If
 
-        If Me.LengthChecked Then
-            clControlNames.Add("txtLength")
-            clControlValues.Add(Length)
-            clLabelNames.Add("Length")
-        End If
+    '    If Me.CountChecked Then
+    '        clControlNames.Add("txtCount")
+    '        clControlValues.Add(Count)
+    '        clLabelNames.Add("Count")
+    '    End If
 
-        If Me.CommentsChecked Then
-            clControlNames.Add("txtComments")
-            clControlValues.Add(Comments)
-            clLabelNames.Add("Comments")
-        End If
+    '    If Me.HeightChecked Then
+    '        clControlNames.Add("txtHeight")
+    '        clControlValues.Add(SpeciesHeight)
+    '        clLabelNames.Add("Height")
+    '    End If
 
-        Dim i As Integer
+    '    If Me.WidthChecked Then
+    '        clControlNames.Add("txtWidth")
+    '        clControlValues.Add(SpeciesWidth)
+    '        clLabelNames.Add("Width")
+    '    End If
 
-        For i = 1 To clControlValues.Count
-            If clControlValues.Item(i) = "NULL" Then
+    '    If Me.LengthChecked Then
+    '        clControlNames.Add("txtLength")
+    '        clControlValues.Add(Length)
+    '        clLabelNames.Add("Length")
+    '    End If
 
-            End If
-        Next
-    End Sub
+    '    If Me.CommentsChecked Then
+    '        clControlNames.Add("txtComments")
+    '        clControlValues.Add(Comments)
+    '        clLabelNames.Add("Comments")
+    '    End If
 
-    Private Sub fillSpeciesEventPanel()
-        Dim speciesControl As Control
-        Dim row As DataRow
-        Dim dt As DataTable
+    '    Dim i As Integer
 
-        Dim speciesTextBox As TextBox
-        Dim speciesRichTextBox As RichTextBox
-        Dim speciesEventComboBox As ComboBox
-        Dim speciesEventLabel As Label
-        Dim i As Integer
-        Dim j As Integer
+    '    For i = 1 To clControlValues.Count
+    '        If clControlValues.Item(i) = "NULL" Then
 
-        Dim h As Integer = pnlSpeciesEvent.Height
-        Dim sizex As Integer = 76
-        Dim sizey As Integer = 21
-        Dim gapy As Integer = 30
-        Dim gapx As Integer = 20
+    '        End If
+    '    Next
+    'End Sub
 
-        Dim intAdd As Integer = 0
-        Dim intMultiply As Integer = 0
-        Dim strButtonText As String = ""
+    ''' <summary>
+    ''' Place the controls used for species event records on the form
+    ''' </summary>
+    'Private Sub fillSpeciesEventPanel()
+    '    Dim speciesTextBox As TextBox
+    '    Dim speciesRichTextBox As RichTextBox
+    '    Dim speciesEventComboBox As ComboBox
+    '    Dim speciesEventLabel As Label
+    '    Dim h As Integer = Me.Height
+    '    Dim w As Integer = Me.Width
+    '    Dim sizex As Integer = 76
+    '    Dim sizey As Integer = 21
+    '    Dim intAdd As Integer = 0
+    '    Dim intMultiply As Integer = 0
+    '    Dim gap As Integer = 2
+    '    Dim intCountPerRow As Integer
+    '    Dim cellsizex As Integer = sizex + gap
+    '    Dim cellsizey As Integer = sizey + gap
+    '    Dim speciesFont As Font = New Font("Tahoma", 8.25, FontStyle.Bold)
+    '    intCountPerRow = Math.Floor(w / (cellsizex))
 
-        Dim intColumnCount As Integer
-        Dim intCountPerColumn As Integer
+    '    speciesTextBox = New TextBox
+    '    speciesEventLabel = New Label
+    '    speciesTextBox.Name = "txtSpeciesName"
+    '    speciesEventLabel.Text = "Species:"
+    '    speciesTextBox.Width = 121
+    '    speciesTextBox.Font = speciesFont
+    '    speciesTextBox.Text = clControlValues.Item(j)
 
-        Dim blNumeric As Boolean = False
+    '    m_dynamic_buttons(i).Size = New Size(sizex, sizey)
+    '    m_dynamic_buttons(i).Location = New System.Drawing.Point(m_gap + (cellsizex * (i - intAdd)), m_y_offset + (cellsizey * intMultiply))
+    '    Me.Controls.Add(m_dynamic_buttons(i))
+    '    If i Mod intCountPerRow = intCountPerRow - 1 Then
+    '        intAdd += intCountPerRow
+    '        intMultiply += 1
+    '    End If
+    'Next
 
-        Dim speciesFont As Font = New Font("Microsoft Sans Serif", 10.8, FontStyle.Bold)
-        Dim d As DataTable
+    'Dim speciesControl As Control
 
-        intColumnCount = 2
-        intCountPerColumn = (clControlNames.Count / intColumnCount)
-        For j = 1 To clControlNames.Count
-            Select Case clControlNames.Item(j)
-                Case "txtRange"
-                    speciesTextBox = New TextBox
-                    speciesEventLabel = New Label
-                    speciesTextBox.Name = clControlNames.Item(j)
-                    speciesEventLabel.Text = clLabelNames.Item(j)
-                    speciesTextBox.Width = 121
-                    speciesTextBox.Font = speciesFont
-                    speciesTextBox.Text = clControlValues.Item(j)
-                    speciesControl = speciesTextBox
-                    blNumeric = True
-                Case "cboSide"
-                    speciesEventComboBox = New ComboBox
-                    speciesEventLabel = New Label
-                    speciesEventComboBox.Name = clControlNames.Item(j)
-                    speciesEventLabel.Text = clLabelNames.Item(j)
-                    speciesEventComboBox.Width = 121
-                    speciesEventComboBox.Font = speciesFont
-                    speciesEventComboBox.DropDownStyle = ComboBoxStyle.DropDownList
-                    speciesEventComboBox.Items.Add("On Center")
-                    speciesEventComboBox.Items.Add("Port")
-                    speciesEventComboBox.Items.Add("Starboard")
-                    speciesEventComboBox.SelectedIndex = clControlValues.Item(j)
-                    If speciesEventComboBox.SelectedIndex = 0 Then
-                        pnlSpeciesEvent.Controls.Item("txtRange").Text = ""
-                        pnlSpeciesEvent.Controls.Item("txtRange").Enabled = False
-                        Me.Range = ""
-                    End If
-                    AddHandler speciesEventComboBox.SelectedIndexChanged, AddressOf sideControl
-                    speciesControl = speciesEventComboBox
-                Case "cboIDConfidence"
-                    speciesEventComboBox = New ComboBox
-                    speciesEventLabel = New Label
-                    speciesEventComboBox.Name = clControlNames.Item(j)
-                    speciesEventLabel.Text = clLabelNames.Item(j)
-                    d = Database.GetDataTable("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " ORDER BY ConfidenceID;", DB_CONFIDENCE_IDS_TABLE)
-                    For Each row In d.Rows
-                        speciesEventComboBox.Items.Add(New ValueDescriptionPair(row.Item(0).ToString(), row.Item(1).ToString()))
-                    Next
-                    speciesEventComboBox.Font = speciesFont
-                    speciesEventComboBox.DropDownStyle = ComboBoxStyle.DropDownList
-                    speciesEventComboBox.Text = clControlValues.Item(j)
-                    speciesControl = speciesEventComboBox
-                Case "cboAbundance"
-                    speciesEventComboBox = New ComboBox
-                    speciesEventLabel = New Label
-                    speciesEventComboBox.Name = clControlNames.Item(j)
-                    speciesEventLabel.Text = clLabelNames.Item(j)
-                    d = Database.GetDataTable("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " ORDER BY ACFORScaleID;", DB_ABUNDANCE_TABLE)
-                    For Each row In d.Rows
-                        speciesEventComboBox.Items.Add(New ValueDescriptionPair(row.Item(0).ToString(), row.Item(1).ToString()))
-                    Next
-                    speciesEventComboBox.Font = speciesFont
-                    speciesEventComboBox.DropDownStyle = ComboBoxStyle.DropDownList
-                    speciesEventComboBox.Text = clControlValues.Item(j)
-                    speciesControl = speciesEventComboBox
-                Case "txtCount"
-                    speciesTextBox = New TextBox
-                    speciesEventLabel = New Label
-                    speciesTextBox.Name = clControlNames.Item(j)
-                    speciesEventLabel.Text = clLabelNames.Item(j)
-                    speciesTextBox.Width = 121
-                    speciesTextBox.Font = speciesFont
-                    speciesTextBox.Text = clControlValues.Item(j)
-                    speciesControl = speciesTextBox
-                    blNumeric = True
-                Case "txtHeight"
-                    speciesTextBox = New TextBox
-                    speciesEventLabel = New Label
-                    speciesTextBox.Name = clControlNames.Item(j)
-                    speciesEventLabel.Text = clLabelNames.Item(j)
-                    speciesTextBox.Width = 121
-                    speciesTextBox.Font = speciesFont
-                    speciesTextBox.Text = clControlValues.Item(j)
-                    speciesControl = speciesTextBox
-                    blNumeric = True
-                Case "txtWidth"
-                    speciesTextBox = New TextBox
-                    speciesEventLabel = New Label
-                    speciesTextBox.Name = clControlNames.Item(j)
-                    speciesEventLabel.Text = clLabelNames.Item(j)
-                    speciesTextBox.Width = 121
-                    speciesTextBox.Font = speciesFont
-                    speciesTextBox.Text = clControlValues.Item(j)
-                    speciesControl = speciesTextBox
-                    blNumeric = True
-                Case "txtLength"
-                    speciesTextBox = New TextBox
-                    speciesEventLabel = New Label
-                    speciesTextBox.Name = clControlNames.Item(j)
-                    speciesEventLabel.Text = clLabelNames.Item(j)
-                    speciesTextBox.Width = 121
-                    speciesTextBox.Font = speciesFont
-                    speciesTextBox.Text = clControlValues.Item(j)
-                    speciesControl = speciesTextBox
-                    blNumeric = True
-                Case "txtComments"
-                    speciesRichTextBox = New RichTextBox
-                    speciesEventLabel = New Label
-                    speciesRichTextBox.Name = clControlNames.Item(j)
-                    speciesEventLabel.Text = clLabelNames.Item(j)
-                    speciesRichTextBox.Font = speciesFont
-                    speciesRichTextBox.Width = 261
-                    speciesRichTextBox.Text = clControlValues.Item(j)
-                    speciesControl = speciesRichTextBox
-                    intMultiply += 1
-                    intAdd += 1
-            End Select
-            Dim cellsizex = sizex + gapx
-            Dim cellsizey = sizey + gapy
-            If i Mod intColumnCount = 0 Or speciesControl.Name = "txtComments" Then
-                speciesControl.Location = New System.Drawing.Point(gapx, 20 + gapy + (cellsizey * intMultiply))
-                speciesEventLabel.Location = New System.Drawing.Point(speciesControl.Location.X, speciesControl.Location.Y - 15)
-            Else
-                speciesControl.Location = New System.Drawing.Point(140 + gapx, 20 + gapy + (cellsizey * intMultiply))
-                speciesEventLabel.Location = New System.Drawing.Point(speciesControl.Location.X, speciesControl.Location.Y - 15)
-            End If
-            'AddHandler speciesControl.Leave, AddressOf LostFocusControlHandler
-            If blNumeric = True Then
-                AddHandler speciesControl.KeyPress, AddressOf numericTextboxValidation
-            End If
-            pnlSpeciesEvent.Controls.Add(speciesControl)
-            pnlSpeciesEvent.Controls.Add(speciesEventLabel)
-            If i Mod intColumnCount = intColumnCount - 1 Then
-                intAdd += intColumnCount
-                intMultiply += 1
-            End If
-            i = i + 1
-            blNumeric = False
-        Next
-        For i = 0 To pnlSpeciesEvent.Controls.Count - 1
-            If pnlSpeciesEvent.Controls.Item(i).Text = "NULL" Then
-                pnlSpeciesEvent.Controls.Item(i).Text = ""
-            End If
-        Next
-    End Sub
+    'Dim speciesTextBox As TextBox
+    'Dim speciesRichTextBox As RichTextBox
+    'Dim speciesEventComboBox As ComboBox
+    'Dim speciesEventLabel As Label
+    'Dim i As Integer
+    'Dim j As Integer
 
-    Private Sub GetSpeciesVariables()
-        Dim ctlControl As Control
-        Dim ctlSpeciesControl As Control
-        Dim d As DataTable
-        For Each ctlControl In pnlSpeciesEvent.Controls
-            ctlSpeciesControl = ctlControl
-            Select Case ctlSpeciesControl.Name
-                Case "txtRange"
-                    Me.Range = ctlSpeciesControl.Text
-                Case "cboSide"
-                    Select Case ctlSpeciesControl.Text
-                        Case "On Center"
-                            Me.Side = "0"
-                        Case "Port"
-                            Me.Side = "1"
-                        Case "Starboard"
-                            Me.Side = "2"
-                    End Select
-                Case "cboIDConfidence"
-                    d = Database.GetDataTable("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " WHERE ConfidenceIdDescription = " & SingleQuote(ctlSpeciesControl.Text) & ";", DB_CONFIDENCE_IDS_TABLE)
-                    Me.IDConfidence = d.Rows.Item(0).Item(0).ToString()
-                Case "cboAbundance"
-                    d = Database.GetDataTable("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " WHERE ACFORScaleDescription = " & SingleQuote(ctlSpeciesControl.Text) & ";", DB_ABUNDANCE_TABLE)
-                    Me.Abundance = d.Rows.Item(0).Item(0).ToString()
-                Case "txtCount"
-                    Me.Count = ctlSpeciesControl.Text
-                Case "txtHeight"
-                    Me.SpeciesHeight = ctlSpeciesControl.Text
-                Case "txtWidth"
-                    Me.SpeciesWidth = ctlSpeciesControl.Text
-                Case "txtLength"
-                    Me.Length = ctlSpeciesControl.Text
-                Case "txtComments"
-                    Me.Comments = ctlSpeciesControl.Text
-            End Select
-        Next
-    End Sub
+    'Dim h As Integer = pnlSpeciesEvent.Height
+    'Dim sizex As Integer = 76
+    'Dim sizey As Integer = 21
+    'Dim gapy As Integer = 30
+    'Dim gapx As Integer = 20
 
-    Private Sub LostFocusControlHandler(ByVal sender As Object, ByVal e As System.EventArgs)
-        Dim ctlSpeciesControl As Control
-        ctlSpeciesControl = sender
-        Select Case ctlSpeciesControl.Name
-            Case "txtRange"
-                Me.Range = ctlSpeciesControl.Text
-            Case "cboSide"
-                Select Case ctlSpeciesControl.Text
-                    Case "On Center"
-                        Me.Side = "0"
-                    Case "Port"
-                        Me.Side = "1"
-                    Case "Starboard"
-                        Me.Side = "2"
-                End Select
-            Case "cboIDConfidence"
-                Me.IDConfidence = ctlSpeciesControl.Text
-            Case "cboAbundance"
-                Me.Abundance = ctlSpeciesControl.Text
-            Case "txtCount"
-                Me.Count = ctlSpeciesControl.Text
-            Case "txtHeight"
-                Me.SpeciesHeight = ctlSpeciesControl.Text
-            Case "txtWidth"
-                Me.SpeciesWidth = ctlSpeciesControl.Text
-            Case "txtLength"
-                Me.Length = ctlSpeciesControl.Text
-            Case "txtComments"
-                Me.Comments = ctlSpeciesControl.Text
-        End Select
-    End Sub
+    'Dim intAdd As Integer = 0
+    'Dim intMultiply As Integer = 0
+    'Dim strButtonText As String = ""
 
-    Private Sub SpeciesEventForm_Activated(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Activated
-        'txtLeftRange.Focus()
-    End Sub
+    'Dim intColumnCount As Integer
+    'Dim intCountPerColumn As Integer
+
+    'Dim blNumeric As Boolean = False
+
+    '' Should be Tahoma, 8.25pt, style=Bold to match edit species and other forms
+    ''Dim speciesFont As Font = New Font("Microsoft Sans Serif", 10.8, FontStyle.Bold)
+    'Dim speciesFont As Font = New Font("Tahoma", 8.25, FontStyle.Bold)
+    'Dim d As DataTable
+    'Dim row As DataRow
+
+    'intColumnCount = 2
+    ''intCountPerColumn = (clControlNames.Count / intColumnCount)
+    '' Hardwired to the maximum of 8 until TODO: the configure form can be fixed
+    'intCountPerColumn = (8 / intColumnCount)
+    ''For j = 1 To clControlNames.Count
+    'For j = 1 To 8
+    '    'Select Case clControlNames.Item(j)
+    '    '    Case "txtRange"
+    '    '        speciesTextBox = New TextBox
+    '    '        speciesEventLabel = New Label
+    '    '        speciesTextBox.Name = clControlNames.Item(j)
+    '    '        speciesEventLabel.Text = clLabelNames.Item(j)
+    '    '        speciesTextBox.Width = 121
+    '    '        speciesTextBox.Font = speciesFont
+    '    '        speciesTextBox.Text = clControlValues.Item(j)
+    '    '        speciesControl = speciesTextBox
+    '    '        blNumeric = True
+    '    '    Case "cboSide"
+    '    '        speciesEventComboBox = New ComboBox
+    '    '        speciesEventLabel = New Label
+    '    '        speciesEventComboBox.Name = clControlNames.Item(j)
+    '    '        speciesEventLabel.Text = clLabelNames.Item(j)
+    '    '        speciesEventComboBox.Width = 121
+    '    '        speciesEventComboBox.Font = speciesFont
+    '    '        speciesEventComboBox.DropDownStyle = ComboBoxStyle.DropDownList
+    '    '        speciesEventComboBox.Items.Add("On Center")
+    '    '        speciesEventComboBox.Items.Add("Port")
+    '    '        speciesEventComboBox.Items.Add("Starboard")
+    '    '        speciesEventComboBox.SelectedIndex = clControlValues.Item(j)
+    '    '        If speciesEventComboBox.SelectedIndex = 0 Then
+    '    '            pnlSpeciesEvent.Controls.Item("txtRange").Text = ""
+    '    '            pnlSpeciesEvent.Controls.Item("txtRange").Enabled = False
+    '    '            Me.Range = ""
+    '    '        End If
+    '    '        AddHandler speciesEventComboBox.SelectedIndexChanged, AddressOf sideControl
+    '    '        speciesControl = speciesEventComboBox
+    '    '    Case "cboIDConfidence"
+    '    '        speciesEventComboBox = New ComboBox
+    '    '        speciesEventLabel = New Label
+    '    '        speciesEventComboBox.Name = clControlNames.Item(j)
+    '    '        speciesEventLabel.Text = clLabelNames.Item(j)
+    '    '        d = Database.GetDataTable("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " ORDER BY ConfidenceID;", DB_CONFIDENCE_IDS_TABLE)
+    '    '        For Each row In d.Rows
+    '    '            speciesEventComboBox.Items.Add(New ValueDescriptionPair(row.Item(0).ToString(), row.Item(1).ToString()))
+    '    '        Next
+    '    '        speciesEventComboBox.Font = speciesFont
+    '    '        speciesEventComboBox.DropDownStyle = ComboBoxStyle.DropDownList
+    '    '        speciesEventComboBox.Text = clControlValues.Item(j)
+    '    '        speciesControl = speciesEventComboBox
+    '    '    Case "cboAbundance"
+    '    '        speciesEventComboBox = New ComboBox
+    '    '        speciesEventLabel = New Label
+    '    '        speciesEventComboBox.Name = clControlNames.Item(j)
+    '    '        speciesEventLabel.Text = clLabelNames.Item(j)
+    '    '        d = Database.GetDataTable("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " ORDER BY ACFORScaleID;", DB_ABUNDANCE_TABLE)
+    '    '        For Each row In d.Rows
+    '    '            speciesEventComboBox.Items.Add(New ValueDescriptionPair(row.Item(0).ToString(), row.Item(1).ToString()))
+    '    '        Next
+    '    '        speciesEventComboBox.Font = speciesFont
+    '    '        speciesEventComboBox.DropDownStyle = ComboBoxStyle.DropDownList
+    '    '        speciesEventComboBox.Text = clControlValues.Item(j)
+    '    '        speciesControl = speciesEventComboBox
+    '    '    Case "txtCount"
+    '    '        speciesTextBox = New TextBox
+    '    '        speciesEventLabel = New Label
+    '    '        speciesTextBox.Name = clControlNames.Item(j)
+    '    '        speciesEventLabel.Text = clLabelNames.Item(j)
+    '    '        speciesTextBox.Width = 121
+    '    '        speciesTextBox.Font = speciesFont
+    '    '        speciesTextBox.Text = clControlValues.Item(j)
+    '    '        speciesControl = speciesTextBox
+    '    '        blNumeric = True
+    '    '    Case "txtHeight"
+    '    '        speciesTextBox = New TextBox
+    '    '        speciesEventLabel = New Label
+    '    '        speciesTextBox.Name = clControlNames.Item(j)
+    '    '        speciesEventLabel.Text = clLabelNames.Item(j)
+    '    '        speciesTextBox.Width = 121
+    '    '        speciesTextBox.Font = speciesFont
+    '    '        speciesTextBox.Text = clControlValues.Item(j)
+    '    '        speciesControl = speciesTextBox
+    '    '        blNumeric = True
+    '    '    Case "txtWidth"
+    '    '        speciesTextBox = New TextBox
+    '    '        speciesEventLabel = New Label
+    '    '        speciesTextBox.Name = clControlNames.Item(j)
+    '    '        speciesEventLabel.Text = clLabelNames.Item(j)
+    '    '        speciesTextBox.Width = 121
+    '    '        speciesTextBox.Font = speciesFont
+    '    '        speciesTextBox.Text = clControlValues.Item(j)
+    '    '        speciesControl = speciesTextBox
+    '    '        blNumeric = True
+    '    '    Case "txtLength"
+    '    '        speciesTextBox = New TextBox
+    '    '        speciesEventLabel = New Label
+    '    '        speciesTextBox.Name = clControlNames.Item(j)
+    '    '        speciesEventLabel.Text = clLabelNames.Item(j)
+    '    '        speciesTextBox.Width = 121
+    '    '        speciesTextBox.Font = speciesFont
+    '    '        speciesTextBox.Text = clControlValues.Item(j)
+    '    '        speciesControl = speciesTextBox
+    '    '        blNumeric = True
+    '    '    Case "txtComments"
+    '    '        speciesRichTextBox = New RichTextBox
+    '    '        speciesEventLabel = New Label
+    '    '        speciesRichTextBox.Name = clControlNames.Item(j)
+    '    '        speciesEventLabel.Text = clLabelNames.Item(j)
+    '    '        speciesRichTextBox.Font = speciesFont
+    '    '        speciesRichTextBox.Width = 261
+    '    '        speciesRichTextBox.Text = clControlValues.Item(j)
+    '    '        speciesControl = speciesRichTextBox
+    '    '        intMultiply += 1
+    '    '        intAdd += 1
+    '    'End Select
+    '    Dim cellsizex = sizex + gapx
+    '    Dim cellsizey = sizey + gapy
+    '    If i Mod intColumnCount = 0 Or speciesControl.Name = "txtComments" Then
+    '        speciesControl.Location = New System.Drawing.Point(gapx, 20 + gapy + (cellsizey * intMultiply))
+    '        speciesEventLabel.Location = New System.Drawing.Point(speciesControl.Location.X, speciesControl.Location.Y - 15)
+    '    Else
+    '        speciesControl.Location = New System.Drawing.Point(140 + gapx, 20 + gapy + (cellsizey * intMultiply))
+    '        speciesEventLabel.Location = New System.Drawing.Point(speciesControl.Location.X, speciesControl.Location.Y - 15)
+    '    End If
+    '    'AddHandler speciesControl.Leave, AddressOf LostFocusControlHandler
+    '    If blNumeric = True Then
+    '        AddHandler speciesControl.KeyPress, AddressOf numericTextboxValidation
+    '    End If
+    '    pnlSpeciesEvent.Controls.Add(speciesControl)
+    '    pnlSpeciesEvent.Controls.Add(speciesEventLabel)
+    '    If i Mod intColumnCount = intColumnCount - 1 Then
+    '        intAdd += intColumnCount
+    '        intMultiply += 1
+    '    End If
+    '    i = i + 1
+    '    blNumeric = False
+    'Next
+    'For i = 0 To pnlSpeciesEvent.Controls.Count - 1
+    '    If pnlSpeciesEvent.Controls.Item(i).Text = "NULL" Then
+    '        pnlSpeciesEvent.Controls.Item(i).Text = ""
+    '    End If
+    'Next
+    'End Sub
+
+    'Private Sub GetSpeciesVariables()
+    '    Dim ctlControl As Control
+    '    Dim ctlSpeciesControl As Control
+    '    Dim d As DataTable
+    '    For Each ctlControl In pnlSpeciesEvent.Controls
+    '        ctlSpeciesControl = ctlControl
+    '        Select Case ctlSpeciesControl.Name
+    '            Case "txtRange"
+    '                Me.Range = ctlSpeciesControl.Text
+    '            Case "cboSide"
+    '                Select Case ctlSpeciesControl.Text
+    '                    Case "On Center"
+    '                        Me.Side = "0"
+    '                    Case "Port"
+    '                        Me.Side = "1"
+    '                    Case "Starboard"
+    '                        Me.Side = "2"
+    '                End Select
+    '            Case "cboIDConfidence"
+    '                d = Database.GetDataTable("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " WHERE ConfidenceIdDescription = " & SingleQuote(ctlSpeciesControl.Text) & ";", DB_CONFIDENCE_IDS_TABLE)
+    '                Me.IDConfidence = d.Rows.Item(0).Item(0).ToString()
+    '            Case "cboAbundance"
+    '                d = Database.GetDataTable("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " WHERE ACFORScaleDescription = " & SingleQuote(ctlSpeciesControl.Text) & ";", DB_ABUNDANCE_TABLE)
+    '                Me.Abundance = d.Rows.Item(0).Item(0).ToString()
+    '            Case "txtCount"
+    '                Me.Count = ctlSpeciesControl.Text
+    '            Case "txtHeight"
+    '                Me.SpeciesHeight = ctlSpeciesControl.Text
+    '            Case "txtWidth"
+    '                Me.SpeciesWidth = ctlSpeciesControl.Text
+    '            Case "txtLength"
+    '                Me.Length = ctlSpeciesControl.Text
+    '            Case "txtComments"
+    '                Me.Comments = ctlSpeciesControl.Text
+    '        End Select
+    '    Next
+    'End Sub
+
+    'Private Sub LostFocusControlHandler(ByVal sender As Object, ByVal e As System.EventArgs)
+    '    Dim ctlSpeciesControl As Control
+    '    ctlSpeciesControl = sender
+    '    Select Case ctlSpeciesControl.Name
+    '        Case "txtRange"
+    '            Me.Range = ctlSpeciesControl.Text
+    '        Case "cboSide"
+    '            Select Case ctlSpeciesControl.Text
+    '                Case "On Center"
+    '                    Me.Side = "0"
+    '                Case "Port"
+    '                    Me.Side = "1"
+    '                Case "Starboard"
+    '                    Me.Side = "2"
+    '            End Select
+    '        Case "cboIDConfidence"
+    '            Me.IDConfidence = ctlSpeciesControl.Text
+    '        Case "cboAbundance"
+    '            Me.Abundance = ctlSpeciesControl.Text
+    '        Case "txtCount"
+    '            Me.Count = ctlSpeciesControl.Text
+    '        Case "txtHeight"
+    '            Me.SpeciesHeight = ctlSpeciesControl.Text
+    '        Case "txtWidth"
+    '            Me.SpeciesWidth = ctlSpeciesControl.Text
+    '        Case "txtLength"
+    '            Me.Length = ctlSpeciesControl.Text
+    '        Case "txtComments"
+    '            Me.Comments = ctlSpeciesControl.Text
+    '    End Select
+    'End Sub
+
+    'Private Sub SpeciesEventForm_Activated(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Activated
+    '    'txtLeftRange.Focus()
+    'End Sub
 
     Private Sub SpeciesEventForm_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        GetSpeciesVariables()
+        'GetSpeciesVariables()
         RaiseEvent SpeciesButtonConfigurationChangedEvent()
     End Sub
 
-    Private Sub SpeciesEventForm_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
-        If e.KeyCode = Keys.Enter Then
-            ok_Click(Nothing, Nothing)
-        End If
+    'Private Sub SpeciesEventForm_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
+    '    If e.KeyCode = Keys.Enter Then
+    '        ok_Click(Nothing, Nothing)
+    '    End If
 
-    End Sub
+    'End Sub
 
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
     Private Sub SpeciesEventForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Dim d As DataTable
-        loadCollection()
-        fillSpeciesEventPanel()
-        centerButtonPressed = False
-        d = Database.GetDataTable("select * from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", DB_SPECIES_BUTTONS_TABLE)
-        For Each r As DataRow In d.Rows
-            Me.speciesComboBox.Items.Add(New ValueDescriptionPair(r.Item(2).ToString(), r.Item(1).ToString()))
-        Next
-        If blRareSpecies = True Then
-            Me.speciesComboBox.Items.Add(New ValueDescriptionPair(Me.SpeciesCode, Me.SpeciesName))
-        End If
-        For i As Integer = 0 To Me.speciesComboBox.Items.Count - 1
-            If Me.speciesComboBox.Items.Item(i).ToString = SpeciesName Then
-                Me.speciesComboBox.SelectedIndex = i
-            End If
-        Next
+        ' Populate the species combobox
+        Dim strQuery As String = "select DrawingOrder, ButtonText, ButtonCode from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;"
+        Dim data_table As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_BUTTONS_TABLE)
+        With cboSpecies
+            .DataSource = data_table
+            .DisplayMember = data_table.Columns(1).ColumnName
+            .ValueMember = data_table.Columns(2).ColumnName
+            .SelectedIndex = -1 ' If 0, the first item will be preselected, if -1, no items will be selected (default fresh loaded condition).
+        End With
+        ' Populate the 'Side' combobox
+        cboSide.Items.Add("On Center")
+        cboSide.Items.Add("Port")
+        cboSide.Items.Add("Starboard")
+        cboSide.SelectedIndex = 0
+        ' Populate the 'ID Confidence' combobox
+        cboIDConfidence.Items.Add("High")
+        cboIDConfidence.Items.Add("Med")
+        cboIDConfidence.Items.Add("Low")
+        cboIDConfidence.SelectedIndex = 0
+        ' Populate the 'Abundance' combobox
+        cboAbundance.Items.Add("Abundant")
+        cboAbundance.Items.Add("Common")
+        cboAbundance.Items.Add("Frequent")
+        cboAbundance.Items.Add("Occasional")
+        cboAbundance.Items.Add("Rare")
+        cboAbundance.SelectedIndex = 0
+        ' Set the count to a default of 1
+        txtCount.Text = 1
+
     End Sub
 
     ''' <summary>
@@ -615,8 +690,7 @@ Public Class frmSpeciesEvent
     ''' starboardRangeTextBox have both been flled in, then, hide the SpeciesEventForm
     ''' </summary>
     Private Sub ok_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles ok.Click
-        Dim ItemSelected As String
-        ItemSelected = CType(Me.speciesComboBox.SelectedItem, ValueDescriptionPair).Value
+        Dim ItemSelected As String = CType(Me.cboSpecies.SelectedItem, ValueDescriptionPair).Value
         Me.SpeciesCode = ItemSelected.ToString
         Me.Hide()
     End Sub
@@ -624,9 +698,6 @@ Public Class frmSpeciesEvent
     ''' <summary>
     ''' Description: Function to validate value being passed to it is not null and is numeric.
     ''' </summary>
-    ''' <param name="t"></param>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
     Private Function validate_range(ByVal t As TextBox) As Boolean
         If Not t.Text Like "#" _
                 And Not t.Text Like "##" _
@@ -638,16 +709,9 @@ Public Class frmSpeciesEvent
         Return True
     End Function
 
-    Private Sub btnCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCancel.Click
-        Me.Hide()
-    End Sub
-
     ''' <summary>
     ''' Used for validating text entered into a text box
     ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
-    ''' <remarks></remarks>
     Public Sub numericTextboxValidation(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs)
         Select Case e.KeyChar
             ' Allow the following characters to be entered into the text box: 1,2,3,4,5,6,7,8,9,0,. and BACKSPACE
@@ -666,10 +730,10 @@ Public Class frmSpeciesEvent
         If cboSide.SelectedIndex = 0 Then
             pnlSpeciesEvent.Controls.Item("txtRange").Text = ""
             pnlSpeciesEvent.Controls.Item("txtRange").Enabled = False
-            Me.Range = ""
+            'Me.Range = ""
         Else
             pnlSpeciesEvent.Controls.Item("txtRange").Enabled = True
-            Me.Range = pnlSpeciesEvent.Controls.Item("txtRange").Text
+            'Me.Range = pnlSpeciesEvent.Controls.Item("txtRange").Text
         End If
 
     End Sub
@@ -680,4 +744,60 @@ Public Class frmSpeciesEvent
         'myFormLibrary.frmVideoMiner.mnuCapScr_Click(sender, e)
         'myFormLibrary.frmVideoMiner.blScreenCaptureCalled = False
     End Sub
+
+    ''' <summary>
+    ''' This code is run everytime the form's show function is called. It resets the species combobox back to it's correct default species name
+    ''' </summary>
+    Public Sub formShown(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Me.VisibleChanged
+        If Me.Visible Then
+            Dim index As Integer = cboSpecies.FindStringExact(SpeciesName)
+            cboSpecies.SelectedIndex = index
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Validate that the count texbox only has digits in it.
+    ''' </summary>
+    Private Sub txt_Validating_Count(ByVal sender As System.Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles txtCount.Validating
+        Dim regex As New Regex("^\d+$")
+        Dim match As Match = regex.Match(txtCount.Text)
+        If Not match.Success Then
+            e.Cancel = True
+            txtCount.Select(0, txtCount.Text.Length)
+            MessageBox.Show("Only numeric characters are permitted.", "Numeric validation", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Validate that the non-count texboxes only have digits or a decimal in it.
+    ''' </summary>
+    Private Sub txt_Validating(ByVal sender As System.Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles txtRange.Validating, txtHeight.Validating, txtLength.Validating, txtWidth.Validating
+        Dim tb As TextBox = CType(sender, TextBox)
+        Dim regex As New Regex("^\d+(\.\d+)?$")
+        Dim match As Match = regex.Match(tb.Text)
+        If Not match.Success Then
+            e.Cancel = True
+            tb.Select(0, tb.Text.Length)
+            MessageBox.Show("Only integers or decimal numbers are permitted.", "Numeric validation", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' When user presses cancel, hide the form instead of closing it. It is created only once and needs to remain persistent.
+    ''' </summary>
+    Private Sub btnCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCancel.Click
+        Me.Hide()
+    End Sub
+
+    ''' <summary>
+    ''' Capture the event when the user presses the 'X' button top right. Instead of closing the form, just hide it.
+    ''' </summary>
+    Private Sub me_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If e.CloseReason = CloseReason.UserClosing Then
+            e.Cancel = True
+            Me.Hide()
+        End If
+    End Sub
+
 End Class
+

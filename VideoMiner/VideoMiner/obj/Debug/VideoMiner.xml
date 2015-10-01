@@ -873,6 +873,12 @@ VideoMiner
  </summary>
 	<returns>True or False</returns>
 	<remarks></remarks>
+</member><member name="M:VideoMiner.frmSpeciesEvent.SpeciesEventForm_Load(System.Object,System.EventArgs)">
+	<summary>
+	</summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
 </member><member name="M:VideoMiner.frmSpeciesEvent.pnlSpeciesEvent_Paint(System.Object,System.Windows.Forms.PaintEventArgs)">
 	<summary>
   When the SpeciesEventForm is displayed, draw a red arc at the bottom of the form with an
@@ -890,16 +896,30 @@ VideoMiner
 	<summary>
  Description: Function to validate value being passed to it is not null and is numeric.
  </summary>
-	<param name="t"></param>
-	<returns></returns>
-	<remarks></remarks>
 </member><member name="M:VideoMiner.frmSpeciesEvent.numericTextboxValidation(System.Object,System.Windows.Forms.KeyPressEventArgs)">
 	<summary>
  Used for validating text entered into a text box
  </summary>
-	<param name="sender"></param>
-	<param name="e"></param>
-	<remarks></remarks>
+</member><member name="M:VideoMiner.frmSpeciesEvent.formShown(System.Object,System.EventArgs)">
+	<summary>
+ This code is run everytime the form's show function is called. It resets the species combobox back to it's correct default species name
+ </summary>
+</member><member name="M:VideoMiner.frmSpeciesEvent.txt_Validating_Count(System.Object,System.ComponentModel.CancelEventArgs)">
+	<summary>
+ Validate that the count texbox only has digits in it.
+ </summary>
+</member><member name="M:VideoMiner.frmSpeciesEvent.txt_Validating(System.Object,System.ComponentModel.CancelEventArgs)">
+	<summary>
+ Validate that the non-count texboxes only have digits or a decimal in it.
+ </summary>
+</member><member name="M:VideoMiner.frmSpeciesEvent.btnCancel_Click(System.Object,System.EventArgs)">
+	<summary>
+ When user presses cancel, hide the form instead of closing it. It is created only once and needs to remain persistent.
+ </summary>
+</member><member name="M:VideoMiner.frmSpeciesEvent.me_FormClosing(System.Object,System.Windows.Forms.FormClosingEventArgs)">
+	<summary>
+ Capture the event when the user presses the 'X' button top right. Instead of closing the form, just hide it.
+ </summary>
 </member><member name="F:VideoMiner.DynamicButton.UNINITIALIZED_DATA_VALUE">
 	<summary>
  The default, uninitialized value for the DataValue property
