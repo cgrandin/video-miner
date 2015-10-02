@@ -110,6 +110,12 @@ Public Class DynamicPanel
 
 #Region "Events"
     Public Event DataChanged(dict As Dictionary(Of String, Tuple(Of String, String, Boolean)))
+    ''' <summary>
+    ''' This event will propagate or bubble up the same event raised from within the DynamicButton class. It signals that the user wants to enter a new record in the database
+    ''' for a species sighting.
+    ''' </summary>
+    Public Event NewSpeciesEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
 #End Region
 
     ''' <summary>
@@ -262,6 +268,8 @@ Public Class DynamicPanel
                                                          r.Item(6).ToString(),
                                                          m_button_font,
                                                          m_button_text_size)
+                ' Adds a handler for each button for the event which is fired originally by the SpeciesEvent form, and bubbled through the DynamicButton class.
+                AddHandler m_dynamic_buttons(i).NewSpeciesEntryEvent, AddressOf new_species_entry_handler
             Else
                 ' It's a table-data button
                 m_dynamic_buttons(i) = New DynamicButton(r.Item(0),
@@ -398,6 +406,17 @@ Public Class DynamicPanel
         For i As Integer = 0 To m_num_dynamic_buttons - 1
             m_dynamic_buttons(i).DataFormVisible = True
         Next
+    End Sub
+
+    ''' <summary>
+    ''' Handles the event request to insert a new entry into the database.
+    ''' </summary>
+    Private Sub new_species_entry_handler(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        Dim s As frmSpeciesEvent = CType(sender, frmSpeciesEvent)
+        'Dim st As String = "Dynamic Panel - species name = " & s.SpeciesName & ", species code = " & s.SpeciesCode & ", range = " & s.Range & ", side = " & s.Side & ", count = " & s.Count & ", abundance = " & s.Abundance
+        'MsgBox(st)
+        m_dict = s.SpeciesData
+        RaiseEvent DataChanged(m_dict)
     End Sub
 
 End Class

@@ -1098,10 +1098,22 @@ Public Class VideoMiner
         pnlSpeciesData = New DynamicPanel("SPECIES DATA", False, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, False)
         pnlSpeciesData.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         pnlSpeciesData.Dock = DockStyle.Fill
+        'AddHandler pnlSpeciesData.NewSpeciesEntryEvent, AddressOf new_species_entry_handler
         SplitContainer8.Panel2.Controls.Add(pnlSpeciesData)
 
         ' Create this form once, since it loads comboboxes with large amounts of data.
         frmRareSpeciesLookup = New frmRareSpeciesLookup
+    End Sub
+
+    ''' <summary>
+    ''' Handles the event request to insert a new entry into the database.
+    ''' </summary>
+    Private Sub new_species_entry_handler(speciesName As String, speciesCode As String, range As String, side As String,
+                                          idConfidence As String, abundance As String, count As String, height As String,
+                                          width As String, length As String, comments As String)
+
+        'MsgBox("Made it here! - Videominer main form")
+        ' Here is where the call to build the query goes...
     End Sub
 
     ''' <summary>
@@ -1854,7 +1866,7 @@ Public Class VideoMiner
     ''' Handle the changing of button data (transect and habitat buttons only) by creating an insert query and saving to the database
     ''' </summary>
     ''' <param name="dict">Dictionary of Key/value pairs for the data. Key=dataCodeName, Value=dataCode</param>
-    Private Sub buttonDataChanged(dict As Dictionary(Of String, Tuple(Of String, String, Boolean))) Handles pnlHabitatData.DataChanged, pnlTransectData.DataChanged
+    Private Sub buttonDataChanged(dict As Dictionary(Of String, Tuple(Of String, String, Boolean))) Handles pnlHabitatData.DataChanged, pnlTransectData.DataChanged, pnlSpeciesData.DataChanged
         ' MsgBox("Arrived in Videominer.vb with dictionary:" & dict.ToString())
         runInsertQuery(dict)
         fetch_data()
@@ -2758,7 +2770,6 @@ Public Class VideoMiner
         End Try
     End Sub
 
-
     Private Sub cmdNothingInPhoto_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdNothingInPhoto.Click
 
         If m_db_file_open = True Then
@@ -3198,7 +3209,6 @@ Public Class VideoMiner
 
 
     End Sub
-
 
     Private Function createXMLSessionFile(ByVal strFileName As String, ByVal blVideoOpen As Boolean, ByVal strVideo As String, ByVal strTime As String, _
                                           ByVal blImageOpen As Boolean, ByVal strImage As String, ByVal blDatabaseOpen As Boolean, ByVal strDatabase As String, ByVal strRecords As String) As Exception
@@ -4398,7 +4408,7 @@ Public Class VideoMiner
     ''' Creates and runs an 'INSERT INTO' query on the database for all of the given items in the dictionary. Each item will be incorporated into a single query for insertion.
     ''' </summary>
     ''' <param name="dictTransect">A Dictionary object of Key/Value pairs where the keys are field names as found in the main 'data' table in the database, and the values are a pair
-    ''' of codes, the first one being the data code for the field being recorded to in the 'data' table and teh second being the data code itself as chosen by the user.</param>
+    ''' of codes, the first one being the data code for the field being recorded to in the 'data' table and the second being the data code itself as chosen by the user.</param>
     Private Sub runInsertQuery(dictTransect As Dictionary(Of String, Tuple(Of String, String, Boolean)))
         Dim names As String = "insert into " & DB_DATA_TABLE & " (ID,"
         Dim values As String = "values(" & m_db_id_num & ","

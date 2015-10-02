@@ -84,7 +84,6 @@ Public Class DynamicButton
     ''' </summary>
     ''' <remarks></remarks>
     Private m_current_comment As String
-
 #End Region
 
 #Region "Properties"
@@ -208,6 +207,11 @@ Public Class DynamicButton
     ''' Fired when the button data has changed.
     ''' </summary>
     Public Event DataChanged(ByVal sender As Object, ByVal e As EventArgs)
+    ''' <summary>
+    ''' This event will propagate or bubble up the same event raised from within the frmSpeciesEvent class.
+    ''' </summary>
+    Public Event NewSpeciesEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
 #End Region
 
     ''' <summary>
@@ -362,5 +366,15 @@ Public Class DynamicButton
             m_table_view.StartPosition = FormStartPosition.Manual
             m_table_view.Location = System.Windows.Forms.Cursor.Position
         End If
+    End Sub
+
+    ''' <summary>
+    ''' Handles the event request to insert a new entry into the database. The species event form which corresponds to this button has been populated, validated, and the values are ready to be extracted.
+    ''' This just bubbles the event up to the parent.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private Sub new_species_entry_handler(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles frmSpeciesEvent.NewSpeciesEntryEvent
+        'Pass the species event object along
+        RaiseEvent NewSpeciesEntryEvent(sender, e)
     End Sub
 End Class

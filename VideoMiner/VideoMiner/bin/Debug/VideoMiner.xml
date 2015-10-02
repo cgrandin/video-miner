@@ -127,6 +127,11 @@ VideoMiner
  If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
  not just the most recently-pressed button's data.
 
+</member><member name="E:VideoMiner.DynamicPanel.NewSpeciesEntryEvent">
+	<summary>
+ This event will propagate or bubble up the same event raised from within the DynamicButton class. It signals that the user wants to enter a new record in the database
+ for a species sighting.
+ </summary>
 </member><member name="M:VideoMiner.DynamicPanel.#ctor(System.String,System.Boolean,System.Int32,System.Int32,System.String,System.Int32,System.Boolean,System.Boolean,System.Int32,System.Int32)">
 	<summary>
  Create the DynamicPanel object.
@@ -175,6 +180,10 @@ VideoMiner
 	<summary>
  When user clicks the 'DEFINE ALL' button, it is the same as if they clicked all the dynamic buttons in sequence.
  This is a convinience button.
+ </summary>
+</member><member name="M:VideoMiner.DynamicPanel.new_species_entry_handler(System.Object,System.EventArgs)">
+	<summary>
+ Handles the event request to insert a new entry into the database.
  </summary>
 </member><member name="T:VideoMiner.DynamicPanel">
 	<summary>
@@ -873,12 +882,65 @@ VideoMiner
  </summary>
 	<returns>True or False</returns>
 	<remarks></remarks>
+</member><member name="F:VideoMiner.frmSpeciesEvent.m_speciesName">
+	<summary>
+ Holds the species name
+ </summary>
+</member><member name="F:VideoMiner.frmSpeciesEvent.m_speciesCode">
+	<summary>
+ Holds the species code
+ </summary>
+</member><member name="F:VideoMiner.frmSpeciesEvent.m_range">
+	<summary>
+ Holds the currently entered range
+ </summary>
+</member><member name="F:VideoMiner.frmSpeciesEvent.m_side">
+	<summary>
+ Holds the currently selected Side code as found in the database table lu_observed_side
+ </summary>
+</member><member name="F:VideoMiner.frmSpeciesEvent.m_IDConfidence">
+	<summary>
+ Holds the currently selected ConfidenceID code as found in the database table lu_confidence_ids
+ </summary>
+</member><member name="F:VideoMiner.frmSpeciesEvent.m_Abundance">
+	<summary>
+ Holds the currently selected Abundance code as found in the database table lu_acfor_scale
+ </summary>
+</member><member name="F:VideoMiner.frmSpeciesEvent.m_Count">
+	<summary>
+ Holds the currently entered count
+ </summary>
+</member><member name="F:VideoMiner.frmSpeciesEvent.m_Height">
+	<summary>
+ Holds the currently entered height
+ </summary>
+</member><member name="F:VideoMiner.frmSpeciesEvent.m_Width">
+	<summary>
+ Holds the currently entered width
+ </summary>
+</member><member name="F:VideoMiner.frmSpeciesEvent.m_Length">
+	<summary>
+ Holds the currently entered length of the specimen
+ </summary>
+</member><member name="F:VideoMiner.frmSpeciesEvent.m_Comments">
+	<summary>
+ Holds the currently entered comments
+ </summary>
+</member><member name="F:VideoMiner.frmSpeciesEvent.m_tuple">
+	<summary>
+ A tuple for the Dictionary object, m_dict.
+ </summary>
+</member><member name="F:VideoMiner.frmSpeciesEvent.m_dict">
+	<summary>
+ Dictionary of key/value pairs that hold the currently selected data for this species event.
+ The first parameter is the name of the field in the database table lu_data. The tuple is a triplet of data code (from lu_data_codes),
+ the data value to be inserted, and a boolean for whether or not the item was the one pressed (in case there are more than one in the dictionary).
+ </summary>
 </member><member name="M:VideoMiner.frmSpeciesEvent.SpeciesEventForm_Load(System.Object,System.EventArgs)">
 	<summary>
-	</summary>
-	<param name="sender"></param>
-	<param name="e"></param>
-	<remarks></remarks>
+ When the form is loaded, Populate the comboboxes with vlues from the database and hardcoded items for 'Side', 'ID Confidence', and 'Abundance'.
+ Also sets the count to 1.
+ </summary>
 </member><member name="M:VideoMiner.frmSpeciesEvent.pnlSpeciesEvent_Paint(System.Object,System.Windows.Forms.PaintEventArgs)">
 	<summary>
   When the SpeciesEventForm is displayed, draw a red arc at the bottom of the form with an
@@ -887,30 +949,24 @@ VideoMiner
  </summary>
 </member><member name="M:VideoMiner.frmSpeciesEvent.ok_Click(System.Object,System.EventArgs)">
 	<summary>
- If the user has not selected "On Centerline" and either the portRangeTextbox or the starboardRangeTextBox
- are not filled in or are not numeric, alert the user to fill them in with an integer.
- Else if "On Centerline" has been selected or "On Centerline" has not been selected AND portRangeTextbox and
- starboardRangeTextBox have both been flled in, then, hide the SpeciesEventForm
+ If the user has selected 'Port' or 'Starboard' in the Side combobox and the Range is the empty string or zero,
+ alert the user to fill them in with an integer before allowing the submission for insertion into the database.
  </summary>
-</member><member name="M:VideoMiner.frmSpeciesEvent.validate_range(System.Windows.Forms.TextBox)">
+</member><member name="M:VideoMiner.frmSpeciesEvent.buildDictionary">
 	<summary>
- Description: Function to validate value being passed to it is not null and is numeric.
- </summary>
-</member><member name="M:VideoMiner.frmSpeciesEvent.numericTextboxValidation(System.Object,System.Windows.Forms.KeyPressEventArgs)">
-	<summary>
- Used for validating text entered into a text box
+ Build the dictionary of key/value pairs for the data the user chose.
  </summary>
 </member><member name="M:VideoMiner.frmSpeciesEvent.formShown(System.Object,System.EventArgs)">
 	<summary>
  This code is run everytime the form's show function is called. It resets the species combobox back to it's correct default species name
  </summary>
-</member><member name="M:VideoMiner.frmSpeciesEvent.txt_Validating_Count(System.Object,System.ComponentModel.CancelEventArgs)">
+</member><member name="M:VideoMiner.frmSpeciesEvent.txt_Validating_NonNull(System.Object,System.ComponentModel.CancelEventArgs)">
 	<summary>
- Validate that the count texbox only has digits in it.
+ Validate that the count texbox only has digits in it (an integer). And it must have at least one digit (no empty strings).
  </summary>
 </member><member name="M:VideoMiner.frmSpeciesEvent.txt_Validating(System.Object,System.ComponentModel.CancelEventArgs)">
 	<summary>
- Validate that the non-count texboxes only have digits or a decimal in it.
+ Validate that the non-count texboxes only have empty strings, integers, or real numbers.
  </summary>
 </member><member name="M:VideoMiner.frmSpeciesEvent.btnCancel_Click(System.Object,System.EventArgs)">
 	<summary>
@@ -1002,6 +1058,10 @@ VideoMiner
 	<summary>
  Fired when the button data has changed.
  </summary>
+</member><member name="E:VideoMiner.DynamicButton.NewSpeciesEntryEvent">
+	<summary>
+ This event will propagate or bubble up the same event raised from within the frmSpeciesEvent class.
+ </summary>
 </member><member name="M:VideoMiner.DynamicButton.#ctor(System.Int32,System.String,System.String,System.Int32,System.String,System.String,System.String,System.Int32)">
 	<summary>
  Creates the object, for the case in which the button refers to a database code table.
@@ -1048,6 +1108,12 @@ VideoMiner
 	<summary>
  Places the table view forms in the center of the screen.
  </summary>
+</member><member name="M:VideoMiner.DynamicButton.new_species_entry_handler(System.Object,System.EventArgs)">
+	<summary>
+ Handles the event request to insert a new entry into the database. The species event form which corresponds to this button has been populated, validated, and the values are ready to be extracted.
+ This just bubbles the event up to the parent.
+ </summary>
+	<remarks></remarks>
 </member><member name="T:VideoMiner.DynamicButton">
 	<summary>
  A Videominer dynamic button. This button extends a regular button by holding the database table name,
@@ -1686,6 +1752,10 @@ VideoMiner
  it often leads to unpredictable results. A common invalid thread activity is a call on the wrong thread that accesses
  the Control 's Handle property. Set CheckForIllegalCrossThreadCalls to true to find and diagnose this thread activity
  more easily while debugging. </remarks>
+</member><member name="M:VideoMiner.VideoMiner.new_species_entry_handler(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+	<summary>
+ Handles the event request to insert a new entry into the database.
+ </summary>
 </member><member name="M:VideoMiner.VideoMiner.loadConfigurationFile">
 	<summary>
  Load the metadata found in the VideoMiner configuration file into member variables.
@@ -1905,7 +1975,7 @@ VideoMiner
  Creates and runs an 'INSERT INTO' query on the database for all of the given items in the dictionary. Each item will be incorporated into a single query for insertion.
  </summary>
 	<param name="dictTransect">A Dictionary object of Key/Value pairs where the keys are field names as found in the main 'data' table in the database, and the values are a pair
- of codes, the first one being the data code for the field being recorded to in the 'data' table and teh second being the data code itself as chosen by the user.</param>
+ of codes, the first one being the data code for the field being recorded to in the 'data' table and the second being the data code itself as chosen by the user.</param>
 </member><member name="M:VideoMiner.VideoMiner.createInsertQueryOLD(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
 	<summary>
  Creates a string which is an 'INSERT INTO' query in access database format.
