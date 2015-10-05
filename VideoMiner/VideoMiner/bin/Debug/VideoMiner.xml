@@ -184,7 +184,8 @@ VideoMiner
 </member><member name="M:VideoMiner.DynamicPanel.DefineAll(System.Object,System.EventArgs)">
 	<summary>
  When user clicks the 'DEFINE ALL' button, it is the same as if they clicked all the dynamic buttons in sequence.
- This is a convinience button.
+ This is a convinience button. The windows are opened in reverse order so that they will be in the correct order
+ ' from top to bottom.
  </summary>
 </member><member name="M:VideoMiner.DynamicPanel.new_species_entry_handler(System.Object,System.EventArgs)">
 	<summary>

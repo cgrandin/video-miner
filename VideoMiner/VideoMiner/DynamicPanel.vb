@@ -414,10 +414,11 @@ Public Class DynamicPanel
 
     ''' <summary>
     ''' When user clicks the 'DEFINE ALL' button, it is the same as if they clicked all the dynamic buttons in sequence.
-    ''' This is a convinience button.
+    ''' This is a convinience button. The windows are opened in reverse order so that they will be in the correct order
+    ''' ' from top to bottom.
     ''' </summary>
     Private Sub DefineAll(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        For i As Integer = 0 To m_num_dynamic_buttons - 1
+        For i As Integer = m_num_dynamic_buttons - 1 To 0 Step -1
             m_dynamic_buttons(i).DataFormVisible = True
         Next
     End Sub
