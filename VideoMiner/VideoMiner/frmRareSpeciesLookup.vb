@@ -19,8 +19,9 @@
     ''' The currently selected species' taxonomic level code
     ''' </summary>
     Private m_speciesTaxCode As String
+    Private WithEvents frmSpeciesEvent As frmSpeciesEvent
 
-    Event SpeciesCodeChangedEvent()
+    Public Event SpeciesCodeChangedEvent(sender As System.Object, e As System.EventArgs)
 
 #Region "Properties"
     ''' <summary>
@@ -164,7 +165,12 @@
     ''' If the user has selected a species, this will fire an event telling the main form to record a record in the data table in the database.
     ''' </summary>
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOk.Click
-        'RaiseEvent SpeciesCodeChangedEvent()
+        If SpeciesName = "" Then
+            frmSpeciesEvent = New frmSpeciesEvent(Me.SpeciesScienceName, Me.SpeciesCode)
+        Else
+            frmSpeciesEvent = New frmSpeciesEvent(Me.SpeciesName, Me.SpeciesCode)
+        End If
+        frmSpeciesEvent.Show()
     End Sub
 
     ''' <summary>
@@ -182,5 +188,13 @@
             e.Cancel = True
             Me.Hide()
         End If
+    End Sub
+
+    ''' <summary>
+    ''' Tell Videominer that the user widhes to submit a database record addition for the species listed.
+    ''' </summary>
+    Private Sub species_entry_event(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles frmSpeciesEvent.NewSpeciesEntryEvent
+        RaiseEvent SpeciesCodeChangedEvent(sender, e)
+        Me.Hide()
     End Sub
 End Class

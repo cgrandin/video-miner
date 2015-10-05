@@ -213,6 +213,10 @@ Public Class DynamicButton
     ''' This event will propagate or bubble up the same event raised from within the frmSpeciesEvent class.
     ''' </summary>
     Public Event NewSpeciesEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Signals the parent that a button has been pressed and we request that the video be paused while data entry takes place.
+    ''' </summary>
+    Public Event SignalVideoPause(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
 #End Region
 
@@ -350,12 +354,14 @@ Public Class DynamicButton
     ''' </summary>
     Public Sub clickMe(sender As Object, e As MouseEventArgs) Handles Me.Click
         If My.Computer.Keyboard.CtrlKeyDown Then
-            'If Not IsNothing(m_table_view) Then
             clearData()
-            'End If
         Else
-        Me.DataFormVisible = True
+            Me.DataFormVisible = True
         End If
+        ' Raise an event to signal the beginning of the process of filling in a form which will be recorded to the database.
+        ' For example, when the user presses a species button it will bring up the form needed to fill in the information for the species.
+        ' The video needs to be paused at this point, and restarted when the user presses OK on the form which is being worked on
+        RaiseEvent SignalVideoPause(Me, e)
     End Sub
 
     ''' <summary>

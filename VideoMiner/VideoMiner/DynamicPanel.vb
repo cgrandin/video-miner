@@ -120,6 +120,10 @@ Public Class DynamicPanel
     ''' for a species sighting.
     ''' </summary>
     Public Event NewSpeciesEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Signals the parent that a button has been pressed on this panel and we request that the video be paused while data entry takes place.
+    ''' </summary>
+    Public Event SignalVideoPause(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
 #End Region
 
@@ -277,6 +281,7 @@ Public Class DynamicPanel
                                                          m_button_text_size)
                 ' Adds a handler for each button for the event which is fired originally by the SpeciesEvent form, and bubbled through the DynamicButton class.
                 AddHandler m_dynamic_buttons(i).NewSpeciesEntryEvent, AddressOf new_species_entry_handler
+                AddHandler m_dynamic_buttons(i).SignalVideoPause, AddressOf signal_video_pause
             Else
                 ' It's a table-data button
                 m_dynamic_buttons(i) = New DynamicButton(r.Item(0),
@@ -290,6 +295,7 @@ Public Class DynamicPanel
                 m_dynamic_textboxes(i) = New DynamicTextbox(r.Item(0), r.Item(1).ToString(), m_button_font, m_button_text_size)
             End If
             AddHandler m_dynamic_buttons(i).DataChanged, AddressOf PanelDataChanged
+            AddHandler m_dynamic_buttons(i).SignalVideoPause, AddressOf signal_video_pause
             i += 1
         Next
         placeControls()
@@ -426,4 +432,7 @@ Public Class DynamicPanel
         RaiseEvent DataChanged(Me, e)
     End Sub
 
+    Private Sub signal_video_pause(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        RaiseEvent SignalVideoPause(sender, e)
+    End Sub
 End Class

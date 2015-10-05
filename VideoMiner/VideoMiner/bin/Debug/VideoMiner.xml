@@ -132,6 +132,10 @@ VideoMiner
  This event will propagate or bubble up the same event raised from within the DynamicButton class. It signals that the user wants to enter a new record in the database
  for a species sighting.
  </summary>
+</member><member name="E:VideoMiner.DynamicPanel.SignalVideoPause">
+	<summary>
+ Signals the parent that a button has been pressed on this panel and we request that the video be paused while data entry takes place.
+ </summary>
 </member><member name="M:VideoMiner.DynamicPanel.#ctor(System.String,System.Boolean,System.Int32,System.Int32,System.String,System.Int32,System.Boolean,System.Boolean,System.Int32,System.Int32)">
 	<summary>
  Create the DynamicPanel object.
@@ -648,6 +652,10 @@ VideoMiner
 	<summary>
  Capture the event when the user presses the 'X' button top right. Instead of closing the form, just hide it.
  </summary>
+</member><member name="M:VideoMiner.frmRareSpeciesLookup.species_entry_event(System.Object,System.EventArgs)">
+	<summary>
+ Tell Videominer that the user widhes to submit a database record addition for the species listed.
+ </summary>
 </member><member name="P:VideoMiner.My.Resources.Resources.ResourceManager">
 	<summary>
   Returns the cached ResourceManager instance used by this class.
@@ -938,6 +946,10 @@ VideoMiner
  The first parameter is the name of the field in the database table lu_data. The tuple is a triplet of data code (from lu_data_codes),
  the data value to be inserted, and a boolean for whether or not the item was the one pressed (in case there are more than one in the dictionary).
  </summary>
+</member><member name="M:VideoMiner.frmSpeciesEvent.GetNextSequenceId">
+	<summary>
+ Get the next unique ID from the species buttons table so that the new button can be inserted properly into the database table.
+ </summary>
 </member><member name="M:VideoMiner.frmSpeciesEvent.SpeciesEventForm_Load(System.Object,System.EventArgs)">
 	<summary>
  When the form is loaded, Populate the comboboxes with vlues from the database and hardcoded items for 'Side', 'ID Confidence', and 'Abundance'.
@@ -1064,6 +1076,10 @@ VideoMiner
 </member><member name="E:VideoMiner.DynamicButton.NewSpeciesEntryEvent">
 	<summary>
  This event will propagate or bubble up the same event raised from within the frmSpeciesEvent class.
+ </summary>
+</member><member name="E:VideoMiner.DynamicButton.SignalVideoPause">
+	<summary>
+ Signals the parent that a button has been pressed and we request that the video be paused while data entry takes place.
  </summary>
 </member><member name="M:VideoMiner.DynamicButton.#ctor(System.Int32,System.String,System.String,System.Int32,System.String,System.String,System.String,System.Int32)">
 	<summary>
@@ -1876,6 +1892,11 @@ VideoMiner
 	<summary>
  Handle the changing of button data by creating an insert query and saving to the database
  </summary>
+</member><member name="M:VideoMiner.VideoMiner.rareSpeciesDataChanged(System.Object,System.EventArgs)">
+	<summary>
+ Handles the storage of a record from when the user chooses a species from the Rare species form.
+ </summary>
+	<param name="sender">Instance of the frmRareSpeciesForm</param>
 </member><member name="M:VideoMiner.VideoMiner.cmdEdit_Click(System.Object,System.EventArgs)">
 	<summary>
  Brings up the edit species dialog (frmSpeciesList) which allows the user to change the order of the species buttons

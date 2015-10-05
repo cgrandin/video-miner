@@ -177,13 +177,24 @@ Public Class frmSpeciesEvent
     End Property
 #End Region
 
-    Public Sub New(species_name As String)
+    Public Sub New(species_name As String, Optional species_code As String = "")
         InitializeComponent()
         SpeciesName = species_name
+        SpeciesCode = species_code
         Me.Text = "Species Event - " & SpeciesName
         m_tuple = New Tuple(Of String, String, Boolean)(Nothing, Nothing, False)
         m_dict = New Dictionary(Of String, Tuple(Of String, String, Boolean))
     End Sub
+
+    ''' <summary>
+    ''' Get the next unique ID from the species buttons table so that the new button can be inserted properly into the database table.
+    ''' </summary>
+    Private Function GetNextSequenceId() As Integer
+        Dim strQuery = "SELECT Max(DrawingOrder) FROM " & DB_SPECIES_BUTTONS_TABLE & ";"
+        Dim idTable As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_BUTTONS_TABLE)
+        Dim intId = idTable.Rows(0).Item(0) ' The query will only return 1 result because it is a MAX query.
+        Return intId + 1
+    End Function
 
     ''' <summary>
     ''' When the form is loaded, Populate the comboboxes with vlues from the database and hardcoded items for 'Side', 'ID Confidence', and 'Abundance'.
@@ -193,6 +204,13 @@ Public Class frmSpeciesEvent
         ' Populate the species combobox
         Dim strQuery As String = "select DrawingOrder, ButtonText, ButtonCode from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;"
         Dim data_table As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_BUTTONS_TABLE)
+        ' If the SpeciesName is not in the table, add the Common name of the species into the list
+        Dim dr As DataRow = data_table.NewRow()
+        dr("DrawingOrder") = GetNextSequenceId()
+        dr("ButtonText") = SpeciesName
+        dr("ButtonCode") = SpeciesCode
+        data_table.Rows.Add(dr)
+
         With cboSpecies
             .DataSource = data_table
             .DisplayMember = data_table.Columns(1).ColumnName

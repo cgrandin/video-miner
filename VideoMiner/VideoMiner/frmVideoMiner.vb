@@ -1120,6 +1120,10 @@ Public Class VideoMiner
         ' Here is where the call to build the query goes...
     End Sub
 
+    Private Sub signal_video_pause(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pnlHabitatData.SignalVideoPause, pnlTransectData.SignalVideoPause, pnlSpeciesData.SignalVideoPause
+        'frmVideoPlayer.pauseVideo()
+    End Sub
+
     ''' <summary>
     ''' Load the metadata found in the VideoMiner configuration file into member variables.
     ''' If the configuration file is not found, defaults will be assigned for GPS settings and the path variables
@@ -1899,6 +1903,25 @@ Public Class VideoMiner
             dict.Add("DataCode", tuple)
         End If
         runInsertQuery(dict)
+        fetch_data()
+        ' frmVideoPlayer.playVideo()
+    End Sub
+
+    ''' <summary>
+    ''' Handles the storage of a record from when the user chooses a species from the Rare species form.
+    ''' </summary>
+    ''' <param name="sender">Instance of the frmRareSpeciesForm</param>
+    Private Sub rareSpeciesDataChanged(sender As System.Object, e As System.EventArgs) Handles frmRareSpeciesLookup.SpeciesCodeChangedEvent
+        Dim frm As frmSpeciesEvent = CType(sender, frmSpeciesEvent)
+        Dim tuple As Tuple(Of String, String, Boolean)
+        ' Need to add the DataCode of '4' in for a species record.
+        If frm.Dictionary.ContainsKey("DataCode") Then
+            frm.Dictionary.Remove("DataCode")
+        End If
+        tuple = New Tuple(Of String, String, Boolean)("4", "4", True)
+        frm.Dictionary.Add("DataCode", tuple)
+
+        runInsertQuery(frm.Dictionary)
         fetch_data()
     End Sub
 
