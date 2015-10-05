@@ -29,7 +29,6 @@ Partial Class frmSpeciesEvent
         Me.btnCancel = New System.Windows.Forms.Button()
         Me.pnlSpeciesEvent = New System.Windows.Forms.Panel()
         Me.lblComments = New System.Windows.Forms.Label()
-        Me.rtxtComments = New System.Windows.Forms.RichTextBox()
         Me.txtLength = New System.Windows.Forms.TextBox()
         Me.lblLength = New System.Windows.Forms.Label()
         Me.txtWidth = New System.Windows.Forms.TextBox()
@@ -47,6 +46,7 @@ Partial Class frmSpeciesEvent
         Me.txtRange = New System.Windows.Forms.TextBox()
         Me.lblRange = New System.Windows.Forms.Label()
         Me.cmdScreenCapture = New System.Windows.Forms.Button()
+        Me.rtxtComments = New System.Windows.Forms.RichTextBox()
         Me.pnlSpeciesEvent.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -126,15 +126,6 @@ Partial Class frmSpeciesEvent
         Me.lblComments.Size = New System.Drawing.Size(68, 13)
         Me.lblComments.TabIndex = 17
         Me.lblComments.Text = "Comments"
-        '
-        'rtxtComments
-        '
-        Me.rtxtComments.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold)
-        Me.rtxtComments.Location = New System.Drawing.Point(12, 332)
-        Me.rtxtComments.Name = "rtxtComments"
-        Me.rtxtComments.Size = New System.Drawing.Size(278, 132)
-        Me.rtxtComments.TabIndex = 16
-        Me.rtxtComments.Text = ""
         '
         'txtLength
         '
@@ -293,6 +284,15 @@ Partial Class frmSpeciesEvent
         Me.cmdScreenCapture.Size = New System.Drawing.Size(33, 26)
         Me.cmdScreenCapture.TabIndex = 58
         Me.cmdScreenCapture.UseVisualStyleBackColor = False
+        '
+        'rtxtComments
+        '
+        Me.rtxtComments.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold)
+        Me.rtxtComments.Location = New System.Drawing.Point(12, 332)
+        Me.rtxtComments.Name = "rtxtComments"
+        Me.rtxtComments.Size = New System.Drawing.Size(278, 132)
+        Me.rtxtComments.TabIndex = 16
+        Me.rtxtComments.Text = ""
         '
         'frmSpeciesEvent
         '

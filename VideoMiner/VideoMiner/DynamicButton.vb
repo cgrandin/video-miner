@@ -12,7 +12,7 @@ Public Class DynamicButton
     ''' The default, uninitialized value for the DataValue property
     ''' </summary>
     ''' <remarks>This is set in the constructors</remarks>
-    Public Const UNINITIALIZED_DATA_VALUE = -1
+    Public Const UNINITIALIZED_DATA_VALUE = "NULL"
 
 #Region "Member variables"
     ''' <summary>
@@ -58,8 +58,9 @@ Public Class DynamicButton
     Private m_data_code_description As String
     ''' <summary>
     ''' The value of the chosen data, i.e.e from row selection in a table, entry such as Field of View, or from clicking a species event button.
+    ''' It must be a string so that "NULL" can be passed to the SQL query if it was not chosen to be part of the query.
     ''' </summary>
-    Private m_data_value As Integer
+    Private m_data_value As String
     ''' <summary>
     ''' Table of data found in the m_db_table_name table in the MS Access database. This may not be set if the button type is for a species.
     ''' </summary>
@@ -136,11 +137,11 @@ Public Class DynamicButton
         End Set
     End Property
 
-    Public Property DataValue As Integer
+    Public Property DataValue As String
         Get
             Return m_data_value
         End Get
-        Set(value As Integer)
+        Set(value As String)
             m_data_value = value
         End Set
     End Property

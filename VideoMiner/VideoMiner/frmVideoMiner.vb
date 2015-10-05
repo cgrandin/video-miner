@@ -86,6 +86,10 @@ Public Class VideoMiner
     Private Const GPS_DATA_BITS_DEFAULT As Integer = 8
     Private Const GPS_TIMEOUT_DEFAULT As Integer = 5
 
+    Private Const PANEL_NAME_SPECIES As String = "SPECIES DATA"
+    Private Const PANEL_NAME_HABITAT As String = "HABITAT DATA"
+    Private Const PANEL_NAME_TRANSECT As String = "TRANSECT DATA"
+
     Private Const VIDEO_TIME_FORMAT As String = "{0:D2}:{1:D2}:{2:D2}.{3:D3}" ' D3 = 3 decimal places
     Private Const VIDEO_FRAME_STEP_DEFAULT As Integer = 500
     Public Const DB_ADO_CONN_STRING_1 As String = "Data Source="
@@ -1089,13 +1093,13 @@ Public Class VideoMiner
         frmSetTime = New frmSetTime(m_tsUserTime)
 
         ' Add DynamicPanels to the SplitContainerPanels
-        pnlTransectData = New DynamicPanel("TRANSECT DATA", True, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, False, True)
+        pnlTransectData = New DynamicPanel(PANEL_NAME_TRANSECT, True, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, False, True)
         SplitContainer7.Panel1.Controls.Add(pnlTransectData)
 
-        pnlHabitatData = New DynamicPanel("HABITAT DATA", True, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, True, True)
+        pnlHabitatData = New DynamicPanel(PANEL_NAME_HABITAT, True, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, True, True)
         SplitContainer7.Panel2.Controls.Add(pnlHabitatData)
 
-        pnlSpeciesData = New DynamicPanel("SPECIES DATA", False, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, False)
+        pnlSpeciesData = New DynamicPanel(PANEL_NAME_SPECIES, False, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, False)
         pnlSpeciesData.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         pnlSpeciesData.Dock = DockStyle.Fill
         'AddHandler pnlSpeciesData.NewSpeciesEntryEvent, AddressOf new_species_entry_handler
@@ -1863,11 +1867,37 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
-    ''' Handle the changing of button data (transect and habitat buttons only) by creating an insert query and saving to the database
+    ''' Handle the changing of button data by creating an insert query and saving to the database
     ''' </summary>
-    ''' <param name="dict">Dictionary of Key/value pairs for the data. Key=dataCodeName, Value=dataCode</param>
-    Private Sub buttonDataChanged(dict As Dictionary(Of String, Tuple(Of String, String, Boolean))) Handles pnlHabitatData.DataChanged, pnlTransectData.DataChanged, pnlSpeciesData.DataChanged
+    Private Sub buttonDataChanged(sender As System.Object, e As System.EventArgs) Handles pnlHabitatData.DataChanged, pnlTransectData.DataChanged, pnlSpeciesData.DataChanged
         ' MsgBox("Arrived in Videominer.vb with dictionary:" & dict.ToString())
+        Dim panel As DynamicPanel = CType(sender, DynamicPanel)
+        Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = panel.Dictionary
+        Dim tuple As Tuple(Of String, String, Boolean)
+        ' If the calling panel is the species panel, check the setting of the habitat panel and if set to record on every record,
+        ' merge the two dictionaries before running the insert query.
+        If panel.Name = PANEL_NAME_SPECIES Then
+            If pnlHabitatData.RepeatForEveryRecord Then
+                ' Merge the two dictionaries
+                For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlHabitatData.Dictionary
+                    dict.Add(kvp.Key, kvp.Value)
+                Next
+            End If
+            If dict.ContainsKey("DataCode") Then
+                dict.Remove("DataCode")
+            End If
+            tuple = New Tuple(Of String, String, Boolean)("4", "4", True)
+            dict.Add("DataCode", tuple)
+        Else
+            ' If was a habitat or transect entry. Need to add the DataCode, based on which of the dictionary entries has it's key.item3 set to True, i.e. which button was pressed
+            ' before this dictionary was made.
+            For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In dict
+                If kvp.Value.Item3 Then
+                    tuple = New Tuple(Of String, String, Boolean)(kvp.Value.Item1, kvp.Value.Item1, True)
+                End If
+            Next
+            dict.Add("DataCode", tuple)
+        End If
         runInsertQuery(dict)
         fetch_data()
     End Sub
@@ -4698,14 +4728,14 @@ SkipInsertComma:
     Private Sub ConfigureHabitatButtonToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureHabitatButtonToolStripMenuItem.Click
         strConfigureTable = DB_HABITAT_BUTTONS_TABLE
         frmConfigureButtons = New frmConfigureButtons
-        frmConfigureButtons.cmdMoveToPanel.Text = "Move To TRANSECT DATA"
+        frmConfigureButtons.cmdMoveToPanel.Text = "Move To " & PANEL_NAME_TRANSECT
         frmConfigureButtons.ShowDialog()
     End Sub
 
     Private Sub ConfigureTransectButtonsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureTransectButtonsToolStripMenuItem.Click
         strConfigureTable = DB_TRANSECT_BUTTONS_TABLE
         frmConfigureButtons = New frmConfigureButtons
-        frmConfigureButtons.cmdMoveToPanel.Text = "Move To HABITAT DATA"
+        frmConfigureButtons.cmdMoveToPanel.Text = "Move To " & PANEL_NAME_HABITAT
         frmConfigureButtons.ShowDialog()
     End Sub
 

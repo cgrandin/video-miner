@@ -169,6 +169,12 @@ Public Class frmSpeciesEvent
             m_Comments = value
         End Set
     End Property
+
+    Public ReadOnly Property Dictionary As Dictionary(Of String, Tuple(Of String, String, Boolean))
+        Get
+            Return m_dict
+        End Get
+    End Property
 #End Region
 
     Public Sub New(species_name As String)
@@ -301,7 +307,8 @@ Public Class frmSpeciesEvent
         End If
         Comments = rtxtComments.Text
         If Comments = "" Then
-            Comments = "NULL"
+            ' This one is a bit different, this needs to be "" instead of NULL.
+            Comments = ""
         End If
         ' build the dictionary of data..
         buildDictionary()
@@ -318,7 +325,7 @@ Public Class frmSpeciesEvent
         m_dict.Clear()
         ' The first parameter is the name of the field in the database table lu_data. The tuple is a triplet of data code (from lu_data_codes), which is 4 for a species entry,
         ' the data value to be inserted, and a boolean for whether or not the item was the one pressed (in case there are more than one in the dictionary).
-        m_tuple = New Tuple(Of String, String, Boolean)("4", DoubleQuote(SpeciesName), False)
+        m_tuple = New Tuple(Of String, String, Boolean)("4", DoubleQuote(SpeciesName), True)
         m_dict.Add("SpeciesName", m_tuple)
         m_tuple = New Tuple(Of String, String, Boolean)("4", DoubleQuote(SpeciesCode), False)
         m_dict.Add("SpeciesID", m_tuple)

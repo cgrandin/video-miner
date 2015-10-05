@@ -122,7 +122,7 @@ VideoMiner
 	<summary>
  Enumeration type for this instance. See WhichTypeEnum for descriptions.
  </summary>
-</member><member name="P:VideoMiner.DynamicPanel.Data">
+</member><member name="P:VideoMiner.DynamicPanel.Dictionary">
  Dictionary of key/value pairs that hold the currently selected data (most recently-pressed button's data) for this panel.
  If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
  not just the most recently-pressed button's data.
@@ -183,7 +183,8 @@ VideoMiner
  </summary>
 </member><member name="M:VideoMiner.DynamicPanel.new_species_entry_handler(System.Object,System.EventArgs)">
 	<summary>
- Handles the event request to insert a new entry into the database.
+ Handles the event request to insert a new entry into the database. Checks the setting from the Habitat panel, if set to record habitat on every record, 
+ the current dictionary will be merged with the species dict, and the result will be inserted into the database.
  </summary>
 </member><member name="T:VideoMiner.DynamicPanel">
 	<summary>
@@ -1025,6 +1026,7 @@ VideoMiner
 </member><member name="F:VideoMiner.DynamicButton.m_data_value">
 	<summary>
  The value of the chosen data, i.e.e from row selection in a table, entry such as Field of View, or from clicking a species event button.
+ It must be a string so that "NULL" can be passed to the SQL query if it was not chosen to be part of the query.
  </summary>
 </member><member name="F:VideoMiner.DynamicButton.m_data_table">
 	<summary>
@@ -1872,11 +1874,10 @@ VideoMiner
  database table, and plays the video again.
  </summary>
 	<remarks></remarks>
-</member><member name="M:VideoMiner.VideoMiner.buttonDataChanged(System.Collections.Generic.Dictionary{System.String,System.Tuple{System.String,System.String,System.Boolean}})">
+</member><member name="M:VideoMiner.VideoMiner.buttonDataChanged(System.Object,System.EventArgs)">
 	<summary>
- Handle the changing of button data (transect and habitat buttons only) by creating an insert query and saving to the database
+ Handle the changing of button data by creating an insert query and saving to the database
  </summary>
-	<param name="dict">Dictionary of Key/value pairs for the data. Key=dataCodeName, Value=dataCode</param>
 </member><member name="M:VideoMiner.VideoMiner.cmdEdit_Click(System.Object,System.EventArgs)">
 	<summary>
  Brings up the edit species dialog (frmSpeciesList) which allows the user to change the order of the species buttons

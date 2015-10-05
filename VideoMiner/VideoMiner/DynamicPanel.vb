@@ -100,16 +100,21 @@ Public Class DynamicPanel
     ''' Dictionary of key/value pairs that hold the currently selected data (most recently-pressed button's data) for this panel.
     ''' If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
     ''' not just the most recently-pressed button's data.
-    Public ReadOnly Property Data As Dictionary(Of String, Tuple(Of String, String, Boolean))
+    Public ReadOnly Property Dictionary As Dictionary(Of String, Tuple(Of String, String, Boolean))
         Get
             Return m_dict
         End Get
     End Property
 
+    Public ReadOnly Property RepeatForEveryRecord As Boolean
+        Get
+            Return m_repeat_for_every_record.Checked
+        End Get
+    End Property
 #End Region
 
 #Region "Events"
-    Public Event DataChanged(dict As Dictionary(Of String, Tuple(Of String, String, Boolean)))
+    Public Event DataChanged(sender As System.Object, e As System.EventArgs)
     ''' <summary>
     ''' This event will propagate or bubble up the same event raised from within the DynamicButton class. It signals that the user wants to enter a new record in the database
     ''' for a species sighting.
@@ -135,6 +140,8 @@ Public Class DynamicPanel
                    Optional intButtonHeight As Integer = 44, Optional strButtonFont As String = "Microsoft Sans Serif", Optional intButtonTextSize As Integer = 8,
                    Optional blIncludeRepeatCheckbox As Boolean = False, Optional blRepeatIsChecked As Boolean = True, Optional intRepeatWidth As Integer = 210,
                    Optional intRepeatHeight As Integer = 17)
+
+        Name = strPanelName
 
         m_label = Nothing
         m_repeat_for_every_record = Nothing
@@ -362,7 +369,7 @@ Public Class DynamicPanel
                 Else
                     m_dynamic_textboxes(i).setData(btn.DataDescription)
                     buildDictionary(btn)
-                    RaiseEvent DataChanged(m_dict)
+                    RaiseEvent DataChanged(Me, e)
                 End If
             End If
         Next
@@ -390,7 +397,7 @@ Public Class DynamicPanel
             ' All button's data
             For i As Integer = 0 To m_num_dynamic_buttons - 1
                 ' If the button has data selected...
-                If m_dynamic_buttons(i).DataValue <> 0 Then
+                If m_dynamic_buttons(i).DataValue <> DynamicButton.UNINITIALIZED_DATA_VALUE Then
                     m_tuple = New Tuple(Of String, String, Boolean)(m_dynamic_buttons(i).DataCode, m_dynamic_buttons(i).DataValue, btn.Name = m_dynamic_buttons(i).Name)
                     m_dict.Add(m_dynamic_buttons(i).DataCodeName, m_tuple)
                 End If
@@ -409,14 +416,13 @@ Public Class DynamicPanel
     End Sub
 
     ''' <summary>
-    ''' Handles the event request to insert a new entry into the database.
+    ''' Handles the event request to insert a new entry into the database. Checks the setting from the Habitat panel, if set to record habitat on every record, 
+    ''' the current dictionary will be merged with the species dict, and the result will be inserted into the database.
     ''' </summary>
     Private Sub new_species_entry_handler(ByVal sender As System.Object, ByVal e As System.EventArgs)
         Dim s As frmSpeciesEvent = CType(sender, frmSpeciesEvent)
-        'Dim st As String = "Dynamic Panel - species name = " & s.SpeciesName & ", species code = " & s.SpeciesCode & ", range = " & s.Range & ", side = " & s.Side & ", count = " & s.Count & ", abundance = " & s.Abundance
-        'MsgBox(st)
-        m_dict = s.SpeciesData
-        RaiseEvent DataChanged(m_dict)
+        m_dict = s.Dictionary
+        RaiseEvent DataChanged(Me, e)
     End Sub
 
 End Class
