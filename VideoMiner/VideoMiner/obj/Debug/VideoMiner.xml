@@ -167,7 +167,8 @@ VideoMiner
 </member><member name="M:VideoMiner.DynamicPanel.PanelDataChanged(System.Object,System.EventArgs)">
 	<summary>
  Handles the case where the user changed a selection in a code table. This may result
- in a query being run to insert data into the database.
+ in a query being run to insert data into the database. This also handles the case in which
+ the table is a "UserEntered" type such as the FOV button which asks the user for a value
  </summary>
 	<param name="sender">The DynamicButton that raised the event</param>
 </member><member name="M:VideoMiner.DynamicPanel.buildDictionary(VideoMiner.DynamicButton)">
@@ -1103,9 +1104,6 @@ VideoMiner
 	<summary>
  Click event handler. If Ctrl-clicked, the selection will be cleared. If left-clicked, the data form will be shown.
  </summary>
-	<param name="sender"></param>
-	<param name="e"></param>
-	<remarks></remarks>
 </member><member name="M:VideoMiner.DynamicButton.myLocationChanged(System.Object,System.EventArgs)">
 	<summary>
  Places the table view forms in the center of the screen.

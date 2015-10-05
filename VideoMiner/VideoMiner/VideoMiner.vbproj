@@ -173,6 +173,12 @@
     <Compile Include="DynamicTextbox.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="FieldOfView.Designer.vb">
+      <DependentUpon>FieldOfView.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FieldOfView.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmAddValue.Designer.vb">
       <DependentUpon>frmAddValue.vb</DependentUpon>
     </Compile>
@@ -364,6 +370,9 @@
   <ItemGroup>
     <EmbeddedResource Include="AboutBox1.resx">
       <DependentUpon>AboutBox1.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FieldOfView.resx">
+      <DependentUpon>FieldOfView.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmAbundanceTableView.resx">
       <DependentUpon>frmAbundanceTableView.vb</DependentUpon>

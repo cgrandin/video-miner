@@ -355,7 +355,8 @@ Public Class DynamicPanel
 
     ''' <summary>
     ''' Handles the case where the user changed a selection in a code table. This may result
-    ''' in a query being run to insert data into the database.
+    ''' in a query being run to insert data into the database. This also handles the case in which
+    ''' the table is a "UserEntered" type such as the FOV button which asks the user for a value
     ''' </summary>
     ''' <param name="sender">The DynamicButton that raised the event</param>
     Private Sub PanelDataChanged(ByVal sender As Object, ByVal e As EventArgs)

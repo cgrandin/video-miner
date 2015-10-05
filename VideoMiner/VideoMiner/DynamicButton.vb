@@ -184,13 +184,14 @@ Public Class DynamicButton
         End Get
         Set(value As Boolean)
             If m_db_table_name = "UserEntered" Then
-                ' TODO: Make a new form so the value can be validated here.. right now an exception is thrown and discarded
-                Try
-                    m_data_code = InputBox("Please enter a value for " & Name & ":", Name & "entry", )
-                Catch ex As Exception
-                    MessageBox.Show("Error on input, the value must be an integer.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    m_data_code = Nothing
-                End Try
+                Dim frmFOV As New frmFOV
+                If frmFOV.ShowDialog() = Windows.Forms.DialogResult.OK Then
+                    DataCode = 16
+                    DataValue = frmFOV.Data
+                    DataCodeName = "FieldOfView"
+                    DataDescription = DataValue
+                    RaiseEvent DataChanged(Me, Nothing)
+                End If
             Else
                 ' The check here for nothing distinguishes between the species buttons and the other (habitat and transect buttons).
                 ' If m_table_view is nothing, the handler Button_Click which was added dynamically will be run for the species event buttons only
@@ -317,7 +318,6 @@ Public Class DynamicButton
 
     Private Sub Button_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         frmSpeciesEvent.Show()
-        'MessageBox.Show("Pressed a button: " & sender.ToString(), "TEST", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
     ''' <summary>
@@ -339,23 +339,22 @@ Public Class DynamicButton
     Private Sub clearData() Handles m_table_view.ClearEvent
         DataValue = UNINITIALIZED_DATA_VALUE
         DataComment = NULL_STRING
-        m_table_view.clearSelection()
+        If Not IsNothing(m_table_view) Then
+            m_table_view.clearSelection()
+        End If
         RaiseEvent DataChanged(Me, EventArgs.Empty)
     End Sub
 
     ''' <summary>
     ''' Click event handler. If Ctrl-clicked, the selection will be cleared. If left-clicked, the data form will be shown.
     ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
-    ''' <remarks></remarks>
     Public Sub clickMe(sender As Object, e As MouseEventArgs) Handles Me.Click
         If My.Computer.Keyboard.CtrlKeyDown Then
-            If Not IsNothing(m_table_view) Then
-                clearData()
-            End If
+            'If Not IsNothing(m_table_view) Then
+            clearData()
+            'End If
         Else
-            Me.DataFormVisible = True
+        Me.DataFormVisible = True
         End If
     End Sub
 
