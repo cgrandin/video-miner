@@ -4490,17 +4490,23 @@ Public Class VideoMiner
             Me.cmdRevertDatabase.Enabled = False
         Else
             Me.cmdUpdateDatabase.Enabled = True
+
             Me.cmdRevertDatabase.Enabled = True
         End If
         blupdateColumns = True
 
-        ' Restore the scrollbar positions
-        If saveRow <> 0 And saveRow < grdVideoMinerDatabase.Rows.Count Then
+        ' Restore the scrollbar positions. Only retore the vertical one if the check box is checked in the configure menu.
+        If Not AlwaysShowNewestRecordToolStripMenuItem.Checked And saveRow <> 0 And saveRow < grdVideoMinerDatabase.Rows.Count Then
             grdVideoMinerDatabase.FirstDisplayedScrollingRowIndex = saveRow
         End If
         If saveColumn <> 0 And saveColumn < grdVideoMinerDatabase.ColumnCount Then
             grdVideoMinerDatabase.FirstDisplayedScrollingColumnIndex = saveColumn
         End If
+        ' Set the row headers to be the ID column values, and make sure the header is wide enough
+        grdVideoMinerDatabase.RowHeadersWidth = 60
+        For i As Integer = 0 To grdVideoMinerDatabase.Rows.Count - 1
+            grdVideoMinerDatabase.Rows(i).HeaderCell.Value = grdVideoMinerDatabase.Rows(i).Cells(0).Value.ToString()
+        Next
     End Sub
 
     ''' <summary>
@@ -5608,4 +5614,7 @@ Public Class VideoMiner
         End If
     End Sub
 
+    Private Sub AlwaysShowNewestRecordToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlwaysShowNewestRecordToolStripMenuItem.Click
+        fetch_data()
+    End Sub
 End Class

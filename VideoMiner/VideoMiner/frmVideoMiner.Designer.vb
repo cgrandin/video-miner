@@ -130,6 +130,7 @@ Partial Class VideoMiner
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer6 = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer7 = New System.Windows.Forms.SplitContainer()
+        Me.SplitContainer8 = New System.Windows.Forms.SplitContainer()
         Me.pnlSpeciesEntryControls = New System.Windows.Forms.Panel()
         Me.cmdRareSpeciesLookup = New System.Windows.Forms.Button()
         Me.radQuickEntry = New System.Windows.Forms.RadioButton()
@@ -151,7 +152,7 @@ Partial Class VideoMiner
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
-        Me.SplitContainer8 = New System.Windows.Forms.SplitContainer()
+        Me.AlwaysShowNewestRecordToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -182,12 +183,12 @@ Partial Class VideoMiner
         Me.SplitContainer6.SuspendLayout()
         CType(Me.SplitContainer7, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer7.SuspendLayout()
-        Me.pnlSpeciesEntryControls.SuspendLayout()
-        Me.Panel1.SuspendLayout()
-        CType(Me.grdVideoMinerDatabase, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.SplitContainer8, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer8.Panel1.SuspendLayout()
         Me.SplitContainer8.SuspendLayout()
+        Me.pnlSpeciesEntryControls.SuspendLayout()
+        Me.Panel1.SuspendLayout()
+        CType(Me.grdVideoMinerDatabase, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'mnStrVideoMinerMenu
@@ -418,7 +419,7 @@ Partial Class VideoMiner
         '
         'mnuConfigureTools
         '
-        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ConfigureSpeciesEventToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureButtonFormatToolStripMenuItem, Me.DisableHabitatButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem})
+        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ConfigureSpeciesEventToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureButtonFormatToolStripMenuItem, Me.DisableHabitatButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem, Me.AlwaysShowNewestRecordToolStripMenuItem})
         Me.mnuConfigureTools.Enabled = False
         Me.mnuConfigureTools.Name = "mnuConfigureTools"
         Me.mnuConfigureTools.Size = New System.Drawing.Size(72, 20)
@@ -1222,6 +1223,22 @@ Partial Class VideoMiner
         Me.SplitContainer7.SplitterDistance = 197
         Me.SplitContainer7.TabIndex = 0
         '
+        'SplitContainer8
+        '
+        Me.SplitContainer8.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.SplitContainer8.Location = New System.Drawing.Point(0, 0)
+        Me.SplitContainer8.Margin = New System.Windows.Forms.Padding(0)
+        Me.SplitContainer8.Name = "SplitContainer8"
+        Me.SplitContainer8.Orientation = System.Windows.Forms.Orientation.Horizontal
+        '
+        'SplitContainer8.Panel1
+        '
+        Me.SplitContainer8.Panel1.Controls.Add(Me.pnlSpeciesEntryControls)
+        Me.SplitContainer8.Size = New System.Drawing.Size(488, 423)
+        Me.SplitContainer8.SplitterDistance = 79
+        Me.SplitContainer8.SplitterWidth = 1
+        Me.SplitContainer8.TabIndex = 0
+        '
         'pnlSpeciesEntryControls
         '
         Me.pnlSpeciesEntryControls.AutoScroll = True
@@ -1413,21 +1430,14 @@ Partial Class VideoMiner
         '
         Me.tmrComputerTime.Interval = 500
         '
-        'SplitContainer8
+        'AlwaysShowNewestRecordToolStripMenuItem
         '
-        Me.SplitContainer8.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitContainer8.Location = New System.Drawing.Point(0, 0)
-        Me.SplitContainer8.Margin = New System.Windows.Forms.Padding(0)
-        Me.SplitContainer8.Name = "SplitContainer8"
-        Me.SplitContainer8.Orientation = System.Windows.Forms.Orientation.Horizontal
-        '
-        'SplitContainer8.Panel1
-        '
-        Me.SplitContainer8.Panel1.Controls.Add(Me.pnlSpeciesEntryControls)
-        Me.SplitContainer8.Size = New System.Drawing.Size(488, 423)
-        Me.SplitContainer8.SplitterDistance = 79
-        Me.SplitContainer8.SplitterWidth = 1
-        Me.SplitContainer8.TabIndex = 0
+        Me.AlwaysShowNewestRecordToolStripMenuItem.Checked = True
+        Me.AlwaysShowNewestRecordToolStripMenuItem.CheckOnClick = True
+        Me.AlwaysShowNewestRecordToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.AlwaysShowNewestRecordToolStripMenuItem.Name = "AlwaysShowNewestRecordToolStripMenuItem"
+        Me.AlwaysShowNewestRecordToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
+        Me.AlwaysShowNewestRecordToolStripMenuItem.Text = "Always show newest record"
         '
         'VideoMiner
         '
@@ -1482,14 +1492,14 @@ Partial Class VideoMiner
         Me.SplitContainer6.ResumeLayout(False)
         CType(Me.SplitContainer7, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer7.ResumeLayout(False)
+        Me.SplitContainer8.Panel1.ResumeLayout(False)
+        CType(Me.SplitContainer8, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.SplitContainer8.ResumeLayout(False)
         Me.pnlSpeciesEntryControls.ResumeLayout(False)
         Me.pnlSpeciesEntryControls.PerformLayout()
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         CType(Me.grdVideoMinerDatabase, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.SplitContainer8.Panel1.ResumeLayout(False)
-        CType(Me.SplitContainer8, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.SplitContainer8.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1626,5 +1636,6 @@ Partial Class VideoMiner
     Friend WithEvents cmdAddComment As System.Windows.Forms.Button
     Friend WithEvents cmdRevertDatabase As System.Windows.Forms.Button
     Friend WithEvents SplitContainer8 As System.Windows.Forms.SplitContainer
+    Friend WithEvents AlwaysShowNewestRecordToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class
