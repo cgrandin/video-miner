@@ -136,6 +136,10 @@ VideoMiner
 	<summary>
  Signals the parent that a button has been pressed on this panel and we request that the video be paused while data entry takes place.
  </summary>
+</member><member name="E:VideoMiner.DynamicPanel.CheckForDirtyDataEvent">
+	<summary>
+ Fire event to have parent form check for dirty data or anything else prior to launching the button code.
+ </summary>
 </member><member name="M:VideoMiner.DynamicPanel.#ctor(System.String,System.Boolean,System.Int32,System.Int32,System.String,System.Int32,System.Boolean,System.Boolean,System.Int32,System.Int32)">
 	<summary>
  Create the DynamicPanel object.
@@ -1902,6 +1906,10 @@ VideoMiner
  database table, and plays the video again.
  </summary>
 	<remarks></remarks>
+</member><member name="M:VideoMiner.VideoMiner.button_CheckForDirtyDataEvent(System.Object,System.EventArgs)">
+	<summary>
+ Check to make sure that the Data grid is not dirty
+ </summary>
 </member><member name="M:VideoMiner.VideoMiner.buttonDataChanged(System.Object,System.EventArgs)">
 	<summary>
  Handle the changing of button data by creating an insert query and saving to the database
@@ -1990,10 +1998,6 @@ VideoMiner
 	<summary>
  Updates the time text on the form everytime the timer tick event is issued by the frmVideoPlayer form
  </summary>
-</member><member name="M:VideoMiner.VideoMiner.db_file_load">
-	<summary>
- Enable some controls when the database is opened
- </summary>
 </member><member name="M:VideoMiner.VideoMiner.closeDatabase">
 	<summary>
  Closes the MS Access database, and resets all controls to the unloaded state.
@@ -2026,7 +2030,8 @@ VideoMiner
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_CurrentCellDirtyStateChanged(System.Object,System.EventArgs)">
 	<summary>
- Triggered when any cell value is changed in the grid. Will update a label telling the user that the data is no longer synced with the database.
+ Triggered when any cell value is changed in the grid. Will update a label telling the user that the data is no longer synced with the database,
+ and color the row of cells salmon.
  If the user just types the same value that was in the cell to begin with, the row will be unchanged.
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_DataError(System.Object,System.Windows.Forms.DataGridViewDataErrorEventArgs)">
@@ -2052,6 +2057,10 @@ VideoMiner
 	<summary>
  Deletes selected rows from the MS access database as well as in the grid view. A confirmation box will verify this.
  </summary>
+</member><member name="M:VideoMiner.VideoMiner.updateDatabaseWithGridValues">
+	<summary>
+ Update the MS Access database table 'data' with values from the DataGridView object.
+ </summary>
 </member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_RightClick(System.Windows.Forms.DataGridView,System.Windows.Forms.MouseEventArgs)">
 	<summary>
  Captures right click in the DataGridView. This will delete rows from the grid view and the database.
@@ -2060,11 +2069,6 @@ VideoMiner
 </member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_CellValidating(System.Object,System.Windows.Forms.DataGridViewCellValidatingEventArgs)">
 	<summary>
  Validate the cell values if user makes them NULL. Avoids errors/exceptions during the update to the database.
- </summary>
-</member><member name="M:VideoMiner.VideoMiner.cmdUpdateDatabase_Click(System.Object,System.EventArgs)">
-	<summary>
- Update the MS Access database table bound to the data adapter. This allows changes made within the DataGridView to be
- updated inside the actual database.
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.cmdRevertDatabase_Click(System.Object,System.EventArgs)">
 	<summary>
@@ -2107,7 +2111,7 @@ VideoMiner
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.frmGpsSettings_DataChanged">
 	<summary>
- Handles an event to grab the latests data from the GPS device.
+ Handles an event to grab the latest data from the GPS device.
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.UnHandledHandler(System.Object,System.UnhandledExceptionEventArgs)">
 	<summary>
@@ -2117,6 +2121,10 @@ VideoMiner
 </member><member name="M:VideoMiner.VideoMiner.Me_Closing(System.Object,System.Windows.Forms.FormClosingEventArgs)">
 	<summary>
  When the user clicks the X to close the application, this handles that and closes any open forms and sets them up for garbage collection
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.AlwaysShowNewestRecordToolStripMenuItem_Click(System.Object,System.EventArgs)">
+	<summary>
+ If user changes the selection, just refresh the data so that the new selection is reflected.
  </summary>
 </member><member name="T:VideoMiner.VideoMiner">
 	<summary>

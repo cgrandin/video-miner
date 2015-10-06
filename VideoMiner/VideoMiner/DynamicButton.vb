@@ -320,7 +320,7 @@ Public Class DynamicButton
         AddHandler Me.Click, AddressOf Me.Button_Click
     End Sub
 
-    Private Sub Button_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    Public Sub Button_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         frmSpeciesEvent.Show()
     End Sub
 

@@ -124,6 +124,10 @@ Public Class DynamicPanel
     ''' Signals the parent that a button has been pressed on this panel and we request that the video be paused while data entry takes place.
     ''' </summary>
     Public Event SignalVideoPause(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Fire event to have parent form check for dirty data or anything else prior to launching the button code.
+    ''' </summary>
+    Public Event CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
 #End Region
 
@@ -282,6 +286,7 @@ Public Class DynamicPanel
                 ' Adds a handler for each button for the event which is fired originally by the SpeciesEvent form, and bubbled through the DynamicButton class.
                 AddHandler m_dynamic_buttons(i).NewSpeciesEntryEvent, AddressOf new_species_entry_handler
                 AddHandler m_dynamic_buttons(i).SignalVideoPause, AddressOf signal_video_pause
+                AddHandler m_dynamic_buttons(i).Click, AddressOf button_CheckForDirtyDataEvent
             Else
                 ' It's a table-data button
                 m_dynamic_buttons(i) = New DynamicButton(r.Item(0),
@@ -296,6 +301,7 @@ Public Class DynamicPanel
             End If
             AddHandler m_dynamic_buttons(i).DataChanged, AddressOf PanelDataChanged
             AddHandler m_dynamic_buttons(i).SignalVideoPause, AddressOf signal_video_pause
+            AddHandler m_dynamic_buttons(i).Click, AddressOf button_CheckForDirtyDataEvent
             i += 1
         Next
         placeControls()
@@ -462,5 +468,9 @@ Public Class DynamicPanel
 
     Private Sub signal_video_pause(ByVal sender As System.Object, ByVal e As System.EventArgs)
         RaiseEvent SignalVideoPause(sender, e)
+    End Sub
+
+    Private Sub button_CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        RaiseEvent CheckForDirtyDataEvent(sender, e)
     End Sub
 End Class

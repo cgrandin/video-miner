@@ -1871,6 +1871,16 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
+    ''' Check to make sure that the Data grid is not dirty
+    ''' </summary>
+    Private Sub button_CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pnlHabitatData.CheckForDirtyDataEvent, pnlTransectData.CheckForDirtyDataEvent, pnlSpeciesData.CheckForDirtyDataEvent
+        If Not IsNothing(m_data_table.GetChanges()) Then
+            MessageBox.Show("You have unsynced changes in your data table. Sync the changes or revert the database before adding new records.", "Data table dirty", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
+            Exit Sub
+        End If
+    End Sub
+
+    ''' <summary>
     ''' Handle the changing of button data by creating an insert query and saving to the database
     ''' </summary>
     Private Sub buttonDataChanged(sender As System.Object, e As System.EventArgs) Handles pnlHabitatData.DataChanged, pnlTransectData.DataChanged, pnlSpeciesData.DataChanged
@@ -4410,17 +4420,6 @@ Public Class VideoMiner
 
 #Region "Database Functions"
     ''' <summary>
-    ''' Enable some controls when the database is opened
-    ''' </summary>
-    Private Sub db_file_load()
-        If Database.IsOpen Then
-            Me.lblDatabase.Text = DB_FILE_STATUS_LOADED & m_db_filename & " is open"
-            mnuOpenDatabase.Enabled = False
-            mnuCloseDatabase.Enabled = True
-        End If
-    End Sub
-
-    ''' <summary>
     ''' Closes the MS Access database, and resets all controls to the unloaded state.
     ''' </summary>
     Private Sub closeDatabase()
@@ -4449,7 +4448,12 @@ Public Class VideoMiner
             pnlHabitatData.fillPanel(DB_HABITAT_BUTTONS_TABLE)
             pnlSpeciesData.fillPanel(DB_SPECIES_BUTTONS_TABLE)
             'fillDataCodesTable()
-            db_file_load()
+            If Database.IsOpen Then
+                Me.lblDatabase.Text = DB_FILE_STATUS_LOADED & m_db_filename & " is open"
+                mnuOpenDatabase.Enabled = False
+                mnuCloseDatabase.Enabled = True
+            End If
+
             If m_video_file_open Then
                 files_loaded()
                 Me.lblVideo.Text = "Video File '" & Me.FileName & "' is open"
@@ -4470,9 +4474,9 @@ Public Class VideoMiner
         Dim saveColumn As Integer = 0
         If grdVideoMinerDatabase.Rows.Count > 0 Then
             saveRow = grdVideoMinerDatabase.FirstDisplayedCell.RowIndex + 1
-        End If
-        If grdVideoMinerDatabase.ColumnCount > 0 Then
-            saveColumn = grdVideoMinerDatabase.FirstDisplayedCell.ColumnIndex
+            If grdVideoMinerDatabase.ColumnCount > 0 Then
+                saveColumn = grdVideoMinerDatabase.FirstDisplayedCell.ColumnIndex
+            End If
         End If
 
         m_data_codes_table = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE & " order by 1;", DB_DATA_CODES_TABLE)
@@ -4891,7 +4895,8 @@ Public Class VideoMiner
     Private rowWasGood As Boolean
 
     ''' <summary>
-    ''' Triggered when any cell value is changed in the grid. Will update a label telling the user that the data is no longer synced with the database.
+    ''' Triggered when any cell value is changed in the grid. Will update a label telling the user that the data is no longer synced with the database,
+    ''' and color the row of cells salmon.
     ''' If the user just types the same value that was in the cell to begin with, the row will be unchanged.
     ''' </summary>
     Private Sub grdVideoMinerDatabase_CurrentCellDirtyStateChanged(sender As Object, e As EventArgs) Handles grdVideoMinerDatabase.CurrentCellDirtyStateChanged
@@ -4901,6 +4906,8 @@ Public Class VideoMiner
             lblDirtyData.Text = "Data unsynced"
             grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.BackColor = Color.Salmon
             grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.SelectionBackColor = Color.DarkSalmon
+            grdVideoMinerDatabase.CurrentCell.Style.ForeColor = Color.AntiqueWhite
+            grdVideoMinerDatabase.CurrentCell.Style.BackColor = Color.Firebrick
         End If
     End Sub
 
@@ -4913,66 +4920,70 @@ Public Class VideoMiner
             ' Reset the background color back to white and the selection color back to default 'HighLight'
             grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.BackColor = Color.White
             grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Highlight
+            grdVideoMinerDatabase.CurrentCell.Style.BackColor = Color.White
+            grdVideoMinerDatabase.CurrentCell.Style.ForeColor = Color.Black
         End If
+        ' Get ID number and use that as row since the user can see it labelled on the row headers
+        Dim row As Integer = grdVideoMinerDatabase.Rows(e.RowIndex).Cells(0).Value.ToString()
         Select Case strFieldName
             Case "ID"
-                MessageBox.Show("Error in column 'ID', row " & e.RowIndex.ToString() & ": Value must be a non-null integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'ID', row " & row & ": Value must be a non-null integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "TransectDate"
-                MessageBox.Show("Error in column 'TransectDate', row " & e.RowIndex.ToString() & ": Value must be a DateTime (mm/dd/yyyy).", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'TransectDate', row " & row & ": Value must be a DateTime (mm/dd/yyyy).", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "TimeCode"
-                MessageBox.Show("Error in column 'TimeCode', row " & e.RowIndex.ToString() & ": Value must be a DateTime (mm/dd/yyyy).", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'TimeCode', row " & row & ": Value must be a DateTime (mm/dd/yyyy).", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "TimeSource"
-                MessageBox.Show("Error in column 'TimeSource', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'TimeSource', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "OnBottom"
-                MessageBox.Show("Error in column 'OnBottom', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'OnBottom', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "DominantSubstrate"
-                MessageBox.Show("Error in column 'DominantSubstrate', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'DominantSubstrate', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "DominantPercent"
-                MessageBox.Show("Error in column 'DominantPercent', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'DominantPercent', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "SubdominantSubstrate"
-                MessageBox.Show("Error in column 'SubdominantSubstrate', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'SubdominantSubstrate', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "SubdominantPercent"
-                MessageBox.Show("Error in column 'SubdominantPercent', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'SubdominantPercent', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "SurveyModeID"
-                MessageBox.Show("Error in column 'SurveyModeID', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'SurveyModeID', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "ReliefID"
-                MessageBox.Show("Error in column 'ReliefID', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'ReliefID', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "DisturbanceID"
-                MessageBox.Show("Error in column 'DisturbanceID', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'DisturbanceID', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "ProtocolID"
-                MessageBox.Show("Error in column 'ProtocolID', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'ProtocolID', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "ImageQualityID"
-                MessageBox.Show("Error in column 'ImageQualityID', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'ImageQualityID', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "SpeciesCount"
-                MessageBox.Show("Error in column 'SpeciesCount', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'SpeciesCount', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "Side"
-                MessageBox.Show("Error in column 'Side', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'Side', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "Range"
-                MessageBox.Show("Error in column 'Range', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'Range', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "Length"
-                MessageBox.Show("Error in column 'Length', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'Length', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "Height"
-                MessageBox.Show("Error in column 'Height', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'Height', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "Width"
-                MessageBox.Show("Error in column 'Width', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'Width', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "Abundance"
-                MessageBox.Show("Error in column 'Abundance', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'Abundance', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "IDConfidence"
-                MessageBox.Show("Error in column 'IDConfidence', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'IDConfidence', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "DataCode"
-                MessageBox.Show("Error in column 'DataCode', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'DataCode', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "X"
-                MessageBox.Show("Error in column 'X', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'X', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "Y"
-                MessageBox.Show("Error in column 'Y', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'Y', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "Z"
-                MessageBox.Show("Error in column 'Z', row " & e.RowIndex.ToString() & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'Z', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "ElapsedTime"
-                MessageBox.Show("Error in column 'ElapsedTime', row " & e.RowIndex.ToString() & ": Value must be a DateTime.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'ElapsedTime', row " & row & ": Value must be a DateTime.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "ReviewedDate"
-                MessageBox.Show("Error in column 'ReviewedDate', row " & e.RowIndex.ToString() & ": Value must be a DateTime.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'ReviewedDate', row " & row & ": Value must be a DateTime.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Case "ReviewedTime"
-                MessageBox.Show("Error in column 'ReviewedTime', row " & e.RowIndex.ToString() & ": Value must be a DateTime.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error in column 'ReviewedTime', row " & row & ": Value must be a DateTime.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Select
     End Sub
 
@@ -4986,6 +4997,12 @@ Public Class VideoMiner
             Case Keys.Delete
                 deleteSelectedRows(sender, e)
         End Select
+    End Sub
+
+    Private Sub grdVideoMinerDatabase_UserDeletedRow(sender As Object, e As DataGridViewRowEventArgs) Handles grdVideoMinerDatabase.UserDeletedRow
+        If grdVideoMinerDatabase.Rows.Count = 0 Then
+            fetch_data()
+        End If
     End Sub
 
     ''' <summary>
@@ -5006,6 +5023,10 @@ Public Class VideoMiner
         End If
     End Sub
 
+    Private Sub cmdUpdateDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUpdateDatabase.Click
+        updateDatabaseWithGridValues()
+    End Sub
+
     ''' <summary>
     ''' Deletes selected rows from the MS access database as well as in the grid view. A confirmation box will verify this.
     ''' </summary>
@@ -5015,9 +5036,29 @@ Public Class VideoMiner
                 For Each row As DataGridViewRow In grdVideoMinerDatabase.SelectedRows
                     grdVideoMinerDatabase.Rows.Remove(row)
                 Next
-                cmdUpdateDatabase_Click(sender, e)
+                updateDatabaseWithGridValues()
             End If
         End If
+    End Sub
+
+    ''' <summary>
+    ''' Update the MS Access database table 'data' with values from the DataGridView object.
+    ''' </summary>
+    Private Sub updateDatabaseWithGridValues()
+        Database.Update(m_data_table, DB_DATA_TABLE)
+        lblDirtyData.ForeColor = Color.LimeGreen
+        lblDirtyData.Text = "Data synced"
+        For i As Integer = 0 To grdVideoMinerDatabase.RowCount - 1
+            For cell As Integer = 0 To grdVideoMinerDatabase.Rows(i).Cells.Count - 1
+                'Reset all cell backcolors and forecolors
+                grdVideoMinerDatabase.Rows(i).Cells(cell).Style.ForeColor = Color.Black
+                grdVideoMinerDatabase.Rows(i).Cells(cell).Style.BackColor = Color.White
+            Next
+            ' Reset the background color back to white and the selection color back to default 'HighLight'
+            'grdVideoMinerDatabase.Rows(i).DefaultCellStyle.BackColor = Color.Yellow
+            'grdVideoMinerDatabase.Rows(i).DefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        Next
+        fetch_data() ' triggers code to check for 0 rows situation and disable buttons if so.
     End Sub
 
     ''' <summary>
@@ -5078,26 +5119,11 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
-    ''' Update the MS Access database table bound to the data adapter. This allows changes made within the DataGridView to be
-    ''' updated inside the actual database.
-    ''' </summary>
-    Private Sub cmdUpdateDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUpdateDatabase.Click
-        Database.Update(m_data_table, DB_DATA_TABLE)
-        lblDirtyData.ForeColor = Color.LimeGreen
-        lblDirtyData.Text = "Data synced"
-        For i As Integer = 0 To grdVideoMinerDatabase.RowCount - 1
-            ' Reset the background color back to white and the selection color back to default 'HighLight'
-            grdVideoMinerDatabase.Rows(i).DefaultCellStyle.BackColor = Color.White
-            grdVideoMinerDatabase.Rows(i).DefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        Next
-    End Sub
-
-    ''' <summary>
     ''' Reload the grid from the access database. A confirmation box will be displayed and if the user aggrees then any changes in the grid will
     ''' be discarded and the database will be reloaded from scratch
     ''' </summary>
     Private Sub cmdRevertDatabase_Click(sender As Object, e As EventArgs) Handles cmdRevertDatabase.Click
-        If MessageBox.Show("Are you sure you want to discard all unsynced changes in the grid and revert to the database data?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) Then
+        If MessageBox.Show("Are you sure you want to discard all unsynced changes in the grid and revert to the database data?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = Windows.Forms.DialogResult.Yes Then
             fetch_data()
             lblDirtyData.ForeColor = Color.LimeGreen
             lblDirtyData.Text = "Data synced"
@@ -5560,7 +5586,7 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
-    ''' Handles an event to grab the latests data from the GPS device.
+    ''' Handles an event to grab the latest data from the GPS device.
     ''' </summary>
     Private Sub frmGpsSettings_DataChanged() Handles frmGpsSettings.DataChangedEvent
         If Me.InvokeRequired Then
@@ -5614,7 +5640,11 @@ Public Class VideoMiner
         End If
     End Sub
 
+    ''' <summary>
+    ''' If user changes the selection, just refresh the data so that the new selection is reflected.
+    ''' </summary>
     Private Sub AlwaysShowNewestRecordToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlwaysShowNewestRecordToolStripMenuItem.Click
         fetch_data()
     End Sub
+
 End Class
