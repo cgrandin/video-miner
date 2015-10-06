@@ -1022,7 +1022,7 @@ Public Class VideoMiner
         m_transect_name = UNNAMED_TRANSECT
         curr_code = BAD_ID
         is_on_bottom = 0
-        toggle_bottom(NULL_STRING, NULL_STRING, NULL_STRING & ".00", NS, NS, NS)
+        toggle_bottom()
 
         lblDirtyData.Visible = False
 
@@ -1093,7 +1093,7 @@ Public Class VideoMiner
         frmSetTime = New frmSetTime(m_tsUserTime)
 
         ' Add DynamicPanels to the SplitContainerPanels
-        pnlTransectData = New DynamicPanel(PANEL_NAME_TRANSECT, True, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, False, True)
+        pnlTransectData = New DynamicPanel(PANEL_NAME_TRANSECT, True, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, True, True)
         SplitContainer7.Panel1.Controls.Add(pnlTransectData)
 
         pnlHabitatData = New DynamicPanel(PANEL_NAME_HABITAT, True, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, True, True)
@@ -1860,7 +1860,7 @@ Public Class VideoMiner
         strVideoTextTime = strVideoTime
 
 
-        toggle_bottom(strVideoTime, strVideoTextTime, strVideoDecimalTime, strX, strY, strZ)
+        toggle_bottom()
 
         If blVideoWasPlaying = True Then
             playVideo()
@@ -1874,34 +1874,58 @@ Public Class VideoMiner
     ''' Handle the changing of button data by creating an insert query and saving to the database
     ''' </summary>
     Private Sub buttonDataChanged(sender As System.Object, e As System.EventArgs) Handles pnlHabitatData.DataChanged, pnlTransectData.DataChanged, pnlSpeciesData.DataChanged
-        ' MsgBox("Arrived in Videominer.vb with dictionary:" & dict.ToString())
         Dim panel As DynamicPanel = CType(sender, DynamicPanel)
         Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = panel.Dictionary
         Dim tuple As Tuple(Of String, String, Boolean)
-        ' If the calling panel is the species panel, check the setting of the habitat panel and if set to record on every record,
+        ' If the calling panel is the species panel, check the setting of the habitat and transect panels and if set to record on every record,
         ' merge the two dictionaries before running the insert query.
-        If panel.Name = PANEL_NAME_SPECIES Then
-            If pnlHabitatData.RepeatForEveryRecord Then
-                ' Merge the two dictionaries
+        Select Case panel.Name
+            Case PANEL_NAME_SPECIES
+                pnlHabitatData.buildDictionary()
+                pnlTransectData.buildDictionary()
+                ' Merge the two dictionaries from HABITAT and TRANSECT panels
+                For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlTransectData.Dictionary
+                    dict.Add(kvp.Key, kvp.Value)
+                Next
                 For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlHabitatData.Dictionary
                     dict.Add(kvp.Key, kvp.Value)
                 Next
-            End If
-            If dict.ContainsKey("DataCode") Then
-                dict.Remove("DataCode")
-            End If
-            tuple = New Tuple(Of String, String, Boolean)("4", "4", True)
-            dict.Add("DataCode", tuple)
-        Else
-            ' If was a habitat or transect entry. Need to add the DataCode, based on which of the dictionary entries has it's key.item3 set to True, i.e. which button was pressed
-            ' before this dictionary was made.
-            For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In dict
-                If kvp.Value.Item3 Then
-                    tuple = New Tuple(Of String, String, Boolean)(kvp.Value.Item1, kvp.Value.Item1, True)
-                End If
-            Next
-            dict.Add("DataCode", tuple)
-        End If
+                'If dict.ContainsKey("DataCode") Then
+                ' dict.Remove("DataCode")
+                'End If
+                ' Add the datacode information for a species event
+                tuple = New Tuple(Of String, String, Boolean)("4", "4", True)
+                dict.Add("DataCode", tuple)
+            Case PANEL_NAME_HABITAT
+                pnlTransectData.buildDictionary()
+                ' Merge the dictionary from TRANSECT panel
+                For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlTransectData.Dictionary
+                    dict.Add(kvp.Key, kvp.Value)
+                Next
+                ' Need to add the DataCode, based on which of the dictionary entries has it's key.item3 set to True, i.e. which button was pressed
+                ' before this dictionary was made.
+                For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In dict
+                    If kvp.Value.Item3 Then
+                        tuple = New Tuple(Of String, String, Boolean)(kvp.Value.Item1, kvp.Value.Item1, True)
+                    End If
+                Next
+                dict.Add("DataCode", tuple)
+            Case PANEL_NAME_TRANSECT
+                ' Merge the dictionary from TRANSECT panel
+                ' Need to add the DataCode, based on which of the dictionary entries has it's key.item3 set to True, i.e. which button was pressed
+                ' before this dictionary was made.
+                pnlHabitatData.buildDictionary()
+                For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlHabitatData.Dictionary
+                    dict.Add(kvp.Key, kvp.Value)
+                Next
+                For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In dict
+                    If kvp.Value.Item3 Then
+                        tuple = New Tuple(Of String, String, Boolean)(kvp.Value.Item1, kvp.Value.Item1, True)
+                    End If
+                Next
+                dict.Add("DataCode", tuple)
+        End Select
+
         runInsertQuery(dict)
         fetch_data()
         ' frmVideoPlayer.playVideo()
@@ -1913,15 +1937,28 @@ Public Class VideoMiner
     ''' <param name="sender">Instance of the frmRareSpeciesForm</param>
     Private Sub rareSpeciesDataChanged(sender As System.Object, e As System.EventArgs) Handles frmRareSpeciesLookup.SpeciesCodeChangedEvent
         Dim frm As frmSpeciesEvent = CType(sender, frmSpeciesEvent)
+        Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = frm.Dictionary
         Dim tuple As Tuple(Of String, String, Boolean)
-        ' Need to add the DataCode of '4' in for a species record.
-        If frm.Dictionary.ContainsKey("DataCode") Then
-            frm.Dictionary.Remove("DataCode")
-        End If
-        tuple = New Tuple(Of String, String, Boolean)("4", "4", True)
-        frm.Dictionary.Add("DataCode", tuple)
+        ' Need to merge the dictionaries from TRANSECT and HABITAT panels before adding
+        pnlTransectData.buildDictionary()
+        ' Merge the dictionary from TRANSECT panel
+        For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlTransectData.Dictionary
+            dict.Add(kvp.Key, kvp.Value)
+        Next
+        pnlHabitatData.buildDictionary()
+        ' Merge the dictionary from TRANSECT panel
+        For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlHabitatData.Dictionary
+            dict.Add(kvp.Key, kvp.Value)
+        Next
 
-        runInsertQuery(frm.Dictionary)
+        ' Need to add the DataCode of '4' in for a species record.
+        '        If frm.Dictionary.ContainsKey("DataCode") Then
+        'frm.Dictionary.Remove("DataCode")
+        'End If
+        tuple = New Tuple(Of String, String, Boolean)("4", "4", True)
+        dict.Add("DataCode", tuple)
+
+        runInsertQuery(dict)
         fetch_data()
     End Sub
 
@@ -3459,35 +3496,14 @@ Public Class VideoMiner
 
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: toggle_bottom
-    ' Description: Change text in OnOffBottomTextbox and on OffBottom button between "Off Bottom" and "On Bottom"
-    '                   Possible states of variable is_on_bottom:
-    '                       is_on_bottom = 0 (Off Bottom)        is_on_bottom = 1 (On Bottom)
-    ' 1.) If variable is_on_bottom = 0 (Off Bottom) when OffBottom button clicked, then:
-    '           - Change OnOffBottomTextbox to read "On Bottom"
-    '           - Change OffBottom button to read "Off Bottom"
-    '           - Change variable is_on_bottom to equal 1 (On Bottom)
-    ' 2.) Else If variable is_on_bottom = 1 (On Bottom) when OffBottom button is clicked, then:
-    '           - Change OnOffBottomTextbox to read "Off Bottom"
-    '           - Change OffBottom button to read "On Bottom"
-    '           - Change variable is_on_bottom to equal 0 (Off Bottom)
-    ' 3.) If the time code variable "tc" is not blank, Insert record into the database table "data" with variables for 
-    '     fields: id,TimeCode,DataCode,transect,OnBottom
-    ' 4.) Load/Refresh the DataGridView1 database table view at bottom of main form using fetch_data().
-    ' ==========================================================================================================
-    Private Sub toggle_bottom(ByVal tc As String, ByVal tcText As String, ByVal tcDecimal As String, ByVal strX As String, ByVal strY As String, ByVal strZ As String)
-
-        If is_on_bottom = 0 Then
-            txtOnOffBottomTextbox.Text = ON_BOTTOM_STRING
-            txtOnOffBottomTextbox.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-            txtOnOffBottomTextbox.BackColor = Color.LightGray
-            txtOnOffBottomTextbox.ForeColor = Color.LimeGreen
-            txtOnOffBottomTextbox.TextAlign = HorizontalAlignment.Center
-            cmdOffBottom.Text = OFF_BOTTOM_STRING
-            cmdOffBottom.Refresh()
-            is_on_bottom = 1
-        Else
+    ''' <summary>
+    ''' Change text in OnOffBottomTextbox and on OffBottom button between "Off Bottom" and "On Bottom", and insert a record in the database to reflect this change
+    ''' </summary>
+    Private Sub toggle_bottom()
+        If IsNothing(pnlHabitatData) Or IsNothing(pnlTransectData) Then
+            Exit Sub
+        End If
+        If is_on_bottom Then
             txtOnOffBottomTextbox.Text = OFF_BOTTOM_STRING
             txtOnOffBottomTextbox.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
             txtOnOffBottomTextbox.BackColor = Color.LightGray
@@ -3496,27 +3512,39 @@ Public Class VideoMiner
             cmdOffBottom.Text = ON_BOTTOM_STRING
             cmdOffBottom.Refresh()
             is_on_bottom = 0
+        Else
+            txtOnOffBottomTextbox.Text = ON_BOTTOM_STRING
+            txtOnOffBottomTextbox.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+            txtOnOffBottomTextbox.BackColor = Color.LightGray
+            txtOnOffBottomTextbox.ForeColor = Color.LimeGreen
+            txtOnOffBottomTextbox.TextAlign = HorizontalAlignment.Center
+            cmdOffBottom.Text = OFF_BOTTOM_STRING
+            cmdOffBottom.Refresh()
+            is_on_bottom = 1
         End If
-        If tc <> NULL_STRING Then
-            Dim numrows As Integer
+        ' Need to merge dictionaries for Habitat and Transect panels here to the Off Bottom/ On Bottom  KeyValuePair
+        Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = pnlHabitatData.Dictionary
+        Dim tuple As Tuple(Of String, String, Boolean)
 
-            If tc = NULL_STRING Then
-                tc = VIDEO_TIME_LABEL
+        For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlTransectData.Dictionary
+            If dict.ContainsKey(kvp.Key) Then
+                dict.Remove(kvp.Key)
             End If
-            Dim query As String = NULL_STRING
-
-            Try
-                'query = createInsertQuery(ON_OFF_BOTTOM, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-                'Database.ExecuteNonQuery(query)
-                fetch_data()
-            Catch ex As Exception
-                If ex.Message.StartsWith("Syntax") Then
-                    MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-                Else
-                    MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-                End If
-            End Try
+            dict.Add(kvp.Key, kvp.Value)
+        Next
+        If dict.ContainsKey("OnBottom") Then
+            dict.Remove("OnBottom")
         End If
+        tuple = New Tuple(Of String, String, Boolean)("3", is_on_bottom, True)
+        dict.Add("OnBottom", tuple)
+        If dict.ContainsKey("DataCode") Then
+            dict.Remove("DataCode")
+        End If
+        tuple = New Tuple(Of String, String, Boolean)(3, "3", False)
+        dict.Add("DataCode", tuple)
+
+        runInsertQuery(dict)
+        fetch_data()
     End Sub
 
     Private Function AddZeros(ByVal strNumber As String, ByVal intPlaces As Integer) As String
@@ -4511,211 +4539,6 @@ Public Class VideoMiner
         Database.ExecuteNonQuery(strQuery)
     End Sub
 
-    ''' <summary>
-    ''' Creates a string which is an 'INSERT INTO' query in access database format.
-    ''' </summary>
-    ''' <param name="strDataCode">Code for the data. This code is found in the DB_DATA_CODES_TABLE table in the access database</param>
-    ''' <param name="strSpeciesName">Species name as found in the DB_SPECIES_CODE_TABLE table</param>
-    ''' <param name="strSpeciesCode">Species code as found in the DB_SPECIES_CODE_TABLE table</param>
-    ''' <param name="strSpeciesCount">Count of the species given by strSpeciesCode and strSpeciesName</param>
-    ''' <param name="strSide">Which side the observation was on given by table DB_OBSERVED_SIDE_TABLE (0=center,1=port,2=starboard)</param>
-    ''' <param name="strRange">Distance of observation from the centerline in cm</param>
-    ''' <param name="strLength">Length in cm of the observed species</param>
-    ''' <param name="strHeight">Height measurement for species where length is not the standard measurement (e.g. Tunicate)</param>
-    ''' <param name="strWidth">Width measurement for species where length is not the standard measurement</param>
-    ''' <param name="strAbundance">Abundance of the species seen (TODO:update this definition)</param>
-    ''' <param name="strIdConfidence">Confidence value for species ID. See table DB_CONFIDENCE_IDS_TABLE (1=high,2=med,3=low)</param>
-    ''' <param name="strComment">Video reviewer's comments</param>
-    ''' <remarks></remarks>
-    Private Function createInsertQueryOLD(strDataCode As String, strSpeciesName As String, _
-                                       strSpeciesCode As String, strSpeciesCount As String, strSide As String, strRange As String, _
-                                       strLength As String, strHeight As String, strWidth As String, strAbundance As String,
-                                       strIdConfidence As String, strComment As String) As String
-        Dim i As Integer
-        Dim j As Integer
-        Dim strQuery As String = "INSERT INTO " & DB_DATA_TABLE & "(ID,TransectDate,TimeCode,TextTime,TextTimeDecimal,TimeSource,ProjectName,TransectName,OnBottom," & _
-                                 "DominantSubstrate,DominantPercent,SubdominantSubstrate,SubdominantPercent,SurveyModeID,ReliefID,DisturbanceID,ProtocolID," & _
-                                 "ImageQualityID,SpeciesName,SpeciesID,SpeciesCount,Side,Range,Length,Height,Width,Abundance,IDConfidence,Comment,DataCode," & _
-                                 "X,Y,Z,FileName,ScreenCaptureName,ElapsedTime,ReviewedDate,ReviewedTime,ComplexityID,FieldOfView) VALUES("
-
-        ' Parse through all the field names in the collection and attach the associated variables with the field names
-        For i = 1 To colTableFields.Count
-            Select Case colTableFields.Item(i).ToString
-                Case "SpeciesName"
-                    If strSpeciesName = NS Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & SingleQuote(strSpeciesName)
-                    End If
-                Case "SpeciesCount"
-                    If strSpeciesCount = NULL_STRING Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & strSpeciesCount
-                    End If
-                Case "Side"
-                    If strSide = NULL_STRING Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & strSide
-                    End If
-                Case "Range"
-                    If strRange = NULL_STRING Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & strRange
-                    End If
-                Case "Length"
-                    If strLength = NULL_STRING Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & strLength
-                    End If
-                Case "Height"
-                    If strHeight = NULL_STRING Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & strHeight
-                    End If
-                Case "Width"
-                    If strWidth = NULL_STRING Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & strWidth
-                    End If
-                Case "Abundance"
-                    If strAbundance = NS Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & strAbundance
-                    End If
-                Case "IDConfidence"
-                    If strIdConfidence = NS Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & strIdConfidence
-                    End If
-                Case "Comment"
-                    If strComment = NS Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & SingleQuote(strComment)
-                    End If
-                Case "DataCode"
-                    If strDataCode = NULL_STRING Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & strDataCode
-                    End If
-                Case "X"
-                    If m_GPS_X = NULL_STRING Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & m_GPS_X
-                    End If
-                Case "Y"
-                    If m_GPS_Y = NULL_STRING Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & m_GPS_Y
-                    End If
-                Case "Z"
-                    If m_GPS_Z = NULL_STRING Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & m_GPS_Z
-                    End If
-                Case "FileName"
-                    If Me.FileName = NULL_STRING Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & SingleQuote(Me.FileName)
-                    End If
-                Case "ScreenCaptureName"
-                    If Me.FileName = NULL_STRING Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & SingleQuote(Me.ScreenCaptureName)
-                    End If
-                Case "TimeSource"
-                    strQuery = strQuery & intTimeSource
-                Case "Format(ElapsedTime, 'hh:mm:ss') as ElapsedTime"
-                    If Me.ElapsedTime = NULL_STRING Then
-                        strQuery = strQuery & NS
-                    Else
-                        strQuery = strQuery & SingleQuote(Me.ElapsedTime)
-                    End If
-                Case "Format(ReviewedDate, 'm/dd/yyyy') as ReviewDate"
-                    GoTo SkipInsertComma
-                Case "Format(ReviewedTime, 'hh:mm:ss') as ReviewTime"
-                    GoTo SkipInsertComma
-                Case Else
-                    ' Cycle through all the spatial variable button names using them as keys to access the dictionary object
-                    For j = 0 To intNumHabitatButtons - 1
-                        If strHabitatButtonCodeNames(j).ToString = colTableFields.Item(i).ToString Then
-                            If dictHabitatFieldValues(strHabitatButtonCodeNames(j).ToString) <> "-9999" Then
-                                strQuery = strQuery & SingleQuote(dictHabitatFieldValues(strHabitatButtonCodeNames(j).ToString))
-                            Else
-                                strQuery = strQuery & Replace(dictHabitatFieldValues(strHabitatButtonCodeNames(j).ToString), "-9999", NS)
-                            End If
-                            GoTo InsertComma
-                        End If
-                    Next j
-                    Dim btn As DynamicButton
-                    For Each ctl As Control In pnlTransectData.Controls
-                        If ctl.GetType() Is GetType(DynamicButton) Then
-                            btn = DirectCast(ctl, DynamicButton)
-                            strQuery = strQuery & SingleQuote(btn.DataCodeName)
-                        End If
-                    Next
-                    'For j = 0 To intNumTransectButtons - 1
-                    ' If strTransectButtonCodeNames(j).ToString = colTableFields.Item(i).ToString Then
-                    ' If dictTransectFieldValues(strTransectButtonCodeNames(j).ToString) <> "-9999" Then
-                    ' strQuery = strQuery & SingleQuote(dictTransectFieldValues(strTransectButtonCodeNames(j).ToString))
-                    ' Else
-                    ' strQuery = strQuery & Replace(dictTransectFieldValues(strTransectButtonCodeNames(j).ToString), "-9999", NS)
-                    ' End If
-                    ' GoTo InsertComma
-                    ' End If
-                    ' Next
-
-            End Select
-InsertComma:
-            If i <> colTableFields.Count Then
-                strQuery = strQuery & ","
-            End If
-SkipInsertComma:
-        Next i
-
-        If strQuery.Substring(strQuery.Length - 1, 1) = "," Then
-            strQuery = strQuery.Substring(0, strQuery.Length - 1)
-        End If
-        ' TODO: Fix this, values for ComplexityID and FieldOfView are not being found..
-        strQuery = strQuery & ",NULL,NULL"
-
-        strQuery = strQuery & ");"
-
-        'If Me.chkRepeatVariables.Checked = False Then
-        If True Then
-            Dim blHasValues As Boolean = False
-            If Not dictHabitatFieldValues Is Nothing Or Not dictTempHabitatFieldValues Is Nothing Then
-                For i = 0 To intNumHabitatButtons - 1
-                    If dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) <> "-9999" Then
-                        blHasValues = True
-                        Exit For
-                    End If
-                Next
-                For i = 0 To intNumHabitatButtons - 1
-                    If blHasValues = True Then
-                        dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString)
-                    End If
-                    ' Clear all original variables so that the values are not repeated on consecutive records.
-                    dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = "-9999"
-                Next
-            End If
-        End If
-        Return strQuery
-    End Function
 #End Region
 
     Private Sub txtPlaySeconds_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtPlaySeconds.KeyPress
@@ -5357,12 +5180,6 @@ SkipInsertComma:
         frmEditLookupTable.ShowDialog()
     End Sub
 
-    'Private Sub refresh_database() Handles frmConfigureButtons.RefreshDatabaseEvent, frmKeyboardCommands.RefreshDatabaseEvent, frmSpeciesList.RefreshDatabaseEvent
-    '    blupdateColumns = False
-    '    RefreshDatabase()
-    '    blupdateColumns = True
-    'End Sub
-
     Private Sub update_buttons() Handles frmConfigureButtons.UpdateButtons
         Dim txt As TextBox
 
@@ -5389,97 +5206,6 @@ SkipInsertComma:
                 End If
             End If
         Next
-    End Sub
-
-    Public Sub RefreshDatabase()
-        blRefresh = True
-        Dim dictTempValues As Dictionary(Of String, String) = New Dictionary(Of String, String)
-        Dim dictTempTextBoxValues As Dictionary(Of String, String) = New Dictionary(Of String, String)
-
-        Dim i As Integer
-
-        For i = 0 To strHabitatButtonCodeNames.Length - 2
-            dictTempValues.Add(strHabitatButtonCodeNames(i).ToString, dictHabitatFieldValues.Item(strHabitatButtonCodeNames(i).ToString))
-        Next
-
-        For i = 0 To strTransectButtonCodeNames.Length - 2
-            dictTempValues.Add(strTransectButtonCodeNames(i).ToString, dictTransectFieldValues.Item(strTransectButtonCodeNames(i).ToString))
-        Next
-
-        For i = 0 To pnlHabitatData.Controls.Count - 1
-            If pnlHabitatData.Controls.Item(i).Name.Substring(0, 3) = "txt" Then
-                If pnlHabitatData.Controls.Item(i).Name = strEditTextBoxOldName Then
-                    dictTempTextBoxValues.Add(strEditTextBoxNewName, pnlHabitatData.Controls.Item(i).Text)
-                Else
-                    dictTempTextBoxValues.Add(pnlHabitatData.Controls.Item(i).Name, pnlHabitatData.Controls.Item(i).Text)
-                End If
-            End If
-        Next
-        For i = 0 To pnlTransectData.Controls.Count - 1
-            If pnlTransectData.Controls.Item(i).Name.Substring(0, 3) = "txt" Then
-                If pnlTransectData.Controls.Item(i).Name = strEditTextBoxOldName Then
-                    dictTempTextBoxValues.Add(strEditTextBoxNewName, pnlTransectData.Controls.Item(i).Text)
-                Else
-                    dictTempTextBoxValues.Add(pnlTransectData.Controls.Item(i).Name, pnlTransectData.Controls.Item(i).Text)
-                End If
-            End If
-            'If myFormLibrary.frmVideoMiner.pnlTransectData.Controls.Item(i).NaSubstring(0, 3) = "txt" Then
-            '    dictTempTextBoxValues.Add(myFormLibrary.frmVideoMiner.pnlTransectData.Controls.Item(i).Name, myFormLibrary.frmVideoMiner.pnlTransectData.Controls.Item(i).Text)
-            'End If
-        Next
-        'Dim strNewButtonName As String
-        'Dim strNewTextBoxName As String
-
-        'CJG
-        'If blNewButton Then
-        '    strNewButtonName = myFormLibrary.frmAddButton.ButtonName
-        '    strNewTextBoxName = "txt" & Replace(strNewButtonName, "%", "Percent")
-        '    Dim strCharactersAllowed As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"
-
-        '    Dim txtName As String = strNewTextBoxName
-        '    Dim Letter As String
-        '    For x As Integer = 0 To strNewTextBoxNaLength - 1
-        '        Letter = strNewTextBoxNaSubstring(x, 1).ToUpper
-        '        If strCharactersAllowed.Contains(Letter) = False Then
-        '            txtName = txtNaReplace(Letter, String.Empty)
-        '        End If
-        '    Next
-
-        '    strNewTextBoxName = txtName
-
-        '    dictTempTextBoxValues.Add(strNewTextBoxName, "No " & strNewButtonName)
-
-        'End If
-        grdVideoMinerDatabase.DataSource = Nothing
-        closeDatabase()
-        'myFormLibrary.frmVideoMiner.fillTransectVariableButtonPanel()
-        'myFormLibrary.frmVideoMiner.fillSpatialVariableButtonPanel()
-        'myFormLibrary.frmVideoMiner.fillHabitatFieldsCollection()
-        openDatabase()
-        For i = 0 To pnlHabitatData.Controls.Count - 1
-            If pnlHabitatData.Controls.Item(i).Name.Substring(0, 3) = "txt" Then
-                pnlHabitatData.Controls.Item(i).Text = dictTempTextBoxValues.Item(pnlHabitatData.Controls.Item(i).Name)
-            End If
-
-        Next
-        For i = 0 To pnlTransectData.Controls.Count - 1
-            If pnlTransectData.Controls.Item(i).Name.Substring(0, 3) = "txt" Then
-                pnlTransectData.Controls.Item(i).Text = dictTempTextBoxValues.Item(pnlTransectData.Controls.Item(i).Name)
-            End If
-        Next
-        Dim kvPair As KeyValuePair(Of String, String)
-        For Each kvPair In dictTempValues
-            If dictHabitatFieldValues.ContainsKey(kvPair.Key) Then
-                dictHabitatFieldValues.Item(kvPair.Key) = kvPair.Value
-            ElseIf dictTransectFieldValues.ContainsKey(kvPair.Key) Then
-                dictTransectFieldValues.Item(kvPair.Key) = kvPair.Value
-            End If
-        Next
-
-        blRefresh = False
-        pnlHabitatData.Refresh()
-        pnlSpeciesData.Refresh()
-        pnlTransectData.Refresh()
     End Sub
 
     Private Sub grdVideoMinerDatabase_ColumnDisplayIndexChanged(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewColumnEventArgs) Handles grdVideoMinerDatabase.ColumnDisplayIndexChanged

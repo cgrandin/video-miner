@@ -123,7 +123,7 @@ VideoMiner
  Enumeration type for this instance. See WhichTypeEnum for descriptions.
  </summary>
 </member><member name="P:VideoMiner.DynamicPanel.Dictionary">
- Dictionary of key/value pairs that hold the currently selected data (most recently-pressed button's data) for this panel.
+ Dictionary of key/value pairs that hold the currently set data for this panel.
  If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
  not just the most recently-pressed button's data.
 
@@ -170,7 +170,7 @@ VideoMiner
  </summary>
 </member><member name="M:VideoMiner.DynamicPanel.PanelDataChanged(System.Object,System.EventArgs)">
 	<summary>
- Handles the case where the user changed a selection in a code table. This may result
+ Handles the case where the user changed a selection in a code table (frmTableView). This may result
  in a query being run to insert data into the database. This also handles the case in which
  the table is a "UserEntered" type such as the FOV button which asks the user for a value
  </summary>
@@ -181,6 +181,14 @@ VideoMiner
  and all items if the checkbox is checked.
  </summary>
 	<param name="btn">The button to build the dictionary for, unless the checkbox is checked in which case this is ignored.</param>
+</member><member name="M:VideoMiner.DynamicPanel.buildDictionary">
+	<summary>
+ Build the dictionary of key/value pairs for all values which have been set on this panel. Note this is only apllicable to WhichTypeEnum.DataTable,
+ not WhichTypeEnum.Singular (Species event buttons)
+ The 'repeat for every record' checkbox must exist and be checked for this to work.
+ Note that there will be no 'True' items because this call is made for a summary of the items, not for a single button press.
+ This sub should not be used to make a single record emtry into the database or the DataCode field will be missing.
+ </summary>
 </member><member name="M:VideoMiner.DynamicPanel.DefineAll(System.Object,System.EventArgs)">
 	<summary>
  When user clicks the 'DEFINE ALL' button, it is the same as if they clicked all the dynamic buttons in sequence.
@@ -990,6 +998,11 @@ VideoMiner
 </member><member name="M:VideoMiner.frmSpeciesEvent.me_FormClosing(System.Object,System.Windows.Forms.FormClosingEventArgs)">
 	<summary>
  Capture the event when the user presses the 'X' button top right. Instead of closing the form, just hide it.
+ </summary>
+</member><member name="M:VideoMiner.frmSpeciesEvent.cboSide_SelectionChangeCommitted(System.Object,System.EventArgs)">
+	<summary>
+ If the user selects "On Center", disable the Range textbox and remove its value. If user selects "Port" or "Starboard",
+ enable the Range textbox.
  </summary>
 </member><member name="F:VideoMiner.DynamicButton.UNINITIALIZED_DATA_VALUE">
 	<summary>
@@ -1957,6 +1970,10 @@ VideoMiner
 	<summary>
  Toggle enabled/disabled for: Set Time Code Button, Transect Start Button, On/Off Bottom Button, Resume Video Button
  </summary>
+</member><member name="M:VideoMiner.VideoMiner.toggle_bottom">
+	<summary>
+ Change text in OnOffBottomTextbox and on OffBottom button between "Off Bottom" and "On Bottom", and insert a record in the database to reflect this change
+ </summary>
 </member><member name="M:VideoMiner.VideoMiner.mnuOpenFile_Click(System.Object,System.EventArgs)">
 	<summary>
  Handles the menu click event for the opening of a video file
@@ -1997,23 +2014,6 @@ VideoMiner
  </summary>
 	<param name="dictTransect">A Dictionary object of Key/Value pairs where the keys are field names as found in the main 'data' table in the database, and the values are a pair
  of codes, the first one being the data code for the field being recorded to in the 'data' table and the second being the data code itself as chosen by the user.</param>
-</member><member name="M:VideoMiner.VideoMiner.createInsertQueryOLD(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
-	<summary>
- Creates a string which is an 'INSERT INTO' query in access database format.
- </summary>
-	<param name="strDataCode">Code for the data. This code is found in the DB_DATA_CODES_TABLE table in the access database</param>
-	<param name="strSpeciesName">Species name as found in the DB_SPECIES_CODE_TABLE table</param>
-	<param name="strSpeciesCode">Species code as found in the DB_SPECIES_CODE_TABLE table</param>
-	<param name="strSpeciesCount">Count of the species given by strSpeciesCode and strSpeciesName</param>
-	<param name="strSide">Which side the observation was on given by table DB_OBSERVED_SIDE_TABLE (0=center,1=port,2=starboard)</param>
-	<param name="strRange">Distance of observation from the centerline in cm</param>
-	<param name="strLength">Length in cm of the observed species</param>
-	<param name="strHeight">Height measurement for species where length is not the standard measurement (e.g. Tunicate)</param>
-	<param name="strWidth">Width measurement for species where length is not the standard measurement</param>
-	<param name="strAbundance">Abundance of the species seen (TODO:update this definition)</param>
-	<param name="strIdConfidence">Confidence value for species ID. See table DB_CONFIDENCE_IDS_TABLE (1=high,2=med,3=low)</param>
-	<param name="strComment">Video reviewer's comments</param>
-	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.cmdRareSpeciesLookup_Click(System.Object,System.EventArgs)">
 	<summary>
  For looking up and saving to the database a rare species (one not on the species buttons).

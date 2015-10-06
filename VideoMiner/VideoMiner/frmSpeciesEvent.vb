@@ -246,6 +246,8 @@ Public Class frmSpeciesEvent
         End With
         ' Set the count to a default of 1
         txtCount.Text = 1
+        ' Disable range box for the default "On center"
+        txtRange.Enabled = False
     End Sub
 
     ''' <summary>
@@ -274,8 +276,10 @@ Public Class frmSpeciesEvent
         ' The codes 1 and 2 below reflect Port and Starboard. The commented out if statement shows what is really going on here.
         'If cboSide.SelectedItem = "Port" Or cboSide.SelectedItem = "Starboard" Then
         If cboSide.SelectedValue = 1 Or cboSide.SelectedValue = 2 Then
-            If txtRange.Text = "" Or CType(txtRange.Text, Integer) = 0 Then
-                txtRange.Select(0, txtRange.Text.Length)
+            If txtRange.Text = "" Then
+                MessageBox.Show("You must enter a value in the Range textbox when you choose 'Port' or 'Starboard' for 'Side'.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+                Exit Sub
+            ElseIf CType(txtRange.Text, Integer) = 0 Then
                 MessageBox.Show("You must enter a value greater than zero in the Range textbox when you choose 'Port' or 'Starboard' for 'Side'.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
                 Exit Sub
             End If
@@ -347,6 +351,8 @@ Public Class frmSpeciesEvent
         m_dict.Add("SpeciesName", m_tuple)
         m_tuple = New Tuple(Of String, String, Boolean)("4", DoubleQuote(SpeciesCode), False)
         m_dict.Add("SpeciesID", m_tuple)
+        m_tuple = New Tuple(Of String, String, Boolean)("4", Count, False)
+        m_dict.Add("SpeciesCount", m_tuple)
         m_tuple = New Tuple(Of String, String, Boolean)("4", Side, False)
         m_dict.Add("Side", m_tuple)
         m_tuple = New Tuple(Of String, String, Boolean)("4", Range, False)
@@ -433,5 +439,20 @@ Public Class frmSpeciesEvent
         End If
     End Sub
 
+    ''' <summary>
+    ''' If the user selects "On Center", disable the Range textbox and remove its value. If user selects "Port" or "Starboard",
+    ''' enable the Range textbox.
+    ''' </summary>
+    Private Sub cboSide_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles cboSide.SelectionChangeCommitted
+        Dim cbo As ComboBox = CType(sender, ComboBox)
+        ' 0 is the value for "On Center"
+        If cbo.SelectedValue = 0 Then
+            m_range = ""
+            txtRange.Text = ""
+            txtRange.Enabled = False
+        Else
+            txtRange.Enabled = True
+        End If
+    End Sub
 End Class
 

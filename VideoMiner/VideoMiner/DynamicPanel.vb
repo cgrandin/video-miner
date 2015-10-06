@@ -97,7 +97,7 @@ Public Class DynamicPanel
         End Set
     End Property
 
-    ''' Dictionary of key/value pairs that hold the currently selected data (most recently-pressed button's data) for this panel.
+    ''' Dictionary of key/value pairs that hold the currently set data for this panel.
     ''' If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
     ''' not just the most recently-pressed button's data.
     Public ReadOnly Property Dictionary As Dictionary(Of String, Tuple(Of String, String, Boolean))
@@ -360,7 +360,7 @@ Public Class DynamicPanel
     End Sub
 
     ''' <summary>
-    ''' Handles the case where the user changed a selection in a code table. This may result
+    ''' Handles the case where the user changed a selection in a code table (frmTableView). This may result
     ''' in a query being run to insert data into the database. This also handles the case in which
     ''' the table is a "UserEntered" type such as the FOV button which asks the user for a value
     ''' </summary>
@@ -388,12 +388,13 @@ Public Class DynamicPanel
     ''' </summary>
     ''' <param name="btn">The button to build the dictionary for, unless the checkbox is checked in which case this is ignored.</param>
     Private Sub buildDictionary(btn As DynamicButton)
-        ' Clear the dictionary from the previous time if necessary
         m_dict.Clear()
         If IsNothing(m_repeat_for_every_record) Then
             ' One button's data
-            m_tuple = New Tuple(Of String, String, Boolean)(btn.DataCode, btn.DataValue, True)
-            m_dict.Add(btn.DataCodeName, m_tuple)
+            If btn.DataValue <> DynamicButton.UNINITIALIZED_DATA_VALUE Then
+                m_tuple = New Tuple(Of String, String, Boolean)(btn.DataCode, btn.DataValue, True)
+                m_dict.Add(btn.DataCodeName, m_tuple)
+            End If
         ElseIf Not m_repeat_for_every_record.Checked Then
             ' One button's data
             If btn.DataValue <> DynamicButton.UNINITIALIZED_DATA_VALUE Then
@@ -401,7 +402,7 @@ Public Class DynamicPanel
                 m_dict.Add(btn.DataCodeName, m_tuple)
             End If
         Else
-            ' All button's data
+            ' All buttons data
             For i As Integer = 0 To m_num_dynamic_buttons - 1
                 ' If the button has data selected...
                 If m_dynamic_buttons(i).DataValue <> DynamicButton.UNINITIALIZED_DATA_VALUE Then
@@ -410,6 +411,32 @@ Public Class DynamicPanel
                 End If
             Next
         End If
+        'm_tuple = New Tuple(Of String, String, Boolean)(btn.DataCode, btn.DataValue, True)
+        'm_dict.Add(btn.DataCodeName, m_tuple)
+    End Sub
+
+    ''' <summary>
+    ''' Build the dictionary of key/value pairs for all values which have been set on this panel. Note this is only apllicable to WhichTypeEnum.DataTable,
+    ''' not WhichTypeEnum.Singular (Species event buttons)
+    ''' The 'repeat for every record' checkbox must exist and be checked for this to work.
+    ''' Note that there will be no 'True' items because this call is made for a summary of the items, not for a single button press.
+    ''' This sub should not be used to make a single record emtry into the database or the DataCode field will be missing.
+    ''' </summary>
+    Public Sub buildDictionary()
+        If WhichType <> WhichTypeEnum.DataTable Then
+            Exit Sub
+        End If
+        m_dict.Clear()
+        ' If the checkbox is not present or it's unchecked, leave the dictionary blank
+        If IsNothing(m_repeat_for_every_record) Then Exit Sub
+        If Not m_repeat_for_every_record.Checked Then Exit Sub
+
+        For i As Integer = 0 To m_num_dynamic_buttons - 1
+            If m_dynamic_buttons(i).DataValue <> DynamicButton.UNINITIALIZED_DATA_VALUE Then
+                m_tuple = New Tuple(Of String, String, Boolean)(m_dynamic_buttons(i).DataCode, m_dynamic_buttons(i).DataValue, False)
+                m_dict.Add(m_dynamic_buttons(i).DataCodeName, m_tuple)
+            End If
+        Next
     End Sub
 
     ''' <summary>
