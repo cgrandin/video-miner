@@ -274,20 +274,13 @@ Public Class frmSpeciesEvent
     ''' </summary>
     Private Sub ok_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles ok.Click
         ' The codes 1 and 2 below reflect Port and Starboard. The commented out if statement shows what is really going on here.
-        'If cboSide.SelectedItem = "Port" Or cboSide.SelectedItem = "Starboard" Then
+        ' If cboSide.SelectedItem = "Port" Or cboSide.SelectedItem = "Starboard" Then
         If cboSide.SelectedValue = 1 Or cboSide.SelectedValue = 2 Then
             If txtRange.Text = "" Then
                 MessageBox.Show("You must enter a value in the Range textbox when you choose 'Port' or 'Starboard' for 'Side'.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
                 Exit Sub
             ElseIf CType(txtRange.Text, Integer) = 0 Then
                 MessageBox.Show("You must enter a value greater than zero in the Range textbox when you choose 'Port' or 'Starboard' for 'Side'.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
-                Exit Sub
-            End If
-        Else
-            ' User chose 'On Center'. Make sure that the Range is either empty string or 0
-            If txtRange.Text <> "" And txtRange.Text <> "0" Then
-                txtRange.Select(0, txtRange.Text.Length)
-                MessageBox.Show("You have entered a value in the Range textbox and also chosen 'On Center' for 'Side'. Either change your selection for 'Side' or remove your entry from the 'Range' textbox.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
                 Exit Sub
             End If
         End If

@@ -876,6 +876,10 @@ Public Class frmGpsSettings
                     m_dblGPSTime = s(1)
                     m_dblGPSX = s(2)
                     m_dblGPSY = s(4)
+                    ' Check to see if the lat and long are larger the maximum allowed (90 for lat and 180 for longitude) and divide by 100 if they are
+                    If m_dblGPSX > 90 Then m_dblGPSX = m_dblGPSX / 100
+                    If m_dblGPSY > 180 Then m_dblGPSY = m_dblGPSY / 100
+                    ' Change the sign on the longitude
                     If s(3) = "W" Then
                         m_dblGPSY *= -1
                     End If
@@ -915,6 +919,10 @@ Public Class frmGpsSettings
                     m_dblGPSTime = s(1)
                     m_dblGPSX = s(3)
                     m_dblGPSY = s(5)
+                    ' Check to see if the lat and long are larger the maximum allowed (90 for lat and 180 for longitude) and divide by 100 if they are
+                    If m_dblGPSX > 90 Then m_dblGPSX = m_dblGPSX / 100
+                    If m_dblGPSY > 180 Then m_dblGPSY = m_dblGPSY / 100
+                    ' Change the sign on the longitude
                     If s(6) = "W" Then
                         m_dblGPSY *= -1
                     End If

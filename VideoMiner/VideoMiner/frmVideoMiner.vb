@@ -4465,6 +4465,16 @@ Public Class VideoMiner
     ''' </summary>
     ''' <remarks>Order of the rows will be by decending primary key ('ID' field)</remarks>
     Private Sub fetch_data()
+        ' Save the scrollbar position before refetch
+        Dim saveRow As Integer = 0
+        Dim saveColumn As Integer = 0
+        If grdVideoMinerDatabase.Rows.Count > 0 Then
+            saveRow = grdVideoMinerDatabase.FirstDisplayedCell.RowIndex + 1
+        End If
+        If grdVideoMinerDatabase.ColumnCount > 0 Then
+            saveColumn = grdVideoMinerDatabase.FirstDisplayedCell.ColumnIndex
+        End If
+
         m_data_codes_table = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE & " order by 1;", DB_DATA_CODES_TABLE)
         m_data_table = Database.GetDataTable("SELECT * FROM " & DB_DATA_TABLE & " ORDER BY ID DESC;", DB_DATA_TABLE) ' DESC is important here, see comment below on m_db_id_num
         grdVideoMinerDatabase.DataSource = m_data_table
@@ -4483,6 +4493,14 @@ Public Class VideoMiner
             Me.cmdRevertDatabase.Enabled = True
         End If
         blupdateColumns = True
+
+        ' Restore the scrollbar positions
+        If saveRow <> 0 And saveRow < grdVideoMinerDatabase.Rows.Count Then
+            grdVideoMinerDatabase.FirstDisplayedScrollingRowIndex = saveRow
+        End If
+        If saveColumn <> 0 And saveColumn < grdVideoMinerDatabase.ColumnCount Then
+            grdVideoMinerDatabase.FirstDisplayedScrollingColumnIndex = saveColumn
+        End If
     End Sub
 
     ''' <summary>
@@ -4512,6 +4530,21 @@ Public Class VideoMiner
                 tmp = tmp + frmVideoPlayer.CurrentVideoTime
             End If
             values = values & SingleQuote(tmp.ToString("dd\.hh\:mm\:ss\.fff")) & ","
+        End If
+
+        If m_GPS_X <> "" Then
+            names = names & "X,"
+            values = values & SingleQuote(m_GPS_X) & ","
+        End If
+
+        If m_GPS_Y <> "" Then
+            names = names & "Y,"
+            values = values & SingleQuote(m_GPS_Y) & ","
+        End If
+
+        If m_GPS_Z <> "" Then
+            names = names & "Z,"
+            values = values & SingleQuote(m_GPS_Z) & ","
         End If
 
         'Dim tsTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
