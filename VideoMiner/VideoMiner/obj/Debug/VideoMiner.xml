@@ -193,6 +193,14 @@ VideoMiner
  Note that there will be no 'True' items because this call is made for a summary of the items, not for a single button press.
  This sub should not be used to make a single record emtry into the database or the DataCode field will be missing.
  </summary>
+</member><member name="M:VideoMiner.DynamicPanel.EnableDefineAllButton">
+	<summary>
+ Allow the 'Define All' button to be pressed
+ </summary>
+</member><member name="M:VideoMiner.DynamicPanel.DisableDefineAllButton">
+	<summary>
+ Do not allow the 'Define All' button to be pressed
+ </summary>
 </member><member name="M:VideoMiner.DynamicPanel.DefineAll(System.Object,System.EventArgs)">
 	<summary>
  When user clicks the 'DEFINE ALL' button, it is the same as if they clicked all the dynamic buttons in sequence.
@@ -204,6 +212,16 @@ VideoMiner
  Handles the event request to insert a new entry into the database. Checks the setting from the Habitat panel, if set to record habitat on every record, 
  the current dictionary will be merged with the species dict, and the result will be inserted into the database.
  </summary>
+</member><member name="M:VideoMiner.DynamicPanel.signal_video_pause(System.Object,System.EventArgs)">
+	<summary>
+ Tell the program to issue a pause video command
+ </summary>
+	<param name="sender">The DynamicButton that was pressed</param>
+</member><member name="M:VideoMiner.DynamicPanel.button_CheckForDirtyDataEvent(System.Object,System.EventArgs)">
+	<summary>
+ If a DynamicButton is pressed, this will send that DynamicButton object as an argument to the event
+ </summary>
+	<param name="sender">The DynamicButton that was pressed</param>
 </member><member name="T:VideoMiner.DynamicPanel">
 	<summary>
  A panel which supports loading of dynamic buttons and dynamic textboxes and may include a

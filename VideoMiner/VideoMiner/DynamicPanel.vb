@@ -445,6 +445,24 @@ Public Class DynamicPanel
     End Sub
 
     ''' <summary>
+    ''' Allow the 'Define All' button to be pressed
+    ''' </summary>
+    Public Sub EnableDefineAllButton()
+        If Not IsNothing(m_define_all_button) Then
+            m_define_all_button.Enabled = True
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Do not allow the 'Define All' button to be pressed
+    ''' </summary>
+    Public Sub DisableDefineAllButton()
+        If Not IsNothing(m_define_all_button) Then
+            m_define_all_button.Enabled = False
+        End If
+    End Sub
+
+    ''' <summary>
     ''' When user clicks the 'DEFINE ALL' button, it is the same as if they clicked all the dynamic buttons in sequence.
     ''' This is a convinience button. The windows are opened in reverse order so that they will be in the correct order
     ''' ' from top to bottom.
@@ -465,10 +483,18 @@ Public Class DynamicPanel
         RaiseEvent DataChanged(Me, e)
     End Sub
 
+    ''' <summary>
+    ''' Tell the program to issue a pause video command
+    ''' </summary>
+    ''' <param name="sender">The DynamicButton that was pressed</param>
     Private Sub signal_video_pause(ByVal sender As System.Object, ByVal e As System.EventArgs)
         RaiseEvent SignalVideoPause(sender, e)
     End Sub
 
+    ''' <summary>
+    ''' If a DynamicButton is pressed, this will send that DynamicButton object as an argument to the event
+    ''' </summary>
+    ''' <param name="sender">The DynamicButton that was pressed</param>
     Private Sub button_CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
         RaiseEvent CheckForDirtyDataEvent(sender, e)
     End Sub

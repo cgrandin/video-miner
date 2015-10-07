@@ -1874,17 +1874,19 @@ Public Class VideoMiner
     ''' Handler to check to make sure that the Data grid is not dirty
     ''' </summary>
     Private Sub button_CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pnlHabitatData.CheckForDirtyDataEvent, pnlTransectData.CheckForDirtyDataEvent, pnlSpeciesData.CheckForDirtyDataEvent
-        Dim btn As DynamicButton = CType(sender, DynamicButton)
-        If IsNothing(m_data_table.GetChanges()) Then
-            btn.ShowDataForm()
-        Else
-            If My.Computer.Keyboard.CtrlKeyDown Then
+        If TypeOf sender Is DynamicButton Then
+            Dim btn As DynamicButton = CType(sender, DynamicButton)
+            If IsNothing(m_data_table.GetChanges()) Then
                 btn.ShowDataForm()
-                Exit Sub
-            End If
-            If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
-                fetch_data() ' Cleans up the table first
-                btn.ShowDataForm()
+            Else
+                If My.Computer.Keyboard.CtrlKeyDown Then
+                    btn.ShowDataForm()
+                    Exit Sub
+                End If
+                If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
+                    fetch_data() ' Cleans up the table first
+                    btn.ShowDataForm()
+                End If
             End If
         End If
     End Sub
@@ -4520,6 +4522,9 @@ Public Class VideoMiner
         For i As Integer = 0 To grdVideoMinerDatabase.Rows.Count - 1
             grdVideoMinerDatabase.Rows(i).HeaderCell.Value = grdVideoMinerDatabase.Rows(i).Cells(0).Value.ToString()
         Next
+        ' If data was freshly fetched, no grid cells wil be dirty, so we can allow the 'Define All' buttons to be pressed
+        pnlTransectData.EnableDefineAllButton()
+        pnlHabitatData.EnableDefineAllButton()
     End Sub
 
     ''' <summary>
@@ -4924,6 +4929,8 @@ Public Class VideoMiner
             grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.SelectionBackColor = Color.DarkSalmon
             grdVideoMinerDatabase.CurrentCell.Style.ForeColor = Color.AntiqueWhite
             grdVideoMinerDatabase.CurrentCell.Style.BackColor = Color.Firebrick
+            pnlTransectData.DisableDefineAllButton()
+            pnlHabitatData.DisableDefineAllButton()
         End If
     End Sub
 
