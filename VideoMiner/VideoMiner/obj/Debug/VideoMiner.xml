@@ -1124,6 +1124,10 @@ VideoMiner
 	<param name="buttonFont">The font to use for this button (e.g. "Microsoft Sans Serif")</param>
 	<param name="buttonTextSize">The font size to use for this button's text (in pts)</param>
 	<remarks></remarks>
+</member><member name="M:VideoMiner.DynamicButton.ShowDataForm">
+	<summary>
+ Show the species event form for the current species.
+ </summary>
 </member><member name="M:VideoMiner.DynamicButton.dataHasChanged(System.String)">
 	<summary>
  Handle the changing by the user of the lookup table code found in frmTableView, and fire an event to the parent.
@@ -1136,7 +1140,7 @@ VideoMiner
  </summary>
 </member><member name="M:VideoMiner.DynamicButton.clickMe(System.Object,System.Windows.Forms.MouseEventArgs)">
 	<summary>
- Click event handler. If Ctrl-clicked, the selection will be cleared. If left-clicked, the data form will be shown.
+ If this button is Ctrl-clicked, the selection will be cleared.
  </summary>
 </member><member name="M:VideoMiner.DynamicButton.myLocationChanged(System.Object,System.EventArgs)">
 	<summary>
@@ -1908,7 +1912,7 @@ VideoMiner
 	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.button_CheckForDirtyDataEvent(System.Object,System.EventArgs)">
 	<summary>
- Check to make sure that the Data grid is not dirty
+ Handler to check to make sure that the Data grid is not dirty
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.buttonDataChanged(System.Object,System.EventArgs)">
 	<summary>

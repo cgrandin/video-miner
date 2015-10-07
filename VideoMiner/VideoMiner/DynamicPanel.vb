@@ -286,7 +286,6 @@ Public Class DynamicPanel
                 ' Adds a handler for each button for the event which is fired originally by the SpeciesEvent form, and bubbled through the DynamicButton class.
                 AddHandler m_dynamic_buttons(i).NewSpeciesEntryEvent, AddressOf new_species_entry_handler
                 AddHandler m_dynamic_buttons(i).SignalVideoPause, AddressOf signal_video_pause
-                AddHandler m_dynamic_buttons(i).Click, AddressOf button_CheckForDirtyDataEvent
             Else
                 ' It's a table-data button
                 m_dynamic_buttons(i) = New DynamicButton(r.Item(0),

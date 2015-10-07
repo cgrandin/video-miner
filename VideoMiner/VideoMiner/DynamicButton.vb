@@ -317,11 +317,27 @@ Public Class DynamicButton
         ' The species event form is unique for each dynamic button and is created once when the dynamic button is created
         frmSpeciesEvent = New frmSpeciesEvent(buttonText)
         ' Handler for when the user presses a species button, it should just call up the Species Event form with the button's data sent as sender
-        AddHandler Me.Click, AddressOf Me.Button_Click
+        'AddHandler Me.Click, AddressOf Me.ShowSpeciesEventForm
+        ' Handler is commented out because of the implementation of dirty data checking in frmVideoMiner. Now, the button click is handled in the DynamicPanel
+        ' which holds these buttons, which raises another event (see sub button_CheckForDirtyDataEvent) to the main form, which casts the sender to DynamicButton
+        ' and calls the public sub ShowDataForm()
     End Sub
 
-    Public Sub Button_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        frmSpeciesEvent.Show()
+    ''' <summary>
+    ''' Show the species event form for the current species.
+    ''' </summary>
+    Public Sub ShowDataForm()
+        If My.Computer.Keyboard.CtrlKeyDown Then
+            clearData()
+            Exit Sub
+        End If
+        If m_db_table_name = "UserEntered" Then
+            Me.DataFormVisible = True
+        ElseIf IsNothing(m_data_table) Then
+            frmSpeciesEvent.Show()
+        Else
+            Me.DataFormVisible = True
+        End If
     End Sub
 
     ''' <summary>
@@ -350,13 +366,11 @@ Public Class DynamicButton
     End Sub
 
     ''' <summary>
-    ''' Click event handler. If Ctrl-clicked, the selection will be cleared. If left-clicked, the data form will be shown.
+    ''' If this button is Ctrl-clicked, the selection will be cleared.
     ''' </summary>
     Public Sub clickMe(sender As Object, e As MouseEventArgs) Handles Me.Click
         If My.Computer.Keyboard.CtrlKeyDown Then
             clearData()
-        Else
-            Me.DataFormVisible = True
         End If
         ' Raise an event to signal the beginning of the process of filling in a form which will be recorded to the database.
         ' For example, when the user presses a species button it will bring up the form needed to fill in the information for the species.

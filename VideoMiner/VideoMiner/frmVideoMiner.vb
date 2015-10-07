@@ -1871,12 +1871,21 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
-    ''' Check to make sure that the Data grid is not dirty
+    ''' Handler to check to make sure that the Data grid is not dirty
     ''' </summary>
     Private Sub button_CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pnlHabitatData.CheckForDirtyDataEvent, pnlTransectData.CheckForDirtyDataEvent, pnlSpeciesData.CheckForDirtyDataEvent
-        If Not IsNothing(m_data_table.GetChanges()) Then
-            MessageBox.Show("You have unsynced changes in your data table. Sync the changes or revert the database before adding new records.", "Data table dirty", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-            Exit Sub
+        Dim btn As DynamicButton = CType(sender, DynamicButton)
+        If IsNothing(m_data_table.GetChanges()) Then
+            btn.ShowDataForm()
+        Else
+            If My.Computer.Keyboard.CtrlKeyDown Then
+                btn.ShowDataForm()
+                Exit Sub
+            End If
+            If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
+                fetch_data() ' Cleans up the table first
+                btn.ShowDataForm()
+            End If
         End If
     End Sub
 
@@ -4606,7 +4615,14 @@ Public Class VideoMiner
     ''' For looking up and saving to the database a rare species (one not on the species buttons).
     ''' </summary>
     Private Sub cmdRareSpeciesLookup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdRareSpeciesLookup.Click
-        frmRareSpeciesLookup.Show()
+        If IsNothing(m_data_table.GetChanges()) Then
+            frmRareSpeciesLookup.Show()
+        Else
+            If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
+                fetch_data() ' Cleans up the table first
+                frmRareSpeciesLookup.Show()
+            End If
+        End If
     End Sub
 
     Private Sub KeyboardShortcutsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles KeyboardShortcutsToolStripMenuItem.Click
