@@ -71,6 +71,10 @@ Public Class DynamicButton
     ''' </summary>
     Private WithEvents m_table_view As frmTableView
     ''' <summary>
+    ''' The table view of the abundance table. This may not be set if the button type is for a species.
+    ''' </summary>
+    Private WithEvents m_abundance_table As frmAbundanceTableView
+    ''' <summary>
     ''' Currently selected code for the variable that m_table_name represents.
     ''' This is changed when the user selects a new row in the underlying table view form.     
     ''' </summary>
@@ -85,6 +89,18 @@ Public Class DynamicButton
     ''' </summary>
     ''' <remarks></remarks>
     Private m_current_comment As String
+    ''' Distinguishes between the two types of data this button can represent, database table
+    ''' data (lookup tables stored as type DataTable) or singular data which are not a DataTable
+    ''' Typically the singular type is used for species code entry buttons.
+    ''' </summary>
+    Public Enum WhichTypeEnum
+        DataTable
+        Singular
+    End Enum
+    ''' <summary>
+    ''' Holds the enumeration type for this instance
+    ''' </summary>
+    Private m_which_type As WhichTypeEnum
 #End Region
 
 #Region "Properties"
@@ -202,6 +218,17 @@ Public Class DynamicButton
         End Set
     End Property
 
+    ''' <summary>
+    ''' Enumeration type for this instance. See WhichTypeEnum for descriptions.
+    ''' </summary>
+    Public Property WhichType As WhichTypeEnum
+        Get
+            Return m_which_type
+        End Get
+        Set(value As WhichTypeEnum)
+            m_which_type = value
+        End Set
+    End Property
 #End Region
 
 #Region "Events"
@@ -238,6 +265,7 @@ Public Class DynamicButton
         Me.Text = buttonText
         m_db_table_name = tableName
 
+        WhichType = WhichTypeEnum.DataTable
         Dim colConvert As ColorConverter = New ColorConverter()
         Try
             Me.ForeColor = colConvert.ConvertFromString(buttonColor)
@@ -294,6 +322,7 @@ Public Class DynamicButton
         Me.Name = buttonText
         Me.Text = buttonText
         Dim colConvert As ColorConverter = New ColorConverter()
+        WhichType = WhichTypeEnum.Singular
         Try
             Me.ForeColor = colConvert.ConvertFromString(buttonColor)
         Catch ex As Exception
@@ -333,11 +362,23 @@ Public Class DynamicButton
         End If
         If m_db_table_name = "UserEntered" Then
             Me.DataFormVisible = True
-        ElseIf IsNothing(m_data_table) Then
+        ElseIf WhichType = WhichTypeEnum.Singular Then
             frmSpeciesEvent.Show()
         Else
             Me.DataFormVisible = True
         End If
+    End Sub
+
+    ''' <summary>
+    ''' Record count value to the frmSpeciesEvent and raise the DataChangedEvent. Used for quick entry case where the whole form is not shown and just a count is required.
+    ''' </summary>
+    Public Sub RecordQuick(Optional count As String = NULL_STRING)
+        frmSpeciesEvent.Acknowledge(count)
+    End Sub
+
+    Public Sub RecordAbundance()
+        m_abundance_table = New frmAbundanceTableView
+        m_abundance_table.Show()
     End Sub
 
     ''' <summary>
@@ -396,5 +437,9 @@ Public Class DynamicButton
     Private Sub new_species_entry_handler(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles frmSpeciesEvent.NewSpeciesEntryEvent
         'Pass the species event object along
         RaiseEvent NewSpeciesEntryEvent(sender, e)
+    End Sub
+
+    Private Sub abundanceDataChanged(sender As System.Object, e As System.EventArgs) Handles m_abundance_table.DataChanged
+        ' TODO: Finish this!
     End Sub
 End Class

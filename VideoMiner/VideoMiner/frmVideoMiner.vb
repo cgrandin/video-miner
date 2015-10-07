@@ -1016,7 +1016,6 @@ Public Class VideoMiner
 
         m_db_file_open = False
         m_video_file_open = False
-        'db_file_unload()
         video_file_unload()
         no_files_loaded()
         m_transect_name = UNNAMED_TRANSECT
@@ -1871,13 +1870,25 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
-    ''' Handler to check to make sure that the Data grid is not dirty
+    ''' Handler to check to make sure that the Data grid is not dirty. If it isn't, or the user says to disregard changes and save the record anyway,
+    ''' the appropriate thing will happen for data recording (species event form will be shown or data table form sill be shown, or quick entry will happen).
     ''' </summary>
     Private Sub button_CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pnlHabitatData.CheckForDirtyDataEvent, pnlTransectData.CheckForDirtyDataEvent, pnlSpeciesData.CheckForDirtyDataEvent
         If TypeOf sender Is DynamicButton Then
             Dim btn As DynamicButton = CType(sender, DynamicButton)
+            ' If the data table is not dirty...
             If IsNothing(m_data_table.GetChanges()) Then
-                btn.ShowDataForm()
+                If btn.WhichType = DynamicButton.WhichTypeEnum.Singular Then
+                    If radQuickEntry.Checked Then
+                        btn.RecordQuick(txtQuickSpeciesCount.Text)
+                    ElseIf radAbundanceEntry.Checked Then
+                        btn.RecordAbundance()
+                    Else
+                        btn.ShowDataForm()
+                    End If
+                Else
+                    btn.ShowDataForm()
+                End If
             Else
                 If My.Computer.Keyboard.CtrlKeyDown Then
                     btn.ShowDataForm()
@@ -1885,10 +1896,18 @@ Public Class VideoMiner
                 End If
                 If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
                     fetch_data() ' Cleans up the table first
-                    btn.ShowDataForm()
+                    If btn.WhichType = DynamicButton.WhichTypeEnum.Singular Then
+                        If radQuickEntry.Checked Then
+                            btn.RecordQuick(txtQuickSpeciesCount.Text)
+                        Else
+                            btn.ShowDataForm()
+                        End If
+                    Else
+                        btn.ShowDataForm()
+                    End If
                 End If
             End If
-        End If
+            End If
     End Sub
 
     ''' <summary>
@@ -1911,9 +1930,9 @@ Public Class VideoMiner
                 For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlHabitatData.Dictionary
                     dict.Add(kvp.Key, kvp.Value)
                 Next
-                'If dict.ContainsKey("DataCode") Then
-                ' dict.Remove("DataCode")
-                'End If
+                If dict.ContainsKey("DataCode") Then
+                    dict.Remove("DataCode")
+                End If
                 ' Add the datacode information for a species event
                 tuple = New Tuple(Of String, String, Boolean)("4", "4", True)
                 dict.Add("DataCode", tuple)
@@ -4446,8 +4465,7 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
-    ''' Opens the MS Access database, loads one button for each record in the DB_HABITAT_BUTTONS_TABLE table into Panel1: fill_spatialvariable_button_panel(),
-    ''' and loads one button for each record in the DB_SPECIES_BUTTONS_TABLE table into Panel2: fill_speciesvariable_button_panel().
+    ''' Opens the MS Access database and fills the DynamicPanels with buttons. Set up visibility on other VideoMiner buttons
     ''' </summary>
     Public Sub openDatabase()
         Database.Name = m_strDatabaseFilePath
@@ -4458,12 +4476,9 @@ Public Class VideoMiner
             pnlTransectData.fillPanel(DB_TRANSECT_BUTTONS_TABLE)
             pnlHabitatData.fillPanel(DB_HABITAT_BUTTONS_TABLE)
             pnlSpeciesData.fillPanel(DB_SPECIES_BUTTONS_TABLE)
-            'fillDataCodesTable()
-            If Database.IsOpen Then
-                Me.lblDatabase.Text = DB_FILE_STATUS_LOADED & m_db_filename & " is open"
-                mnuOpenDatabase.Enabled = False
-                mnuCloseDatabase.Enabled = True
-            End If
+            Me.lblDatabase.Text = DB_FILE_STATUS_LOADED & m_db_filename & " is open"
+            mnuOpenDatabase.Enabled = False
+            mnuCloseDatabase.Enabled = True
 
             If m_video_file_open Then
                 files_loaded()
@@ -4471,6 +4486,7 @@ Public Class VideoMiner
                 m_video_file_open = True
             End If
             fetch_data()
+
             files_loaded()
         End If
     End Sub

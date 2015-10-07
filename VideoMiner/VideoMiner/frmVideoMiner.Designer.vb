@@ -61,6 +61,7 @@ Partial Class VideoMiner
         Me.ConfigureButtonFormatToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DisableHabitatButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EditLookupTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AlwaysShowNewestRecordToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.GPSToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuGPSSettings = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeviceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -152,7 +153,6 @@ Partial Class VideoMiner
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
-        Me.AlwaysShowNewestRecordToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -182,6 +182,7 @@ Partial Class VideoMiner
         Me.SplitContainer6.Panel2.SuspendLayout()
         Me.SplitContainer6.SuspendLayout()
         CType(Me.SplitContainer7, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SplitContainer7.Panel1.SuspendLayout()
         Me.SplitContainer7.SuspendLayout()
         CType(Me.SplitContainer8, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer8.Panel1.SuspendLayout()
@@ -460,6 +461,15 @@ Partial Class VideoMiner
         Me.EditLookupTableToolStripMenuItem.Name = "EditLookupTableToolStripMenuItem"
         Me.EditLookupTableToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
         Me.EditLookupTableToolStripMenuItem.Text = "Edit Lookup Table"
+        '
+        'AlwaysShowNewestRecordToolStripMenuItem
+        '
+        Me.AlwaysShowNewestRecordToolStripMenuItem.Checked = True
+        Me.AlwaysShowNewestRecordToolStripMenuItem.CheckOnClick = True
+        Me.AlwaysShowNewestRecordToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.AlwaysShowNewestRecordToolStripMenuItem.Name = "AlwaysShowNewestRecordToolStripMenuItem"
+        Me.AlwaysShowNewestRecordToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
+        Me.AlwaysShowNewestRecordToolStripMenuItem.Text = "Always show newest record"
         '
         'GPSToolStripMenuItem
         '
@@ -754,7 +764,6 @@ Partial Class VideoMiner
         '
         Me.SplitContainer3.Panel1.Controls.Add(Me.cmdCloseCalendar)
         Me.SplitContainer3.Panel1.Controls.Add(Me.pnlVideoControls)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.mnthCalendar)
         Me.SplitContainer3.Panel1.Controls.Add(Me.txtTransectDate)
         Me.SplitContainer3.Panel1.Controls.Add(Me.chkRecordEachSecond)
         Me.SplitContainer3.Panel1.Controls.Add(Me.txtProjectName)
@@ -780,7 +789,7 @@ Partial Class VideoMiner
         'cmdCloseCalendar
         '
         Me.cmdCloseCalendar.ForeColor = System.Drawing.Color.Black
-        Me.cmdCloseCalendar.Location = New System.Drawing.Point(98, 82)
+        Me.cmdCloseCalendar.Location = New System.Drawing.Point(181, 81)
         Me.cmdCloseCalendar.Name = "cmdCloseCalendar"
         Me.cmdCloseCalendar.Size = New System.Drawing.Size(16, 20)
         Me.cmdCloseCalendar.TabIndex = 50
@@ -966,7 +975,7 @@ Partial Class VideoMiner
         '
         'mnthCalendar
         '
-        Me.mnthCalendar.Location = New System.Drawing.Point(6, 101)
+        Me.mnthCalendar.Location = New System.Drawing.Point(-74, 106)
         Me.mnthCalendar.MaxSelectionCount = 1
         Me.mnthCalendar.Name = "mnthCalendar"
         Me.mnthCalendar.ShowToday = False
@@ -982,7 +991,7 @@ Partial Class VideoMiner
         Me.txtTransectDate.MaxLength = 50
         Me.txtTransectDate.Name = "txtTransectDate"
         Me.txtTransectDate.ReadOnly = True
-        Me.txtTransectDate.Size = New System.Drawing.Size(86, 20)
+        Me.txtTransectDate.Size = New System.Drawing.Size(166, 20)
         Me.txtTransectDate.TabIndex = 49
         '
         'chkRecordEachSecond
@@ -1002,7 +1011,7 @@ Partial Class VideoMiner
         Me.txtProjectName.Location = New System.Drawing.Point(11, 138)
         Me.txtProjectName.MaxLength = 50
         Me.txtProjectName.Name = "txtProjectName"
-        Me.txtProjectName.Size = New System.Drawing.Size(92, 20)
+        Me.txtProjectName.Size = New System.Drawing.Size(186, 20)
         Me.txtProjectName.TabIndex = 47
         '
         'txtTimeSource
@@ -1075,12 +1084,13 @@ Partial Class VideoMiner
         '
         'cmdOffBottom
         '
+        Me.cmdOffBottom.Enabled = False
         Me.cmdOffBottom.Location = New System.Drawing.Point(11, 238)
         Me.cmdOffBottom.Margin = New System.Windows.Forms.Padding(2)
         Me.cmdOffBottom.Name = "cmdOffBottom"
-        Me.cmdOffBottom.Size = New System.Drawing.Size(116, 25)
+        Me.cmdOffBottom.Size = New System.Drawing.Size(186, 25)
         Me.cmdOffBottom.TabIndex = 43
-        Me.cmdOffBottom.Text = "Off Bottom"
+        Me.cmdOffBottom.Text = "On Bottom"
         Me.cmdOffBottom.UseVisualStyleBackColor = True
         '
         'lblTransectDate
@@ -1094,20 +1104,22 @@ Partial Class VideoMiner
         '
         'cmdTransectStart
         '
+        Me.cmdTransectStart.Enabled = False
         Me.cmdTransectStart.Location = New System.Drawing.Point(11, 163)
         Me.cmdTransectStart.Margin = New System.Windows.Forms.Padding(2)
         Me.cmdTransectStart.Name = "cmdTransectStart"
-        Me.cmdTransectStart.Size = New System.Drawing.Size(116, 25)
+        Me.cmdTransectStart.Size = New System.Drawing.Size(186, 25)
         Me.cmdTransectStart.TabIndex = 41
         Me.cmdTransectStart.Text = "Transect Start"
         Me.cmdTransectStart.UseVisualStyleBackColor = True
         '
         'cmdShowSetTimecode
         '
-        Me.cmdShowSetTimecode.Location = New System.Drawing.Point(11, 5)
+        Me.cmdShowSetTimecode.Enabled = False
+        Me.cmdShowSetTimecode.Location = New System.Drawing.Point(13, 5)
         Me.cmdShowSetTimecode.Margin = New System.Windows.Forms.Padding(2)
         Me.cmdShowSetTimecode.Name = "cmdShowSetTimecode"
-        Me.cmdShowSetTimecode.Size = New System.Drawing.Size(116, 25)
+        Me.cmdShowSetTimecode.Size = New System.Drawing.Size(184, 42)
         Me.cmdShowSetTimecode.TabIndex = 40
         Me.cmdShowSetTimecode.Text = "Set Time"
         Me.cmdShowSetTimecode.UseVisualStyleBackColor = True
@@ -1171,7 +1183,7 @@ Partial Class VideoMiner
         Me.cboZoom.Location = New System.Drawing.Point(5, 78)
         Me.cboZoom.MaxLength = 4
         Me.cboZoom.Name = "cboZoom"
-        Me.cboZoom.Size = New System.Drawing.Size(121, 21)
+        Me.cboZoom.Size = New System.Drawing.Size(177, 21)
         Me.cboZoom.TabIndex = 52
         Me.cboZoom.Visible = False
         '
@@ -1219,6 +1231,10 @@ Partial Class VideoMiner
         Me.SplitContainer7.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SplitContainer7.Location = New System.Drawing.Point(0, 0)
         Me.SplitContainer7.Name = "SplitContainer7"
+        '
+        'SplitContainer7.Panel1
+        '
+        Me.SplitContainer7.Panel1.Controls.Add(Me.mnthCalendar)
         Me.SplitContainer7.Size = New System.Drawing.Size(394, 423)
         Me.SplitContainer7.SplitterDistance = 197
         Me.SplitContainer7.TabIndex = 0
@@ -1430,15 +1446,6 @@ Partial Class VideoMiner
         '
         Me.tmrComputerTime.Interval = 500
         '
-        'AlwaysShowNewestRecordToolStripMenuItem
-        '
-        Me.AlwaysShowNewestRecordToolStripMenuItem.Checked = True
-        Me.AlwaysShowNewestRecordToolStripMenuItem.CheckOnClick = True
-        Me.AlwaysShowNewestRecordToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.AlwaysShowNewestRecordToolStripMenuItem.Name = "AlwaysShowNewestRecordToolStripMenuItem"
-        Me.AlwaysShowNewestRecordToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
-        Me.AlwaysShowNewestRecordToolStripMenuItem.Text = "Always show newest record"
-        '
         'VideoMiner
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1490,6 +1497,7 @@ Partial Class VideoMiner
         Me.SplitContainer6.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer6, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer6.ResumeLayout(False)
+        Me.SplitContainer7.Panel1.ResumeLayout(False)
         CType(Me.SplitContainer7, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer7.ResumeLayout(False)
         Me.SplitContainer8.Panel1.ResumeLayout(False)

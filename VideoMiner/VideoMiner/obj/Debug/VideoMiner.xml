@@ -981,26 +981,25 @@ VideoMiner
 	<summary>
  Get the next unique ID from the species buttons table so that the new button can be inserted properly into the database table.
  </summary>
-</member><member name="M:VideoMiner.frmSpeciesEvent.SpeciesEventForm_Load(System.Object,System.EventArgs)">
-	<summary>
- When the form is loaded, Populate the comboboxes with vlues from the database and hardcoded items for 'Side', 'ID Confidence', and 'Abundance'.
- Also sets the count to 1.
- </summary>
 </member><member name="M:VideoMiner.frmSpeciesEvent.pnlSpeciesEvent_Paint(System.Object,System.Windows.Forms.PaintEventArgs)">
 	<summary>
   When the SpeciesEventForm is displayed, draw a red arc at the bottom of the form with an
   attatched red line going to the top of the form. This line helps a user visualize the center line,
   and ranges to the left or right of the center line.
  </summary>
-</member><member name="M:VideoMiner.frmSpeciesEvent.ok_Click(System.Object,System.EventArgs)">
+</member><member name="M:VideoMiner.frmSpeciesEvent.Acknowledge(System.String)">
 	<summary>
- If the user has selected 'Port' or 'Starboard' in the Side combobox and the Range is the empty string or zero,
- alert the user to fill them in with an integer before allowing the submission for insertion into the database.
+ Acknowledge that everything is verified by setting all member variables and building the dictionary. An event will be fired to let the parents know we are ready.
  </summary>
 </member><member name="M:VideoMiner.frmSpeciesEvent.buildDictionary">
 	<summary>
  Build the dictionary of key/value pairs for the data the user chose.
  </summary>
+</member><member name="M:VideoMiner.frmSpeciesEvent.selectSpeciesInCombobox">
+	<summary>
+ Resets the species combobox back to it's correct default species name
+ </summary>
+	<remarks></remarks>
 </member><member name="M:VideoMiner.frmSpeciesEvent.formShown(System.Object,System.EventArgs)">
 	<summary>
  This code is run everytime the form's show function is called. It resets the species combobox back to it's correct default species name
@@ -1101,9 +1100,17 @@ VideoMiner
  Currently entered comment in the frmTableView
  </summary>
 	<remarks></remarks>
+</member><member name="F:VideoMiner.DynamicButton.m_which_type">
+	<summary>
+ Holds the enumeration type for this instance
+ </summary>
 </member><member name="P:VideoMiner.DynamicButton.DataCode">
 	<summary>
  Data code used for table-based data. e.g. table lu_survey_mode is associated with data code 9 in the lu_data_codes table
+ </summary>
+</member><member name="P:VideoMiner.DynamicButton.WhichType">
+	<summary>
+ Enumeration type for this instance. See WhichTypeEnum for descriptions.
  </summary>
 </member><member name="E:VideoMiner.DynamicButton.DataChanged">
 	<summary>
@@ -1145,6 +1152,10 @@ VideoMiner
 </member><member name="M:VideoMiner.DynamicButton.ShowDataForm">
 	<summary>
  Show the species event form for the current species.
+ </summary>
+</member><member name="M:VideoMiner.DynamicButton.RecordQuick(System.String)">
+	<summary>
+ Record count value to the frmSpeciesEvent and raise the DataChangedEvent. Used for quick entry case where the whole form is not shown and just a count is required.
  </summary>
 </member><member name="M:VideoMiner.DynamicButton.dataHasChanged(System.String)">
 	<summary>
@@ -1646,6 +1657,15 @@ VideoMiner
  This module encapsulates the reading and writing to an MS Access database using the OLEDB interface
  </summary>
 	<remarks></remarks>
+</member><member name="P:VideoMiner.frmAbundanceTableView.SelectedCodeName">
+	<summary>
+ If a row is selected, return the second cell's value from that row
+ If no row is selected, return the empty string.
+ </summary>
+</member><member name="E:VideoMiner.frmAbundanceTableView.DataChanged">
+	<summary>
+ Tell the parent that the data have changed
+ </summary>
 </member><member name="P:VideoMiner.frmTableView.SelectedCode">
 	<summary>
  If a row is selected, return the first cell's value from that row.
@@ -1930,7 +1950,8 @@ VideoMiner
 	<remarks></remarks>
 </member><member name="M:VideoMiner.VideoMiner.button_CheckForDirtyDataEvent(System.Object,System.EventArgs)">
 	<summary>
- Handler to check to make sure that the Data grid is not dirty
+ Handler to check to make sure that the Data grid is not dirty. If it isn't, or the user says to disregard changes and save the record anyway,
+ the appropriate thing will happen for data recording (species event form will be shown or data table form sill be shown, or quick entry will happen).
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.buttonDataChanged(System.Object,System.EventArgs)">
 	<summary>
@@ -2026,8 +2047,7 @@ VideoMiner
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.openDatabase">
 	<summary>
- Opens the MS Access database, loads one button for each record in the DB_HABITAT_BUTTONS_TABLE table into Panel1: fill_spatialvariable_button_panel(),
- and loads one button for each record in the DB_SPECIES_BUTTONS_TABLE table into Panel2: fill_speciesvariable_button_panel().
+ Opens the MS Access database and fills the DynamicPanels with buttons. Set up visibility on other VideoMiner buttons
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.fetch_data">
 	<summary>

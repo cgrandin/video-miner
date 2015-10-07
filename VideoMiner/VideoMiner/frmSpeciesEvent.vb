@@ -18,7 +18,7 @@ Public Class frmSpeciesEvent
     ''' <summary>
     ''' Holds the currently selected Side code as found in the database table lu_observed_side
     ''' </summary>
-    Private m_side As Integer
+    Private m_side As String
     ''' <summary>
     ''' Holds the currently selected ConfidenceID code as found in the database table lu_confidence_ids
     ''' </summary>
@@ -184,23 +184,7 @@ Public Class frmSpeciesEvent
         Me.Text = "Species Event - " & SpeciesName
         m_tuple = New Tuple(Of String, String, Boolean)(Nothing, Nothing, False)
         m_dict = New Dictionary(Of String, Tuple(Of String, String, Boolean))
-    End Sub
 
-    ''' <summary>
-    ''' Get the next unique ID from the species buttons table so that the new button can be inserted properly into the database table.
-    ''' </summary>
-    Private Function GetNextSequenceId() As Integer
-        Dim strQuery = "SELECT Max(DrawingOrder) FROM " & DB_SPECIES_BUTTONS_TABLE & ";"
-        Dim idTable As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_BUTTONS_TABLE)
-        Dim intId = idTable.Rows(0).Item(0) ' The query will only return 1 result because it is a MAX query.
-        Return intId + 1
-    End Function
-
-    ''' <summary>
-    ''' When the form is loaded, Populate the comboboxes with vlues from the database and hardcoded items for 'Side', 'ID Confidence', and 'Abundance'.
-    ''' Also sets the count to 1.
-    ''' </summary>
-    Private Sub SpeciesEventForm_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         ' Populate the species combobox
         Dim strQuery As String = "select DrawingOrder, ButtonText, ButtonCode from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;"
         Dim data_table As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_BUTTONS_TABLE)
@@ -248,7 +232,18 @@ Public Class frmSpeciesEvent
         txtCount.Text = 1
         ' Disable range box for the default "On center"
         txtRange.Enabled = False
+        selectSpeciesInCombobox()
     End Sub
+
+    ''' <summary>
+    ''' Get the next unique ID from the species buttons table so that the new button can be inserted properly into the database table.
+    ''' </summary>
+    Private Function GetNextSequenceId() As Integer
+        Dim strQuery = "SELECT Max(DrawingOrder) FROM " & DB_SPECIES_BUTTONS_TABLE & ";"
+        Dim idTable As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_BUTTONS_TABLE)
+        Dim intId = idTable.Rows(0).Item(0) ' The query will only return 1 result because it is a MAX query.
+        Return intId + 1
+    End Function
 
     ''' <summary>
     '''  When the SpeciesEventForm is displayed, draw a red arc at the bottom of the form with an
@@ -269,10 +264,9 @@ Public Class frmSpeciesEvent
     End Sub
 
     ''' <summary>
-    ''' If the user has selected 'Port' or 'Starboard' in the Side combobox and the Range is the empty string or zero,
-    ''' alert the user to fill them in with an integer before allowing the submission for insertion into the database.
+    ''' Acknowledge that everything is verified by setting all member variables and building the dictionary. An event will be fired to let the parents know we are ready.
     ''' </summary>
-    Private Sub ok_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles ok.Click
+    Public Sub Acknowledge(Optional speciesCount As String = "")
         ' The codes 1 and 2 below reflect Port and Starboard. The commented out if statement shows what is really going on here.
         ' If cboSide.SelectedItem = "Port" Or cboSide.SelectedItem = "Starboard" Then
         If cboSide.SelectedValue = 1 Or cboSide.SelectedValue = 2 Then
@@ -288,38 +282,31 @@ Public Class frmSpeciesEvent
         ' so the query won't break later.
         SpeciesName = cboSpecies.Text
         SpeciesCode = cboSpecies.SelectedValue
-        Range = txtRange.Text
-        If Range = "" Then
-            Range = "NULL"
-        End If
-        Side = cboSide.SelectedValue
-        If Side = "" Then
+        ' If speciesCount argument was supplied, then this is meant to be a quick entry and some fields must be made null
+        If speciesCount <> NULL_STRING Then
+            Count = speciesCount
             Side = "NULL"
-        End If
-        IDConfidence = cboIDConfidence.SelectedValue
-        If IDConfidence = "" Then
             IDConfidence = "NULL"
-        End If
-        Abundance = cboAbundance.SelectedValue
-        If Abundance = "" Then
             Abundance = "NULL"
+        Else
+            Count = txtCount.Text
+            Side = cboSide.SelectedValue
+            IDConfidence = cboIDConfidence.SelectedValue
+            Abundance = cboAbundance.SelectedValue
         End If
-        Count = txtCount.Text
-        If Count = "" Then
-            Count = "NULL"
-        End If
+        If Side = "" Then Side = "NULL"
+        If IDConfidence = "" Then IDConfidence = "NULL"
+        If Abundance = "" Then Abundance = "NULL"
+        If Count = "" Then Count = "NULL"
+
+        Range = txtRange.Text
+        If Range = "" Then Range = "NULL"
         SpeciesHeight = txtHeight.Text
-        If SpeciesHeight = "" Then
-            SpeciesHeight = "NULL"
-        End If
+        If SpeciesHeight = "" Then SpeciesHeight = "NULL"
         SpeciesWidth = txtWidth.Text
-        If SpeciesWidth = "" Then
-            SpeciesWidth = "NULL"
-        End If
+        If SpeciesWidth = "" Then SpeciesWidth = "NULL"
         SpeciesLength = txtLength.Text
-        If SpeciesLength = "" Then
-            SpeciesLength = "NULL"
-        End If
+        If SpeciesLength = "" Then SpeciesLength = "NULL"
         Comments = rtxtComments.Text
         If Comments = "" Then
             ' This one is a bit different, this needs to be "" instead of NULL.
@@ -328,8 +315,12 @@ Public Class frmSpeciesEvent
         ' build the dictionary of data..
         buildDictionary()
         ' Raise Event to tell parent form that we wish a record to be added to the database
-        RaiseEvent NewSpeciesEntryEvent(Me, e)
+        RaiseEvent NewSpeciesEntryEvent(Me, EventArgs.Empty)
         Me.Hide()
+    End Sub
+
+    Private Sub ok_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles ok.Click
+        acknowledge()
     End Sub
 
     ''' <summary>
@@ -373,13 +364,19 @@ Public Class frmSpeciesEvent
     End Sub
 
     ''' <summary>
+    ''' Resets the species combobox back to it's correct default species name
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private Sub selectSpeciesInCombobox()
+        Dim index As Integer = cboSpecies.FindStringExact(SpeciesName)
+        cboSpecies.SelectedIndex = index
+    End Sub
+
+    ''' <summary>
     ''' This code is run everytime the form's show function is called. It resets the species combobox back to it's correct default species name
     ''' </summary>
     Public Sub formShown(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Me.VisibleChanged
-        If Me.Visible Then
-            Dim index As Integer = cboSpecies.FindStringExact(SpeciesName)
-            cboSpecies.SelectedIndex = index
-        End If
+        selectSpeciesInCombobox()
     End Sub
 
     ''' <summary>
