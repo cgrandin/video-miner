@@ -57,6 +57,7 @@
     <ProjectName>test1</ProjectName>
     <ProjectName>test2</ProjectName>
     <ProjectName>test3</ProjectName>
+    <ProjectName>test4</ProjectName>
   </PreviousProjects>
   <DeviceControl>
     <ConfigurationSet>False</ConfigurationSet>

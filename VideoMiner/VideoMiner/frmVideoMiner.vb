@@ -4537,9 +4537,19 @@ Public Class VideoMiner
         Dim values As String = "values(" & m_db_id_num & ","
         Dim strQuery As String
 
+        If m_strVideoFile <> NULL_STRING Then
+            names = names & "FileName,"
+            values = values & SingleQuote(m_strVideoFile) & ","
+        End If
+
         If m_project_name <> NULL_STRING Then
             names = names & "ProjectName,"
             values = values & SingleQuote(m_project_name) & ","
+        End If
+
+        If m_transect_name <> NULL_STRING Then
+            names = names & "TransectName,"
+            values = values & SingleQuote(m_transect_name) & ","
         End If
 
         If Not IsNothing(m_transect_date) Then
@@ -5077,9 +5087,6 @@ Public Class VideoMiner
                 grdVideoMinerDatabase.Rows(i).Cells(cell).Style.ForeColor = Color.Black
                 grdVideoMinerDatabase.Rows(i).Cells(cell).Style.BackColor = Color.White
             Next
-            ' Reset the background color back to white and the selection color back to default 'HighLight'
-            'grdVideoMinerDatabase.Rows(i).DefaultCellStyle.BackColor = Color.Yellow
-            'grdVideoMinerDatabase.Rows(i).DefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Highlight
         Next
         fetch_data() ' triggers code to check for 0 rows situation and disable buttons if so.
     End Sub
@@ -5154,7 +5161,6 @@ Public Class VideoMiner
     End Sub
 #End Region
 
-
     Private Sub ConfigureButtonFormatToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureButtonFormatToolStripMenuItem.Click
         If Not frmConfigureButtonFormat Is Nothing Then
             frmConfigureButtonFormat.Dispose()
@@ -5167,22 +5173,6 @@ Public Class VideoMiner
 
     Private Sub cmdScreenCapture_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdScreenCapture.Click
         Me.mnuCapScr_Click(sender, e)
-    End Sub
-
-    Private Sub tmrGPSExpiry_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        If Me.txtTime.Text <> strPreviousGPSTime Then
-            strPreviousGPSTime = Me.txtTime.Text
-            Me.txtTimeSource.ForeColor = Color.LimeGreen
-            Me.txtTime.ForeColor = Color.LimeGreen
-            Me.txtDateSource.ForeColor = Color.LimeGreen
-        Else
-            'If dblGPSExpiry > 0.5 Then
-            Me.txtTimeSource.ForeColor = Color.Red
-            Me.txtTime.ForeColor = Color.Red
-            Me.txtDateSource.ForeColor = Color.Red
-            'End If
-            'dblGPSExpiry += 0.5
-        End If
     End Sub
 
     Private Sub tmrComputerTime_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrComputerTime.Tick
