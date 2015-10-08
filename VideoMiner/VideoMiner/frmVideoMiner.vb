@@ -14,6 +14,7 @@ Imports Microsoft.VisualBasic.ApplicationServices
 Imports System.Xml
 Imports System.Reflection
 Imports System.Threading
+Imports System.ComponentModel
 
 ''' <summary>
 ''' This is the main form for the program, and instantiates most of the other forms.
@@ -422,6 +423,21 @@ Public Class VideoMiner
     Private frmAbout As AboutBox1
     Private strAbout As String
 
+    ''' <summary>
+    ''' Coloring of a row in the data grid. When a field is sorted by clicking the column header, the coloring is recorded, then the grid is sorted,
+    ''' then the coloring is re-applied by using the key field 'ID'. This structure represents a single row in the grid. The two cell arrays hold the
+    ''' background and foreground colors for the cells in the row.
+    ''' </summary>
+    Structure stcRowColoring
+        Public id As String
+        Public rowCol As Color
+        Public cellForegroundCols As Color()
+        Public cellBackgroundCols As Color()
+    End Structure
+    ''' <summary>
+    ''' An array of row colorings to keep track of dirty cells when the columns are sorted.
+    ''' </summary>
+    Private arrColoring As stcRowColoring()
 #End Region
 
 #Region "Delegate Function Declarations"
@@ -1106,6 +1122,7 @@ Public Class VideoMiner
 
         ' Create this form once, since it loads comboboxes with large amounts of data.
         frmRareSpeciesLookup = New frmRareSpeciesLookup
+
     End Sub
 
     ''' <summary>
@@ -1907,7 +1924,7 @@ Public Class VideoMiner
                     End If
                 End If
             End If
-            End If
+        End If
     End Sub
 
     ''' <summary>
@@ -4541,6 +4558,13 @@ Public Class VideoMiner
         ' If data was freshly fetched, no grid cells wil be dirty, so we can allow the 'Define All' buttons to be pressed
         pnlTransectData.EnableDefineAllButton()
         pnlHabitatData.EnableDefineAllButton()
+
+        ' Make the colun headers on the DataGridView non-clickable. If they are clickable, the coloring introduced when data is dirty will dissapear on the sort.
+        ' TODO: Store the coloring data in a data structure and re-apply the coloring after the sort.
+        'For col As Integer = 0 To grdVideoMinerDatabase.ColumnCount - 1
+        ' grdVideoMinerDatabase.Columns(col).SortMode = DataGridViewColumnSortMode.NotSortable
+        ' Next
+
     End Sub
 
     ''' <summary>
@@ -4940,6 +4964,75 @@ Public Class VideoMiner
     ''' then this is required to put the row back into the condition it was in before the current edit attempt.
     ''' </summary>
     Private rowWasGood As Boolean
+
+    ''' <summary>
+    ''' Writes the ID numbers in the row headers, and sets the width to fit.
+    ''' </summary>
+    Private Sub grdVideoMinerDatabase_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles grdVideoMinerDatabase.ColumnHeaderMouseClick
+        'Set the row headers to be the ID column values, and make sure the header is wide enough
+        grdVideoMinerDatabase.RowHeadersWidth = 60
+        For i As Integer = 0 To grdVideoMinerDatabase.Rows.Count - 1
+            grdVideoMinerDatabase.Rows(i).HeaderCell.Value = grdVideoMinerDatabase.Rows(i).Cells(0).Value.ToString()
+        Next
+    End Sub
+
+    ''' <summary>
+    ''' When the user clicks a column header, record the cell color data so that any that are dirty will remain so after the sort takes place.
+    ''' </summary>
+    Private Sub grdVideoMinerDatabase_CellMouseDown(sender As Object, e As DataGridViewCellMouseEventArgs) Handles grdVideoMinerDatabase.CellMouseDown
+        If e.RowIndex = -1 Then
+            ReDim arrColoring(grdVideoMinerDatabase.RowCount - 1)
+            For row As Integer = 0 To grdVideoMinerDatabase.RowCount - 1
+                arrColoring(row) = New stcRowColoring
+                arrColoring(row).id = grdVideoMinerDatabase.Rows(row).Cells(0).Value
+                arrColoring(row).rowCol = grdVideoMinerDatabase.Rows(row).DefaultCellStyle.BackColor
+                ReDim arrColoring(row).cellForegroundCols(grdVideoMinerDatabase.ColumnCount - 1)
+                ReDim arrColoring(row).cellBackgroundCols(grdVideoMinerDatabase.ColumnCount - 1)
+                For cell As Integer = 0 To grdVideoMinerDatabase.ColumnCount - 1
+                    arrColoring(row).cellForegroundCols(cell) = grdVideoMinerDatabase.Rows(row).Cells(cell).Style.ForeColor
+                    arrColoring(row).cellBackgroundCols(cell) = grdVideoMinerDatabase.Rows(row).Cells(cell).Style.BackColor
+                Next
+            Next
+        End If
+    End Sub
+
+    Delegate Sub UpdateColoringDelegate()
+    Private marshalUpdateColoring As UpdateColoringDelegate = New UpdateColoringDelegate(AddressOf UpdateColoring)
+
+    ''' <summary>
+    ''' Marshalled sub used to re-apply the coloring of the dirty data cells in the data grid. This must be marshalled to ensure it happens after the
+    ''' DataBinding Event has taken place.
+    ''' </summary>
+    Private Sub UpdateColoring()
+        Dim id As String
+        For row As Integer = 0 To grdVideoMinerDatabase.RowCount - 1
+            ' Get the ID found in the current row
+            id = grdVideoMinerDatabase.Rows(row).Cells(0).Value
+            ' Find the id in the coloring array
+            For i As Integer = 0 To arrColoring.Length - 1
+                If arrColoring(i).id = id Then
+                    ' Apply the coloring to this row and move on
+                    grdVideoMinerDatabase.Rows(row).DefaultCellStyle.BackColor = arrColoring(i).rowCol
+                    For cell As Integer = 0 To grdVideoMinerDatabase.ColumnCount - 1
+                        grdVideoMinerDatabase.Rows(row).Cells(cell).Style.ForeColor = arrColoring(i).cellForegroundCols(cell)
+                        grdVideoMinerDatabase.Rows(row).Cells(cell).Style.BackColor = arrColoring(i).cellBackgroundCols(cell)
+                    Next
+                End If
+            Next
+        Next
+        arrColoring = Nothing
+    End Sub
+
+    ''' <summary>
+    ''' Apply coloring to the data grid after it has been sorted
+    ''' </summary>
+    Private Sub grdVideoMinerDatabase_Sorted(sender As Object, e As DataGridViewBindingCompleteEventArgs) Handles grdVideoMinerDatabase.DataBindingComplete
+        ' Prevent initial data binding from failing
+        If IsNothing(arrColoring) Then Exit Sub
+        If e.ListChangedType <> ListChangedType.Reset Then Exit Sub
+        Me.BeginInvoke(marshalUpdateColoring)
+    End Sub
+
 
     ''' <summary>
     ''' Triggered when any cell value is changed in the grid. Will update a label telling the user that the data is no longer synced with the database,
@@ -5675,5 +5768,10 @@ Public Class VideoMiner
     Private Sub AlwaysShowNewestRecordToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlwaysShowNewestRecordToolStripMenuItem.Click
         fetch_data()
     End Sub
+
+    Private Function MethodInvoker() As [Delegate]
+        Throw New NotImplementedException
+    End Function
+
 
 End Class

@@ -324,6 +324,13 @@ Public Class frmSpeciesEvent
     End Sub
 
     ''' <summary>
+    '''  Set the form to be shown where the mouse pointer is.
+    ''' </summary>
+    'Private Sub SpeciesEventForm_FormShown(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Shown
+    '    Me.Location = MousePosition()
+    'End Sub
+
+    ''' <summary>
     ''' Build the dictionary of key/value pairs for the data the user chose.
     ''' </summary>
     Private Sub buildDictionary()

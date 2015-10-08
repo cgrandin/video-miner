@@ -77,6 +77,13 @@ Public Class frmTableView
         ' End If
     End Sub
 
+    ''' <summary>
+    '''  Set the form to be shown where the mouse pointer is.
+    ''' </summary>
+    'Private Sub TableViewForm_FormShown(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Shown
+    '    Me.Location = MousePosition()
+    'End Sub
+
     Private Sub TableViewForm_FormClosed(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
         'Me.UserClosedForm = True
     End Sub

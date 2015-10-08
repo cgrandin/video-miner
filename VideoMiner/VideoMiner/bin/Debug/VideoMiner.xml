@@ -1085,6 +1085,10 @@ VideoMiner
 	<summary>
  The table view of the m_data_table. This may not be set if the button type is for a species.
  </summary>
+</member><member name="F:VideoMiner.DynamicButton.m_abundance_table">
+	<summary>
+ The table view of the abundance table. This may not be set if the button type is for a species.
+ </summary>
 </member><member name="F:VideoMiner.DynamicButton.m_current_data_code">
 	<summary>
  Currently selected code for the variable that m_table_name represents.
@@ -1817,6 +1821,16 @@ VideoMiner
  Holds the data code table for the project. This will be passed to the various DynamicPanels
  so that they can link their data to the proper data code
  </summary>
+</member><member name="T:VideoMiner.VideoMiner.stcRowColoring">
+	<summary>
+ Coloring of a row in the data grid. When a field is sorted by clicking the column header, the coloring is recorded, then the grid is sorted,
+ then the coloring is re-applied by using the key field 'ID'. This structure represents a single row in the grid. The two cell arrays hold the
+ background and foreground colors for the cells in the row.
+ </summary>
+</member><member name="F:VideoMiner.VideoMiner.arrColoring">
+	<summary>
+ An array of row colorings to keep track of dirty cells when the columns are sorted.
+ </summary>
 </member><member name="M:VideoMiner.VideoMiner.frmVideoMiner_Load(System.Object,System.EventArgs)">
 	<summary>
  Get version name from assembly, read and process the Config file, and setup the form controls for an unloaded state.
@@ -2069,6 +2083,10 @@ VideoMiner
  Whether or not the row is synced properly with the database. Used when the user edits a cell value. The cell's row
  will immediately be colored since the data are now 'dirty' but if the value is of the wrong type (not validated)
  then this is required to put the row back into the condition it was in before the current edit attempt.
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_Sorted(System.Object,System.Windows.Forms.DataGridViewBindingCompleteEventArgs)">
+	<summary>
+ Apply coloring to the data grid after it has been sorted
  </summary>
 </member><member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_CurrentCellDirtyStateChanged(System.Object,System.EventArgs)">
 	<summary>

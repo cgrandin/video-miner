@@ -48,6 +48,7 @@
         cmdCancel.Visible = True
         Width = grdAbundance.Width
         Height = (grdAbundance.RowCount + 5) * grdAbundance.Rows(0).Height
+        Location = MousePosition()
         'txtCommentBox.Text = VideoMiner.strComment
     End Sub
 
