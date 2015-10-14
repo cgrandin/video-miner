@@ -5,6 +5,8 @@
 ''' </summary>
 Public Class frmTableView
     Private m_data_table As DataTable
+    Private prevWidth As Integer
+    Private prevWindowState As FormWindowState
 
 #Region "Properties"
     ''' <summary>
@@ -96,12 +98,43 @@ Public Class frmTableView
         End If
     End Sub
 
+    ''' <summary>
+    ''' Once the form loads, resize the grid so that there is no horizontal scrollbar
+    ''' </summary>
+    Private Sub ResizeGrid()
+        If prevWidth = 0 Then
+            prevWidth = DataGridView1.Width
+        End If
+        If prevWidth = DataGridView1.Width Then
+            Exit Sub
+        End If
+        Dim fixedWidth As Integer = SystemInformation.VerticalScrollBarWidth + DataGridView1.RowHeadersWidth + 2
+        Dim mul As Integer = 100 * (DataGridView1.Width - fixedWidth) / (prevWidth - fixedWidth)
+        Dim columnWidth As Integer
+        Dim total As Integer = 0
+        Dim lastVisibleCol As DataGridViewColumn = Nothing
+        For i As Integer = 0 To DataGridView1.ColumnCount - 1
+            If DataGridView1.Columns(i).Visible Then
+                columnWidth = (DataGridView1.Columns(i).Width * mul + 50) / 100
+                DataGridView1.Columns(i).Width = Math.Max(columnWidth, DataGridView1.Columns(i).MinimumWidth)
+                total = total + DataGridView1.Columns(i).Width
+                lastVisibleCol = DataGridView1.Columns(i)
+            End If
+        Next
+        If IsNothing(lastVisibleCol) Then
+            Exit Sub
+        End If
+        columnWidth = DataGridView1.Width - total + lastVisibleCol.Width - fixedWidth
+        lastVisibleCol.Width = Math.Max(columnWidth, lastVisibleCol.MinimumWidth)
+        prevWidth = DataGridView1.Width
+    End Sub
+
     Private Sub TableViewForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         Me.btnSkipSpatial.Visible = True
         Me.btnClear.Visible = True
-        Me.Width = DataGridView1.Width
-        Me.Height = (DataGridView1.RowCount + 3) * DataGridView1.Rows(0).Height
-        'Me.txtCommentBox.Text = VideoMiner.strComment
+        prevWidth = Width
+        prevWindowState = WindowState
+        ResizeGrid()
         Refresh()
     End Sub
 
@@ -143,4 +176,5 @@ Public Class frmTableView
         DataGridView1.ClearSelection()
         txtCommentBox.Clear()
     End Sub
+
 End Class

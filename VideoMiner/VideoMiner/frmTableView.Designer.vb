@@ -28,6 +28,7 @@ Partial Class frmTableView
         Me.btnClear = New System.Windows.Forms.Button()
         Me.txtCommentBox = New System.Windows.Forms.TextBox()
         Me.cmdScreenCapture = New System.Windows.Forms.Button()
+        Me.lblComment = New System.Windows.Forms.Label()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -39,17 +40,17 @@ Partial Class frmTableView
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.DataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridView1.Location = New System.Drawing.Point(0, 0)
+        Me.DataGridView1.Location = New System.Drawing.Point(0, 2)
         Me.DataGridView1.Margin = New System.Windows.Forms.Padding(2)
         Me.DataGridView1.Name = "DataGridView1"
         Me.DataGridView1.RowTemplate.Height = 24
-        Me.DataGridView1.Size = New System.Drawing.Size(321, 243)
+        Me.DataGridView1.Size = New System.Drawing.Size(321, 297)
         Me.DataGridView1.TabIndex = 3
         '
         'btnSkipSpatial
         '
         Me.btnSkipSpatial.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnSkipSpatial.Location = New System.Drawing.Point(246, 276)
+        Me.btnSkipSpatial.Location = New System.Drawing.Point(246, 347)
         Me.btnSkipSpatial.Name = "btnSkipSpatial"
         Me.btnSkipSpatial.Size = New System.Drawing.Size(75, 23)
         Me.btnSkipSpatial.TabIndex = 4
@@ -60,7 +61,7 @@ Partial Class frmTableView
         'btnClear
         '
         Me.btnClear.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnClear.Location = New System.Drawing.Point(165, 276)
+        Me.btnClear.Location = New System.Drawing.Point(165, 347)
         Me.btnClear.Name = "btnClear"
         Me.btnClear.Size = New System.Drawing.Size(75, 23)
         Me.btnClear.TabIndex = 5
@@ -75,12 +76,11 @@ Partial Class frmTableView
         Me.txtCommentBox.BackColor = System.Drawing.SystemColors.Window
         Me.txtCommentBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtCommentBox.ForeColor = System.Drawing.Color.SeaGreen
-        Me.txtCommentBox.Location = New System.Drawing.Point(0, 248)
+        Me.txtCommentBox.Location = New System.Drawing.Point(0, 319)
         Me.txtCommentBox.Multiline = True
         Me.txtCommentBox.Name = "txtCommentBox"
         Me.txtCommentBox.Size = New System.Drawing.Size(282, 22)
         Me.txtCommentBox.TabIndex = 6
-        Me.txtCommentBox.Text = "Comment"
         Me.txtCommentBox.WordWrap = False
         '
         'cmdScreenCapture
@@ -89,18 +89,29 @@ Partial Class frmTableView
         Me.cmdScreenCapture.BackColor = System.Drawing.SystemColors.Control
         Me.cmdScreenCapture.BackgroundImage = CType(resources.GetObject("cmdScreenCapture.BackgroundImage"), System.Drawing.Image)
         Me.cmdScreenCapture.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.cmdScreenCapture.Location = New System.Drawing.Point(288, 246)
+        Me.cmdScreenCapture.Location = New System.Drawing.Point(288, 317)
         Me.cmdScreenCapture.Name = "cmdScreenCapture"
         Me.cmdScreenCapture.Size = New System.Drawing.Size(33, 26)
         Me.cmdScreenCapture.TabIndex = 59
         Me.cmdScreenCapture.UseVisualStyleBackColor = False
         '
+        'lblComment
+        '
+        Me.lblComment.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.lblComment.AutoSize = True
+        Me.lblComment.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblComment.Location = New System.Drawing.Point(0, 301)
+        Me.lblComment.Name = "lblComment"
+        Me.lblComment.Size = New System.Drawing.Size(65, 13)
+        Me.lblComment.TabIndex = 60
+        Me.lblComment.Text = "Comment:"
+        '
         'frmTableView
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.AutoSize = True
-        Me.ClientSize = New System.Drawing.Size(321, 299)
+        Me.ClientSize = New System.Drawing.Size(321, 370)
+        Me.Controls.Add(Me.lblComment)
         Me.Controls.Add(Me.cmdScreenCapture)
         Me.Controls.Add(Me.txtCommentBox)
         Me.Controls.Add(Me.btnClear)
@@ -124,4 +135,5 @@ Partial Class frmTableView
     Friend WithEvents btnClear As System.Windows.Forms.Button
     Friend WithEvents txtCommentBox As System.Windows.Forms.TextBox
     Friend WithEvents cmdScreenCapture As System.Windows.Forms.Button
+    Friend WithEvents lblComment As System.Windows.Forms.Label
 End Class

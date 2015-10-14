@@ -7,6 +7,9 @@
 
     Private m_Multiple As Boolean
     Private strSelectedButtonName As String = ""
+
+    Private prevWidth As Integer
+    Private prevWindowState As FormWindowState
 #End Region
 
 #Region "Properties"
@@ -64,12 +67,44 @@
         grdAbundance.ReadOnly = True
     End Sub
 
+    ''' <summary>
+    ''' Once the form loads, resize the grid so that there is no horizontal scrollbar
+    ''' </summary>
+    Private Sub ResizeGrid()
+        If prevWidth = 0 Then
+            prevWidth = grdAbundance.Width
+        End If
+        If prevWidth = grdAbundance.Width Then
+            Exit Sub
+        End If
+        Dim fixedWidth As Integer = SystemInformation.VerticalScrollBarWidth + grdAbundance.RowHeadersWidth + 2
+        Dim mul As Integer = 100 * (grdAbundance.Width - fixedWidth) / (prevWidth - fixedWidth)
+        Dim columnWidth As Integer
+        Dim total As Integer = 0
+        Dim lastVisibleCol As DataGridViewColumn = Nothing
+        For i As Integer = 0 To grdAbundance.ColumnCount - 1
+            If grdAbundance.Columns(i).Visible Then
+                columnWidth = (grdAbundance.Columns(i).Width * mul + 50) / 100
+                grdAbundance.Columns(i).Width = Math.Max(columnWidth, grdAbundance.Columns(i).MinimumWidth)
+                total = total + grdAbundance.Columns(i).Width
+                lastVisibleCol = grdAbundance.Columns(i)
+            End If
+        Next
+        If IsNothing(lastVisibleCol) Then
+            Exit Sub
+        End If
+        columnWidth = grdAbundance.Width - total + lastVisibleCol.Width - fixedWidth
+        lastVisibleCol.Width = Math.Max(columnWidth, lastVisibleCol.MinimumWidth)
+        prevWidth = grdAbundance.Width
+    End Sub
+
+
     Private Sub TableViewForm_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        cmdCancel.Visible = True
-        Width = grdAbundance.Width
-        Height = (grdAbundance.RowCount + 5) * grdAbundance.Rows(0).Height
-        Location = MousePosition()
-        'txtCommentBox.Text = VideoMiner.strComment
+        prevWidth = Width
+        prevWindowState = WindowState
+        ResizeGrid()
+        Refresh()
+        'Location = MousePosition()
     End Sub
 
     Private Sub grdAbundance_CellBeginEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellCancelEventArgs) Handles grdAbundance.CellBeginEdit
@@ -95,19 +130,13 @@
         Hide()
     End Sub
 
-    Private Sub cmdComment_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdComment.Click
-        If cmdComment.Text = "Edit Comment" Then
-            txtCommentBox.Enabled = True
-            cmdCancel.Enabled = False
-            grdAbundance.Enabled = False
-            grdAbundance.DefaultCellStyle.ForeColor = Color.Gray
-            cmdComment.Text = "Done"
-        Else
-            txtCommentBox.Enabled = False
-            cmdCancel.Enabled = True
-            grdAbundance.Enabled = True
-            grdAbundance.DefaultCellStyle.ForeColor = Color.Black
-            cmdComment.Text = "Edit Comment"
+    ''' <summary>
+    ''' Capture the press of the 'X' button and hide instead of closing to avoid an exception on re-opening
+    ''' </summary>
+    Private Sub frmTableView_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If e.CloseReason = CloseReason.UserClosing Then
+            e.Cancel = True
+            Me.Hide()
         End If
     End Sub
 

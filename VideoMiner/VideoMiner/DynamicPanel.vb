@@ -414,6 +414,14 @@ Public Class DynamicPanel
                 If m_dynamic_buttons(i).DataValue <> DynamicButton.UNINITIALIZED_DATA_VALUE Then
                     m_tuple = New Tuple(Of String, String, Boolean)(m_dynamic_buttons(i).DataCode, m_dynamic_buttons(i).DataValue, btn.Name = m_dynamic_buttons(i).Name)
                     m_dict.Add(m_dynamic_buttons(i).DataCodeName, m_tuple)
+                    ' Insert the comment if it exists for only the button which was pressed
+                    If btn.Name = m_dynamic_buttons(i).Name Then
+                        m_tuple = New Tuple(Of String, String, Boolean)(m_dynamic_buttons(i).DataComment, DoubleQuote(m_dynamic_buttons(i).DataComment), False)
+                        If m_dict.ContainsKey("Comment") Then
+                            m_dict.Remove("Comment")
+                        End If
+                        m_dict.Add("Comment", m_tuple)
+                    End If
                 End If
             Next
         End If
