@@ -11,6 +11,20 @@
 
 #Region "Properties"
     ''' <summary>
+    ''' If a row is selected, return the first cell's value from that row.
+    ''' If no row is selected, return the empty string.
+    ''' </summary>
+    Public ReadOnly Property SelectedCode As String
+        Get
+            If grdAbundance.SelectedRows.Count = 1 Then
+                Return grdAbundance.SelectedRows(0).Cells(0).Value.ToString()
+            Else
+                Return NULL_STRING
+            End If
+        End Get
+    End Property
+
+    ''' <summary>
     ''' If a row is selected, return the second cell's value from that row
     ''' If no row is selected, return the empty string.
     ''' </summary>
@@ -23,7 +37,14 @@
             End If
         End Get
     End Property
-
+    ''' <summary>
+    ''' Return the contents of the comment box, which may be an empty string.
+    ''' </summary>
+    Public ReadOnly Property Comment As String
+        Get
+            Return txtCommentBox.Text
+        End Get
+    End Property
 #End Region
 
     ''' <summary>
@@ -35,7 +56,6 @@
         InitializeComponent()
         m_table_name = DB_ABUNDANCE_TABLE
         m_data_table = Database.GetDataTable("SELECT * FROM " & m_table_name & " order by ACFORScaleID Asc;", m_table_name)
-        grdAbundance.DataSource = m_data_table
         grdAbundance.DataSource = m_data_table
         grdAbundance.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
         grdAbundance.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells

@@ -266,7 +266,10 @@ Public Class frmSpeciesEvent
     ''' <summary>
     ''' Acknowledge that everything is verified by setting all member variables and building the dictionary. An event will be fired to let the parents know we are ready.
     ''' </summary>
-    Public Sub Acknowledge(Optional speciesCount As String = "")
+    ''' <param name="speciesCount">The species count to enter for this quick species entry.</param>
+    ''' <param name="speciesAbundance">The abundance to enter for this quick species entry.</param>
+    ''' <param name="ackComment">Optional comment sent for the abundance case only.</param>
+    Public Sub Acknowledge(Optional speciesCount As String = NULL_STRING, Optional speciesAbundance As String = NULL_STRING, Optional ackComment As String = NULL_STRING)
         ' The codes 1 and 2 below reflect Port and Starboard. The commented out if statement shows what is really going on here.
         ' If cboSide.SelectedItem = "Port" Or cboSide.SelectedItem = "Starboard" Then
         If cboSide.SelectedValue = 1 Or cboSide.SelectedValue = 2 Then
@@ -294,6 +297,15 @@ Public Class frmSpeciesEvent
             IDConfidence = cboIDConfidence.SelectedValue
             Abundance = cboAbundance.SelectedValue
         End If
+        If speciesAbundance <> NULL_STRING Then
+            Abundance = speciesAbundance
+            Comments = ackComment
+            Side = "NULL"
+            Count = "NULL"
+            IDConfidence = "NULL"
+        Else
+            Comments = rtxtComments.Text
+        End If
         If Side = "" Then Side = "NULL"
         If IDConfidence = "" Then IDConfidence = "NULL"
         If Abundance = "" Then Abundance = "NULL"
@@ -307,7 +319,6 @@ Public Class frmSpeciesEvent
         If SpeciesWidth = "" Then SpeciesWidth = "NULL"
         SpeciesLength = txtLength.Text
         If SpeciesLength = "" Then SpeciesLength = "NULL"
-        Comments = rtxtComments.Text
         If Comments = "" Then
             ' This one is a bit different, this needs to be "" instead of NULL.
             Comments = ""

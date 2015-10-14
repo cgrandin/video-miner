@@ -384,13 +384,21 @@ Public Class DynamicButton
     ''' <summary>
     ''' Handle the changing by the user of the lookup table code found in frmTableView, and fire an event to the parent.
     ''' </summary>
-    ''' <param name="comment">The comment supplied by the user. Can be the empty string.</param>
-    Private Sub dataHasChanged(comment As String) Handles m_table_view.DataChanged
-        DataValue = m_table_view.SelectedCode
-        DataDescription = m_table_view.SelectedCodeName
-        DataComment = m_table_view.Comment
-        ' Chain this event to the main form where a query can be run to place the changes in the database if necessary (if comment <> "").
-        RaiseEvent DataChanged(Me, EventArgs.Empty)
+    Private Sub dataHasChanged(sender As System.Object, e As System.EventArgs) Handles m_table_view.DataChanged, m_abundance_table.DataChanged
+        If TypeOf sender Is frmAbundanceTableView Then
+            DataValue = m_abundance_table.SelectedCode
+            DataDescription = m_abundance_table.SelectedCodeName
+            DataComment = m_abundance_table.Comment
+            m_data_code_name = "DataCode"
+            m_data_code = 4
+            frmSpeciesEvent.Acknowledge(NULL_STRING, m_abundance_table.SelectedCode, m_abundance_table.Comment)
+        Else
+            DataValue = m_table_view.SelectedCode
+            DataDescription = m_table_view.SelectedCodeName
+            DataComment = m_table_view.Comment
+            ' Chain this event to the main form where a query can be run to place the changes in the database if necessary
+            RaiseEvent DataChanged(Me, EventArgs.Empty)
+        End If
     End Sub
 
     ''' <summary>

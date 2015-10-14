@@ -55,9 +55,7 @@ Public Class frmTableView
     ''' <summary>
     ''' If user edits the comment box, this event will be raised so that the main form can write a record to the database
     ''' </summary>
-    ''' <param name="comment">A comment as input by user into the comment box, or the empty string if there is no comment.</param>
-    ''' <remarks></remarks>
-    Public Event DataChanged(comment As String)
+    Public Event DataChanged(sender As System.Object, e As System.EventArgs)
 #End Region
 
     Public Sub New(titleText As String, dataTable As DataTable)
@@ -113,7 +111,7 @@ Public Class frmTableView
     ''' </summary>
     Private Sub DataGridView1_SelectionChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles DataGridView1.SelectionChanged
         If DataGridView1.SelectedRows.Count = 1 Then
-            RaiseEvent DataChanged(txtCommentBox.Text)
+            RaiseEvent DataChanged(Me, e)
             Me.Hide()
         End If
     End Sub

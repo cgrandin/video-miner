@@ -91,6 +91,7 @@ Partial Class VideoMiner
         Me.txtNMEA = New System.Windows.Forms.TextBox()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer3 = New System.Windows.Forms.SplitContainer()
+        Me.mnthCalendar = New System.Windows.Forms.MonthCalendar()
         Me.cmdCloseCalendar = New System.Windows.Forms.Button()
         Me.pnlVideoControls = New System.Windows.Forms.Panel()
         Me.txtFramesToSkip = New System.Windows.Forms.TextBox()
@@ -108,7 +109,6 @@ Partial Class VideoMiner
         Me.cmdDecreaseRate = New System.Windows.Forms.Button()
         Me.cmdPlayForSeconds = New System.Windows.Forms.Button()
         Me.txtPlaySeconds = New System.Windows.Forms.TextBox()
-        Me.mnthCalendar = New System.Windows.Forms.MonthCalendar()
         Me.txtTransectDate = New System.Windows.Forms.TextBox()
         Me.chkRecordEachSecond = New System.Windows.Forms.CheckBox()
         Me.txtProjectName = New System.Windows.Forms.TextBox()
@@ -182,7 +182,6 @@ Partial Class VideoMiner
         Me.SplitContainer6.Panel2.SuspendLayout()
         Me.SplitContainer6.SuspendLayout()
         CType(Me.SplitContainer7, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SplitContainer7.Panel1.SuspendLayout()
         Me.SplitContainer7.SuspendLayout()
         CType(Me.SplitContainer8, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer8.Panel1.SuspendLayout()
@@ -216,6 +215,7 @@ Partial Class VideoMiner
         '
         'mnuCloseDatabase
         '
+        Me.mnuCloseDatabase.Enabled = False
         Me.mnuCloseDatabase.Name = "mnuCloseDatabase"
         Me.mnuCloseDatabase.Size = New System.Drawing.Size(156, 22)
         Me.mnuCloseDatabase.Text = "Close Database"
@@ -762,6 +762,7 @@ Partial Class VideoMiner
         '
         'SplitContainer3.Panel1
         '
+        Me.SplitContainer3.Panel1.Controls.Add(Me.mnthCalendar)
         Me.SplitContainer3.Panel1.Controls.Add(Me.cmdCloseCalendar)
         Me.SplitContainer3.Panel1.Controls.Add(Me.pnlVideoControls)
         Me.SplitContainer3.Panel1.Controls.Add(Me.txtTransectDate)
@@ -785,6 +786,16 @@ Partial Class VideoMiner
         Me.SplitContainer3.Size = New System.Drawing.Size(1098, 497)
         Me.SplitContainer3.SplitterDistance = 208
         Me.SplitContainer3.TabIndex = 43
+        '
+        'mnthCalendar
+        '
+        Me.mnthCalendar.Location = New System.Drawing.Point(6, 106)
+        Me.mnthCalendar.MaxSelectionCount = 1
+        Me.mnthCalendar.Name = "mnthCalendar"
+        Me.mnthCalendar.ShowToday = False
+        Me.mnthCalendar.ShowTodayCircle = False
+        Me.mnthCalendar.TabIndex = 50
+        Me.mnthCalendar.Visible = False
         '
         'cmdCloseCalendar
         '
@@ -972,16 +983,6 @@ Partial Class VideoMiner
         Me.txtPlaySeconds.Name = "txtPlaySeconds"
         Me.txtPlaySeconds.Size = New System.Drawing.Size(86, 20)
         Me.txtPlaySeconds.TabIndex = 41
-        '
-        'mnthCalendar
-        '
-        Me.mnthCalendar.Location = New System.Drawing.Point(-74, 106)
-        Me.mnthCalendar.MaxSelectionCount = 1
-        Me.mnthCalendar.Name = "mnthCalendar"
-        Me.mnthCalendar.ShowToday = False
-        Me.mnthCalendar.ShowTodayCircle = False
-        Me.mnthCalendar.TabIndex = 50
-        Me.mnthCalendar.Visible = False
         '
         'txtTransectDate
         '
@@ -1231,10 +1232,6 @@ Partial Class VideoMiner
         Me.SplitContainer7.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SplitContainer7.Location = New System.Drawing.Point(0, 0)
         Me.SplitContainer7.Name = "SplitContainer7"
-        '
-        'SplitContainer7.Panel1
-        '
-        Me.SplitContainer7.Panel1.Controls.Add(Me.mnthCalendar)
         Me.SplitContainer7.Size = New System.Drawing.Size(394, 423)
         Me.SplitContainer7.SplitterDistance = 197
         Me.SplitContainer7.TabIndex = 0
@@ -1497,7 +1494,6 @@ Partial Class VideoMiner
         Me.SplitContainer6.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer6, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer6.ResumeLayout(False)
-        Me.SplitContainer7.Panel1.ResumeLayout(False)
         CType(Me.SplitContainer7, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer7.ResumeLayout(False)
         Me.SplitContainer8.Panel1.ResumeLayout(False)

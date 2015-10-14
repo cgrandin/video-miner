@@ -3527,6 +3527,34 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
+    ''' Once the database is open, toggle the buttons depending on the video file status
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private Sub database_is_open_toggle_visibility()
+        Me.radQuickEntry.Visible = True
+        Me.radDetailedEntry.Visible = True
+        Me.radAbundanceEntry.Visible = True
+        Me.cmdEdit.Visible = True
+        Me.cmdUpdateDatabase.Visible = True
+        Me.cmdRevertDatabase.Visible = True
+        Me.lblDirtyData.Visible = True
+        Me.cmdRareSpeciesLookup.Visible = True
+
+        If m_video_file_open Then
+            Me.txtTransectDate.Enabled = True
+            Me.txtProjectName.Enabled = True
+            Me.chkRecordEachSecond.Enabled = True
+            Me.mnuConfigureTools.Enabled = True
+            Me.mnuRefreshForm.Enabled = True
+            Me.KeyboardShortcutsToolStripMenuItem.Enabled = True
+            Me.DataCodeAssignmentsToolStripMenuItem.Enabled = True
+            Me.cmdShowSetTimecode.Enabled = True
+            Me.cmdTransectStart.Enabled = True
+            Me.cmdOffBottom.Enabled = True
+        End If
+    End Sub
+
+    ''' <summary>
     ''' Toggle enabled/disabled for: Set Time Code Button, Transect Start Button, On/Off Bottom Button, Resume Video Button
     ''' </summary>
     Private Sub files_loaded()
@@ -4498,13 +4526,14 @@ Public Class VideoMiner
             mnuCloseDatabase.Enabled = True
 
             If m_video_file_open Then
-                files_loaded()
+                'files_loaded()
                 Me.lblVideo.Text = "Video File '" & Me.FileName & "' is open"
                 m_video_file_open = True
             End If
             fetch_data()
+            database_is_open_toggle_visibility()
 
-            files_loaded()
+            'files_loaded()
         End If
     End Sub
 
@@ -5772,6 +5801,5 @@ Public Class VideoMiner
     Private Function MethodInvoker() As [Delegate]
         Throw New NotImplementedException
     End Function
-
 
 End Class
