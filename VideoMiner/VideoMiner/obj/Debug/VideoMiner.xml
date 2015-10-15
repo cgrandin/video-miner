@@ -6,7 +6,13 @@ VideoMiner
 </name>
 </assembly>
 <members>
-<member name="M:VideoMiner.frmConfigureButtons.#ctor">
+<member name="M:VideoMiner.BitmapEncoder.ConvertBitmapTo1bpp(System.Drawing.Bitmap)">
+	<summary>
+ Copies a bitmap into a 1bpp bitmap of the same dimensions, fast
+ </summary>
+	<param name="b">original bitmap</param>
+	<returns>a 1bpp copy of the bitmap</returns>
+</member><member name="M:VideoMiner.frmConfigureButtons.#ctor">
 	<summary>
  Initialize the query, and extract the data that query defines into a DataSet with corresponding DataTable.
  Populate the list and set up list attributes.
@@ -1988,6 +1994,11 @@ VideoMiner
  Handler to check to make sure that the Data grid is not dirty. If it isn't, or the user says to disregard changes and save the record anyway,
  the appropriate thing will happen for data recording (species event form will be shown or data table form sill be shown, or quick entry will happen).
  </summary>
+</member><member name="M:VideoMiner.VideoMiner.runInsertQueryScreenshot(System.String)">
+	<summary>
+ Build a dictionary and run an insert query for a screenshot event. The Habitat and Transect panels' data will be merged into the dictionary prior to insertion.
+ </summary>
+	<param name="filename">The name of the file the screenshot was captured to</param>
 </member><member name="M:VideoMiner.VideoMiner.buttonDataChanged(System.Object,System.EventArgs)">
 	<summary>
  Handle the changing of button data by creating an insert query and saving to the database
@@ -2007,6 +2018,21 @@ VideoMiner
  When the user has changed the species buttons from the frmSpeciesEvent form, this function will remove and re-add the DynamicPanel
  which contains the species buttons.
  </summary>
+</member><member name="M:VideoMiner.VideoMiner.capture_screen_image">
+	<summary>
+ Capture a screenshot of the video at it's current position, and write a transection to the database.
+ </summary>
+</member><member name="M:VideoMiner.VideoMiner.GetEncoder(System.Drawing.Imaging.ImageFormat)">
+	<summary>
+ Get the current codec being run in the video window
+ </summary>
+	<param name="format">The image format on the current video</param>
+</member><member name="M:VideoMiner.VideoMiner.ConvertBMP(System.String,System.Drawing.Imaging.ImageFormat)">
+	<summary>
+ Convert a Bitmap to a JPEG
+ </summary>
+	<param name="BMPFullPath">The full path of the bitmap file</param>
+	<param name="imgFormat">The format of the image captured from the video</param>
 </member><member name="M:VideoMiner.VideoMiner.newProjectName">
 	<summary>
  Add a new project name to the XML file when the user changes it inside frmProjectNames

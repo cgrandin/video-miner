@@ -163,6 +163,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ApplicationEvents.vb" />
+    <Compile Include="BitmapEncoder.vb" />
     <Compile Include="Database.vb" />
     <Compile Include="DynamicButton.vb">
       <SubType>Component</SubType>

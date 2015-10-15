@@ -1120,7 +1120,7 @@ Partial Class VideoMiner
         Me.cmdShowSetTimecode.Location = New System.Drawing.Point(13, 5)
         Me.cmdShowSetTimecode.Margin = New System.Windows.Forms.Padding(2)
         Me.cmdShowSetTimecode.Name = "cmdShowSetTimecode"
-        Me.cmdShowSetTimecode.Size = New System.Drawing.Size(184, 42)
+        Me.cmdShowSetTimecode.Size = New System.Drawing.Size(184, 25)
         Me.cmdShowSetTimecode.TabIndex = 40
         Me.cmdShowSetTimecode.Text = "Set Time"
         Me.cmdShowSetTimecode.UseVisualStyleBackColor = True
