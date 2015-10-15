@@ -1783,6 +1783,17 @@ Public Class VideoMiner
         pauseVideo()
         Dim start_or_end As String
 
+        ' Create the insert query for the transect start/stop button
+        ' Need to merge dictionaries for Habitat and Transect panels here to the Off Bottom/ On Bottom  KeyValuePair
+        Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = pnlHabitatData.Dictionary
+        Dim tuple As Tuple(Of String, String, Boolean)
+
+        For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlTransectData.Dictionary
+            If dict.ContainsKey(kvp.Key) Then
+                dict.Remove(kvp.Key)
+            End If
+            dict.Add(kvp.Key, kvp.Value)
+        Next
         If Not m_blInTransect Then
             ' Currently not in a transect, so we start it here
             m_transect_name = InputBox("Enter a name for this transect if you wish.", "Transect Name?")
@@ -1800,6 +1811,13 @@ Public Class VideoMiner
             cmdTransectStart.Text = "Transect End"
             start_or_end = TRANSECT_START
             m_blInTransect = vbTrue
+            'tuple = New Tuple(Of String, String, Boolean)("3", is_on_bottom, True)
+            'dict.Add("OnBottom", tuple)
+            If dict.ContainsKey("DataCode") Then
+                dict.Remove("DataCode")
+            End If
+            tuple = New Tuple(Of String, String, Boolean)(1, "1", False)
+            dict.Add("DataCode", tuple)
         Else
             ' Currently in a transect, so we end it here
             txtTransectTextbox.Text = NO_TRANSECT
@@ -1810,22 +1828,15 @@ Public Class VideoMiner
             cmdTransectStart.Text = "Transect Start"
             start_or_end = TRANSECT_END
             m_blInTransect = vbFalse
-        End If
-
-        Dim numrows As Integer
-        Dim query As String = NULL_STRING
-        Try
-            'query = createInsertQuery(start_or_end, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS, NS)
-            'Database.ExecuteNonQuery(query)
-            fetch_data()
-        Catch ex As Exception
-            If ex.Message.StartsWith("Syntax") Then
-                MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-            Else
-                MsgBox(ex.Message & vbCrLf & ex.StackTrace)
+            If dict.ContainsKey("DataCode") Then
+                dict.Remove("DataCode")
             End If
-        End Try
-
+            tuple = New Tuple(Of String, String, Boolean)(2, "2", False)
+            dict.Add("DataCode", tuple)
+            m_transect_name = NULL_STRING
+        End If
+        runInsertQuery(dict)
+        fetch_data()
     End Sub
 
     Private Sub OffBottom_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOffBottom.Click
@@ -4148,7 +4159,6 @@ Public Class VideoMiner
             Catch ex As Exception
                 MessageBox.Show(ex.Message)
             End Try
-
             ' Figure out where to put the video player form. If there are two screens connected,
             ' put the video on the second screen, maximized. If only one screen, put it on the same screen,
             ' as an unmaximized window.
@@ -4187,6 +4197,19 @@ Public Class VideoMiner
         End If
         frmVideoPlayer.pnlHideVideo.Visible = True
         pnlVideoControls.Visible = True
+        Me.txtTransectDate.Enabled = True
+        Me.txtProjectName.Enabled = True
+        Me.chkRecordEachSecond.Enabled = True
+        Me.mnuConfigureTools.Enabled = True
+        Me.mnuRefreshForm.Enabled = True
+        Me.KeyboardShortcutsToolStripMenuItem.Enabled = True
+        Me.DataCodeAssignmentsToolStripMenuItem.Enabled = True
+        If Database.IsOpen Then
+            Me.cmdTransectStart.Enabled = True
+            Me.cmdOffBottom.Enabled = True
+            Me.txtProjectName.Enabled = True
+        End If
+
         ' In the future if the frames per second are returned properly, this will show that in the status bar..
         'Me.lblVideo.Text = "Video File '" & Me.FileName & "' is open (" & frmVideoPlayer.FPS & " frames per second)"
         Me.lblVideo.Text = "Video File '" & Me.FileName & "' is open"
@@ -4243,6 +4266,18 @@ Public Class VideoMiner
         toggleVideoMenu(True)
         unsetTimes()
         cmdShowSetTimecode.Enabled = False
+        Me.txtTransectDate.Enabled = False
+        Me.txtProjectName.Enabled = False
+        Me.chkRecordEachSecond.Enabled = False
+        Me.mnuConfigureTools.Enabled = False
+        Me.mnuRefreshForm.Enabled = False
+        Me.KeyboardShortcutsToolStripMenuItem.Enabled = False
+        Me.DataCodeAssignmentsToolStripMenuItem.Enabled = False
+        If Database.IsOpen Then
+            Me.cmdTransectStart.Enabled = False
+            Me.cmdOffBottom.Enabled = False
+            Me.txtProjectName.Enabled = False
+        End If
         m_video_file_open = False
     End Sub
 
@@ -4387,16 +4422,8 @@ Public Class VideoMiner
             Me.lblDatabase.Text = DB_FILE_STATUS_LOADED & m_db_filename & " is open"
             mnuOpenDatabase.Enabled = False
             mnuCloseDatabase.Enabled = True
-
-            If m_video_file_open Then
-                'files_loaded()
-                Me.lblVideo.Text = "Video File '" & Me.FileName & "' is open"
-                m_video_file_open = True
-            End If
             fetch_data()
             database_is_open_toggle_visibility()
-
-            'files_loaded()
         End If
     End Sub
 

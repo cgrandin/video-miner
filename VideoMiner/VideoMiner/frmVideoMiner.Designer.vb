@@ -789,7 +789,7 @@ Partial Class VideoMiner
         '
         'mnthCalendar
         '
-        Me.mnthCalendar.Location = New System.Drawing.Point(6, 106)
+        Me.mnthCalendar.Location = New System.Drawing.Point(6, 101)
         Me.mnthCalendar.MaxSelectionCount = 1
         Me.mnthCalendar.Name = "mnthCalendar"
         Me.mnthCalendar.ShowToday = False
