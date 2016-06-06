@@ -76,34 +76,6 @@ Public Class frmVideoPlayer
     Private WithEvents m_pnlTransparentPanel As TransparentPanel
 
     ''' <summary>
-    ''' Default constructor. The label time format will be the default. Current time and Duration are set to zero.
-    ''' </summary>
-    ''' <remarks></remarks>
-    Sub New(strFilename As String, Optional intFramesToSkip As Integer = FRAMES_TO_SKIP)
-        InitializeComponent()
-        m_strFilename = strFilename
-        m_strVideoTimeFormat = VIDEO_TIME_FORMAT
-        m_tsCurrentVideoTime = Zero
-        m_tsDurationTime = Zero
-        m_intFramesToSkip = intFramesToSkip
-    End Sub
-
-    ''' <summary>
-    ''' Constructor with custom time format string. Should look something like this: "{0:D2}:{1:D2}:{2:D2}.{3:D2}"
-    ''' Current time and Duration are set to zero.
-    ''' </summary>
-    ''' <param name="videoTimeFormat"></param>
-    ''' <remarks></remarks>
-    Sub New(strFilename As String, ByVal videoTimeFormat As String, Optional intFramesToSkip As Integer = FRAMES_TO_SKIP)
-        InitializeComponent()
-        m_strFilename = strFilename
-        m_strVideoTimeFormat = videoTimeFormat
-        m_tsCurrentVideoTime = Zero
-        m_tsDurationTime = Zero
-        m_intFramesToSkip = intFramesToSkip
-    End Sub
-
-    ''' <summary>
     ''' This property contains the position of the currently loaded video.
     ''' </summary>
     ''' <value>Between 0.0 and 1.0</value>
@@ -259,6 +231,34 @@ Public Class frmVideoPlayer
     Event RightArrowPressedEvent()
 
     ''' <summary>
+    ''' Default constructor. The label time format will be the default. Current time and Duration are set to zero.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Sub New(strFilename As String, Optional intFramesToSkip As Integer = FRAMES_TO_SKIP)
+        InitializeComponent()
+        m_strFilename = strFilename
+        m_strVideoTimeFormat = VIDEO_TIME_FORMAT
+        m_tsCurrentVideoTime = Zero
+        m_tsDurationTime = Zero
+        m_intFramesToSkip = intFramesToSkip
+    End Sub
+
+    ''' <summary>
+    ''' Constructor with custom time format string. Should look something like this: "{0:D2}:{1:D2}:{2:D2}.{3:D2}"
+    ''' Current time and Duration are set to zero.
+    ''' </summary>
+    ''' <param name="videoTimeFormat"></param>
+    ''' <remarks></remarks>
+    Sub New(strFilename As String, ByVal videoTimeFormat As String, Optional intFramesToSkip As Integer = FRAMES_TO_SKIP)
+        InitializeComponent()
+        m_strFilename = strFilename
+        m_strVideoTimeFormat = videoTimeFormat
+        m_tsCurrentVideoTime = Zero
+        m_tsDurationTime = Zero
+        m_intFramesToSkip = intFramesToSkip
+    End Sub
+
+    ''' <summary>
     ''' Loads the fmrVideoPlayer form. All member variables are initialized, and the video file is opened as a new Vlc.DotNet.Core.Medias.PathMedia object.
     ''' A System.Timer is started to generate update events every 500ms.
     ''' </summary>
@@ -326,7 +326,7 @@ Public Class frmVideoPlayer
                 ' It's not paused and not stopped, probably just loaded. Start from the beginning by calling play(mbMedia)
                 plyrVideoPlayer.Play(m_mbMedia)
             End If
-            plyrVideoPlayer.Rate = Rate
+            plyrVideoPlayer.Rate = CType(Rate, Single)
             m_sngFPS = plyrVideoPlayer.FPS
             pctVideoStatus.BackgroundImage = My.Resources.Play_Icon_Inverse
             RaiseEvent PlayEvent()
@@ -343,13 +343,13 @@ Public Class frmVideoPlayer
     ''' <returns>True or False for success. Only returns False if an exception is thrown</returns>
     Public Function pauseVideo() As Boolean
         Try
-            If IsPlaying Then
-                plyrVideoPlayer.Pause()
-                pctVideoStatus.BackgroundImage = My.Resources.Pause_Icon_Inverse
-                RaiseEvent PauseEvent()
-            Else
-                pctVideoStatus.BackgroundImage = My.Resources.Pause_Icon_Inverse
-            End If
+            'If IsPlaying Then
+            plyrVideoPlayer.Pause()
+            pctVideoStatus.BackgroundImage = My.Resources.Pause_Icon_Inverse
+            RaiseEvent PauseEvent()
+            'Else
+            'pctVideoStatus.BackgroundImage = My.Resources.Pause_Icon_Inverse
+            'End If
         Catch ex As Exception
             MessageBox.Show(ex.Message)
             Return False
@@ -418,7 +418,7 @@ Public Class frmVideoPlayer
     ''' <param name="intFramesToSkip">Number of frames to skip, typically between 50 and 1000</param>
     ''' <returns>Boolean if the stepping succeeded</returns>
     ''' <remarks>This is highly dependent on the Vlc.DotNet control and can be buggy depending on the filetype</remarks>
-    Public Function stepForward(intFramesToSkip) As Boolean
+    Public Function stepForward(intFramesToSkip As Integer) As Boolean
         m_intFramesToSkip = intFramesToSkip
         pauseVideo()
         If IsStopped Then Return False
@@ -487,7 +487,7 @@ Public Class frmVideoPlayer
     ''' <param name="sender">System.Object</param>
     ''' <param name="e">System.Windows.Forms.MouseEventArgs</param>
     Private Sub trkCurrentPosition_MouseUp(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles trkCurrentPosition.MouseUp
-        plyrVideoPlayer.Position = trkCurrentPosition.Value / 100.0
+        plyrVideoPlayer.Position = CType(trkCurrentPosition.Value / 100.0, Single)
         plyrVideoPlayer.Refresh()
         pauseVideo()
     End Sub

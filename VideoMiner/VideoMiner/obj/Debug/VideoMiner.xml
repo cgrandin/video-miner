@@ -6,13 +6,7 @@ VideoMiner
 </name>
 </assembly>
 <members>
-<member name="M:VideoMiner.BitmapEncoder.ConvertBitmapTo1bpp(System.Drawing.Bitmap)">
-	<summary>
- Copies a bitmap into a 1bpp bitmap of the same dimensions, fast
- </summary>
-	<param name="b">original bitmap</param>
-	<returns>a 1bpp copy of the bitmap</returns>
-</member><member name="M:VideoMiner.frmConfigureButtons.#ctor">
+<member name="M:VideoMiner.frmConfigureButtons.#ctor">
 	<summary>
  Initialize the query, and extract the data that query defines into a DataSet with corresponding DataTable.
  Populate the list and set up list attributes.
@@ -1226,6 +1220,12 @@ VideoMiner
 	<summary>
  Enable or disable the delete button depending on whether or not there is a valid selection
  </summary>
+</member><member name="M:VideoMiner.BitmapEncoder.ConvertBitmapTo1bpp(System.Drawing.Bitmap)">
+	<summary>
+ Copies a bitmap into a 1bpp bitmap of the same dimensions, fast
+ </summary>
+	<param name="b">original bitmap</param>
+	<returns>a 1bpp copy of the bitmap</returns>
 </member><member name="F:VideoMiner.frmGpsSettings.GPS_TIMEOUT">
 	<summary>
  Default timeout value used in form load event

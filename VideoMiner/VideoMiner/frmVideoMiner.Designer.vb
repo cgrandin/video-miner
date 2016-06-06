@@ -1457,7 +1457,7 @@ Partial Class VideoMiner
         Me.KeyPreview = True
         Me.MainMenuStrip = Me.mnStrVideoMinerMenu
         Me.Name = "VideoMiner"
-        Me.Text = "VideoMiner 3.0.2"
+        Me.Text = "VideoMiner 3.1.0.0 BETA"
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         Me.mnStrVideoMinerMenu.ResumeLayout(False)
         Me.mnStrVideoMinerMenu.PerformLayout()

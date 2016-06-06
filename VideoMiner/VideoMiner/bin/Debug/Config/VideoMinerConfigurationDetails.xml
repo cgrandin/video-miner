@@ -49,7 +49,7 @@
   </ButtonFormat>
   <Database>
     <Configuration>
-      <DatabaseName>VideoMiner_TemplateDatabase_Version_3_1_0_0_TEST.mdb</DatabaseName>
+      <DatabaseName>VideoMiner_Version_3_1_0_0.mdb</DatabaseName>
       <Columns>FieldOfView:0:100</Columns>
     </Configuration>
   </Database>

@@ -87,4 +87,16 @@
       </Device2>
     </RelayNames>
   </DeviceControl>
+  <GPS>
+    <ComPort>COM10</ComPort>
+    <NMEA>GPGGA</NMEA>
+    <BaudRate>4800</BaudRate>
+    <Parity>NONE</Parity>
+    <StopBits>1</StopBits>
+    <DataBits>8</DataBits>
+    <Timeout>5</Timeout>
+  </GPS>
+  <DatabasePath>C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug</DatabasePath>
+  <VideoPath>G:\Video Clips</VideoPath>
+  <SessionPath>C:\github\video-miner\VideoMiner\VideoMiner\bin\Release</SessionPath>
 </VideoMinerConfigurationDetails>

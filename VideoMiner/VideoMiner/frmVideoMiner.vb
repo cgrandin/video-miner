@@ -1,3 +1,4 @@
+Option Strict Off
 ' The following 3 imports are necessary for using ADO.NET, which permits database access.
 Imports System.Data
 Imports System.Data.OleDb
@@ -1008,7 +1009,7 @@ Public Class VideoMiner
         Dim aAssemblyInfo As New AssemblyInfo(assembly)
         Dim aVersionInfo As Version = aAssemblyInfo.Version
         m_strVersion = aVersionInfo.ToString
-        Text = Name & " - " & Version
+        Text = Name & " - " & Version & " - BETA"
 
         ' Enable Key preview so that video player hotkeys can be instantiated from this forms event handler.
         Me.KeyPreview = True
@@ -1086,7 +1087,7 @@ Public Class VideoMiner
             strDate = strDate & "/0" & CStr(Now.Year)
         End If
         Me.txtTransectDate.Text = strDate
-        m_transect_date = strDate
+        m_transect_date = DateTime.ParseExact(strDate, "dd/MM/yyyy", Nothing)
         m_tsUserTime = Zero
 
         ttToolTip = New ToolTip()
@@ -4127,6 +4128,7 @@ Public Class VideoMiner
         If openVideo() Then
             toggleVideoMenu(False)
             playVideo()
+            pauseVideo()
             cmdShowSetTimecode.Enabled = True
         End If
     End Sub
@@ -4158,6 +4160,7 @@ Public Class VideoMiner
                 frmVideoPlayer = New frmVideoPlayer(FileName, VIDEO_TIME_FORMAT)
             Catch ex As Exception
                 MessageBox.Show(ex.Message)
+                Return False
             End Try
             ' Figure out where to put the video player form. If there are two screens connected,
             ' put the video on the second screen, maximized. If only one screen, put it on the same screen,
@@ -4178,11 +4181,12 @@ Public Class VideoMiner
                 aPoint.Y = intY / 2
                 frmVideoPlayer.Location = aPoint
                 frmVideoPlayer.WindowState = FormWindowState.Normal
-                'frmVideoPlayer.TopMost = True
+                frmVideoPlayer.TopMost = True
             Else
-                'TODO: fix back to 2 monitors for non-debug version
                 'aPoint.X = intX + priMon.Bounds.Width
+
                 'aPoint.Y = intY / 2
+                ' Use these settings when debugging, and comment out the windowstate and topmost lines below
                 aPoint.X = intX + priMon.Bounds.Width / 3
                 aPoint.Y = intY / 4
                 frmVideoPlayer.Location = aPoint
@@ -4191,30 +4195,31 @@ Public Class VideoMiner
             End If
             Me.VideoTime = Zero
             frmVideoPlayer.Show()
-        Else
-            frmVideoPlayer.frmVideoPlayer_Load(Me, New System.EventArgs)
-            Me.VideoTime = frmVideoPlayer.CurrentVideoTime
-        End If
-        frmVideoPlayer.pnlHideVideo.Visible = True
-        pnlVideoControls.Visible = True
-        Me.txtTransectDate.Enabled = True
-        Me.txtProjectName.Enabled = True
-        Me.chkRecordEachSecond.Enabled = True
-        Me.mnuConfigureTools.Enabled = True
-        Me.mnuRefreshForm.Enabled = True
-        Me.KeyboardShortcutsToolStripMenuItem.Enabled = True
-        Me.DataCodeAssignmentsToolStripMenuItem.Enabled = True
-        If Database.IsOpen Then
-            Me.cmdTransectStart.Enabled = True
-            Me.cmdOffBottom.Enabled = True
+            frmVideoPlayer.pnlHideVideo.Visible = True
+            pnlVideoControls.Visible = True
+            Me.txtTransectDate.Enabled = True
             Me.txtProjectName.Enabled = True
-        End If
+            Me.chkRecordEachSecond.Enabled = True
+            Me.mnuConfigureTools.Enabled = True
+            Me.mnuRefreshForm.Enabled = True
+            Me.KeyboardShortcutsToolStripMenuItem.Enabled = True
+            Me.DataCodeAssignmentsToolStripMenuItem.Enabled = True
+            If Database.IsOpen Then
+                Me.cmdTransectStart.Enabled = True
+                Me.cmdOffBottom.Enabled = True
+                Me.txtProjectName.Enabled = True
+            End If
 
-        ' In the future if the frames per second are returned properly, this will show that in the status bar..
-        'Me.lblVideo.Text = "Video File '" & Me.FileName & "' is open (" & frmVideoPlayer.FPS & " frames per second)"
-        Me.lblVideo.Text = "Video File '" & Me.FileName & "' is open"
-        m_video_file_open = True
-        Return True
+            ' In the future if the frames per second are returned properly, this will show that in the status bar..
+            'Me.lblVideo.Text = "Video File '" & Me.FileName & "' is open (" & frmVideoPlayer.FPS & " frames per second)"
+            Me.lblVideo.Text = "Video File '" & Me.FileName & "' is open"
+            m_video_file_open = True
+            Return True
+        Else
+            'frmVideoPlayer.frmVideoPlayer_Load(Me, New System.EventArgs)
+            'Me.VideoTime = frmVideoPlayer.CurrentVideoTime
+            Return False
+        End If
     End Function
 
     Private Sub cmdPlayForSeconds_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPlayForSeconds.Click
@@ -4256,6 +4261,9 @@ Public Class VideoMiner
         End If
     End Sub
 
+    ''' <summary>
+    ''' When the video file is closed, change labels and timecodes to reflect the closure
+    ''' </summary>
     Public Sub video_file_unload()
         If Not frmVideoPlayer Is Nothing Then
             frmVideoPlayer.Dispose()
@@ -4281,53 +4289,66 @@ Public Class VideoMiner
         m_video_file_open = False
     End Sub
 
+    ''' <summary>
+    ''' Tell the video player to play the video
+    ''' </summary>
     Private Sub playVideo()
         frmVideoPlayer.Rate = m_dblVideoRate
-        If frmVideoPlayer.playVideo() Then
-            setTimes()
-            FfwdCount = 0
-            RwndCOunt = 0
-        End If
+        frmVideoPlayer.playVideo()
     End Sub
 
+    ''' <summary>
+    ''' Tell the video player to pause the video
+    ''' </summary>
     Private Sub pauseVideo()
         'If Me.tmrRecordPerSecond.Enabled Then
         ' Me.tmrRecordPerSecond.Stop()
         ' End If
-        If frmVideoPlayer.pauseVideo() Then
-            FfwdCount = 0
-            RwndCOunt = 0
-        End If
+        frmVideoPlayer.pauseVideo()
     End Sub
 
+    ''' <summary>
+    ''' Tell the video player to stop the video
+    ''' </summary>
     Private Sub stopVideo()
         'If Me.tmrRecordPerSecond.Enabled Then
         ' Me.tmrRecordPerSecond.Stop()
         ' End If
-        If frmVideoPlayer.stopVideo() Then
-            setTimes()
-            FfwdCount = 0
-            RwndCOunt = 0
-        End If
+        frmVideoPlayer.stopVideo()
     End Sub
 
+    ''' <summary>
+    ''' If the video player is paused, show the play icon and set some variables
+    ''' </summary>
     Public Sub playerPaused() Handles frmVideoPlayer.PauseEvent
-        ' This is used to sense when the video player form pauses its video from inside.
-        ' it is added as a handler and an event raised from the frmVideoPlayer class
+        ' This is used to sense when the video player form pauses its video
         cmdPlayPause.BackgroundImage = My.Resources.Play_Icon
+        FfwdCount = 0
+        RwndCOunt = 0
     End Sub
 
+    ''' <summary>
+    ''' If the video player is playing, show the pause icon and set some variables
+    ''' </summary>
     Public Sub playerPlaying() Handles frmVideoPlayer.PlayEvent
-        ' This is used to sense when the video player form starts playing its video from inside.
-        ' it is added as a handler and an event raised from the frmVideoPlayer class
+        ' This is used to sense when the video player form starts playing its video
         cmdPlayPause.BackgroundImage = My.Resources.Pause_Icon
+        setTimes()
+        FfwdCount = 0
+        RwndCOunt = 0
     End Sub
 
+    ''' <summary>
+    ''' If the video player is stopped, show the play icon and set some variables
+    ''' </summary>
     Public Sub playerStopped() Handles frmVideoPlayer.StopEvent
         ' This is used to sense when the video player form stops its video from inside.
         ' it is added as a handler and an event raised from the frmVideoPlayer class
         cmdPlayPause.BackgroundImage = My.Resources.Play_Icon
         Me.txtTimeSource.Text = frmVideoPlayer.CurrentVideoTimeFormatted
+        setTimes()
+        FfwdCount = 0
+        RwndCOunt = 0
     End Sub
 
     ''' <summary>

@@ -81,6 +81,8 @@ C:\F\Crm1335_Video_Miner\Source_Code\VM\VideoMiner\VideoMiner\obj\Debug\VideoMin
 C:\F\Crm1335_Video_Miner\Source_Code\VM\VideoMiner\VideoMiner\obj\Debug\VideoMiner.xml
 C:\F\Crm1335_Video_Miner\Source_Code\VM\VideoMiner\VideoMiner\obj\Debug\VideoMiner.pdb
 C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\VideoMiner.exe.config
+C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\VideoMiner.exe.manifest
+C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\VideoMiner.application
 C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\VideoMiner.exe
 C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\VideoMiner.pdb
 C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\VideoMiner.xml
@@ -99,6 +101,7 @@ C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\Interop.WMPLib.dll
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\AxInterop.WMPLib.dll
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.vbproj.ResolveComReference.cache
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.AboutBox1.resources
+C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmFOV.resources
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmAbundanceTableView.resources
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmAddButton.resources
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmAddNewTable.resources
@@ -128,7 +131,9 @@ C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmConfigureBut
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmCreateKeyboardShortcut.resources
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmEditLookupTable.resources
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.vbproj.GenerateResource.Cache
+C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.TrustInfo.xml
+C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.exe.manifest
+C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.application
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.exe
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.xml
 C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.pdb
-C:\github\video-miner\VideoMiner\VideoMiner\obj\Debug\VideoMiner.frmFOV.resources
