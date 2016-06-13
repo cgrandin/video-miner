@@ -190,7 +190,7 @@ Public Module Database
     ''' <remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and False will be returned.</remarks>
     Public Function Update(data_table As DataTable, tableName As String) As Boolean
         Try
-            ''' THIS IS THE PROBLEM!! THIS ADAPTER HAS BEEN RESET ON EVERY CALL TO GETDATATABLE
+            ' THIS IS THE PROBLEM!! THIS ADAPTER HAS BEEN RESET ON EVERY CALL TO GETDATATABLE
             If tableName = DB_DATA_TABLE Then
                 m_data_adapter_data.Update(data_table)
             End If

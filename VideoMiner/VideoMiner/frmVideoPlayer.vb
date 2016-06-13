@@ -1,9 +1,5 @@
-﻿Imports Microsoft.Win32
-Imports System.TimeSpan
-Imports System.Text.RegularExpressions
-Imports Vlc.DotNet.Core
-Imports Vlc.DotNet.Forms
-Imports Vlc.DotNet.Core.Medias
+﻿Imports System.TimeSpan
+Imports AxWMPLib
 
 ''' <summary>
 ''' The frmVideoPlayer class provides a form with an instance of the VLC.dotnet control, a trackbar to show the position of the video, a label for the current position,
@@ -11,6 +7,10 @@ Imports Vlc.DotNet.Core.Medias
 ''' </summary>
 ''' <remarks></remarks>
 Public Class frmVideoPlayer
+    ''' <summary>
+    ''' The currently playing media
+    ''' </summary>
+    Private m_currentMedia As WMPLib.IWMPMedia
     ''' <summary>
     ''' Default format for the time labels
     ''' </summary>
@@ -62,10 +62,6 @@ Public Class frmVideoPlayer
     ''' </summary>
     Private m_sngFPS As Single
     ''' <summary>
-    ''' Member variable to hold the media (video file)
-    ''' </summary>
-    Private m_mbMedia As MediaBase
-    ''' <summary>
     ''' The number of frames to skip when incrementally stepping forward through frames
     ''' </summary>
     Private m_intFramesToSkip As Integer
@@ -82,10 +78,10 @@ Public Class frmVideoPlayer
     ''' <returns>A number of type Single</returns>
     Public Property Position As Single
         Get
-            Return plyrVideoPlayer.Position
+            Return plyrVideoPlayer.Ctlcontrols.currentPosition
         End Get
         Set(value As Single)
-            plyrVideoPlayer.Position = value
+            plyrVideoPlayer.Ctlcontrols.currentPosition = value
         End Set
     End Property
     ''' <summary>
@@ -95,9 +91,9 @@ Public Class frmVideoPlayer
     Public ReadOnly Property IsPlaying As Boolean
         ' The property is retreived directly from the video player's state information
         Get
-            If m_mbMedia.State = Vlc.DotNet.Core.Interops.Signatures.LibVlc.Media.States.Playing Then
-                Return True
-            End If
+            'If m_mbMedia.State = Vlc.DotNet.Core.Interops.Signatures.LibVlc.Media.States.Playing Then
+            ' Return True
+            ' End If
             Return False
         End Get
     End Property
@@ -108,9 +104,9 @@ Public Class frmVideoPlayer
     Public ReadOnly Property IsStopped As Boolean
         ' The property is retreived directly from the video player's state information
         Get
-            If m_mbMedia.State = Vlc.DotNet.Core.Interops.Signatures.LibVlc.Media.States.Stopped Then
-                Return True
-            End If
+            'If m_mbMedia.State = Vlc.DotNet.Core.Interops.Signatures.LibVlc.Media.States.Stopped Then
+            ' Return True
+            ' End If
             Return False
         End Get
     End Property
@@ -121,9 +117,9 @@ Public Class frmVideoPlayer
     Public ReadOnly Property IsPaused As Boolean
         ' The property is retreived directly from the video player's state information
         Get
-            If m_mbMedia.State = Vlc.DotNet.Core.Interops.Signatures.LibVlc.Media.States.Paused Then
-                Return True
-            End If
+            'If m_mbMedia.State = Vlc.DotNet.Core.Interops.Signatures.LibVlc.Media.States.Paused Then
+            ' Return True
+            ' End If
             Return False
         End Get
     End Property
@@ -183,7 +179,7 @@ Public Class frmVideoPlayer
         End Get
         Set(value As Double)
             m_dblRate = value
-            plyrVideoPlayer.Rate = value
+            plyrVideoPlayer.settings.rate = value
         End Set
     End Property
     ''' <summary>
@@ -275,10 +271,13 @@ Public Class frmVideoPlayer
         m_blRecordPerSecond = False
         m_blIsEndOfVideo = False
         m_dblRate = 1.0
+        plyrVideoPlayer = New AxWindowsMediaPlayer()
+        'plyrVideoPlayer.uiMode = "none"
         Try
-            m_mbMedia = New PathMedia(m_strFilename)
+            m_currentMedia = plyrVideoPlayer.newMedia(m_strFilename)
+            plyrVideoPlayer.currentMedia = m_currentMedia
         Catch ex As Exception
-            m_mbMedia = Nothing
+            plyrVideoPlayer = Nothing
             MessageBox.Show(ex.Message)
             Exit Sub
         End Try
@@ -296,7 +295,7 @@ Public Class frmVideoPlayer
         ' e.Cancel = True
         'Else
         ' Make sure to stop video so it's not running in the background
-        plyrVideoPlayer.Stop()
+        plyrVideoPlayer.Ctlcontrols.stop()
         tmrVideo.Stop()
         RaiseEvent ClosingEvent()
         'End If
@@ -309,7 +308,7 @@ Public Class frmVideoPlayer
     ''' <remarks>If IsEndOfVideo is True and either IsStopped or IsPaused is True, 
     ''' that means that the player is at the end and the play request will attempt to reset the player to the beginning</remarks>
     Public Function playVideo() As Boolean
-        If IsNothing(m_mbMedia) Or m_dblRate <= 0 Then
+        If IsNothing(plyrVideoPlayer) Or m_dblRate <= 0 Then
             Return False
         End If
         Try
@@ -317,17 +316,17 @@ Public Class frmVideoPlayer
                 If m_blIsEndOfVideo Then
                     ' It's sitting at the end of the video, so reset everything by calling stop, then play again
                     stopVideo()
-                    plyrVideoPlayer.Play()
+                    plyrVideoPlayer.Ctlcontrols.play()
                 Else
                     ' It's stopped or paused, but not at the end of the video, so just continue playing
-                    plyrVideoPlayer.Play()
+                    plyrVideoPlayer.Ctlcontrols.play()
                 End If
             Else
                 ' It's not paused and not stopped, probably just loaded. Start from the beginning by calling play(mbMedia)
-                plyrVideoPlayer.Play(m_mbMedia)
+                plyrVideoPlayer.Ctlcontrols.play()
             End If
-            plyrVideoPlayer.Rate = CType(Rate, Single)
-            m_sngFPS = plyrVideoPlayer.FPS
+            'plyrVideoPlayer.Rate = CType(Rate, Single)
+            'm_sngFPS = plyrVideoPlayer.FPS
             pctVideoStatus.BackgroundImage = My.Resources.Play_Icon_Inverse
             RaiseEvent PlayEvent()
         Catch ex As Exception
@@ -344,7 +343,7 @@ Public Class frmVideoPlayer
     Public Function pauseVideo() As Boolean
         Try
             'If IsPlaying Then
-            plyrVideoPlayer.Pause()
+            plyrVideoPlayer.Ctlcontrols.pause()
             pctVideoStatus.BackgroundImage = My.Resources.Pause_Icon_Inverse
             RaiseEvent PauseEvent()
             'Else
@@ -365,7 +364,7 @@ Public Class frmVideoPlayer
         Try
             'Don't put a statement like 'If IsPlaying Or IsPaused Then' here because some videos don't stop correctly at the end,
             ' i.e. they never quite reach their duration... (older vids)
-            plyrVideoPlayer.Stop()
+            plyrVideoPlayer.Ctlcontrols.stop()
             pctVideoStatus.BackgroundImage = My.Resources.Stop_Icon_Inverse
             trkCurrentPosition.Value = 0
             m_tsCurrentVideoTime = Zero
@@ -389,7 +388,7 @@ Public Class frmVideoPlayer
     Private Sub tmrVideo_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrVideo.Tick
         If IsPlaying Then
             If m_blFirstTick Then
-                m_tsDurationTime = plyrVideoPlayer.Media.Duration
+                m_tsDurationTime = TimeSpan.FromSeconds(m_currentMedia.duration)
                 lblDuration.Text = getFormattedDurationString()
                 ' Add transparent panel to grab mouse events when user clicks video directly
                 m_pnlTransparentPanel = New TransparentPanel
@@ -400,13 +399,14 @@ Public Class frmVideoPlayer
                 m_blFirstTick = False
             End If
             ' Check to see if the video has reached the end.
-            If plyrVideoPlayer.Time.Ticks >= m_tsDurationTime.Ticks Then
-                ' The video played to or past the end of the video
+            If plyrVideoPlayer.playState = WMPLib.WMPPlayState.wmppsMediaEnded Then
                 endOfVideo()
                 Exit Sub
             End If
-            trkCurrentPosition.Value = plyrVideoPlayer.Time.Ticks / m_tsDurationTime.Ticks * 100.0
-            m_tsCurrentVideoTime = plyrVideoPlayer.Time
+            'trkCurrentPosition.Value = plyrVideoPlayer.Time.Ticks / m_tsDurationTime.Ticks * 100.0
+            'm_tsCurrentVideoTime = plyrVideoPlayer.Time
+            trkCurrentPosition.Value = plyrVideoPlayer.Ctlcontrols.currentPosition / m_tsDurationTime.Ticks * 100.0
+            'm_tsCurrentVideoTime = plyrVideoPlayer.Time
             lblCurrentTime.Text = getFormattedCurrentVideoTimeString()
             RaiseEvent TimerTickEvent()
         End If
@@ -423,8 +423,11 @@ Public Class frmVideoPlayer
         pauseVideo()
         If IsStopped Then Return False
         For i As Integer = 0 To m_intFramesToSkip
-            plyrVideoPlayer.NextFrame()
-            plyrVideoPlayer.Refresh()
+            Dim ctlcontrols As WMPLib.IWMPControls = plyrVideoPlayer.Ctlcontrols
+            Dim ctlcontrols2 As WMPLib.IWMPControls2 = DirectCast(ctlcontrols, WMPLib.IWMPControls2)
+            ctlcontrols2.step(1)
+            'plyrVideoPlayer.NextFrame()
+            'plyrVideoPlayer.Refresh()
             m_tsCurrentVideoTime = getCurrentTime()
             lblCurrentTime.Text = getFormattedCurrentVideoTimeString()
             ' Don't try to update the trackbar, it won't work after using the NextFrame method of Vlc.DotNet
@@ -462,7 +465,7 @@ Public Class frmVideoPlayer
             If dblValue > 100.0 Then dblValue = 100.0 ' Sometimes the track can go past 100%
             If dblValue < 0.0 Then dblValue = 0.0 ' Sometimes the track can go negative
             trkCurrentPosition.Value = Convert.ToInt32(dblValue)
-            plyrVideoPlayer.Position = trkCurrentPosition.Value / 100.0
+            plyrVideoPlayer.Ctlcontrols.currentPosition = trkCurrentPosition.Value / 100.0
             ' There is a problem with the vlc control. You cannot get the time after setting the position. You need to do a play() and pause() which causes
             ' other issues, including returning zero times much of the time. The alternative is to simply multiply the duration by the trackbar location, which is
             ' between 0 and 1, and set the time to that proportion. Not exact, but it makes it nicer and more user-friendly.
@@ -487,7 +490,7 @@ Public Class frmVideoPlayer
     ''' <param name="sender">System.Object</param>
     ''' <param name="e">System.Windows.Forms.MouseEventArgs</param>
     Private Sub trkCurrentPosition_MouseUp(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles trkCurrentPosition.MouseUp
-        plyrVideoPlayer.Position = CType(trkCurrentPosition.Value / 100.0, Single)
+        plyrVideoPlayer.Ctlcontrols.currentPosition = CType(trkCurrentPosition.Value / 100.0, Single)
         plyrVideoPlayer.Refresh()
         pauseVideo()
     End Sub
@@ -540,20 +543,22 @@ Public Class frmVideoPlayer
         '    Dim item = CType(sender, ToolStripMenuItem)
         '    Dim selection = CInt(item.Tag)
         pauseVideo()
-        MessageBox.Show("The Videominer player window contains the video you loaded with a trackbar for seeking and an icon showing you" & _
-                        "the current state of the video (playing, paused, stopped)." & vbCrLf & vbCrLf & _
-                        "Left-click the video to toggle between Pause/Play." & vbCrLf & _
-                        "Close the video by clicking the 'X' on the top right of the player window." & vbCrLf & _
-                        "Press Right arrow to do frame stepping" & vbCrLf & _
-                        "Press Spacebar to toggle Pause/Play", _
+        MessageBox.Show("The Videominer player window contains the video you loaded with a trackbar for seeking and an icon showing you " &
+                        "the current state of the video (playing, paused, stopped)." & vbCrLf & vbCrLf &
+                        "Left-click the video to toggle between Pause/Play." & vbCrLf &
+                        "Close the video by clicking the 'X' on the top right of the player window." & vbCrLf &
+                        "Press Right arrow to do frame stepping" & vbCrLf &
+                        "Press Spacebar to toggle Pause/Play",
                         "Videominer Player Help", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
     ''' <summary>
     ''' This handles the Event 'EndReached' fired by the Vlc.DotNet control.
     ''' </summary>
-    Private Sub plyrVideo_Ended() Handles plyrVideoPlayer.EndReached
-        endOfVideo()
+    Private Sub plyrVideo_Ended(ByVal sender As Object, ByVal e As AxWMPLib._WMPOCXEvents_PlayStateChangeEvent) Handles plyrVideoPlayer.PlayStateChange
+        If e.newState = WMPLib.WMPPlayState.wmppsMediaEnded Then
+            endOfVideo()
+        End If
     End Sub
 
     ''' <summary>
@@ -568,7 +573,7 @@ Public Class frmVideoPlayer
         m_tsCurrentVideoTime = m_tsDurationTime
         lblCurrentTime.Text = lblDuration.Text
         lblCurrentTime.Refresh()
-        trkCurrentPosition.Value = 100.0
+        trkCurrentPosition.Value = 100
         RaiseEvent VideoEndedEvent()
     End Sub
 

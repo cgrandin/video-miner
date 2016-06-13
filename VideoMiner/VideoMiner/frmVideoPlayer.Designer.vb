@@ -4,16 +4,8 @@ Partial Class frmVideoPlayer
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
-        Try
-            If disposing AndAlso components IsNot Nothing Then
-                VlcContext.CloseAll()
-                components.Dispose()
-            End If
-        Finally
-            MyBase.Dispose(disposing)
-        End Try
     End Sub
 
     'Required by the Windows Form Designer
@@ -32,7 +24,7 @@ Partial Class frmVideoPlayer
         trkCurrentPosition = New System.Windows.Forms.TrackBar()
         SplitContainer1 = New System.Windows.Forms.SplitContainer()
         pnlHideVideo = New System.Windows.Forms.Panel()
-        plyrVideoPlayer = New Vlc.DotNet.Forms.VlcControl()
+        'plyrVideoPlayer = New Vlc.DotNet.Forms.VlcControl()
         pctVideoStatus = New System.Windows.Forms.PictureBox()
         CType(trkCurrentPosition, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -138,7 +130,7 @@ Partial Class frmVideoPlayer
         plyrVideoPlayer.Dock = System.Windows.Forms.DockStyle.Fill
         plyrVideoPlayer.Location = New System.Drawing.Point(0, 0)
         plyrVideoPlayer.Name = "plyrVideoPlayer"
-        plyrVideoPlayer.Rate = 0.0!
+        plyrVideoPlayer.settings.rate = 0.0
         plyrVideoPlayer.Size = New System.Drawing.Size(639, 510)
         plyrVideoPlayer.TabIndex = 4
         '
@@ -180,5 +172,5 @@ Partial Class frmVideoPlayer
     Friend WithEvents SplitContainer1 As System.Windows.Forms.SplitContainer
     Friend WithEvents pctVideoStatus As System.Windows.Forms.PictureBox
     Friend WithEvents pnlHideVideo As System.Windows.Forms.Panel
-    Friend WithEvents plyrVideoPlayer As Vlc.DotNet.Forms.VlcControl
+    Friend WithEvents plyrVideoPlayer As AxWMPLib.AxWindowsMediaPlayer
 End Class

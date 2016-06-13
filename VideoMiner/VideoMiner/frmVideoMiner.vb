@@ -1,20 +1,12 @@
 Option Strict Off
 ' The following 3 imports are necessary for using ADO.NET, which permits database access.
-Imports System.Data
-Imports System.Data.OleDb
-Imports System.Data.SqlClient
 ' All times are stored as TimeSpan objects
 Imports System.TimeSpan
-Imports Microsoft.VisualBasic
-Imports System.IO.Ports
 Imports System.Drawing.Imaging
 Imports System.IO
 Imports System.IO.Path
-Imports Microsoft.Win32
 Imports Microsoft.VisualBasic.ApplicationServices
 Imports System.Xml
-Imports System.Reflection
-Imports System.Threading
 Imports System.ComponentModel
 
 ''' <summary>
