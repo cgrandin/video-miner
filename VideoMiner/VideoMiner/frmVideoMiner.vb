@@ -254,7 +254,7 @@ Public Class VideoMiner
     ''' Relative rate at which to play the video. 1=regular speed.
     ''' </summary>
     ''' <remarks></remarks>
-    Private m_dblVideoRate As Double = 1
+    Private m_dblVideoRate As Double = 1.0
     ''' <summary>
     ''' Are we in a transect currently or not?
     ''' </summary>
@@ -4151,7 +4151,7 @@ Public Class VideoMiner
             Try
                 frmVideoPlayer = New frmVideoPlayer(FileName, VIDEO_TIME_FORMAT)
             Catch ex As Exception
-                MessageBox.Show(ex.Message)
+                MessageBox.Show("Error creating the video player form. Error message is: " & vbCrLf & ex.Message)
                 Return False
             End Try
             ' Figure out where to put the video player form. If there are two screens connected,
@@ -4258,6 +4258,7 @@ Public Class VideoMiner
     ''' </summary>
     Public Sub video_file_unload()
         If Not frmVideoPlayer Is Nothing Then
+            frmVideoPlayer.Hide()
             frmVideoPlayer.Dispose()
             frmVideoPlayer = Nothing
         End If
@@ -4285,7 +4286,7 @@ Public Class VideoMiner
     ''' Tell the video player to play the video
     ''' </summary>
     Private Sub playVideo()
-        frmVideoPlayer.Rate = m_dblVideoRate
+        'frmVideoPlayer.Rate = m_dblVideoRate
         frmVideoPlayer.playVideo()
     End Sub
 

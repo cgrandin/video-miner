@@ -1,5 +1,7 @@
-﻿Imports System.Windows.Forms
-' This class was added to allow a transparent panel to lay over the VLC player control, so that mouse click events can be captured on the video itself.
+﻿''' <summary>
+''' This Class was added To allow a transparent panel To lay over the video player control, 
+''' so that mouse click events can be captured On the video itself.
+''' </summary>
 Public Class TransparentPanel
     Inherits Panel
 
