@@ -215,7 +215,7 @@ Public Class frmVideoPlayer
     ''' <remarks></remarks>
     Sub New(strFilename As String, Optional intFramesToSkip As Integer = FRAMES_TO_SKIP)
         InitializeComponent()
-        plyrVideoPlayer.uiMode = "none"
+        'plyrVideoPlayer.uiMode = "none"
         m_strFilename = strFilename
         m_strVideoTimeFormat = VIDEO_TIME_FORMAT
         m_tsCurrentVideoTime = Zero
@@ -231,7 +231,7 @@ Public Class frmVideoPlayer
     ''' <remarks></remarks>
     Sub New(strFilename As String, ByVal videoTimeFormat As String, Optional intFramesToSkip As Integer = FRAMES_TO_SKIP)
         InitializeComponent()
-        plyrVideoPlayer.uiMode = "none"
+        'plyrVideoPlayer.uiMode = "none"
         m_strFilename = strFilename
         m_strVideoTimeFormat = videoTimeFormat
         m_tsCurrentVideoTime = Zero
@@ -269,6 +269,25 @@ Public Class frmVideoPlayer
         tmrVideo.Start()
     End Sub
 
+    Private Sub frmVideoPlayer_Resize(ByVal sender As Object, ByVal e As EventArgs) Handles plyrVideoPlayer.Resize
+    End Sub
+
+    Private Sub frmVideoPlayer_Maximized(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Resize
+        If Me.WindowState = FormWindowState.Maximized Then
+            plyrVideoPlayer.fullScreen = True
+        End If
+    End Sub
+
+    Private Sub plyrVideoPlayer_DoubleClick(ByVal sender As Object, ByVal e As AxWMPLib._WMPOCXEvents_DoubleClickEvent) Handles plyrVideoPlayer.DoubleClickEvent
+        MsgBox("the player was double clicked")
+        'Me.MaximizeBox = True
+    End Sub
+
+    Private Sub frmVideoPlayer_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles Me.DoubleClick
+        ' Do nothing because we want the media player double click handler to deal with it.
+        MsgBox("the form was double clicked")
+    End Sub
+
     ''' <summary>
     ''' Handles things once the video is fully loaded. This is needed to accurately get the dureation
     ''' of the video because some are larger than others and will take longer to load.
@@ -277,9 +296,9 @@ Public Class frmVideoPlayer
     ''' <param name="e"></param>
     Private Sub plyrVideoPlayer_OpenStateChange(ByVal sender As Object, ByVal e As AxWMPLib._WMPOCXEvents_OpenStateChangeEvent) Handles plyrVideoPlayer.OpenStateChange
         m_tsDurationTime = TimeSpan.FromSeconds(m_currentMedia.duration)
-        lblDuration.Text = getFormattedDurationString()
+        'lblDuration.Text = getFormattedDurationString()
         ' Make the video loading screen invisible
-        pnlHideVideo.Visible = False
+        'pnlHideVideo.Visible = False
     End Sub
 
     ''' <summary>
@@ -320,7 +339,7 @@ Public Class frmVideoPlayer
             End If
             plyrVideoPlayer.settings.rate = CType(Rate, Single)
             'm_sngFPS = plyrVideoPlayer.fps
-            pctVideoStatus.BackgroundImage = My.Resources.Play_Icon_Inverse
+            'pctVideoStatus.BackgroundImage = My.Resources.Play_Icon_Inverse
             RaiseEvent PlayEvent()
         Catch ex As Exception
             MessageBox.Show("Error in Vlc.DotNet while calling Play(" & m_strFilename & ") - " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -336,7 +355,7 @@ Public Class frmVideoPlayer
     Public Function pauseVideo() As Boolean
         Try
             plyrVideoPlayer.Ctlcontrols.pause()
-            pctVideoStatus.BackgroundImage = My.Resources.Pause_Icon_Inverse
+            'pctVideoStatus.BackgroundImage = My.Resources.Pause_Icon_Inverse
             RaiseEvent PauseEvent()
         Catch ex As Exception
             MessageBox.Show(ex.Message)
@@ -350,8 +369,8 @@ Public Class frmVideoPlayer
     ''' </summary>
     Private Sub updateUI()
         m_tsCurrentVideoTime = TimeSpan.FromSeconds(plyrVideoPlayer.Ctlcontrols.currentPosition)
-        trkCurrentPosition.Value = CInt(plyrVideoPlayer.Ctlcontrols.currentPosition / (m_tsDurationTime.Ticks / 10000000.0) * 100.0)
-        lblCurrentTime.Text = getFormattedCurrentVideoTimeString()
+        'trkCurrentPosition.Value = CInt(plyrVideoPlayer.Ctlcontrols.currentPosition / (m_tsDurationTime.Ticks / 10000000.0) * 100.0)
+        'lblCurrentTime.Text = getFormattedCurrentVideoTimeString()
     End Sub
 
     ''' <summary>
@@ -364,8 +383,8 @@ Public Class frmVideoPlayer
             ' i.e. they never quite reach their duration... (older vids)
             ' Update Jun 2016 - I don't know if this is true with Windows Media Player. It was with VLC.NET
             plyrVideoPlayer.Ctlcontrols.stop()
-            pctVideoStatus.BackgroundImage = My.Resources.Stop_Icon_Inverse
-            trkCurrentPosition.Value = 0
+            'pctVideoStatus.BackgroundImage = My.Resources.Stop_Icon_Inverse
+            'trkCurrentPosition.Value = 0
             m_tsCurrentVideoTime = Zero
             updateUI()
             RaiseEvent StopEvent()
@@ -427,24 +446,24 @@ Public Class frmVideoPlayer
     ''' </summary>
     ''' <param name="sender">System.Object</param>
     ''' <param name="e">System.Windows.Forms.MouseEventArgs</param>
-    Private Sub trkCurrentPosition_MovePointer(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles trkCurrentPosition.MouseDown, trkCurrentPosition.MouseMove
-        Dim dblValue As Double
-        'Make sure it was the left button that was pressed
-        If e.Button = Windows.Forms.MouseButtons.Left Then
-            pauseVideo()
-            dblValue = (Convert.ToDouble(e.X) / Convert.ToDouble(trkCurrentPosition.Width)) * (trkCurrentPosition.Maximum - trkCurrentPosition.Minimum)
-            If dblValue > 100.0 Then dblValue = 100.0 ' Sometimes the track can go past 100%
-            If dblValue < 0.0 Then dblValue = 0.0 ' Sometimes the track can go negative
-            trkCurrentPosition.Value = Convert.ToInt32(dblValue)
-            plyrVideoPlayer.Ctlcontrols.currentPosition = getCurrentPercentComplete()
-            updateUI()
-        End If
-        ' TODO: Implement the tmrPerSecond stuff
-        'If myFormLibrary.frmVideoMiner.tmrRecordPerSecond.Enabled = True Then
-        ' blRecordPerSecond = True
-        ' myFormLibrary.frmVideoMiner.tmrRecordPerSecond.Stop()
-        'End If
-    End Sub
+    'Private Sub trkCurrentPosition_MovePointer(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles trkCurrentPosition.MouseDown, trkCurrentPosition.MouseMove
+    '    Dim dblValue As Double
+    '    'Make sure it was the left button that was pressed
+    '    If e.Button = Windows.Forms.MouseButtons.Left Then
+    '        pauseVideo()
+    '        'dblValue = (Convert.ToDouble(e.X) / Convert.ToDouble(trkCurrentPosition.Width)) * (trkCurrentPosition.Maximum - trkCurrentPosition.Minimum)
+    '        If dblValue > 100.0 Then dblValue = 100.0 ' Sometimes the track can go past 100%
+    '        If dblValue < 0.0 Then dblValue = 0.0 ' Sometimes the track can go negative
+    '        'trkCurrentPosition.Value = Convert.ToInt32(dblValue)
+    '        plyrVideoPlayer.Ctlcontrols.currentPosition = getCurrentPercentComplete()
+    '        updateUI()
+    '    End If
+    '    ' TODO: Implement the tmrPerSecond stuff
+    '    'If myFormLibrary.frmVideoMiner.tmrRecordPerSecond.Enabled = True Then
+    '    ' blRecordPerSecond = True
+    '    ' myFormLibrary.frmVideoMiner.tmrRecordPerSecond.Stop()
+    '    'End If
+    'End Sub
 
     ''' <summary>
     ''' The trackbar MouseUp event just pauses the video.
@@ -452,11 +471,11 @@ Public Class frmVideoPlayer
     ''' </summary>
     ''' <param name="sender">System.Object</param>
     ''' <param name="e">System.Windows.Forms.MouseEventArgs</param>
-    Private Sub trkCurrentPosition_MouseUp(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles trkCurrentPosition.MouseUp
-        plyrVideoPlayer.Ctlcontrols.currentPosition = CType(trkCurrentPosition.Value / 100.0, Single)
-        plyrVideoPlayer.Refresh()
-        pauseVideo()
-    End Sub
+    'Private Sub trkCurrentPosition_MouseUp(ByVal sender As System.Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles trkCurrentPosition.MouseUp
+    '    'plyrVideoPlayer.Ctlcontrols.currentPosition = CType(trkCurrentPosition.Value / 100.0, Single)
+    '    plyrVideoPlayer.Refresh()
+    '    pauseVideo()
+    'End Sub
 
     ''' <summary>
     ''' This handles the user clicking on the video by using a transparent panel overlaid on the video.
@@ -533,9 +552,9 @@ Public Class frmVideoPlayer
         ' This is for cosmetic reasons, as the video is no longer playing
         pauseVideo()
         m_tsCurrentVideoTime = m_tsDurationTime
-        lblCurrentTime.Text = lblDuration.Text
-        lblCurrentTime.Refresh()
-        trkCurrentPosition.Value = 100
+        'lblCurrentTime.Text = lblDuration.Text
+        'lblCurrentTime.Refresh()
+        'trkCurrentPosition.Value = 100
         RaiseEvent VideoEndedEvent()
     End Sub
 
@@ -571,9 +590,9 @@ Public Class frmVideoPlayer
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     ''' <remarks>Works in tandem with lblDuration_Resize(sender As System.Object, e As System.EventArgs) Handles lblDuration.Resize</remarks>
-    Private Sub lblDuration_TextChanged(sender As System.Object, e As System.EventArgs) Handles lblDuration.TextChanged
-        lblDuration.Tag = lblDuration.Size
-    End Sub
+    'Private Sub lblDuration_TextChanged(sender As System.Object, e As System.EventArgs) Handles lblDuration.TextChanged
+    '    'lblDuration.Tag = lblDuration.Size
+    'End Sub
 
     ''' <summary>
     ''' When the duration label automatically resizes due to extra decimal points being shown,
@@ -582,12 +601,12 @@ Public Class frmVideoPlayer
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     ''' <remarks>Works in tandem with lblDuration_TextChanged(sender As System.Object, e As System.EventArgs) Handles lblDuration.TextChanged</remarks>
-    Private Sub lblDuration_Resize(sender As System.Object, e As System.EventArgs) Handles lblDuration.Resize
-        Dim TempSize As New Size(New System.Drawing.Point(0))
-        If lblDuration.Tag Is Nothing Then lblDuration.Tag = lblDuration.Size
-        TempSize = DirectCast(lblDuration.Tag, Size)
-        lblDuration.Location = New System.Drawing.Point(lblDuration.Location.X - (lblDuration.Size.Width - TempSize.Width), lblDuration.Location.Y)
-    End Sub
+    'Private Sub lblDuration_Resize(sender As System.Object, e As System.EventArgs) Handles lblDuration.Resize
+    '    Dim TempSize As New Size(New System.Drawing.Point(0))
+    '    'If lblDuration.Tag Is Nothing Then lblDuration.Tag = lblDuration.Size
+    '    TempSize = DirectCast(lblDuration.Tag, Size)
+    '    'lblDuration.Location = New System.Drawing.Point(lblDuration.Location.X - (lblDuration.Size.Width - TempSize.Width), lblDuration.Location.Y)
+    'End Sub
 
     ''' <summary>
     ''' Required to override the default behaviour of the arrow keypresses in the form
@@ -607,7 +626,7 @@ Public Class frmVideoPlayer
 
     Private Sub plyrVideoPlayer_MediaError(ByVal sender As Object,
     ByVal e As AxWMPLib._WMPOCXEvents_MediaErrorEvent) Handles plyrVideoPlayer.MediaError
-         MessageBox.Show("The Videominer player (Windows media player) encounterer an error while loading the media. Error message:" & _
-                         vbCrLf & vbCrLf & e.ToString())
+        MessageBox.Show("The Videominer player (Windows media player) encounterer an error while loading the media. Error message:" &
+                        vbCrLf & vbCrLf & e.ToString())
     End Sub
 End Class

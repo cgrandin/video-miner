@@ -3070,7 +3070,7 @@ Public Class VideoMiner
                 Me.FileName = strVideoFilePath.Substring(strVideoFilePath.LastIndexOf("\") + 1, strVideoFilePath.Length - strVideoFilePath.LastIndexOf("\") - 1)
                 If frmVideoPlayer Is Nothing Then
                     frmVideoPlayer = New frmVideoPlayer(FileName, VIDEO_TIME_FORMAT)
-                    frmVideoPlayer.pnlHideVideo.Visible = True
+                    'frmVideoPlayer.pnlHideVideo.Visible = True
                     Dim intX As Integer = 0
                     Dim intY As Integer = 0
                     Dim intMonitorCount As Integer = 0
@@ -3103,7 +3103,7 @@ Public Class VideoMiner
                     frmVideoPlayer.Show()
 
                 Else
-                    frmVideoPlayer.pnlHideVideo.Visible = True
+                    'frmVideoPlayer.pnlHideVideo.Visible = True
                     frmVideoPlayer.frmVideoPlayer_Load(Me, New System.EventArgs)
                 End If
             End If
@@ -4187,7 +4187,7 @@ Public Class VideoMiner
             End If
             Me.VideoTime = Zero
             frmVideoPlayer.Show()
-            frmVideoPlayer.pnlHideVideo.Visible = True
+            'frmVideoPlayer.pnlHideVideo.Visible = True
             pnlVideoControls.Visible = True
             Me.txtTransectDate.Enabled = True
             Me.txtProjectName.Enabled = True
