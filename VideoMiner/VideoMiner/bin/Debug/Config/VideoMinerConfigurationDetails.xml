@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <VideoMinerConfigurationDetails version="1" revision="0">
   <DetailedSpeciesEventConfiguration>
     <Range>
@@ -93,6 +93,7 @@
   </DeviceControl>
   <DatabasePath>C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug</DatabasePath>
   <VideoPath>G:\Video Clips</VideoPath>
+  <ImagePath>D:\Pictures\Leviathan</ImagePath>
   <SessionPath>C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug</SessionPath>
   <GPS>
     <ComPort>COM1</ComPort>

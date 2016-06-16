@@ -20,6 +20,7 @@ Public Class VideoMiner
     Private Const XPATH_DATABASE_PATH As String = "/DatabasePath"
     Private Const XPATH_SESSION_PATH As String = "/SessionPath"
     Private Const XPATH_VIDEO_PATH As String = "/VideoPath"
+    Private Const XPATH_IMAGE_PATH As String = "/ImagePath"
 
     Private Const XPATH_GPS_COM_PORT As String = "/GPS/ComPort"
     Private Const XPATH_GPS_NMEA_STRING As String = "/GPS/NMEA"
@@ -91,6 +92,7 @@ Public Class VideoMiner
     Public Const BAD_ID As Long = -1
     Public Const OPEN_DB_TITLE As String = "Open Database"
     Public Const OPEN_VID_TITLE As String = "Open Video"
+    Public Const OPEN_IMAGE_TITLE As String = "Open Image"
     Public Const OPEN_EXT_VID As String = "Use External Video"
     Public Const DB_FILE_FILTER As String = "MS Access files (*.mdb)|*.mdb"
     Public Const DB_FILE_STATUS_LOADED As String = "Database '"
@@ -206,6 +208,16 @@ Public Class VideoMiner
     ''' </summary>
     ''' <remarks></remarks>
     Private m_strSessionPath As String
+    ''' <summary>
+    ''' Holds the path of the last known path for pictures as entered by the user in the OpenFileDialog
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_strImagePath As String
+    ''' <summary>
+    ''' Hold the currently loaded image's filename without path information
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private m_strImageFile As String
     ''' <summary>
     ''' Holds the user time as set by the frmSetTime form.
     ''' This is the master time object to be used by all functions when data are recorded.
@@ -531,7 +543,7 @@ Public Class VideoMiner
             If m_strVideoPath = NULL_STRING And m_strVideoFile = NULL_STRING Then
                 Return "External Video"
             Else
-                Return m_strVideoPath & "/" & m_strVideoFile
+                Return Combine(m_strVideoPath, m_strVideoFile)
             End If
         End Get
         Set(value As String)
@@ -1135,7 +1147,8 @@ Public Class VideoMiner
 
     ''' <summary>
     ''' Load the metadata found in the VideoMiner configuration file into member variables.
-    ''' If the configuration file is not found, defaults will be assigned for GPS settings and the path variables
+    ''' If the configuration file is not found, defaults will be assigned for GPS settings
+    ''' and the path variables.
     ''' </summary>
     ''' <returns>True if all member variables were populated. False if an exceptioon was thrown or the file does not exist</returns>
     Private Function loadConfigurationFile() As Boolean
@@ -1215,6 +1228,7 @@ Public Class VideoMiner
                 m_strDatabasePath = GetConfiguration(XPATH_DATABASE_PATH)
                 m_strVideoPath = GetConfiguration(XPATH_VIDEO_PATH)
                 m_strSessionPath = GetConfiguration(XPATH_SESSION_PATH)
+                m_strImagePath = GetConfiguration(XPATH_IMAGE_PATH)
                 ' If any of the three paths were not present in the XML file, set them to the working directory
                 ' which is determined at program startup, not via XML file.
                 If m_strDatabasePath = NULL_STRING Then
@@ -1228,6 +1242,10 @@ Public Class VideoMiner
                 If m_strSessionPath = NULL_STRING Then
                     m_strSessionPath = m_strWorkingPath
                     SaveConfiguration(XPATH_SESSION_PATH, m_strSessionPath)
+                End If
+                If m_strImagePath = NULL_STRING Then
+                    m_strImagePath = m_strWorkingPath
+                    SaveConfiguration(XPATH_IMAGE_PATH, m_strImagePath)
                 End If
 
                 ' The list of previous project names
@@ -1653,7 +1671,7 @@ Public Class VideoMiner
             m_strDatabasePath = ofd.FileName.Substring(0, ofd.FileName.LastIndexOf("\"))
             m_strDatabaseFilePath = ofd.FileName  ' ofd.FileName returns full path filename
             ' write the database path to the XML file
-            SaveConfiguration("/DatabasePath", m_strDatabasePath)
+            SaveConfiguration(XPATH_DATABASE_PATH, m_strDatabasePath)
             openDatabase()
         End If
     End Sub
@@ -2113,211 +2131,6 @@ Public Class VideoMiner
             '    ElseIf MnuNameOption_9.Checked Then
             '        strDefaultName = NULL_STRING
             '    End If
-        End If
-    End Sub
-
-    'Private Sub VaryQualityLevel(ByVal strFilePath As String)
-    '    ' Get a bitmap. 
-    '    Dim bmp1 As New Bitmap(strFilePath)
-    '    Dim jgpEncoder As ImageCodecInfo = GetEncoder(ImageFormat.Jpeg)
-
-    '    ' Create an Encoder object based on the GUID 
-    '    ' for the Quality parameter category. 
-    '    Dim myEncoder As System.Drawing.Imaging.Encoder = System.Drawing.Imaging.Encoder.Quality
-
-    '    ' Create an EncoderParameters object. 
-    '    ' An EncoderParameters object has an array of EncoderParameter 
-    '    ' objects. In this case, there is only one 
-    '    ' EncoderParameter object in the array. 
-    '    Dim myEncoderParameters As New EncoderParameters(1)
-
-    '    Dim myEncoderParameter As New EncoderParameter(myEncoder, 100&)
-    '    myEncoderParameters.Param(0) = myEncoderParameter
-    '    bmp1.Save(strFilePath, jgpEncoder, myEncoderParameters)
-
-    'End Sub 'VaryQualityLevel
-
-    ' ==========================================================================================================
-    ' Name: mnuOpenImg_Click
-    ' Description: Select the image file for processing, extracting EXIF info as well, also get all the images under
-    '              selected directory.
-    '              This function is called when the user selects "File->Open Image File"
-    ' ==========================================================================================================
-    Private Sub mnuOpenImg_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuOpenImg.Click
-
-        If Not frmVideoPlayer Is Nothing Then
-
-            Dim intAnswer As Integer
-
-            intAnswer = MessageBox.Show("The video file '" & Me.FileName & "' is currently open.  In order to open an image, the video will be closed.  Do you want to continue?", "Video File Open", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-
-            If intAnswer = vbNo Then
-                Exit Sub
-            Else
-                frmVideoPlayer.Close()
-            End If
-
-        End If
-
-        If Me.tmrComputerTime.Enabled Then
-            Me.tmrComputerTime.Stop()
-        End If
-        Dim strFileName As String
-
-        ' Set the default folder for the pop up dialog
-        ' which requires the user to select an image.
-        ' The image format could be .bmp, .jpg, .gif or .png
-        fldlgOpenFD.InitialDirectory = CurDir()
-        fldlgOpenFD.Title = "Open an Image File"
-        fldlgOpenFD.Filter = "Image Files(*.bmp;*.jpg;*.gif;*.png)|*.bmp;*.jpg;*.gif;*.png"
-        Dim DidWork As Integer = fldlgOpenFD.ShowDialog()
-
-        ' If user selects an image
-        If DidWork <> Windows.Forms.DialogResult.Cancel Then
-            ' Get the name of the file selected and show this file
-            ' in the window frmImage.
-            strFileName = fldlgOpenFD.FileName
-            If frmImage Is Nothing Then
-                frmImage = New frmImage
-                pnlImageControls.Visible = True
-                pnlVideoControls.Visible = False
-
-                Dim intX As Integer = 0
-                Dim intY As Integer = 0
-
-                Dim intMonitorCount As Integer = 0
-                Dim mon As Screen
-                Dim secMon As Screen
-                Dim priMon As Screen
-
-                For Each mon In Screen.AllScreens
-                    If Not mon.Primary Then
-                        secMon = mon
-                    Else
-                        priMon = mon
-                    End If
-                    intMonitorCount += 1
-                Next
-
-                Dim aPoint As System.Drawing.Point
-
-                If intMonitorCount = 1 Then
-                    aPoint.X = intX
-                    aPoint.Y = intY / 2
-                    frmImage.Location = aPoint
-                    frmImage.WindowState = FormWindowState.Normal
-                Else
-                    aPoint.X = intX + priMon.Bounds.Width
-                    aPoint.Y = intY / 2
-                    frmImage.Location = aPoint
-                    frmImage.WindowState = FormWindowState.Maximized
-                End If
-
-                frmImage.Show()
-            End If
-            currentImage = strFileName
-            'frmImage.PictureBox1.Image = Image.FromFile(strFileName)
-            'frmImage.Text = strFileName.Substring(strFileName.LastIndexOf("\") + 1, (strFileName.Length - strFileName.LastIndexOf("\") - 1))
-            Me.FileName = strFileName.Substring(strFileName.LastIndexOf("\") + 1, (strFileName.Length - strFileName.LastIndexOf("\") - 1))
-
-            ' set the flag "image_open" to be true.
-            image_open = True
-            ' Store the path of the current folder so that we can read 
-            ' all the images under the current directory
-            imagePath = strFileName.Substring(0, strFileName.LastIndexOf("\") + 1)
-            Dim allFiles As String() = Directory.GetFiles(imagePath)
-            Dim cur_folder_files As String = NULL_STRING
-            Dim i As Integer
-            Dim intIndex As Integer = 0
-            Dim tempFileName As String
-
-
-            Try
-                imageFilesList = New List(Of String)
-                Dim imageFileDirectory As IO.FileInfo() = New IO.DirectoryInfo(imagePath).GetFiles()
-                For Each logFile As IO.FileInfo In imageFileDirectory
-                    Dim subPostFix As String = logFile.Name.Substring(logFile.Name.Length - 4, 4)
-                    If subPostFix = ".JPG" Or subPostFix = ".jpg" Or subPostFix = ".bmp" Or subPostFix = ".BMP" Or subPostFix = ".gif" Or subPostFix = ".GIF" Or subPostFix = ".png" Or subPostFix = ".PNG" Then
-                        imageFilesList.Add(logFile.Name)
-                    End If
-                Next
-
-                For i = 0 To imageFilesList.Count - 1
-                    If imageFilesList(i) = Me.FileName Then
-                        intIndex = i
-                        Exit For
-                    End If
-                Next
-
-                frmImage.PictureBox1.Image = New Bitmap(imagePath & imageFilesList(intIndex))
-                frmImage.Text = imageFilesList(intIndex)
-                image_index = intIndex
-                getEXIFData()
-                'Me.txtTimeSource.ForeColor = Color.LimeGreen
-                'Me.txtTime.ForeColor = Color.LimeGreen
-                Me.txtTimeSource.Text = "EXIF"
-                intTimeSource = 3
-                Me.txtTimeSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-                Me.txtTimeSource.BackColor = Color.LightGray
-                Me.txtTimeSource.ForeColor = Color.LimeGreen
-                Me.txtTimeSource.TextAlign = HorizontalAlignment.Center
-                Me.txtTime.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-                Me.txtTime.BackColor = Color.LightGray
-                Me.txtTime.ForeColor = Color.LimeGreen
-                Me.txtTime.TextAlign = HorizontalAlignment.Center
-                Me.txtTransectDate.Text = m_transect_date
-                Me.txtDateSource.Text = "EXIF"
-                Me.txtDateSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-                Me.txtDateSource.BackColor = Color.LightGray
-                Me.txtDateSource.ForeColor = Color.LimeGreen
-                Me.txtDateSource.TextAlign = HorizontalAlignment.Center
-            Catch ex As Exception
-                MsgBox(ex.Message)
-            End Try
-
-            ' We try to store the name of all the files under this folder
-            ' and then separate each file name using "|".
-            'For i = 0 To allFiles.Length - 1
-            '    tempFileName = allFiles(i)
-            '    'MsgBox(Me.FileName & " : " & tempFileName.Substring(tempFileName.LastIndexOf("\") + 1, tempFileName.Length - 1 - tempFileName.LastIndexOf("\")))
-            '    Dim subPostFix As String = tempFileName.Substring(tempFileName.Length - 4, 4)
-            '    If subPostFix = ".JPG" Or subPostFix = ".jpg" Or subPostFix = ".bmp" Or subPostFix = ".BMP" _
-            '      Or subPostFix = ".gif" Or subPostFix = ".GIF" Or subPostFix = ".png" Or subPostFix = ".PNG" Then
-            '        cur_folder_files = String.Concat(cur_folder_files, tempFileName.Substring(tempFileName.LastIndexOf("\") + 1, tempFileName.Length - 1 - tempFileName.LastIndexOf("\")), "|")
-            '        MsgBox(tempFileName.Substring(tempFileName.LastIndexOf("\") + 1, tempFileName.Length - 1 - tempFileName.LastIndexOf("\")))
-            '        intIndex += 1
-            '    End If
-
-            '    If Me.FileName = tempFileName.Substring(tempFileName.LastIndexOf("\") + 1, tempFileName.Length - 1 - tempFileName.LastIndexOf("\")) Then
-            '        Me.image_index = intIndex
-            '    End If
-            'Next i
-            'MsgBox(image_index)
-            'cur_folder_files = cur_folder_files.Substring(0, cur_folder_files.Length() - 1)
-            '' Store the name of all image files in an array
-            '' We use the letter "|" to separate each file because "|" can not
-            '' be a part of a file name
-            'fileNames = Split(cur_folder_files, "|")
-            'image_prefix = strFileName.Substring(0, strFileName.LastIndexOf("."))
-
-            fldlgOpenFD.Reset()
-
-            Me.cmdPreviousImage.Enabled = True
-            Me.cmdNextImage.Enabled = True
-            Me.cboZoom.Enabled = True
-            Me.cmdPreviousImage.Visible = True
-            Me.cmdNextImage.Visible = True
-            Me.cboZoom.Visible = True
-            Me.lblImageSize.Visible = True
-            'Me.lblVideoControls.Visible = True
-            'Me.lblVideoControls.Text = "Photo Controls"
-
-            Me.cmdNothingInPhoto.Visible = True
-
-            intCurrentZoom = Me.cboZoom.SelectedIndex
-
-            enableDisableImageMenu(True)
-
         End If
     End Sub
 
@@ -2856,7 +2669,7 @@ Public Class VideoMiner
 
             ' Store the chosen session path in the XML file
             m_strSessionPath = Path.GetDirectoryName(ofd.FileName)
-            SaveConfiguration("/SessionPath", m_strSessionPath)
+            SaveConfiguration(XPATH_SESSION_PATH, m_strSessionPath)
             Me.SessionName = strFileName
 
             If strFileName = NULL_STRING Or Not System.IO.File.Exists(strFileName) Then
@@ -3499,23 +3312,163 @@ Public Class VideoMiner
 
 #Region "Image Functions"
 
+    ''' <summary>
+    ''' Open an image in windows media player
+    ''' </summary>
+    Private Sub mnuOpenImg_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuOpenImg.Click
+        openImage()
+    End Sub
+
+    ''' <summary>
+    ''' Open a video file. Creates a new instance of frmVideoPlayer
+    ''' </summary>
+    ''' <returns>Boolean representing success</returns>
+    ''' <remarks>Returns True if the user chose an existing file to play, False is they pressed cancel or clicked the 'X'</remarks>
+    Private Function openImage() As Boolean
+        Dim ofd As OpenFileDialog = New OpenFileDialog
+        ofd.Title = OPEN_IMAGE_TITLE
+        ofd.InitialDirectory = m_strImagePath
+        ofd.Filter = "All types (*.*)|*.*|Joint Photographic Experts Group (*.jpg)|*.jpg|Graphics Interchange Format (*.gif)|*.gif|Portable Network Graphics (*.png)|*.png|Tagged Image File Format (*.tiff)|*.tiff"
+        ofd.FilterIndex = 1
+        ofd.RestoreDirectory = True
+        ofd.Multiselect = False
+        If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            m_strImagePath = Path.GetDirectoryName(ofd.FileName)
+            ' Store the new image path in XML file each time an image is opened
+            SaveConfiguration(XPATH_IMAGE_PATH, m_strImagePath)
+            m_strImageFile = GetFileName(ofd.FileName)
+            If frmImage Is Nothing Then
+                frmImage = New frmImage()
+                pnlImageControls.Visible = True
+                pnlVideoControls.Visible = False
+                Dim intX As Integer = 0
+                Dim intY As Integer = 0
+                Dim intMonitorCount As Integer = 0
+                Dim mon As Screen
+                Dim secMon As Screen
+                Dim priMon As Screen
+                For Each mon In Screen.AllScreens
+                    If Not mon.Primary Then
+                        secMon = mon
+                    Else
+                        priMon = mon
+                    End If
+                    intMonitorCount += 1
+                Next
+                Dim aPoint As System.Drawing.Point
+                If intMonitorCount = 1 Then
+                    aPoint.X = intX
+                    aPoint.Y = intY / 2
+                    frmImage.Location = aPoint
+                    frmImage.WindowState = FormWindowState.Normal
+                Else
+                    aPoint.X = intX + priMon.Bounds.Width
+                    aPoint.Y = intY / 2
+                    frmImage.Location = aPoint
+                    frmImage.WindowState = FormWindowState.Maximized
+                End If
+                frmImage.Show()
+            End If
+            currentImage = m_strImageFile
+            frmImage.PictureBox1.Image = Image.FromFile(Combine(m_strImagePath, m_strImageFile))
+            image_open = True
+            ' Retrieve all files in the directory selected
+            Dim allFiles As String() = Directory.GetFiles(m_strImagePath)
+            imageFilesList = New List(Of String)
+            Dim imageFileDirectory As FileInfo() = New DirectoryInfo(m_strImagePath).GetFiles()
+            Dim extensionList As String() = {".jpg", ".png", ".tiff", ".bmp", ".gif"}
+            For Each logFile As IO.FileInfo In imageFileDirectory
+                Dim extension As String = GetExtension(logFile.Name)
+                If extensionList.Contains(extension.ToLower()) Then
+                    imageFilesList.Add(logFile.Name)
+                End If
+            Next
+
+            frmImage.PictureBox1.Image = New Bitmap(Combine(m_strImagePath & m_strImageFile))
+            frmImage.Text = Combine(m_strImagePath & m_strImageFile)
+            'TODO: Implement EXIF data for the pictures. Both saving and loading. Huge task.
+            'getEXIFData()
+            'Me.txtTimeSource.ForeColor = Color.LimeGreen
+            'Me.txtTime.ForeColor = Color.LimeGreen
+            'txtTimeSource.Text = "EXIF"
+            'intTimeSource = 3
+            'txtTimeSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+            'txtTimeSource.BackColor = Color.LightGray
+            'txtTimeSource.ForeColor = Color.LimeGreen
+            'txtTimeSource.TextAlign = HorizontalAlignment.Center
+            'txtTime.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+            'txtTime.BackColor = Color.LightGray
+            'txtTime.ForeColor = Color.LimeGreen
+            'txtTime.TextAlign = HorizontalAlignment.Center
+            'txtTransectDate.Text = m_transect_date
+            'txtDateSource.Text = "EXIF"
+            'txtDateSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+            'txtDateSource.BackColor = Color.LightGray
+            'txtDateSource.ForeColor = Color.LimeGreen
+            'txtDateSource.TextAlign = HorizontalAlignment.Center
+
+            ' We try to store the name of all the files under this folder
+            ' and then separate each file name using "|".
+            'For i = 0 To allFiles.Length - 1
+            '    tempFileName = allFiles(i)
+            '    'MsgBox(Me.FileName & " : " & tempFileName.Substring(tempFileName.LastIndexOf("\") + 1, tempFileName.Length - 1 - tempFileName.LastIndexOf("\")))
+            '    Dim subPostFix As String = tempFileName.Substring(tempFileName.Length - 4, 4)
+            '    If subPostFix = ".JPG" Or subPostFix = ".jpg" Or subPostFix = ".bmp" Or subPostFix = ".BMP" _
+            '      Or subPostFix = ".gif" Or subPostFix = ".GIF" Or subPostFix = ".png" Or subPostFix = ".PNG" Then
+            '        cur_folder_files = String.Concat(cur_folder_files, tempFileName.Substring(tempFileName.LastIndexOf("\") + 1, tempFileName.Length - 1 - tempFileName.LastIndexOf("\")), "|")
+            '        MsgBox(tempFileName.Substring(tempFileName.LastIndexOf("\") + 1, tempFileName.Length - 1 - tempFileName.LastIndexOf("\")))
+            '        intIndex += 1
+            '    End If
+
+            '    If Me.FileName = tempFileName.Substring(tempFileName.LastIndexOf("\") + 1, tempFileName.Length - 1 - tempFileName.LastIndexOf("\")) Then
+            '        Me.image_index = intIndex
+            '    End If
+            'Next i
+            'MsgBox(image_index)
+            'cur_folder_files = cur_folder_files.Substring(0, cur_folder_files.Length() - 1)
+            '' Store the name of all image files in an array
+            '' We use the letter "|" to separate each file because "|" can not
+            '' be a part of a file name
+            'fileNames = Split(cur_folder_files, "|")
+            'image_prefix = strFileName.Substring(0, strFileName.LastIndexOf("."))
+
+            'fldlgOpenFD.Reset()
+
+            Me.cmdPreviousImage.Enabled = True
+            Me.cmdNextImage.Enabled = True
+            Me.cboZoom.Enabled = True
+            Me.cmdPreviousImage.Visible = True
+            Me.cmdNextImage.Visible = True
+            Me.cboZoom.Visible = True
+            Me.lblImageSize.Visible = True
+            'Me.lblVideoControls.Visible = True
+            'Me.lblVideoControls.Text = "Photo Controls"
+
+            Me.cmdNothingInPhoto.Visible = True
+
+            intCurrentZoom = Me.cboZoom.SelectedIndex
+
+            enableDisableImageMenu(True)
+        Else
+            Return False
+        End If
+
+
+        Return True
+    End Function
+
     'Protected Overrides Function ProcessCmdKey(ByRef msg As System.Windows.Forms.Message, ByVal keyData As System.Windows.Forms.Keys) As Boolean
-
-
     '    If Not frmImage Is Nothing Then
     '        Dim keyPressed As Keys = CType(msg.WParam.ToInt32(), Keys)
     '        Dim intAnswer As Integer
-
     '        Select Case keyPressed
-
     '            Case Keys.Right
-
     '                image_index += 1
     '                ' If the index of the image is larger than the number
     '                ' of images in the folder, then set it to 0, which means
     '                ' the first image in the folder is displayed.
     '                If image_index >= fileNames.Length Then
-    '                    intAnswer = MessageBox.Show("You have reached the last image in the folder, would you like to start again at the first image?", "Last Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+    '                    intAnswer = MessageBox.Show("You have reached the last image In the folder, would you Like To start again at the first image?", "Last Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
     '                    If intAnswer = vbYes Then
     '                        image_index = 0
     '                    Else
@@ -3531,7 +3484,7 @@ Public Class VideoMiner
     '                ' If the index of the image is smaller than 0, then set 
     '                ' it to be the second last image
     '                If image_index < 0 Then
-    '                    intAnswer = MessageBox.Show("You have reached the first image in the folder, would you like to start again at the last image?", "First Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+    '                    intAnswer = MessageBox.Show("You have reached the first image In the folder, would you Like To start again at the last image?", "First Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
     '                    If intAnswer = vbYes Then
     '                        image_index = fileNames.Length - 1
     '                    Else
@@ -3548,8 +3501,6 @@ Public Class VideoMiner
     '        End Select
     '    End If
     'End Function
-
-
     Private Sub getEXIFData()
         Me.lblGPSLocation.Visible = False
         Me.lblX.Visible = False
@@ -3732,7 +3683,6 @@ Public Class VideoMiner
             End If
         End If
     End Sub
-
     Public Sub enableDisableImageMenu(ByVal mnuState As Boolean)
 
         Dim mnuItem As ToolStripMenuItem
@@ -3847,7 +3797,6 @@ Public Class VideoMiner
 
     End Sub
 
-
     Private Sub cmdNextImage_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdNextImage.Click
 
         Dim intAnswer As Integer
@@ -3880,7 +3829,6 @@ Public Class VideoMiner
         End If
         LoadImg()
     End Sub
-
 
 
     ' This function is the common part for the next 4 functions.
@@ -4055,7 +4003,7 @@ Public Class VideoMiner
         If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
             m_strVideoPath = Path.GetDirectoryName(ofd.FileName)
             ' Store the new video path in XML file each time a video is opened
-            SaveConfiguration("/VideoPath", m_strVideoPath)
+            SaveConfiguration(XPATH_VIDEO_PATH, m_strVideoPath)
             m_strVideoFile = Path.GetFileName(ofd.FileName)
         Else
             Return False
@@ -5248,8 +5196,8 @@ Public Class VideoMiner
                     dataColumns.Add(dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width)
                     strColumns = strColumns & dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width & ","
                 Next
-                SaveConfiguration("/Database/Configuration/DatabaseName", m_db_filename)
-                SaveConfiguration("/Database/Configuration/Columns", strColumns.Substring(0, strColumns.Length - 1))
+                SaveConfiguration(XPATH_DATABASE_NAME, m_db_filename)
+                SaveConfiguration(XPATH_DATABASE_COLUMNS, strColumns.Substring(0, strColumns.Length - 1))
             End If
         End If
     End Sub
@@ -5264,8 +5212,8 @@ Public Class VideoMiner
                     dataColumns.Add(dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width)
                     strColumns = strColumns & dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width & ","
                 Next
-                SaveConfiguration("/Database/Configuration/DatabaseName", m_db_filename)
-                SaveConfiguration("/Database/Configuration/Columns", strColumns.Substring(0, strColumns.Length - 1))
+                SaveConfiguration(XPATH_DATABASE_NAME, m_db_filename)
+                SaveConfiguration(XPATH_DATABASE_COLUMNS, strColumns.Substring(0, strColumns.Length - 1))
             End If
         End If
     End Sub
