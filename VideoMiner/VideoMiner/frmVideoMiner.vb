@@ -2090,117 +2090,76 @@ Public Class VideoMiner
         Dim strDate As String = m_transect_date.ToString("d").Replace("/", "_")
         Dim strTime As String = (m_tsUserTime + frmVideoPlayer.CurrentVideoTime).ToString().Replace(":", "_")
         Dim strDefaultFilename As String = "Capture_" & Me.txtProjectName.Text & "_" & strDate & "_" & strTime
-        Me.svDlgFileDialogScrCap.FileName = strDefaultFilename
-        ' Open a save as dialog to specify the path and name for the bitmap.
-        If Me.svDlgFileDialogScrCap.ShowDialog() = Windows.Forms.DialogResult.Cancel Then
-            Exit Sub
-        End If
-        Dim strFileName As String = Me.svDlgFileDialogScrCap.FileName.ToString()
-        If svDlgFileDialogScrCap.FilterIndex = 2 Then
-            strFileName = strFileName.Replace("Jpeg", "bmp")
-        End If
-        SendKeys.Send("^{PRTSC}")
-        Application.DoEvents()
-        Dim screen = Clipboard.GetDataObject
-        Using Input As New Bitmap(CType(screen.getdata(GetType(System.Drawing.Bitmap)), Bitmap))
-            ' BitmapEncoder is a low-level class in this project. It was the only way to avoid OutOfMemoryExceptions
-            Using Output = BitmapEncoder.ConvertBitmapTo1bpp(Input)
-                Output.Save(strFileName)
-            End Using
-        End Using
-        ' Create a graphics object for the live video stream and set the bitmap to be the dimensions of the picture box
-        Dim GR As Graphics = frmVideoPlayer.CreateGraphics
-        Dim bmpCapture As New Bitmap(frmVideoPlayer.Width, frmVideoPlayer.Height)
-        Dim pbhdc As IntPtr = GR.GetHdc     ' Set up a handle to the graphics object
-        Dim bmpGraphics As Graphics = Graphics.FromImage(bmpCapture)
-        Dim bmpHdc As IntPtr = bmpGraphics.GetHdc
-        ' Use external library to get a screen capture of the picture box area
-        BitBlt(bmpHdc, 0, 0, frmVideoPlayer.Width, frmVideoPlayer.Height, pbhdc, 0, 0, COPY)
-        GR.ReleaseHdc(pbhdc)
-        bmpGraphics.ReleaseHdc(bmpHdc)
-        bmpCapture.Save(strFileName)
-        Try
-            'If the user selected *.Jpeg, convert the bmp.
-            If svDlgFileDialogScrCap.FilterIndex = 2 Then
-                'Save bmp as jpg 'ConvertBMP(strFileName, ImageFormat.Jpeg)        'ConvertBMP(strFileName, ImageFormat.Emf)        'ConvertBMP(strFileName, ImageFormat.Exif)        'ConvertBMP(strFileName, ImageFormat.Gif)        'ConvertBMP(strFileName, ImageFormat.Icon)        'ConvertBMP(strFileName, ImageFormat.MemoryBmp)        'ConvertBMP(strFileName, ImageFormat.Png)        'ConvertBMP(strFileName, ImageFormat.Tiff)        'ConvertBMP(strFileName, ImageFormat.Wmf)        
-                ConvertBMP(strFileName, ImageFormat.Jpeg)
-            End If
-        Catch ex As Exception
-            MessageBox.Show("The file extension you created is invalid, please try again.", "Incorrect Extension", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-            Exit Sub
-        End Try
-        ' Enter record into the database
-        runInsertQueryScreenshot(strFileName)
-        '    If mnuNameOption_1.Checked Then
-        '        strDefaultName = "Capture_" & Me.txtProjectName.Text & "_" & strTransectDate & "_" & strTransectTime
-        '    ElseIf mnuNameOption_2.Checked Then
-        '        strDefaultName = "Capture_" & Me.txtProjectName.Text & "_" & strTodaysDate & "_" & strTodaysTime
-        '    ElseIf mnuNameOption_3.Checked Then
-        '        strDefaultName = "Capture_" & strTransectDate & "_" & strTransectTime
-        '    ElseIf mnuNameOption_4.Checked Then
-        '        strDefaultName = "Capture_" & strTodaysDate & "_" & strTodaysTime
-        '    ElseIf mnuNameOption_5.Checked Then
-        '        strDefaultName = Me.txtProjectName.Text & "_" & strTransectDate & "_" & strTransectTime
-        '    ElseIf mnuNameOption_6.Checked Then
-        '        strDefaultName = Me.txtProjectName.Text & "_" & strTodaysDate & "_" & strTodaysTime
-        '    ElseIf mnuNameOption_7.Checked Then
-        '        strDefaultName = strTransectDate & "_" & strTransectTime
-        '    ElseIf mnuNameOption_8.Checked Then
-        '        strDefaultName = strTodaysDate & "_" & strTodaysTime
-        '    ElseIf MnuNameOption_9.Checked Then
-        '        strDefaultName = NULL_STRING
+        Dim strFileName As String = frmVideoPlayer.captureScreen(strDate, strTime, strDefaultFilename)
+        ' The following old way involved using BitBlt but this resulted in a black screen on the capture.
+        ' After a lot of research I found a way to do this properly, it is now implemented in
+        ' frmVideoPlayer.captureScreen()
+
+        'svDlgFileDialogScrCap.FileName = strDefaultFilename
+        '' Open a save as dialog to specify the path and name for the bitmap.
+        'If Me.svDlgFileDialogScrCap.ShowDialog() = Windows.Forms.DialogResult.Cancel Then
+        '    Exit Sub
+        'End If
+        'Dim strFileName As String = Me.svDlgFileDialogScrCap.FileName.ToString()
+        'If svDlgFileDialogScrCap.FilterIndex = 2 Then
+        '    strFileName = strFileName.Replace("Jpeg", "bmp")
+        'End If
+        'SendKeys.Send("^{PRTSC}")
+        'Application.DoEvents()
+        'Dim screen = Clipboard.GetDataObject
+        'Using Input As New Bitmap(CType(screen.getdata(GetType(System.Drawing.Bitmap)), Bitmap))
+        '    ' BitmapEncoder is a low-level class in this project. It was the only way to avoid OutOfMemoryExceptions
+        '    Using Output = BitmapEncoder.ConvertBitmapTo1bpp(Input)
+        '        Output.Save(strFileName)
+        '    End Using
+        'End Using
+        '' Create a graphics object for the live video stream and set the bitmap to be the dimensions of the picture box
+        'Dim GR As Graphics = frmVideoPlayer.CreateGraphics
+        '' Here is where you would place a method call to get the video player's video width and height
+        'Dim bmpCapture As New Bitmap(frmVideoPlayer.Width, frmVideoPlayer.Height)
+        '' Set up a handle to the graphics object   
+        'Dim pbhdc As IntPtr = GR.GetHdc
+        'Dim bmpGraphics As Graphics = Graphics.FromImage(bmpCapture)
+        'Dim bmpHdc As IntPtr = bmpGraphics.GetHdc
+        '' Use external library to get a screen capture of the picture box area
+        'BitBlt(bmpHdc, 0, 0, frmVideoPlayer.Width, frmVideoPlayer.Height, pbhdc, 0, 0, COPY)
+        'GR.ReleaseHdc(pbhdc)
+        'bmpGraphics.ReleaseHdc(bmpHdc)
+        'bmpCapture.Save(strFileName)
+        'Try
+        '    'If the user selected *.Jpeg, convert the bmp.
+        '    If svDlgFileDialogScrCap.FilterIndex = 2 Then
+        '        'Save bmp as jpg 'ConvertBMP(strFileName, ImageFormat.Jpeg)
+        'ConvertBMP(strFileName, ImageFormat.Jpeg)
         '    End If
+        'Catch ex As Exception
+        '    MessageBox.Show("The file extension you created is invalid, please try again.", "Incorrect Extension", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
+        '    Exit Sub
+        'End Try
+        ' Enter record into the database
+        If Database.IsOpen And strFileName <> NULL_STRING Then
+            runInsertQueryScreenshot(strFileName)
+            '    If mnuNameOption_1.Checked Then
+            '        strDefaultName = "Capture_" & Me.txtProjectName.Text & "_" & strTransectDate & "_" & strTransectTime
+            '    ElseIf mnuNameOption_2.Checked Then
+            '        strDefaultName = "Capture_" & Me.txtProjectName.Text & "_" & strTodaysDate & "_" & strTodaysTime
+            '    ElseIf mnuNameOption_3.Checked Then
+            '        strDefaultName = "Capture_" & strTransectDate & "_" & strTransectTime
+            '    ElseIf mnuNameOption_4.Checked Then
+            '        strDefaultName = "Capture_" & strTodaysDate & "_" & strTodaysTime
+            '    ElseIf mnuNameOption_5.Checked Then
+            '        strDefaultName = Me.txtProjectName.Text & "_" & strTransectDate & "_" & strTransectTime
+            '    ElseIf mnuNameOption_6.Checked Then
+            '        strDefaultName = Me.txtProjectName.Text & "_" & strTodaysDate & "_" & strTodaysTime
+            '    ElseIf mnuNameOption_7.Checked Then
+            '        strDefaultName = strTransectDate & "_" & strTransectTime
+            '    ElseIf mnuNameOption_8.Checked Then
+            '        strDefaultName = strTodaysDate & "_" & strTodaysTime
+            '    ElseIf MnuNameOption_9.Checked Then
+            '        strDefaultName = NULL_STRING
+            '    End If
+        End If
     End Sub
-
-    ''' <summary>
-    ''' Get the current codec being run in the video window
-    ''' </summary>
-    ''' <param name="format">The image format on the current video</param>
-    Private Function GetEncoder(ByVal format As ImageFormat) As ImageCodecInfo
-        Dim codecs As ImageCodecInfo() = ImageCodecInfo.GetImageDecoders()
-        Dim codec As ImageCodecInfo
-        For Each codec In codecs
-            If codec.FormatID = format.Guid Then
-                Return codec
-            End If
-        Next codec
-        Return Nothing
-    End Function
-
-    ''' <summary>
-    ''' Convert a Bitmap to a JPEG
-    ''' </summary>
-    ''' <param name="BMPFullPath">The full path of the bitmap file</param>
-    ''' <param name="imgFormat">The format of the image captured from the video</param>
-    Public Function ConvertBMP(ByVal BMPFullPath As String, ByVal imgFormat As ImageFormat) As Boolean
-        Dim bAns As Boolean
-        Dim strNewFileName As String
-        Dim strNewFilePath As String
-        Dim strNewFile As String
-        Try
-            Using bmp1 As New Bitmap(BMPFullPath)
-                Dim jgpEncoder As ImageCodecInfo = GetEncoder(ImageFormat.Jpeg)
-                ' Create an Encoder object based on the GUID 
-                ' for the Quality parameter category. 
-                Dim myEncoder As System.Drawing.Imaging.Encoder = System.Drawing.Imaging.Encoder.Quality
-                ' Create an EncoderParameters object. 
-                ' An EncoderParameters object is an array of EncoderParameter 
-                ' objects. In this case, there is only one 
-                ' EncoderParameter object in the array. 
-                Dim myEncoderParameters As New EncoderParameters(1)
-                Dim myEncoderParameter As New EncoderParameter(myEncoder, 100&)
-                myEncoderParameters.Param(0) = myEncoderParameter
-                strNewFilePath = GetDirectoryName(BMPFullPath)
-                strNewFileName = GetFileNameWithoutExtension(BMPFullPath)
-                strNewFile = strNewFilePath & "\" & strNewFileName & ".jpg"
-                bmp1.Save(strNewFile, jgpEncoder, myEncoderParameters)
-                bAns = True
-            End Using
-        Catch
-            bAns = False
-        End Try
-        Return bAns
-    End Function
 
     'Private Sub VaryQualityLevel(ByVal strFilePath As String)
     '    ' Get a bitmap. 
@@ -4134,7 +4093,7 @@ Public Class VideoMiner
         Dim ofd As OpenFileDialog = New OpenFileDialog
         ofd.Title = OPEN_VID_TITLE
         ofd.InitialDirectory = m_strVideoPath
-        ofd.Filter = "Media Files (*.mpg,*.mpeg,*.avi,*.wma,*.wav,*.wmv,*.qt)|*.mpg;*.mpeg;*.avi;*.wma;*.wav;*.wmv;*.qt|All Files (*.*)|*.*"
+        ofd.Filter = "MPEG types|*.m*|Windows Media Video (*.wmv)|*.wmv|Audio Video Interleaved (*.avi)|*.avi|Quicktime (*.qt, *.mov)|*.qt;*.mov|Video OBject (*.vob)|*.vob"
         ofd.FilterIndex = 1
         ofd.RestoreDirectory = True
         ofd.Multiselect = False

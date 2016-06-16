@@ -1,4 +1,7 @@
 ﻿Imports System.TimeSpan
+Imports System.Drawing.Imaging
+Imports System.IO
+Imports System.IO.Path
 
 ''' <summary>
 ''' The frmVideoPlayer class provides a form with an instance of the axWindowsMediaPlayer cvontrol,
@@ -216,6 +219,7 @@ Public Class frmVideoPlayer
     Sub New(strFilename As String, Optional intFramesToSkip As Integer = FRAMES_TO_SKIP)
         InitializeComponent()
         'plyrVideoPlayer.uiMode = "none"
+        'plyrVideoPlayer.windowlessVideo = True
         m_strFilename = strFilename
         m_strVideoTimeFormat = VIDEO_TIME_FORMAT
         m_tsCurrentVideoTime = Zero
@@ -232,6 +236,7 @@ Public Class frmVideoPlayer
     Sub New(strFilename As String, ByVal videoTimeFormat As String, Optional intFramesToSkip As Integer = FRAMES_TO_SKIP)
         InitializeComponent()
         'plyrVideoPlayer.uiMode = "none"
+        'plyrVideoPlayer.windowlessVideo = True
         m_strFilename = strFilename
         m_strVideoTimeFormat = videoTimeFormat
         m_tsCurrentVideoTime = Zero
@@ -268,6 +273,106 @@ Public Class frmVideoPlayer
         End Try
         tmrVideo.Start()
     End Sub
+
+    ''' <summary>
+    ''' Get the current codec being run in the video window
+    ''' </summary>
+    ''' <param name="format">The image format on the current video</param>
+    Private Function GetEncoder(ByVal format As ImageFormat) As ImageCodecInfo
+        Dim codecs As ImageCodecInfo() = ImageCodecInfo.GetImageDecoders()
+        Dim codec As ImageCodecInfo
+        For Each codec In codecs
+            If codec.FormatID = format.Guid Then
+                Return codec
+            End If
+        Next codec
+        Return Nothing
+    End Function
+
+    ''' <summary>
+    ''' Convert a Bitmap to a different type
+    ''' </summary>
+    ''' <param name="BMPFullPath">The full path of the bitmap file</param>
+    ''' <param name="imgFormat">The format of the image captured from the video</param>
+    Private Function ConvertBMP(ByVal BMPFullPath As String, ByVal imgFormat As ImageFormat) As Boolean
+        Dim bAns As Boolean = False
+        Dim strNewFileName As String
+        Dim strNewFilePath As String
+        Dim strNewFile As String = NULL_STRING
+        'Try
+        Using bmp1 As New Bitmap(BMPFullPath)
+            'Dim jgpEncoder As ImageCodecInfo = GetEncoder(ImageFormat.Jpeg)
+            Dim encoder As ImageCodecInfo = GetEncoder(imgFormat)
+            ' Create an Encoder object based on the GUID 
+            ' for the Quality parameter category. 
+            Dim myEncoder As System.Drawing.Imaging.Encoder = System.Drawing.Imaging.Encoder.Quality
+            ' Create an EncoderParameters object. 
+            ' An EncoderParameters object is an array of EncoderParameter 
+            ' objects. In this case, there is only one 
+            ' EncoderParameter object in the array. 
+            Dim myEncoderParameters As New EncoderParameters(1)
+            Dim myEncoderParameter As New EncoderParameter(myEncoder, 100&)
+            myEncoderParameters.Param(0) = myEncoderParameter
+            strNewFilePath = GetDirectoryName(BMPFullPath)
+            strNewFileName = GetFileNameWithoutExtension(BMPFullPath)
+            If imgFormat.Equals(ImageFormat.Jpeg) Then
+                strNewFile = Combine(strNewFilePath, strNewFileName & ".jpg")
+            End If
+            If strNewFile <> NULL_STRING Then
+                bmp1.Save(strNewFile, encoder, myEncoderParameters)
+                bAns = True
+            End If
+        End Using
+        'Catch ex As Exception
+        '    MessageBox.Show("There was an error converting the jpeg image to the selected type. Error message:",
+        '    vbCrLf & vbCrLf & ex.Message)
+        'End Try
+        Return bAns
+    End Function
+
+    ''' <summary>
+    ''' Takes a frame grab of the current frame in the video player's window.
+    ''' A Save Dialog will be opened and the user can choose where to save the file.
+    ''' The controls of the windows media player will appear in the image unless the shot is taken
+    ''' when the player is in full screen mode.
+    ''' </summary>
+    Public Function captureScreen(ByVal strDate As String, ByVal strTime As String, ByVal strDefaultFilename As String) As String
+        Dim bitmap As New Bitmap(plyrVideoPlayer.Width, plyrVideoPlayer.Height)
+        Dim g As Graphics = Graphics.FromImage(bitmap)
+        Dim gg As Graphics = plyrVideoPlayer.CreateGraphics()
+        gg.SmoothingMode = Drawing2D.SmoothingMode.HighQuality And Drawing2D.SmoothingMode.AntiAlias
+        Me.BringToFront()
+        g.CopyFromScreen(plyrVideoPlayer.PointToScreen(New System.Drawing.Point()).X,
+                         plyrVideoPlayer.PointToScreen(New System.Drawing.Point()).Y,
+                         0,
+                         0,
+                         New System.Drawing.Size(plyrVideoPlayer.Width, plyrVideoPlayer.Height))
+        Dim svDlgFileDialogScrCap As New System.Windows.Forms.SaveFileDialog
+        svDlgFileDialogScrCap.Filter = "Joint Photographic Experts Group (*.jpg)|*.jpg|Bitmap (*.bmp)|*.bmp"
+        'svDlgFileDialogScrCap.Filter = "Joint Photographic Experts Group (*.jpg)|*.jpg|Bitmap (*.bmp)|*.bmp|Portable Network Graphics (*.png)|*.png|Tagged Image File Format (*.tiff)|*.tiff"
+        svDlgFileDialogScrCap.Title = "Save Screen Capture as..."
+
+        svDlgFileDialogScrCap.FileName = strDefaultFilename
+        ' Open a save as dialog to specify the path and name for the bitmap.
+        If svDlgFileDialogScrCap.ShowDialog() = Windows.Forms.DialogResult.Cancel Then
+            Return NULL_STRING
+        End If
+        Dim strFilename As String = svDlgFileDialogScrCap.FileName.ToString()
+        Dim baseFilename As String = Combine(GetDirectoryName(strFilename), GetFileNameWithoutExtension(strFilename))
+        Dim bmpFilename As String = baseFilename & ".bmp"
+
+        Using ms As New MemoryStream
+            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp)
+            Dim ret As Image = Image.FromStream(ms)
+            ret.Save(bmpFilename)
+        End Using
+        If svDlgFileDialogScrCap.FilterIndex = 1 Then
+            'Save bmp as jpg
+            ConvertBMP(bmpFilename, ImageFormat.Jpeg)
+            File.Delete(bmpFilename)
+        End If
+        Return strFileName
+    End Function
 
     Private Sub frmVideoPlayer_Resize(ByVal sender As Object, ByVal e As EventArgs) Handles plyrVideoPlayer.Resize
     End Sub

@@ -1436,8 +1436,8 @@ Partial Class VideoMiner
         '
         'svDlgFileDialogScrCap
         '
-        Me.svDlgFileDialogScrCap.Filter = "Jpeg (*.jpg)|*.jpg|Bitmap (*.bmp)|*.bmp"
-        Me.svDlgFileDialogScrCap.Title = "Save Screen Capture as..."
+        'Me.svDlgFileDialogScrCap.Filter = "Jpeg (*.jpg)|*.jpg|Bitmap (*.bmp)|*.bmp"
+        'Me.svDlgFileDialogScrCap.Title = "Save Screen Capture as..."
         '
         'tmrComputerTime
         '

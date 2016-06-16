@@ -72,17 +72,14 @@ Public Class BitmapEncoder
         BitBlt(hdc0, 0, 0, w, h, hdc, 0, 0, SRCCOPY)
         ' Step (4): convert this monochrome hbitmap back into a Bitmap:
         Dim b0 As System.Drawing.Bitmap = System.Drawing.Bitmap.FromHbitmap(hbm0)
-        '
-        ' Finally some cleanup.
+
         DeleteDC(hdc)
         DeleteDC(hdc0)
         ReleaseDC(IntPtr.Zero, sdc)
         DeleteObject(hbm)
         DeleteObject(hbm0)
-        '
         Return b0
     End Function
-
 
     Private Shared SRCCOPY As Integer = &HCC0020
     Private Shared BI_RGB As UInteger = 0
@@ -115,7 +112,6 @@ Public Class BitmapEncoder
     Private Shared Function BitBlt(ByVal hdcDst As IntPtr, ByVal xDst As Integer, ByVal yDst As Integer, ByVal w As Integer, ByVal h As Integer, ByVal hdcSrc As IntPtr, _
      ByVal xSrc As Integer, ByVal ySrc As Integer, ByVal rop As Integer) As Integer
     End Function
-
 
     <System.Runtime.InteropServices.DllImport("gdi32.dll")> _
     Private Shared Function CreateDIBSection(ByVal hdc As IntPtr, ByRef bmi As BITMAPINFO, ByVal Usage As UInteger, ByRef bits As IntPtr, ByVal hSection As IntPtr, ByVal dwOffset As UInteger) As IntPtr
