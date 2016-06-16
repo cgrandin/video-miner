@@ -2081,7 +2081,7 @@ Public Class VideoMiner
     ''' <summary>
     ''' Capture a screenshot of the video at it's current position, and write a transection to the database.
     ''' </summary>
-    Public Sub capture_screen_image()
+    Public Sub capture_screen_image() Handles frmVideoPlayer.CaptureScreenEvent
         If Not m_video_file_open Then
             MessageBox.Show("Cannot capture screen unless video is open.", "No Video Open", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
             Exit Sub
@@ -2091,51 +2091,6 @@ Public Class VideoMiner
         Dim strTime As String = (m_tsUserTime + frmVideoPlayer.CurrentVideoTime).ToString().Replace(":", "_")
         Dim strDefaultFilename As String = "Capture_" & Me.txtProjectName.Text & "_" & strDate & "_" & strTime
         Dim strFileName As String = frmVideoPlayer.captureScreen(strDate, strTime, strDefaultFilename)
-        ' The following old way involved using BitBlt but this resulted in a black screen on the capture.
-        ' After a lot of research I found a way to do this properly, it is now implemented in
-        ' frmVideoPlayer.captureScreen()
-
-        'svDlgFileDialogScrCap.FileName = strDefaultFilename
-        '' Open a save as dialog to specify the path and name for the bitmap.
-        'If Me.svDlgFileDialogScrCap.ShowDialog() = Windows.Forms.DialogResult.Cancel Then
-        '    Exit Sub
-        'End If
-        'Dim strFileName As String = Me.svDlgFileDialogScrCap.FileName.ToString()
-        'If svDlgFileDialogScrCap.FilterIndex = 2 Then
-        '    strFileName = strFileName.Replace("Jpeg", "bmp")
-        'End If
-        'SendKeys.Send("^{PRTSC}")
-        'Application.DoEvents()
-        'Dim screen = Clipboard.GetDataObject
-        'Using Input As New Bitmap(CType(screen.getdata(GetType(System.Drawing.Bitmap)), Bitmap))
-        '    ' BitmapEncoder is a low-level class in this project. It was the only way to avoid OutOfMemoryExceptions
-        '    Using Output = BitmapEncoder.ConvertBitmapTo1bpp(Input)
-        '        Output.Save(strFileName)
-        '    End Using
-        'End Using
-        '' Create a graphics object for the live video stream and set the bitmap to be the dimensions of the picture box
-        'Dim GR As Graphics = frmVideoPlayer.CreateGraphics
-        '' Here is where you would place a method call to get the video player's video width and height
-        'Dim bmpCapture As New Bitmap(frmVideoPlayer.Width, frmVideoPlayer.Height)
-        '' Set up a handle to the graphics object   
-        'Dim pbhdc As IntPtr = GR.GetHdc
-        'Dim bmpGraphics As Graphics = Graphics.FromImage(bmpCapture)
-        'Dim bmpHdc As IntPtr = bmpGraphics.GetHdc
-        '' Use external library to get a screen capture of the picture box area
-        'BitBlt(bmpHdc, 0, 0, frmVideoPlayer.Width, frmVideoPlayer.Height, pbhdc, 0, 0, COPY)
-        'GR.ReleaseHdc(pbhdc)
-        'bmpGraphics.ReleaseHdc(bmpHdc)
-        'bmpCapture.Save(strFileName)
-        'Try
-        '    'If the user selected *.Jpeg, convert the bmp.
-        '    If svDlgFileDialogScrCap.FilterIndex = 2 Then
-        '        'Save bmp as jpg 'ConvertBMP(strFileName, ImageFormat.Jpeg)
-        'ConvertBMP(strFileName, ImageFormat.Jpeg)
-        '    End If
-        'Catch ex As Exception
-        '    MessageBox.Show("The file extension you created is invalid, please try again.", "Incorrect Extension", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
-        '    Exit Sub
-        'End Try
         ' Enter record into the database
         If Database.IsOpen And strFileName <> NULL_STRING Then
             runInsertQueryScreenshot(strFileName)
@@ -4093,7 +4048,7 @@ Public Class VideoMiner
         Dim ofd As OpenFileDialog = New OpenFileDialog
         ofd.Title = OPEN_VID_TITLE
         ofd.InitialDirectory = m_strVideoPath
-        ofd.Filter = "MPEG types|*.m*|Windows Media Video (*.wmv)|*.wmv|Audio Video Interleaved (*.avi)|*.avi|Quicktime (*.qt, *.mov)|*.qt;*.mov|Video OBject (*.vob)|*.vob"
+        ofd.Filter = "All types (*.*)|*.*|MPEG types|*.m*|Windows Media Video (*.wmv)|*.wmv|Audio Video Interleaved (*.avi)|*.avi|Quicktime (*.qt, *.mov)|*.qt;*.mov|Video OBject (*.vob)|*.vob"
         ofd.FilterIndex = 1
         ofd.RestoreDirectory = True
         ofd.Multiselect = False

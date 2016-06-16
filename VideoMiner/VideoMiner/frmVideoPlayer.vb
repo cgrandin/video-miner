@@ -211,6 +211,11 @@ Public Class frmVideoPlayer
     ''' </summary>
     ''' <remarks></remarks>
     Event RightArrowPressedEvent()
+    ''' <summary>
+    ''' If the F10 key is pressed inside this form, this event will be raised to signal that
+    ''' we want to take a screen grab.
+    ''' </summary>
+    Event CaptureScreenEvent()
 
     ''' <summary>
     ''' Default constructor. The label time format will be the default. Current time and Duration are set to zero.
@@ -311,6 +316,7 @@ Public Class frmVideoPlayer
             ' objects. In this case, there is only one 
             ' EncoderParameter object in the array. 
             Dim myEncoderParameters As New EncoderParameters(1)
+            ' 100 is the quality of jpeg from 0-100. 0 for worst, 100 for best.
             Dim myEncoderParameter As New EncoderParameter(myEncoder, 100&)
             myEncoderParameters.Param(0) = myEncoderParameter
             strNewFilePath = GetDirectoryName(BMPFullPath)
@@ -323,12 +329,15 @@ Public Class frmVideoPlayer
                 bAns = True
             End If
         End Using
-        'Catch ex As Exception
-        '    MessageBox.Show("There was an error converting the jpeg image to the selected type. Error message:",
-        '    vbCrLf & vbCrLf & ex.Message)
-        'End Try
         Return bAns
     End Function
+
+    ''' <summary>
+    ''' Cause a frame grab to occur if user presses the F10 key while the player is in fullscreen mode
+    ''' </summary>
+    Private Sub player_KeyDownEvent(ByVal sender As Object, ByVal e As AxWMPLib._WMPOCXEvents_KeyDownEvent) Handles plyrVideoPlayer.KeyDownEvent
+        RaiseEvent CaptureScreenEvent()
+    End Sub
 
     ''' <summary>
     ''' Takes a frame grab of the current frame in the video player's window.
@@ -349,6 +358,7 @@ Public Class frmVideoPlayer
                          New System.Drawing.Size(plyrVideoPlayer.Width, plyrVideoPlayer.Height))
         Dim svDlgFileDialogScrCap As New System.Windows.Forms.SaveFileDialog
         svDlgFileDialogScrCap.Filter = "Joint Photographic Experts Group (*.jpg)|*.jpg|Bitmap (*.bmp)|*.bmp"
+        ' For some internal GDI+ reason, the other conversions don't work. Only BMP->JPG works.
         'svDlgFileDialogScrCap.Filter = "Joint Photographic Experts Group (*.jpg)|*.jpg|Bitmap (*.bmp)|*.bmp|Portable Network Graphics (*.png)|*.png|Tagged Image File Format (*.tiff)|*.tiff"
         svDlgFileDialogScrCap.Title = "Save Screen Capture as..."
 
@@ -367,16 +377,29 @@ Public Class frmVideoPlayer
             ret.Save(bmpFilename)
         End Using
         If svDlgFileDialogScrCap.FilterIndex = 1 Then
-            'Save bmp as jpg
-            ConvertBMP(bmpFilename, ImageFormat.Jpeg)
-            File.Delete(bmpFilename)
+            If ConvertBMP(bmpFilename, ImageFormat.Jpeg) Then
+                File.Delete(bmpFilename)
+            Else
+                MessageBox.Show("There was a problem in the conversion routine. The file is a BMP instead.")
+            End If
         End If
-        Return strFileName
+        Return strFilename
     End Function
+
+    Private Sub frmVideoPlayer_Keydown(ByVal sender As Object, ByVal e As KeyEventArgs) Handles MyBase.KeyDown
+        If e.KeyCode = Keys.F10 Then
+            ' Must raise event to VideoMiner main form, because it has the transect information
+            ' and must record the data in the database.
+            RaiseEvent CaptureScreenEvent()
+        End If
+    End Sub
 
     Private Sub frmVideoPlayer_Resize(ByVal sender As Object, ByVal e As EventArgs) Handles plyrVideoPlayer.Resize
     End Sub
 
+    ''' <summary>
+    ''' If user pressed the maimize button, set the player to fullscreen mode
+    ''' </summary>
     Private Sub frmVideoPlayer_Maximized(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Resize
         If Me.WindowState = FormWindowState.Maximized Then
             plyrVideoPlayer.fullScreen = True
