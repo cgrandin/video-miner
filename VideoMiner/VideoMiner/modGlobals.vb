@@ -12,6 +12,8 @@ Module modGlobals
     Public Const VMCD = "VideoMinerConfigurationDetails"
     Public Const VIDEOMINER_CONFIG_FILE_NAME = VMCD & ".xml"
     Public Const DB_DATA_TABLE As String = "data"
+    Public Const EXIF_FILE_NAME As String = "exiftool.exe"
+    Public Const EXIF_ARGS As String = " -s "
 
     Public Const DB_ABUNDANCE_TABLE As String = "lu_acfor_scale"
     Public Const DB_BUTTON_COLORS_TABLE As String = "lu_button_colors"

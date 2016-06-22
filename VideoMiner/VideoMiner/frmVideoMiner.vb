@@ -5,6 +5,7 @@ Imports System.TimeSpan
 Imports System.Drawing.Imaging
 Imports System.IO
 Imports System.IO.Path
+Imports System.Text.RegularExpressions
 Imports Microsoft.VisualBasic.ApplicationServices
 Imports System.Xml
 Imports System.ComponentModel
@@ -3386,7 +3387,7 @@ Public Class VideoMiner
             frmImage.PictureBox1.Image = New Bitmap(Combine(m_strImagePath, m_strImageFile))
             frmImage.Text = Combine(m_strImagePath & m_strImageFile)
             'TODO: Implement EXIF data for the pictures. Both saving and loading. Huge task.
-            getEXIFData()
+            Dim dictEXIF As Dictionary(Of String, String) = getEXIFData()
             'Me.txtTimeSource.ForeColor = Color.LimeGreen
             'Me.txtTime.ForeColor = Color.LimeGreen
             'txtTimeSource.Text = "EXIF"
@@ -3500,7 +3501,12 @@ Public Class VideoMiner
     '        End Select
     '    End If
     'End Function
-    Private Sub getEXIFData()
+
+    ''' <summary>
+    ''' Retreives the EXIF metadata from the image file given by m_strImageFile in the
+    ''' directory m_strImagePath.
+    ''' </summary>
+    Private Function getEXIFData() As Dictionary(Of String, String)
         lblGPSLocation.Visible = False
         lblX.Visible = False
         lblXValue.Visible = False
@@ -3508,12 +3514,12 @@ Public Class VideoMiner
         lblYValue.Visible = False
         lblZ.Visible = False
         lblZValue.Visible = False
+        ' Set up and run the EXIF tool for the file selected
         Dim strExeDirname As String = GetDirectoryName(System.Windows.Forms.Application.ExecutablePath.ToString())
-        Dim strCommand As String = Combine(strExeDirname, "exiftool.exe")
-        Dim strArguments As String = String.Concat(" -s ", Combine(m_strImagePath, m_strImageFile))
-        Dim strFullCommand As String = String.Concat(strCommand, strArguments)
+        Dim strCommand As String = Combine(strExeDirname, EXIF_FILE_NAME)
+        Dim strArguments As String = String.Concat(EXIF_ARGS, Combine(m_strImagePath, m_strImageFile))
         Dim oProcess As New Process()
-        Dim oStartInfo As New ProcessStartInfo(strFullCommand)
+        Dim oStartInfo As New ProcessStartInfo(strCommand)
         oStartInfo.Arguments = strArguments
         oStartInfo.UseShellExecute = False
         oStartInfo.RedirectStandardOutput = True
@@ -3524,162 +3530,188 @@ Public Class VideoMiner
         Using oStreamReader As System.IO.StreamReader = oProcess.StandardOutput
             sOutput = oStreamReader.ReadToEnd()
         End Using
-        Console.WriteLine(sOutput)
 
-        Dim strEXIFOutput() As String
-        strEXIFOutput = sOutput.Split(vbCrLf)
-        Dim i As Integer
-        Dim strDate As String = NULL_STRING
-        Dim strLine As String
-        Dim strItems() As String
-        Dim dblDegrees As Double
-        Dim dblMinutes As Double
-        Dim dblSeconds As Double
-        Dim strGPS As String
-        Dim strGPSSplit() As String
-        Dim intNegative As Integer = 1
-        Dim blDateTime As Boolean = False
-        Dim blFileDateTime As Boolean = False
-        Dim blX As Boolean = False
-        Dim blY As Boolean = False
-        Dim blZ As Boolean = False
-        Dim blFlag As Boolean = False
-        Dim strFileDate As String = NULL_STRING
-        Dim strFileTime As String = NULL_STRING
-        ' Read the line that has "DateTimeOriginal".
-        ' TODO: Go over this whole algorithm. It is a big mess.
-        Dim strPhotoDecimalTime As String
-        For i = 0 To strEXIFOutput.Length - 1
-            If strEXIFOutput(i).Contains("DateTimeOriginal") And Not strEXIFOutput(i).Contains("SubSec") Then
-                strLine = strEXIFOutput(i)
-                strItems = strLine.Split(":")
-                strDate = strItems(3).Substring(0, 2) & "/" & strItems(2) & "/" & strItems(1).Substring(1, 4)
-                m_transect_date = strDate
-
-                'strPhotoTime = ToMilitaryTime(strItems(3).Substring(3, 2) & ":" & strItems(4) & ":" & strItems(5))
-                strPhotoDecimalTime = m_tsUserTime.ToString()
-                blDateTime = True
-            ElseIf strEXIFOutput(i).Contains("DateTimeOriginal") And strEXIFOutput(i).Contains("SubSec") Then
-                strLine = strEXIFOutput(i)
-                strItems = strLine.Split(":")
-                strDate = strItems(3).Substring(0, 2) & "/" & strItems(2) & "/" & strItems(1).Substring(1, 4)
-                m_transect_date = strDate
-                strPhotoDecimalTime = strItems(3).Substring(3, 2) & ":" & strItems(4) & ":" & strItems(5)
-                'strPhotoTime = ToMilitaryTime(strPhotoDecimalTime)
-                blDateTime = True
-            ElseIf strEXIFOutput(i).Contains("FileCreateDate") Then
-                strLine = strEXIFOutput(i)
-                strItems = strLine.Split(":")
-                strDate = strItems(3).Substring(0, 2) & "/" & strItems(2) & "/" & strItems(1).Substring(1, 4)
-                strFileDate = strDate
-                strFileTime = ToMilitaryTime(strItems(3).Substring(3, 2) & ":" & strItems(4) & ":" & strItems(5).Substring(0, 2))
-                blFileDateTime = True
-            ElseIf strEXIFOutput(i).Contains("GPSLatitude") And Not strEXIFOutput(i).Contains("Ref") Then
-                strLine = strEXIFOutput(i)
-                strItems = strLine.Split(":")
-                strGPS = strItems(1).Replace(" ", NULL_STRING)
-                If strGPS.Contains("N") Then
-                    intNegative = 1
-                    strGPS = strGPS.Replace("N", NULL_STRING)
-                ElseIf strGPS.Contains("S") Then
-                    intNegative = -1
-                    strGPS = strGPS.Replace("S", NULL_STRING)
-                End If
-                strGPS = strGPS.Replace("deg", "/")
-                strGPS = strGPS.Replace("'", "/")
-
-                strGPSSplit = strGPS.Split("/")
-                dblDegrees = CDbl(strGPSSplit(0))
-                dblMinutes = CDbl(strGPSSplit(1))
-                dblSeconds = CDbl(strGPSSplit(2))
-                'strY = FormatNumber((dblDegrees + (dblMinutes / 60) + (dblSeconds / 3600)) * intNegative, 5)
-                blY = True
-                Me.lblGPSLocation.Visible = True
-                Me.lblGPSLocation.Text = "EXIF Location"
-                Me.lblY.Visible = True
-                Me.lblYValue.Visible = True
-            ElseIf strEXIFOutput(i).Contains("GPSLongitude") And Not strEXIFOutput(i).Contains("Ref") Then
-                strLine = strEXIFOutput(i)
-                strItems = strLine.Split(":")
-                strGPS = strItems(1).Replace(" ", NULL_STRING)
-                If strGPS.Contains("E") Then
-                    intNegative = 1
-                    strGPS = strGPS.Replace("E", NULL_STRING)
-                ElseIf strGPS.Contains("W") Then
-                    intNegative = -1
-                    strGPS = strGPS.Replace("W", NULL_STRING)
-                End If
-                strGPS = strGPS.Replace("deg", "/")
-                strGPS = strGPS.Replace("'", "/")
-                strGPS = strGPS.Replace("W", NULL_STRING)
-                strGPSSplit = strGPS.Split("/")
-                dblDegrees = CDbl(strGPSSplit(0))
-                dblMinutes = CDbl(strGPSSplit(1))
-                dblSeconds = CDbl(strGPSSplit(2))
-                'strX = FormatNumber((dblDegrees + (dblMinutes / 60) + (dblSeconds / 3600)) * intNegative, 5)
-                blX = True
-                Me.lblGPSLocation.Visible = True
-                Me.lblGPSLocation.Text = "EXIF Location"
-                Me.lblX.Visible = True
-                Me.lblXValue.Visible = True
-            ElseIf strEXIFOutput(i).Contains("GPSAltitude") And Not strEXIFOutput(i).Contains("Ref") Then
-                strLine = strEXIFOutput(i)
-                strItems = strLine.Split(":")
-                strGPS = strItems(1).Replace(" ", NULL_STRING)
-                If strGPS.Contains("AboveSeaLevel") Then
-                    intNegative = 1
-                    strGPS = strGPS.Replace("AboveSeaLevel", NULL_STRING)
-                ElseIf strGPS.Contains("BelowSeaLevel") Then
-                    intNegative = -1
-                    strGPS = strGPS.Replace("BelowSeaLevel", NULL_STRING)
-                End If
-                strGPS = strGPS.Replace("m", NULL_STRING)
-                ' TODO: See what this does
-                'strZ = FormatNumber(CDbl(strGPS) * intNegative, 2)
-                blZ = True
-                Me.lblGPSLocation.Visible = True
-                Me.lblGPSLocation.Text = "EXIF Location"
-                Me.lblZ.Visible = True
-                Me.lblZValue.Visible = True
+        ' The return value from the exif tool is one long string. Here we split it up based
+        ' on newlines, and then clean out those newlines from the resulting list of strings.
+        Dim strEXIFOutputRaw As List(Of String) = New List(Of String)(sOutput.Split(vbCrLf))
+        Dim strEXIFOutput As List(Of String) = strEXIFOutputRaw.Select(Function(str) str.Replace(vbLf, "")).ToList()
+        ' The next line removes any extraneous list items that are either null or the NULL_STRING
+        strEXIFOutput.RemoveAll(Function(str) String.IsNullOrEmpty(str))
+        ' Now a dictionary is created with the keys being the string before the colon
+        ' and the value being what is after the colon. All whitespace is removed.
+        Dim dictEXIFOutput As Dictionary(Of String, String) = New Dictionary(Of String, String)
+        Dim key As String
+        Dim value As String
+        For Each item As String In strEXIFOutput
+            ' RightToLeft is required to make the regex have a rightwise-greedy match
+            ' which has the effect of removing the whitespace from the keys and values.
+            Dim r As Regex = New Regex("^(.+) +: +(.+)$", RegexOptions.RightToLeft)
+            Dim match As Match = r.Match(item)
+            If match.Success Then
+                key = match.Groups(1).Value
+                value = match.Groups(2).Value
+                dictEXIFOutput.Add(key, value)
             End If
-            intNegative = 1
         Next
-        If blImageWarning = True Then
-            Dim strMessage As String
-            strMessage = "The following values were not found within the EXIF file, they will be set to blank:"
+        Return dictEXIFOutput
+        'Dim strDate As String = NULL_STRING
+        'Dim strLine As String
+        'Dim strItems() As String
+        'Dim dblDegrees As Double
+        'Dim dblMinutes As Double
+        'Dim dblSeconds As Double
+        'Dim strGPS As String
+        'Dim strGPSSplit() As String
+        'Dim intNegative As Integer = 1
+        'Dim blDateTime As Boolean = False
+        'Dim blFileDateTime As Boolean = False
+        'Dim blX As Boolean = False
+        'Dim blY As Boolean = False
+        'Dim blZ As Boolean = False
+        'Dim blFlag As Boolean = False
+        'Dim strFileDate As String = NULL_STRING
+        'Dim strFileTime As String = NULL_STRING
+        '' Read the line that has "DateTimeOriginal".
+        '' TODO: Go over this whole algorithm. It is a big mess.
+        'Dim strPhotoDecimalTime As String
+        'Dim i As Integer
 
-            If blDateTime = False Then
-                If blFileDateTime = False Then
-                    strMessage = strMessage & vbCrLf & "Date and Time"
-                    m_transect_date = NULL_STRING
-                    'strPhotoTime = NULL_STRING
-                Else
-                    m_transect_date = strFileDate
-                    'strPhotoTime = strFileTime
-                    strPhotoDecimalTime = m_tsUserTime.ToString()
-                End If
-            End If
-            '            If blX = False Then
-            ' strMessage = strMessage & vbCrLf & "X"
-            '        End If
-            '       If blY = False Then
-            '          strMessage = strMessage & vbCrLf & "Y"
-            '         strY = NULL_STRING
-            '    End If
-            '            If blZ = False Then
-            'strMessage = strMessage & vbCrLf & "Z"
-            'strZ = NULL_STRING
-            'End If
-            strMessage = strMessage & vbCrLf & vbCrLf & "Do you wish to disable this warning for future images?"
-            If Not blDateTime Or Not blX Or Not blY Or Not blZ Then
-                Dim intAnswer As Integer
-                intAnswer = MessageBox.Show(strMessage, "Invalid EXIF Data", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                If intAnswer = vbYes Then
-                    blImageWarning = False
-                End If
-            End If
-        End If
-    End Sub
+        ' Here is an example of how to grab the values based on keys for the dictionary.
+        'If dictEXIFOutput.ContainsKey("DateTimeOriginal") Then
+        '    If dictEXIFOutput.ContainsKey("SubSec") Then
+
+        '    Else
+        '        strDate = dictEXIFOutput.Item("DateTimeOriginal")
+        '    End If
+        'End If
+
+        '        strItems = strLine.Split(":")
+        '        strDate = strItems(3).Substring(0, 2) & "/" & strItems(2) & "/" & strItems(1).Substring(1, 4)
+        'm_transect_date = strDate
+
+        '        strPhotoDecimalTime = m_tsUserTime.ToString()
+        '        blDateTime = True
+        '    ElseIf strEXIFOutput(i).Contains("DateTimeOriginal") And strEXIFOutput(i).Contains("SubSec") Then
+        '        strLine = strEXIFOutput(i)
+        '        strItems = strLine.Split(":")
+        '        strDate = strItems(3).Substring(0, 2) & "/" & strItems(2) & "/" & strItems(1).Substring(1, 4)
+        '        m_transect_date = strDate
+        '        strPhotoDecimalTime = strItems(3).Substring(3, 2) & ":" & strItems(4) & ":" & strItems(5)
+        '        'strPhotoTime = ToMilitaryTime(strPhotoDecimalTime)
+        '        blDateTime = True
+        '    ElseIf strEXIFOutput(i).Contains("FileCreateDate") Then
+        '        strLine = strEXIFOutput(i)
+        '        strItems = strLine.Split(":")
+        '        strDate = strItems(3).Substring(0, 2) & "/" & strItems(2) & "/" & strItems(1).Substring(1, 4)
+        '        strFileDate = strDate
+        '        strFileTime = ToMilitaryTime(strItems(3).Substring(3, 2) & ":" & strItems(4) & ":" & strItems(5).Substring(0, 2))
+        '        blFileDateTime = True
+        '    ElseIf strEXIFOutput(i).Contains("GPSLatitude") And Not strEXIFOutput(i).Contains("Ref") Then
+        '        strLine = strEXIFOutput(i)
+        '        strItems = strLine.Split(":")
+        '        strGPS = strItems(1).Replace(" ", NULL_STRING)
+        '        If strGPS.Contains("N") Then
+        '            intNegative = 1
+        '            strGPS = strGPS.Replace("N", NULL_STRING)
+        '        ElseIf strGPS.Contains("S") Then
+        '            intNegative = -1
+        '            strGPS = strGPS.Replace("S", NULL_STRING)
+        '        End If
+        '        strGPS = strGPS.Replace("deg", "/")
+        '        strGPS = strGPS.Replace("'", "/")
+
+        '        strGPSSplit = strGPS.Split("/")
+        '        dblDegrees = CDbl(strGPSSplit(0))
+        '        dblMinutes = CDbl(strGPSSplit(1))
+        '        dblSeconds = CDbl(strGPSSplit(2))
+        '        'strY = FormatNumber((dblDegrees + (dblMinutes / 60) + (dblSeconds / 3600)) * intNegative, 5)
+        '        blY = True
+        '        Me.lblGPSLocation.Visible = True
+        '        Me.lblGPSLocation.Text = "EXIF Location"
+        '        Me.lblY.Visible = True
+        '        Me.lblYValue.Visible = True
+        '    ElseIf strEXIFOutput(i).Contains("GPSLongitude") And Not strEXIFOutput(i).Contains("Ref") Then
+        '        strLine = strEXIFOutput(i)
+        '        strItems = strLine.Split(":")
+        '        strGPS = strItems(1).Replace(" ", NULL_STRING)
+        '        If strGPS.Contains("E") Then
+        '            intNegative = 1
+        '            strGPS = strGPS.Replace("E", NULL_STRING)
+        '        ElseIf strGPS.Contains("W") Then
+        '            intNegative = -1
+        '            strGPS = strGPS.Replace("W", NULL_STRING)
+        '        End If
+        '        strGPS = strGPS.Replace("deg", "/")
+        '        strGPS = strGPS.Replace("'", "/")
+        '        strGPS = strGPS.Replace("W", NULL_STRING)
+        '        strGPSSplit = strGPS.Split("/")
+        '        dblDegrees = CDbl(strGPSSplit(0))
+        '        dblMinutes = CDbl(strGPSSplit(1))
+        '        dblSeconds = CDbl(strGPSSplit(2))
+        '        'strX = FormatNumber((dblDegrees + (dblMinutes / 60) + (dblSeconds / 3600)) * intNegative, 5)
+        '        blX = True
+        '        Me.lblGPSLocation.Visible = True
+        '        Me.lblGPSLocation.Text = "EXIF Location"
+        '        Me.lblX.Visible = True
+        '        Me.lblXValue.Visible = True
+        '    ElseIf strEXIFOutput(i).Contains("GPSAltitude") And Not strEXIFOutput(i).Contains("Ref") Then
+        '        strLine = strEXIFOutput(i)
+        '        strItems = strLine.Split(":")
+        '        strGPS = strItems(1).Replace(" ", NULL_STRING)
+        '        If strGPS.Contains("AboveSeaLevel") Then
+        '            intNegative = 1
+        '            strGPS = strGPS.Replace("AboveSeaLevel", NULL_STRING)
+        '        ElseIf strGPS.Contains("BelowSeaLevel") Then
+        '            intNegative = -1
+        '            strGPS = strGPS.Replace("BelowSeaLevel", NULL_STRING)
+        '        End If
+        '        strGPS = strGPS.Replace("m", NULL_STRING)
+        '        ' TODO: See what this does
+        '        'strZ = FormatNumber(CDbl(strGPS) * intNegative, 2)
+        '        blZ = True
+        '        Me.lblGPSLocation.Visible = True
+        '        Me.lblGPSLocation.Text = "EXIF Location"
+        '        Me.lblZ.Visible = True
+        '        Me.lblZValue.Visible = True
+        '    End If
+        '    intNegative = 1
+        'Next
+        'If blImageWarning = True Then
+        '    Dim strMessage As String
+        '    strMessage = "The following values were not found within the EXIF file, they will be set to blank:"
+
+        '    If blDateTime = False Then
+        '        If blFileDateTime = False Then
+        '            strMessage = strMessage & vbCrLf & "Date and Time"
+        '            m_transect_date = NULL_STRING
+        '            'strPhotoTime = NULL_STRING
+        '        Else
+        '            m_transect_date = strFileDate
+        '            'strPhotoTime = strFileTime
+        '            strPhotoDecimalTime = m_tsUserTime.ToString()
+        '        End If
+        '    End If
+        '            If blX = False Then
+        ' strMessage = strMessage & vbCrLf & "X"
+        '        End If
+        '       If blY = False Then
+        '          strMessage = strMessage & vbCrLf & "Y"
+        '         strY = NULL_STRING
+        '    End If
+        '            If blZ = False Then
+        'strMessage = strMessage & vbCrLf & "Z"
+        'strZ = NULL_STRING
+        'End If
+        'strMessage = strMessage & vbCrLf & vbCrLf & "Do you wish to disable this warning for future images?"
+        'If Not blDateTime Or Not blX Or Not blY Or Not blZ Then
+        '    Dim intAnswer As Integer
+        '    intAnswer = MessageBox.Show(strMessage, "Invalid EXIF Data", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+        '    If intAnswer = vbYes Then
+        '        blImageWarning = False
+        '    End If
+        'End If
+        'End If
+    End Function
     Public Sub enableDisableImageMenu(ByVal mnuState As Boolean)
         Dim mnuItem As ToolStripMenuItem
         For Each mnuItem In mnuImageTools.DropDownItems
