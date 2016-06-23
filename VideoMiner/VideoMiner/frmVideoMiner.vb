@@ -5,7 +5,6 @@ Imports System.TimeSpan
 Imports System.Drawing.Imaging
 Imports System.IO
 Imports System.IO.Path
-Imports System.Text.RegularExpressions
 Imports Microsoft.VisualBasic.ApplicationServices
 Imports System.Xml
 Imports System.ComponentModel
@@ -205,28 +204,15 @@ Public Class VideoMiner
     ''' <remarks></remarks>
     Private m_strVideoFile As String
     ''' <summary>
-    ''' Holds the path of the last known session's path as entered by the user in the OpenFileDialog
-    ''' </summary>
-    ''' <remarks></remarks>
-    Private m_strSessionPath As String
-    ''' <summary>
-    ''' Holds the path of the last known path for pictures as entered by the user in the OpenFileDialog
+    ''' Holds the path of the last known path for pictures.
     ''' </summary>
     ''' <remarks></remarks>
     Private m_strImagePath As String
     ''' <summary>
-    ''' Hold the currently loaded image's filename without path information
+    ''' Holds the path of the last known session's path as entered by the user in the OpenFileDialog.
     ''' </summary>
     ''' <remarks></remarks>
-    Private m_strImageFile As String
-    ''' <summary>
-    ''' A list of the image files in the same directory as the currently loaded image
-    ''' </summary>
-    Private m_lstImageFiles As List(Of String)
-    ''' <summary>
-    ''' The dictionary of the EXIF metadata for the currently loaded image.
-    ''' </summary>
-    Private m_dictEXIF As Dictionary(Of String, String)
+    Private m_strSessionPath As String
     ''' <summary>
     ''' Holds the user time as set by the frmSetTime form.
     ''' This is the master time object to be used by all functions when data are recorded.
@@ -281,7 +267,6 @@ Public Class VideoMiner
     ''' </summary>
     ''' <remarks></remarks>
     Private m_blInTransect As Boolean = vbFalse
-
     ''' <summary>
     ''' Holds the data table for the actual project data being recorded
     ''' </summary>
@@ -397,8 +382,6 @@ Public Class VideoMiner
     Private colTransectFields As Collection
 
     'Private frmImageForm As frmImage
-    Private lastImageIndex As Integer = 0
-    Public image_index As Integer = 0
 
     ' The name of the current image including the path
     Private currentImage As String
@@ -1522,77 +1505,6 @@ Public Class VideoMiner
 
     End Function
 
-    Private Sub VideoMiner_KeyUp(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyUp
-        Dim intIndex As Integer
-        'MsgBox(strKeyboardShortcut)
-        'MsgBox(e.KeyData)
-        Select Case strKeyboardShortcut
-            Case Keys.Space.ToString
-                blHandled = True
-                e.Handled = True
-                If m_video_file_open Then
-                    If Not frmVideoPlayer.IsPlaying Then
-                        playVideo()
-                    Else
-                        pauseVideo()
-                    End If
-                End If
-            Case Keys.Enter.ToString
-                MsgBox("Enter")
-            Case Keys.Right.ToString
-                blHandled = True
-                e.Handled = True
-                Dim intAnswer As Integer
-                If image_open Then
-                    If (image_index + 1) > (m_lstImageFiles.Count - 1) Then
-                        intAnswer = MessageBox.Show("You have reached the last image in the folder, would you like to start again at the first image?", "Last Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                        If intAnswer = vbYes Then
-                            image_index = 0
-                        Else
-                            Exit Sub
-                        End If
-                    Else
-                        image_index += 1
-                    End If
-                    LoadImg()
-                End If
-            Case Keys.Left.ToString
-                blHandled = True
-                e.Handled = True
-                Dim intAnswer As Integer
-                If image_open Then
-                    If (image_index - 1) < 0 Then
-                        intAnswer = MessageBox.Show("You have reached the first image in the folder, would you like to start again at the last image?", "First Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                        If intAnswer = vbYes Then
-                            image_index = m_lstImageFiles.Count - 1
-                        Else
-                            Exit Sub
-                        End If
-                    Else
-                        image_index -= 1
-                    End If
-                    LoadImg()
-                End If
-            Case "Menu"
-                e.SuppressKeyPress = True
-            Case Else
-                If strKeyboardShortcut <> NULL_STRING Then
-                    Dim d As DataTable = Database.GetDataTable("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor, KeyboardShortcut from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", DB_SPECIES_BUTTONS_TABLE)
-                    For Each r As DataRow In d.Rows
-                        If r.Item("KeyboardShortcut").ToString = strKeyboardShortcut Then
-                            intIndex = CInt(r.Item("DrawingOrder")) - 1
-                            If Not speciesButtons(intIndex) Is Nothing Then
-                                'SpeciesVariableButtonHandler(speciesButtons(intIndex), Nothing)
-                            End If
-                            Exit For
-                        End If
-                    Next
-                End If
-        End Select
-        strKeyboardShortcut = NULL_STRING
-        strCurrentKey = NULL_STRING
-    End Sub
-
     'Public Sub VideoMiner_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
     '    If strCurrentKey <> CStr(e.KeyValue) Then
     '        strCurrentKey = CStr(e.KeyValue)
@@ -2532,7 +2444,7 @@ Public Class VideoMiner
         ' If the image is open and the video is closed then get the picture information from the EXIF file
         If image_open And m_video_file_open = False Then
 
-            getEXIFData()
+            'getEXIFData()
             strVideoTextTime = strVideoTime
 
         End If
@@ -2612,7 +2524,7 @@ Public Class VideoMiner
 
                 If image_open And m_video_file_open = False Then
 
-                    getEXIFData()
+                    'getEXIFData()
                     strPhotoTextTime = strPhotoTime
 
                 End If
@@ -2717,7 +2629,7 @@ Public Class VideoMiner
                     frmImage.Close()
                 End If
                 If frmImage Is Nothing Then
-                    frmImage = New frmImage
+                    'frmImage = New frmImage(m_str)
                     Dim intX As Integer = 0
                     Dim intY As Integer = 0
 
@@ -3342,9 +3254,9 @@ Public Class VideoMiner
             m_strImagePath = Path.GetDirectoryName(ofd.FileName)
             ' Store the new image path in XML file each time an image is opened
             SaveConfiguration(XPATH_IMAGE_PATH, m_strImagePath)
-            m_strImageFile = GetFileName(ofd.FileName)
+
             If frmImage Is Nothing Then
-                frmImage = New frmImage()
+                frmImage = New frmImage(m_strImagePath, GetFileName(ofd.FileName))
                 pnlImageControls.Visible = True
                 pnlVideoControls.Visible = False
                 Dim intX As Integer = 0
@@ -3375,26 +3287,9 @@ Public Class VideoMiner
                 End If
                 frmImage.Show()
             End If
-            currentImage = m_strImageFile
-            frmImage.PictureBox1.Image = Image.FromFile(Combine(m_strImagePath, m_strImageFile))
+            'currentImage = m_strImageFile
+
             image_open = True
-            ' Retrieve all files in the directory selected
-            Dim allFiles As String() = Directory.GetFiles(m_strImagePath)
-            m_lstImageFiles = New List(Of String)
-            Dim imageFileDirectory As FileInfo() = New DirectoryInfo(m_strImagePath).GetFiles()
-            Dim extension As String
-            Dim extensionList As String() = {".jpg", ".png", ".tiff", ".bmp", ".gif"}
-            For Each logFile As FileInfo In imageFileDirectory
-                extension = GetExtension(logFile.Name)
-                If extensionList.Contains(extension.ToLower()) Then
-                    m_lstImageFiles.Add(Combine(m_strImagePath, logFile.Name))
-                End If
-            Next
-            Dim j As String = Combine(m_strImagePath, m_strImageFile)
-            frmImage.PictureBox1.Image = New Bitmap(Combine(m_strImagePath, m_strImageFile))
-            frmImage.Text = Combine(m_strImageFile)
-            'TODO: Implement EXIF data for the pictures. Both saving and loading. Huge task.
-            getEXIFData()
             txtTimeSource.ForeColor = Color.LimeGreen
             Me.txtTime.ForeColor = Color.LimeGreen
             txtTimeSource.Text = "EXIF"
@@ -3445,16 +3340,16 @@ Public Class VideoMiner
     '        Dim intAnswer As Integer
     '        Select Case keyPressed
     '            Case Keys.Right
-    '                image_index += 1
+    '                m_intImageIndex += 1
     '                ' If the index of the image is larger than the number
     '                ' of images in the folder, then set it to 0, which means
     '                ' the first image in the folder is displayed.
-    '                If image_index >= fileNames.Length Then
+    '                If m_intImageIndex >= fileNames.Length Then
     '                    intAnswer = MessageBox.Show("You have reached the last image In the folder, would you Like To start again at the first image?", "Last Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
     '                    If intAnswer = vbYes Then
-    '                        image_index = 0
+    '                        m_intImageIndex = 0
     '                    Else
-    '                        image_index -= 1
+    '                        m_intImageIndex -= 1
     '                        Exit Function
     '                    End If
     '                End If
@@ -3462,15 +3357,15 @@ Public Class VideoMiner
     '                LoadImg()
 
     '            Case Keys.Left
-    '                image_index -= 1
+    '                m_intImageIndex -= 1
     '                ' If the index of the image is smaller than 0, then set 
     '                ' it to be the second last image
-    '                If image_index < 0 Then
+    '                If m_intImageIndex < 0 Then
     '                    intAnswer = MessageBox.Show("You have reached the first image In the folder, would you Like To start again at the last image?", "First Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
     '                    If intAnswer = vbYes Then
-    '                        image_index = fileNames.Length - 1
+    '                        m_intImageIndex = fileNames.Length - 1
     '                    Else
-    '                        image_index += 1
+    '                        m_intImageIndex += 1
     '                        Exit Function
     '                    End If
     '                End If
@@ -3484,215 +3379,7 @@ Public Class VideoMiner
     '    End If
     'End Function
 
-    ''' <summary>
-    ''' Retreives the EXIF metadata from the image file given by m_strImageFile in the
-    ''' directory m_strImagePath.
-    ''' </summary>
-    Private Sub getEXIFData()
-        lblGPSLocation.Visible = False
-        lblX.Visible = False
-        lblXValue.Visible = False
-        lblY.Visible = False
-        lblYValue.Visible = False
-        lblZ.Visible = False
-        lblZValue.Visible = False
-        ' Set up and run the EXIF tool for the file selected
-        Dim strExeDirname As String = GetDirectoryName(System.Windows.Forms.Application.ExecutablePath.ToString())
-        Dim strCommand As String = Combine(strExeDirname, EXIF_FILE_NAME)
-        Dim strArguments As String = String.Concat(EXIF_ARGS, Combine(m_strImagePath, m_strImageFile))
-        Dim oProcess As New Process()
-        Dim oStartInfo As New ProcessStartInfo(strCommand)
-        oStartInfo.Arguments = strArguments
-        oStartInfo.UseShellExecute = False
-        oStartInfo.RedirectStandardOutput = True
-        oProcess.StartInfo = oStartInfo
-        oProcess.StartInfo.CreateNoWindow = True
-        oProcess.Start()
-        Dim sOutput As String
-        Using oStreamReader As System.IO.StreamReader = oProcess.StandardOutput
-            sOutput = oStreamReader.ReadToEnd()
-        End Using
 
-        ' The return value from the exif tool is one long string. Here we split it up based
-        ' on newlines, and then clean out those newlines from the resulting list of strings.
-        Dim strEXIFOutputRaw As List(Of String) = New List(Of String)(sOutput.Split(vbCrLf))
-        Dim strEXIFOutput As List(Of String) = strEXIFOutputRaw.Select(Function(str) str.Replace(vbLf, "")).ToList()
-        ' The next line removes any extraneous list items that are either null or the NULL_STRING
-        strEXIFOutput.RemoveAll(Function(str) String.IsNullOrEmpty(str))
-        ' Now a dictionary is created with the keys being the string before the colon
-        ' and the value being what is after the colon. All whitespace is removed.
-        m_dictEXIF = New Dictionary(Of String, String)
-        Dim key As String
-        Dim value As String
-        For Each item As String In strEXIFOutput
-            ' RightToLeft is required to make the regex have a rightwise-greedy match
-            ' which has the effect of removing the whitespace from the keys and values.
-            Dim r As Regex = New Regex("^(.+) +: +(.+)$", RegexOptions.RightToLeft)
-            Dim match As Match = r.Match(item)
-            If match.Success Then
-                key = match.Groups(1).Value
-                value = match.Groups(2).Value
-                m_dictEXIF.Add(key, value)
-            End If
-        Next
-        'Dim strDate As String = NULL_STRING
-        'Dim strLine As String
-        'Dim strItems() As String
-        'Dim dblDegrees As Double
-        'Dim dblMinutes As Double
-        'Dim dblSeconds As Double
-        'Dim strGPS As String
-        'Dim strGPSSplit() As String
-        'Dim intNegative As Integer = 1
-        'Dim blDateTime As Boolean = False
-        'Dim blFileDateTime As Boolean = False
-        'Dim blX As Boolean = False
-        'Dim blY As Boolean = False
-        'Dim blZ As Boolean = False
-        'Dim blFlag As Boolean = False
-        'Dim strFileDate As String = NULL_STRING
-        'Dim strFileTime As String = NULL_STRING
-        '' Read the line that has "DateTimeOriginal".
-        '' TODO: Go over this whole algorithm. It is a big mess.
-        'Dim strPhotoDecimalTime As String
-        'Dim i As Integer
-
-        ' Here is an example of how to grab the values based on keys for the dictionary.
-        'If dictEXIFOutput.ContainsKey("DateTimeOriginal") Then
-        '    If dictEXIFOutput.ContainsKey("SubSec") Then
-
-        '    Else
-        '        strDate = dictEXIFOutput.Item("DateTimeOriginal")
-        '    End If
-        'End If
-
-        '        strItems = strLine.Split(":")
-        '        strDate = strItems(3).Substring(0, 2) & "/" & strItems(2) & "/" & strItems(1).Substring(1, 4)
-        'm_transect_date = strDate
-
-        '        strPhotoDecimalTime = m_tsUserTime.ToString()
-        '        blDateTime = True
-        '    ElseIf strEXIFOutput(i).Contains("DateTimeOriginal") And strEXIFOutput(i).Contains("SubSec") Then
-        '        strLine = strEXIFOutput(i)
-        '        strItems = strLine.Split(":")
-        '        strDate = strItems(3).Substring(0, 2) & "/" & strItems(2) & "/" & strItems(1).Substring(1, 4)
-        '        m_transect_date = strDate
-        '        strPhotoDecimalTime = strItems(3).Substring(3, 2) & ":" & strItems(4) & ":" & strItems(5)
-        '        'strPhotoTime = ToMilitaryTime(strPhotoDecimalTime)
-        '        blDateTime = True
-        '    ElseIf strEXIFOutput(i).Contains("FileCreateDate") Then
-        '        strLine = strEXIFOutput(i)
-        '        strItems = strLine.Split(":")
-        '        strDate = strItems(3).Substring(0, 2) & "/" & strItems(2) & "/" & strItems(1).Substring(1, 4)
-        '        strFileDate = strDate
-        '        strFileTime = ToMilitaryTime(strItems(3).Substring(3, 2) & ":" & strItems(4) & ":" & strItems(5).Substring(0, 2))
-        '        blFileDateTime = True
-        '    ElseIf strEXIFOutput(i).Contains("GPSLatitude") And Not strEXIFOutput(i).Contains("Ref") Then
-        '        strLine = strEXIFOutput(i)
-        '        strItems = strLine.Split(":")
-        '        strGPS = strItems(1).Replace(" ", NULL_STRING)
-        '        If strGPS.Contains("N") Then
-        '            intNegative = 1
-        '            strGPS = strGPS.Replace("N", NULL_STRING)
-        '        ElseIf strGPS.Contains("S") Then
-        '            intNegative = -1
-        '            strGPS = strGPS.Replace("S", NULL_STRING)
-        '        End If
-        '        strGPS = strGPS.Replace("deg", "/")
-        '        strGPS = strGPS.Replace("'", "/")
-
-        '        strGPSSplit = strGPS.Split("/")
-        '        dblDegrees = CDbl(strGPSSplit(0))
-        '        dblMinutes = CDbl(strGPSSplit(1))
-        '        dblSeconds = CDbl(strGPSSplit(2))
-        '        'strY = FormatNumber((dblDegrees + (dblMinutes / 60) + (dblSeconds / 3600)) * intNegative, 5)
-        '        blY = True
-        '        Me.lblGPSLocation.Visible = True
-        '        Me.lblGPSLocation.Text = "EXIF Location"
-        '        Me.lblY.Visible = True
-        '        Me.lblYValue.Visible = True
-        '    ElseIf strEXIFOutput(i).Contains("GPSLongitude") And Not strEXIFOutput(i).Contains("Ref") Then
-        '        strLine = strEXIFOutput(i)
-        '        strItems = strLine.Split(":")
-        '        strGPS = strItems(1).Replace(" ", NULL_STRING)
-        '        If strGPS.Contains("E") Then
-        '            intNegative = 1
-        '            strGPS = strGPS.Replace("E", NULL_STRING)
-        '        ElseIf strGPS.Contains("W") Then
-        '            intNegative = -1
-        '            strGPS = strGPS.Replace("W", NULL_STRING)
-        '        End If
-        '        strGPS = strGPS.Replace("deg", "/")
-        '        strGPS = strGPS.Replace("'", "/")
-        '        strGPS = strGPS.Replace("W", NULL_STRING)
-        '        strGPSSplit = strGPS.Split("/")
-        '        dblDegrees = CDbl(strGPSSplit(0))
-        '        dblMinutes = CDbl(strGPSSplit(1))
-        '        dblSeconds = CDbl(strGPSSplit(2))
-        '        'strX = FormatNumber((dblDegrees + (dblMinutes / 60) + (dblSeconds / 3600)) * intNegative, 5)
-        '        blX = True
-        '        Me.lblGPSLocation.Visible = True
-        '        Me.lblGPSLocation.Text = "EXIF Location"
-        '        Me.lblX.Visible = True
-        '        Me.lblXValue.Visible = True
-        '    ElseIf strEXIFOutput(i).Contains("GPSAltitude") And Not strEXIFOutput(i).Contains("Ref") Then
-        '        strLine = strEXIFOutput(i)
-        '        strItems = strLine.Split(":")
-        '        strGPS = strItems(1).Replace(" ", NULL_STRING)
-        '        If strGPS.Contains("AboveSeaLevel") Then
-        '            intNegative = 1
-        '            strGPS = strGPS.Replace("AboveSeaLevel", NULL_STRING)
-        '        ElseIf strGPS.Contains("BelowSeaLevel") Then
-        '            intNegative = -1
-        '            strGPS = strGPS.Replace("BelowSeaLevel", NULL_STRING)
-        '        End If
-        '        strGPS = strGPS.Replace("m", NULL_STRING)
-        '        ' TODO: See what this does
-        '        'strZ = FormatNumber(CDbl(strGPS) * intNegative, 2)
-        '        blZ = True
-        '        Me.lblGPSLocation.Visible = True
-        '        Me.lblGPSLocation.Text = "EXIF Location"
-        '        Me.lblZ.Visible = True
-        '        Me.lblZValue.Visible = True
-        '    End If
-        '    intNegative = 1
-        'Next
-        'If blImageWarning = True Then
-        '    Dim strMessage As String
-        '    strMessage = "The following values were not found within the EXIF file, they will be set to blank:"
-
-        '    If blDateTime = False Then
-        '        If blFileDateTime = False Then
-        '            strMessage = strMessage & vbCrLf & "Date and Time"
-        '            m_transect_date = NULL_STRING
-        '            'strPhotoTime = NULL_STRING
-        '        Else
-        '            m_transect_date = strFileDate
-        '            'strPhotoTime = strFileTime
-        '            strPhotoDecimalTime = m_tsUserTime.ToString()
-        '        End If
-        '    End If
-        '            If blX = False Then
-        ' strMessage = strMessage & vbCrLf & "X"
-        '        End If
-        '       If blY = False Then
-        '          strMessage = strMessage & vbCrLf & "Y"
-        '         strY = NULL_STRING
-        '    End If
-        '            If blZ = False Then
-        'strMessage = strMessage & vbCrLf & "Z"
-        'strZ = NULL_STRING
-        'End If
-        'strMessage = strMessage & vbCrLf & vbCrLf & "Do you wish to disable this warning for future images?"
-        'If Not blDateTime Or Not blX Or Not blY Or Not blZ Then
-        '    Dim intAnswer As Integer
-        '    intAnswer = MessageBox.Show(strMessage, "Invalid EXIF Data", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-        '    If intAnswer = vbYes Then
-        '        blImageWarning = False
-        '    End If
-        'End If
-        'End If
-    End Sub
     Public Sub enableDisableImageMenu(ByVal mnuState As Boolean)
         Dim mnuItem As ToolStripMenuItem
         For Each mnuItem In mnuImageTools.DropDownItems
@@ -3706,274 +3393,49 @@ Public Class VideoMiner
         Me.cboZoom.Text = NULL_STRING
     End Sub
 
-    Private Sub cboZoom_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles cboZoom.KeyDown
-        If e.KeyCode = Keys.Enter Then
-            Dim intValue As Integer = 0
-            Dim intImageSize As Double = 0
-            Dim w As Integer = 0
-            Dim h As Integer = 0
-            Dim strZoomValue As String = NULL_STRING
-            Dim c As Char
+    'Private Sub cboZoom_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles cboZoom.KeyDown
+    '    If e.KeyCode = Keys.Enter Then
+    '        Dim intValue As Integer = 0
+    '        Dim intImageSize As Double = 0
+    '        Dim w As Integer = 0
+    '        Dim h As Integer = 0
+    '        Dim strZoomValue As String = NULL_STRING
+    '        Dim c As Char
 
-            For Each c In cboZoom.Text
-                If IsNumeric(c) Then
-                    strZoomValue = strZoomValue & c
-                End If
-            Next
+    '        For Each c In cboZoom.Text
+    '            If IsNumeric(c) Then
+    '                strZoomValue = strZoomValue & c
+    '            End If
+    '        Next
 
-            intValue = strZoomValue
+    '        intValue = strZoomValue
 
-            If intValue <= 250 Then
-                If intValue <= 100 Then
-                    intImageSize = 100 / intValue
-                    w = Image.FromFile(currentImage).Width / intImageSize
-                    h = Image.FromFile(currentImage).Height / intImageSize
-                Else
-                    intImageSize = intValue / 100
-                    w = Image.FromFile(currentImage).Width * intImageSize
-                    h = Image.FromFile(currentImage).Height * intImageSize
-                End If
+    '        If intValue <= 250 Then
+    '            If intValue <= 100 Then
+    '                intImageSize = 100 / intValue
+    '                w = Image.FromFile(currentImage).Width / intImageSize
+    '                h = Image.FromFile(currentImage).Height / intImageSize
+    '            Else
+    '                intImageSize = intValue / 100
+    '                w = Image.FromFile(currentImage).Width * intImageSize
+    '                h = Image.FromFile(currentImage).Height * intImageSize
+    '            End If
 
-                redraw_Image(w, h)
+    '            redraw_Image(w, h)
 
-                Me.cboZoom.Text = strZoomValue & "%"
-                If lastImageIndex <> 0 Then
-                    Me.cboZoom.Items.RemoveAt(lastImageIndex)
-                End If
-                Me.cboZoom.Items.Add(Me.cboZoom.Text)
-                lastImageIndex = Me.cboZoom.Items.IndexOf(cboZoom.Text)
-                intCurrentZoom = lastImageIndex
-            Else
-                cboZoom.Text = cboZoom.Items.Item(intCurrentZoom)
-            End If
-        End If
-    End Sub
+    '            Me.cboZoom.Text = strZoomValue & "%"
+    '            If m_intLastImageIndex <> 0 Then
+    '                Me.cboZoom.Items.RemoveAt(m_intLastImageIndex)
+    '            End If
+    '            Me.cboZoom.Items.Add(Me.cboZoom.Text)
+    '            m_intLastImageIndex = Me.cboZoom.Items.IndexOf(cboZoom.Text)
+    '            intCurrentZoom = m_intLastImageIndex
+    '        Else
+    '            cboZoom.Text = cboZoom.Items.Item(intCurrentZoom)
+    '        End If
+    '    End If
+    'End Sub
 
-    Private Sub cboZoom_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles cboZoom.KeyPress
-        numericTextboxValidation(e)
-    End Sub
-
-    Private Sub cboZoom_LostFocus(ByVal sender As Object, ByVal e As System.EventArgs) Handles cboZoom.LostFocus
-        Me.cboZoom.SelectedIndex = intCurrentZoom
-    End Sub
-
-    Private Sub cboZoom_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboZoom.SelectedIndexChanged
-
-        If Me.pnlImageControls.Visible = True Then
-            Dim w As Integer
-            Dim h As Integer
-
-            Select Case Me.cboZoom.SelectedItem
-                Case "25%"
-                    w = Image.FromFile(m_lstImageFiles(image_index)).Width / 4
-                    h = Image.FromFile(m_lstImageFiles(image_index)).Height / 4
-                Case "50%"
-                    w = Image.FromFile(m_lstImageFiles(image_index)).Width / 2
-                    h = Image.FromFile(m_lstImageFiles(image_index)).Height / 2
-                Case "75%"
-                    w = Image.FromFile(m_lstImageFiles(image_index)).Width / 1.3333
-                    h = Image.FromFile(m_lstImageFiles(image_index)).Height / 1.3333
-                Case "100%"
-                    w = Image.FromFile(m_lstImageFiles(image_index)).Width
-                    h = Image.FromFile(m_lstImageFiles(image_index)).Height
-                Case "200%"
-                    w = Image.FromFile(m_lstImageFiles(image_index)).Width * 2
-                    h = Image.FromFile(m_lstImageFiles(image_index)).Height * 2
-                Case Else
-                    Dim intValue As Integer
-                    Dim dblImageSize As Double
-                    intValue = cboZoom.Text.Substring(0, cboZoom.Text.Length - 1)
-
-                    If intValue <= 100 Then
-                        dblImageSize = 100 / intValue
-                        w = Image.FromFile(m_lstImageFiles(image_index)).Width / dblImageSize
-                        h = Image.FromFile(m_lstImageFiles(image_index)).Height / dblImageSize
-                    Else
-                        dblImageSize = intValue / 100
-                        w = Image.FromFile(m_lstImageFiles(image_index)).Width * dblImageSize
-                        h = Image.FromFile(m_lstImageFiles(image_index)).Height * dblImageSize
-                    End If
-            End Select
-
-            redraw_Image(w, h)
-
-            intCurrentZoom = Me.cboZoom.SelectedIndex
-        End If
-
-    End Sub
-
-    Private Sub cmdNextImage_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdNextImage.Click
-        Dim intAnswer As Integer
-        If (image_index + 1) > (m_lstImageFiles.Count - 1) Then
-            intAnswer = MessageBox.Show("You have reached the last image in the folder, would you like to start again at the first image?", "Last Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-            If intAnswer = vbYes Then
-                image_index = 0
-            Else
-                Exit Sub
-            End If
-        Else
-            image_index += 1
-        End If
-        LoadImg()
-    End Sub
-
-    Private Sub cmdPreviousImage_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPreviousImage.Click
-        Dim intAnswer As Integer
-        If (image_index - 1) < 0 Then
-            intAnswer = MessageBox.Show("You have reached the first image in the folder, would you like to start again at the last image?", "First Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-            If intAnswer = vbYes Then
-                image_index = m_lstImageFiles.Count - 1
-            Else
-                Exit Sub
-            End If
-        Else
-            image_index -= 1
-        End If
-        LoadImg()
-    End Sub
-
-
-    ''' <summary>
-    ''' This Function is() the common part For the Next 4 functions.
-    ''' Basic it takes the width Of height Of the image And redraw the
-    ''' Image inside the display window.
-    ''' </summary>
-    ''' <param name="w"></param>
-    ''' <param name="h"></param>
-    Public Sub redraw_Image(ByVal w As Integer, ByVal h As Integer)
-        Try
-            Dim bmp As Bitmap = New Bitmap(Image.FromFile(m_lstImageFiles(image_index)), w, h)
-            Dim g As Graphics = Graphics.FromImage(bmp)
-            frmImage.PictureBox1.Image.Dispose()
-            frmImage.PictureBox1.Image = Nothing
-            GC.Collect()
-            frmImage.PictureBox1.Width = w
-            frmImage.PictureBox1.Height = h
-            frmImage.PictureBox1.Image = bmp
-            blSizeChanged = True
-        Catch ex As Exception
-            MsgBox("The image size you selected is too big, please try again")
-            blSizeChanged = False
-            Exit Sub
-        End Try
-
-    End Sub
-
-    Public Sub LoadImg()
-        ' And delete the .txt file generated by the EXIF tool for the previous image.
-        System.IO.File.Delete(String.Concat(currentImage.Substring(0, currentImage.LastIndexOf(".")), ".txt"))
-        ' When either one of the button ">" or "<" is pressed, the name of
-        ' the current image should be updated.
-        'currentImage = String.Concat(Me.image_prefix.Substring(0, Me.image_prefix.LastIndexOf("\") + 1), Me.fileNames(image_index))
-        'Me.image_prefix = currentImage.Substring(0, currentImage.LastIndexOf("."))
-        If m_lstImageFiles.Count = 0 Then
-            Exit Sub
-        End If
-        'If blForward Then
-        '    If (image_index + 1) > (imageFilesList.Count - 1) Then
-        '        intAnswer = MessageBox.Show("You have reached the last image in the folder, would you like to start again at the first image?", "Last Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-        '        If intAnswer = vbYes Then
-        '            image_index = 0
-        '        Else
-        '            Exit Sub
-        '        End If
-        '    Else
-        '        image_index += 1
-        '    End If
-        'Else
-        '    If (image_index - 1) < 0 Then
-        '        intAnswer = MessageBox.Show("You have reached the first image in the folder, would you like to start again at the last image?", "First Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-        '        If intAnswer = vbYes Then
-        '            image_index = imageFilesList.Count - 1
-        '        Else
-        '            Exit Sub
-        '        End If
-        '    Else
-        '        image_index -= 1
-        '    End If
-        'End If
-
-        ' Detemine the size of the image shown in the window
-        Dim w, h As Integer
-
-        Select Case Me.cboZoom.SelectedItem
-            Case "25%"
-                w = Image.FromFile(m_lstImageFiles(image_index)).Width / 4
-                h = Image.FromFile(m_lstImageFiles(image_index)).Height / 4
-            Case "50%"
-                w = Image.FromFile(m_lstImageFiles(image_index)).Width / 2
-                h = Image.FromFile(m_lstImageFiles(image_index)).Height / 2
-            Case "75%"
-                w = Image.FromFile(m_lstImageFiles(image_index)).Width / 1.3333
-                h = Image.FromFile(m_lstImageFiles(image_index)).Height / 1.3333
-            Case "100%"
-                w = Image.FromFile(m_lstImageFiles(image_index)).Width
-                h = Image.FromFile(m_lstImageFiles(image_index)).Height
-            Case "200%"
-                w = Image.FromFile(m_lstImageFiles(image_index)).Width * 2
-                h = Image.FromFile(m_lstImageFiles(image_index)).Height * 2
-            Case Else
-                Dim intValue As Integer
-                Dim dblImageSize As Double
-                intValue = cboZoom.Text.Substring(0, cboZoom.Text.Length - 1)
-
-                If intValue <= 100 Then
-                    dblImageSize = 100 / intValue
-                    w = Image.FromFile(m_lstImageFiles(image_index)).Width / dblImageSize
-                    h = Image.FromFile(m_lstImageFiles(image_index)).Height / dblImageSize
-                Else
-                    dblImageSize = intValue / 100
-                    w = Image.FromFile(m_lstImageFiles(image_index)).Width * dblImageSize
-                    h = Image.FromFile(m_lstImageFiles(image_index)).Height * dblImageSize
-                End If
-        End Select
-        Try
-            ' Display the image in the picture box.
-            'Dim bmp As Bitmap = New Bitmap(Image.FromFile(currentImage), w, h)
-            'Dim g As Graphics = Graphics.FromImage(bmp)
-            'frmImage.PictureBox1.Image.Dispose()
-            'frmImage.PictureBox1.Image = Nothing
-            'GC.Collect()
-            'frmImage.PictureBox1.Image = bmp
-            'frmImage.Text = Me.fileNames(image_index)
-            'blSizeChanged = True
-            frmImage.PictureBox1.Image.Dispose()
-            frmImage.PictureBox1.Image = Nothing
-            GC.Collect()
-
-            Dim Dir As String = m_lstImageFiles(image_index)
-            Dim bmp As Bitmap = New Bitmap(Image.FromFile(Dir), w, h)
-            Dim g As Graphics = Graphics.FromImage(bmp)
-            frmImage.PictureBox1.Image = bmp
-            frmImage.Text = m_lstImageFiles(image_index)
-            VideoFileName = m_lstImageFiles(image_index)
-            currentImage = m_lstImageFiles(image_index)
-            getEXIFData()
-            ' TODO: Fix next line, I added a dim in there to make it compile
-            Dim strTimeDateSource As String = "EXIF"
-            intTimeSource = 3
-            Me.txtTimeSource.Text = strTimeDateSource
-            'Me.txtTimeSource.ForeColor = Color.LimeGreen
-            'Me.txtTime.ForeColor = Color.LimeGreen
-            Me.txtTimeSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-            Me.txtTimeSource.BackColor = Color.LightGray
-            Me.txtTimeSource.ForeColor = Color.LimeGreen
-            Me.txtTimeSource.TextAlign = HorizontalAlignment.Center
-            Me.txtTime.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-            Me.txtTime.BackColor = Color.LightGray
-            Me.txtTime.ForeColor = Color.LimeGreen
-            Me.txtTime.TextAlign = HorizontalAlignment.Center
-            Me.txtTransectDate.Text = m_transect_date
-            Me.txtDateSource.Text = strTimeDateSource
-            Me.txtDateSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-            Me.txtDateSource.BackColor = Color.LightGray
-            Me.txtDateSource.ForeColor = Color.LimeGreen
-            Me.txtDateSource.TextAlign = HorizontalAlignment.Center
-        Catch ex As Exception
-            MsgBox(ex.Message)
-        End Try
-
-    End Sub
 
 #End Region
 
@@ -4533,11 +3995,11 @@ Public Class VideoMiner
     End Sub
 
     Private Sub NextImageToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles NextImageToolStripMenuItem.Click
-        cmdNextImage_Click(sender, e)
+        'cmdNextImage_Click(sender, e)
     End Sub
 
     Private Sub PreviousImageToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PreviousImageToolStripMenuItem.Click
-        cmdPreviousImage_Click(sender, e)
+        'cmdPreviousImage_Click(sender, e)
     End Sub
 
     Private Sub CloseImageFileToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CloseImageFileToolStripMenuItem.Click
