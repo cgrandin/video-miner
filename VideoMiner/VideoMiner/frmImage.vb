@@ -9,7 +9,7 @@ Public Class frmImage
     ''' <remarks></remarks>
     Private m_strImagePath As String
     ''' <summary>
-    ''' Hold the currently loaded image's filename without path information.
+    ''' Hold the currently loaded image's filename with full path information.
     ''' </summary>
     ''' <remarks></remarks>
     Private m_strImageFile As String
@@ -29,6 +29,10 @@ Public Class frmImage
     ''' The dictionary of the EXIF metadata for the currently loaded image.
     ''' </summary>
     Private m_dictEXIF As Dictionary(Of String, String)
+    ''' <summary>
+    ''' The factor for zooming; The mousewheel delta will be divided by this number.
+    ''' </summary>
+    Private m_intZoomFactor As Integer = 10
 
     Private ptPanStartPoint As New Point
     Event ImageFormClosingEvent()
@@ -36,29 +40,203 @@ Public Class frmImage
     Public Sub New(strFilePath As String, strFileName As String)
         InitializeComponent()
 
-        m_strImagePath = strFilePath
-        m_strImageFile = strFileName
-    End Sub
+        SetStyle(ControlStyles.AllPaintingInWmPaint, True)
+        SetStyle(ControlStyles.DoubleBuffer, True)
 
-    Private Sub frmImage_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        PictureBox1.Image = Image.FromFile(Combine(m_strImagePath, m_strImageFile))
-        ' Retrieve all files in the directory selected
+        m_strImagePath = strFilePath
+        m_strImageFile = Combine(m_strImagePath, strFileName)
         Dim allFiles As String() = Directory.GetFiles(m_strImagePath)
         m_lstImageFiles = New List(Of String)
         Dim imageFileDirectory As FileInfo() = New DirectoryInfo(m_strImagePath).GetFiles()
         Dim extension As String
         Dim extensionList As String() = {".jpg", ".png", ".tiff", ".bmp", ".gif"}
+        Dim strCurrFile As String
+        m_intImageIndex = 0
         For Each logFile As FileInfo In imageFileDirectory
             extension = GetExtension(logFile.Name)
             If extensionList.Contains(extension.ToLower()) Then
-                m_lstImageFiles.Add(Combine(m_strImagePath, logFile.Name))
+                strCurrFile = Combine(m_strImagePath, logFile.Name)
+                m_lstImageFiles.Add(strCurrFile)
+                If strCurrFile = m_strImageFile Then
+                    m_intImageIndex = m_lstImageFiles.Count - 1
+                End If
             End If
         Next
-        Dim j As String = Combine(m_strImagePath, m_strImageFile)
-        PictureBox1.Image = New Bitmap(Combine(m_strImagePath, m_strImageFile))
-        'Text = Combine(m_strImageFile)
-        getEXIFData()
+    End Sub
 
+    ''' <summary>
+    ''' Load the image which was selected.
+    ''' </summary>
+    Private Sub frmImage_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        LoadImage()
+    End Sub
+
+    ''' <summary>
+    ''' Loads the image found in the m_strImagePath with the name m_strImageFile.
+    ''' The previous and next buttons will be greyed out if the first or last
+    ''' files respectively are being shown.
+    ''' The filename will be placed on the title bar with the index number of the image.
+    ''' </summary>
+    Private Sub LoadImage()
+        m_strImageFile = m_lstImageFiles.Item(m_intImageIndex)
+        PictureBox1.Image = Image.FromFile(m_strImageFile)
+        Dim bmpScaled As Bitmap = New Bitmap(m_strImageFile)
+        ScaleImage(bmpScaled)
+        PictureBox1.Image = bmpScaled
+        getEXIFData()
+        Text = m_strImageFile & " (" & m_intImageIndex + 1 & " of " & m_lstImageFiles.Count & ")"
+        '    ' Detemine the size of the image shown in the window
+        '    Dim w, h As Integer
+
+        '    Select Case Me.cboZoom.SelectedItem
+        '        Case "25%"
+        '            w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width / 4
+        '            h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height / 4
+        '        Case "50%"
+        '            w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width / 2
+        '            h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height / 2
+        '        Case "75%"
+        '            w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width / 1.3333
+        '            h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height / 1.3333
+        '        Case "100%"
+        '            w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width
+        '            h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height
+        '        Case "200%"
+        '            w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width * 2
+        '            h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height * 2
+        '        Case Else
+        '            Dim intValue As Integer
+        '            Dim dblImageSize As Double
+        '            intValue = cboZoom.Text.Substring(0, cboZoom.Text.Length - 1)
+
+        '            If intValue <= 100 Then
+        '                dblImageSize = 100 / intValue
+        '                w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width / dblImageSize
+        '                h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height / dblImageSize
+        '            Else
+        '                dblImageSize = intValue / 100
+        '                w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width * dblImageSize
+        '                h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height * dblImageSize
+        '            End If
+        '    End Select
+        '    Try
+        '        ' Display the image in the picture box.
+        '        'Dim bmp As Bitmap = New Bitmap(Image.FromFile(currentImage), w, h)
+        '        'Dim g As Graphics = Graphics.FromImage(bmp)
+        '        'frmImage.PictureBox1.Image.Dispose()
+        '        'frmImage.PictureBox1.Image = Nothing
+        '        'GC.Collect()
+        '        'frmImage.PictureBox1.Image = bmp
+        '        'frmImage.Text = Me.fileNames(m_intImageIndex)
+        '        'blSizeChanged = True
+        '        frmImage.PictureBox1.Image.Dispose()
+        '        frmImage.PictureBox1.Image = Nothing
+        '        GC.Collect()
+
+        '        Dim Dir As String = m_lstImageFiles(m_intImageIndex)
+        '        Dim bmp As Bitmap = New Bitmap(Image.FromFile(Dir), w, h)
+        '        Dim g As Graphics = Graphics.FromImage(bmp)
+        '        frmImage.PictureBox1.Image = bmp
+        '        frmImage.Text = m_lstImageFiles(m_intImageIndex)
+        '        VideoFileName = m_lstImageFiles(m_intImageIndex)
+        '        currentImage = m_lstImageFiles(m_intImageIndex)
+        '        getEXIFData()
+        '        ' TODO: Fix next line, I added a dim in there to make it compile
+        '        Dim strTimeDateSource As String = "EXIF"
+        '        intTimeSource = 3
+        '        txtTimeSource.Text = strTimeDateSource
+        '        'txtTimeSource.ForeColor = Color.LimeGreen
+        '        'txtTime.ForeColor = Color.LimeGreen
+        '        txtTimeSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+        '        txtTimeSource.BackColor = Color.LightGray
+        '        txtTimeSource.ForeColor = Color.LimeGreen
+        '        txtTimeSource.TextAlign = HorizontalAlignment.Center
+        '        txtTime.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+        '        txtTime.BackColor = Color.LightGray
+        '        txtTime.ForeColor = Color.LimeGreen
+        '        txtTime.TextAlign = HorizontalAlignment.Center
+        '        txtTransectDate.Text = m_transect_date
+        '        txtDateSource.Text = strTimeDateSource
+        '        txtDateSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+        '        txtDateSource.BackColor = Color.LightGray
+        '        txtDateSource.ForeColor = Color.LimeGreen
+        '        txtDateSource.TextAlign = HorizontalAlignment.Center
+        '    Catch ex As Exception
+        '        MsgBox(ex.Message)
+        '    End Try
+
+        ' Disable the buttons depending on what the image list holds.
+        ' This way ensures that all cases are covered, eg: a single file
+        ' in a directory should prompt these buttons to both be greyed out.
+        btnPrev.Enabled = True
+        btnNext.Enabled = True
+        If m_intImageIndex = 0 Then
+            btnPrev.Enabled = False
+        End If
+        If m_intImageIndex = m_lstImageFiles.Count - 1 Then
+            btnNext.Enabled = False
+        End If
+
+    End Sub
+
+    ''' <summary>
+    ''' Go back to the previous picture in the current image directory.
+    ''' </summary>
+    Private Sub btnPrev_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPrev.Click
+        m_intImageIndex -= 1
+        LoadImage()
+    End Sub
+
+    ''' <summary>
+    ''' Go forward to the next picture in the current image directory.
+    ''' </summary>
+    Private Sub btnNext_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnNext.Click
+        m_intImageIndex += 1
+        LoadImage()
+    End Sub
+
+    Private Sub pictureBox1_Paint(ByVal sender As Object, ByVal e As System.Windows.Forms.PaintEventArgs) Handles PictureBox1.Paint
+        'Whenever the 
+        ' Create a local version of the graphics object for the PictureBox.
+
+        'Dim g As Graphics = e.Graphics
+        ' Draw a string on the PictureBox.
+        'g.DrawString("This is a diagonal line drawn on the control",
+        'New Font("Arial", 10), Brushes.Red, New PointF(30.0F, 30.0F))
+        ' Draw a line in the PictureBox.
+        'g.DrawLine(System.Drawing.Pens.Red, PictureBox1.Left,
+        ' PictureBox1.Top, PictureBox1.Right, PictureBox1.Bottom)
+    End Sub
+
+    ''' <summary>
+    ''' Required to make the mouse wheel zooming work
+    ''' </summary>
+    Private Sub PictureBox1_MouseEnter(ByVal sender As Object, ByVal e As System.EventArgs) Handles PictureBox1.MouseEnter
+        PictureBox1.Focus()
+    End Sub
+
+    Private Sub PictureBox_MouseWheel(ByVal sender As System.Object, ByVal e As MouseEventArgs) Handles PictureBox1.MouseWheel
+        ' Get current mouse position reletive to the picturebox
+        Dim pntMousePosition As Drawing.Point = MousePosition
+        ' Set up the new bounds of the picture, based on the e.Delta value
+        ' which is how much the wheel was moved
+
+        'Dim ZoomFactor As Double = ZoomFactor + (e.Delta / 10)
+        'SplitContainer1.Panel1.AutoScroll = False
+        'SplitContainer1.Panel1.AutoScroll = True
+    End Sub
+
+    Private Sub ScaleImage(ByRef i As Bitmap)
+        If i.Height > PictureBox1.Height Then
+            Dim diff As Integer = i.Height - PictureBox1.Height
+            Dim Resized As Bitmap = New Bitmap(i, New Size(i.Width - diff, i.Height - diff))
+            i = Resized
+        End If
+        If i.Width > PictureBox1.Width Then
+            Dim diff As Integer = i.Width - PictureBox1.Width
+            Dim Resized As Bitmap = New Bitmap(i, New Size(i.Width - diff, i.Height - diff))
+            i = Resized
+        End If
     End Sub
 
     ''' <summary>
@@ -271,11 +449,11 @@ Public Class frmImage
         'End If
     End Sub
 
-    Private Sub PictureBox1_MouseDown(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles PictureBox1.MouseDown
+    Private Sub PictureBox1_MouseDown(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
         ptPanStartPoint = New Point(e.X, e.Y)
     End Sub
 
-    Private Sub PictureBox1_MouseMove(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles PictureBox1.MouseMove
+    Private Sub PictureBox1_MouseMove(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
         If e.Button = Windows.Forms.MouseButtons.Left Then
             Dim DeltaX As Integer = (ptPanStartPoint.X - e.X)
             Dim DeltaY As Integer = (ptPanStartPoint.Y - e.Y)
@@ -336,36 +514,6 @@ Public Class frmImage
 
     'End Sub
 
-    'Private Sub cmdNextImage_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdNextImage.Click
-    '    Dim intAnswer As Integer
-    '    If (m_intImageIndex + 1) > (m_lstImageFiles.Count - 1) Then
-    '        intAnswer = MessageBox.Show("You have reached the last image in the folder, would you like to start again at the first image?", "Last Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-    '        If intAnswer = vbYes Then
-    '            m_intImageIndex = 0
-    '        Else
-    '            Exit Sub
-    '        End If
-    '    Else
-    '        m_intImageIndex += 1
-    '    End If
-    '    LoadImg()
-    'End Sub
-
-    'Private Sub cmdPreviousImage_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPreviousImage.Click
-    '    Dim intAnswer As Integer
-    '    If (m_intImageIndex - 1) < 0 Then
-    '        intAnswer = MessageBox.Show("You have reached the first image in the folder, would you like to start again at the last image?", "First Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-    '        If intAnswer = vbYes Then
-    '            m_intImageIndex = m_lstImageFiles.Count - 1
-    '        Else
-    '            Exit Sub
-    '        End If
-    '    Else
-    '        m_intImageIndex -= 1
-    '    End If
-    '    LoadImg()
-    'End Sub
-
     '''' <summary>
     '''' This Function is the common part For the Next 4 functions.
     '''' Basic it takes the width Of height Of the image And redraw the
@@ -373,140 +521,24 @@ Public Class frmImage
     '''' </summary>
     '''' <param name="w"></param>
     '''' <param name="h"></param>
-    'Public Sub redraw_Image(ByVal w As Integer, ByVal h As Integer)
-    '    Try
-    '        Dim bmp As Bitmap = New Bitmap(Image.FromFile(m_lstImageFiles(m_intImageIndex)), w, h)
-    '        Dim g As Graphics = Graphics.FromImage(bmp)
-    '        frmImage.PictureBox1.Image.Dispose()
-    '        frmImage.PictureBox1.Image = Nothing
-    '        GC.Collect()
-    '        frmImage.PictureBox1.Width = w
-    '        frmImage.PictureBox1.Height = h
-    '        frmImage.PictureBox1.Image = bmp
-    '        blSizeChanged = True
-    '    Catch ex As Exception
-    '        MsgBox("The image size you selected is too big, please try again")
-    '        blSizeChanged = False
-    '        Exit Sub
-    '    End Try
+    Public Sub redraw_Image(ByVal w As Integer, ByVal h As Integer)
+        Try
+            Dim bmp As Bitmap = New Bitmap(Image.FromFile(m_lstImageFiles(m_intImageIndex)), w, h)
+            Dim g As Graphics = Graphics.FromImage(bmp)
+            PictureBox1.Image.Dispose()
+            PictureBox1.Image = Nothing
+            GC.Collect()
+            PictureBox1.Width = w
+            PictureBox1.Height = h
+            PictureBox1.Image = bmp
+            'blSizeChanged = True
+        Catch ex As Exception
+            MsgBox("The image size you selected is too big, please try again")
+            'blSizeChanged = False
+            Exit Sub
+        End Try
 
-    'End Sub
-
-    'Public Sub LoadImg()
-    '    ' And delete the .txt file generated by the EXIF tool for the previous image.
-    '    System.IO.File.Delete(String.Concat(currentImage.Substring(0, currentImage.LastIndexOf(".")), ".txt"))
-    '    ' When either one of the button ">" or "<" is pressed, the name of
-    '    ' the current image should be updated.
-    '    'currentImage = String.Concat(Me.image_prefix.Substring(0, Me.image_prefix.LastIndexOf("\") + 1), Me.fileNames(m_intImageIndex))
-    '    'Me.image_prefix = currentImage.Substring(0, currentImage.LastIndexOf("."))
-    '    If m_lstImageFiles.Count = 0 Then
-    '        Exit Sub
-    '    End If
-    '    'If blForward Then
-    '    '    If (m_intImageIndex + 1) > (imageFilesList.Count - 1) Then
-    '    '        intAnswer = MessageBox.Show("You have reached the last image in the folder, would you like to start again at the first image?", "Last Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-    '    '        If intAnswer = vbYes Then
-    '    '            m_intImageIndex = 0
-    '    '        Else
-    '    '            Exit Sub
-    '    '        End If
-    '    '    Else
-    '    '        m_intImageIndex += 1
-    '    '    End If
-    '    'Else
-    '    '    If (m_intImageIndex - 1) < 0 Then
-    '    '        intAnswer = MessageBox.Show("You have reached the first image in the folder, would you like to start again at the last image?", "First Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-    '    '        If intAnswer = vbYes Then
-    '    '            m_intImageIndex = imageFilesList.Count - 1
-    '    '        Else
-    '    '            Exit Sub
-    '    '        End If
-    '    '    Else
-    '    '        m_intImageIndex -= 1
-    '    '    End If
-    '    'End If
-
-    '    ' Detemine the size of the image shown in the window
-    '    Dim w, h As Integer
-
-    '    Select Case Me.cboZoom.SelectedItem
-    '        Case "25%"
-    '            w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width / 4
-    '            h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height / 4
-    '        Case "50%"
-    '            w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width / 2
-    '            h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height / 2
-    '        Case "75%"
-    '            w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width / 1.3333
-    '            h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height / 1.3333
-    '        Case "100%"
-    '            w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width
-    '            h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height
-    '        Case "200%"
-    '            w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width * 2
-    '            h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height * 2
-    '        Case Else
-    '            Dim intValue As Integer
-    '            Dim dblImageSize As Double
-    '            intValue = cboZoom.Text.Substring(0, cboZoom.Text.Length - 1)
-
-    '            If intValue <= 100 Then
-    '                dblImageSize = 100 / intValue
-    '                w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width / dblImageSize
-    '                h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height / dblImageSize
-    '            Else
-    '                dblImageSize = intValue / 100
-    '                w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width * dblImageSize
-    '                h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height * dblImageSize
-    '            End If
-    '    End Select
-    '    Try
-    '        ' Display the image in the picture box.
-    '        'Dim bmp As Bitmap = New Bitmap(Image.FromFile(currentImage), w, h)
-    '        'Dim g As Graphics = Graphics.FromImage(bmp)
-    '        'frmImage.PictureBox1.Image.Dispose()
-    '        'frmImage.PictureBox1.Image = Nothing
-    '        'GC.Collect()
-    '        'frmImage.PictureBox1.Image = bmp
-    '        'frmImage.Text = Me.fileNames(m_intImageIndex)
-    '        'blSizeChanged = True
-    '        frmImage.PictureBox1.Image.Dispose()
-    '        frmImage.PictureBox1.Image = Nothing
-    '        GC.Collect()
-
-    '        Dim Dir As String = m_lstImageFiles(m_intImageIndex)
-    '        Dim bmp As Bitmap = New Bitmap(Image.FromFile(Dir), w, h)
-    '        Dim g As Graphics = Graphics.FromImage(bmp)
-    '        frmImage.PictureBox1.Image = bmp
-    '        frmImage.Text = m_lstImageFiles(m_intImageIndex)
-    '        VideoFileName = m_lstImageFiles(m_intImageIndex)
-    '        currentImage = m_lstImageFiles(m_intImageIndex)
-    '        getEXIFData()
-    '        ' TODO: Fix next line, I added a dim in there to make it compile
-    '        Dim strTimeDateSource As String = "EXIF"
-    '        intTimeSource = 3
-    '        txtTimeSource.Text = strTimeDateSource
-    '        'txtTimeSource.ForeColor = Color.LimeGreen
-    '        'txtTime.ForeColor = Color.LimeGreen
-    '        txtTimeSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-    '        txtTimeSource.BackColor = Color.LightGray
-    '        txtTimeSource.ForeColor = Color.LimeGreen
-    '        txtTimeSource.TextAlign = HorizontalAlignment.Center
-    '        txtTime.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-    '        txtTime.BackColor = Color.LightGray
-    '        txtTime.ForeColor = Color.LimeGreen
-    '        txtTime.TextAlign = HorizontalAlignment.Center
-    '        txtTransectDate.Text = m_transect_date
-    '        txtDateSource.Text = strTimeDateSource
-    '        txtDateSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
-    '        txtDateSource.BackColor = Color.LightGray
-    '        txtDateSource.ForeColor = Color.LimeGreen
-    '        txtDateSource.TextAlign = HorizontalAlignment.Center
-    '    Catch ex As Exception
-    '        MsgBox(ex.Message)
-    '    End Try
-
-    'End Sub
+    End Sub
 
     Private Sub frmImage_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         RaiseEvent ImageFormClosingEvent()
@@ -621,20 +653,6 @@ Public Class frmImage
         'Catch ex As Exception
 
         'End Try
-    End Sub
-
-    ''' <summary>
-    ''' Go back to the previous picture in the current image directory.
-    ''' </summary>
-    Private Sub btnPrev_Click(sender As Object, e As EventArgs) Handles btnPrev.Click
-
-    End Sub
-
-    ''' <summary>
-    ''' Go forward to the next picture in the current image directory.
-    ''' </summary>
-    Private Sub btnNext_Click(sender As Object, e As EventArgs) Handles btnNext.Click
-
     End Sub
 
     ' CJG while removing myformslibrary
