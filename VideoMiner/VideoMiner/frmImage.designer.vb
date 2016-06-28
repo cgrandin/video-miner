@@ -53,6 +53,7 @@ Partial Class frmImage
         '
         'PictureBox1
         '
+        Me.PictureBox1.BackColor = System.Drawing.Color.Black
         Me.PictureBox1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.PictureBox1.Location = New System.Drawing.Point(0, 0)
         Me.PictureBox1.Name = "PictureBox1"

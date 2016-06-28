@@ -37,9 +37,17 @@ Public Class frmImage
     Private ptPanStartPoint As New Point
     Event ImageFormClosingEvent()
 
+    ''' <summary>
+    ''' Set up the image file to start with and it's path.
+    ''' Sets up the indexing so that when LoadImage() is called
+    ''' everything will work without further error checks.
+    ''' </summary>
+    ''' <param name="strFilePath">The full path to the image</param>
+    ''' <param name="strFileName">The filename of the image without path information</param>
     Public Sub New(strFilePath As String, strFileName As String)
         InitializeComponent()
 
+        ' Double-buffering. Trying to reduce flickering on zooms.
         SetStyle(ControlStyles.AllPaintingInWmPaint, True)
         SetStyle(ControlStyles.DoubleBuffer, True)
 
@@ -65,7 +73,7 @@ Public Class frmImage
     End Sub
 
     ''' <summary>
-    ''' Load the image which was selected.
+    ''' Load the image which was set up in the constructor.
     ''' </summary>
     Private Sub frmImage_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         LoadImage()
@@ -80,11 +88,11 @@ Public Class frmImage
     Private Sub LoadImage()
         m_strImageFile = m_lstImageFiles.Item(m_intImageIndex)
         PictureBox1.Image = Image.FromFile(m_strImageFile)
-        Dim bmpScaled As Bitmap = New Bitmap(m_strImageFile)
-        ScaleImage(bmpScaled)
-        PictureBox1.Image = bmpScaled
-        getEXIFData()
+        ScaleImage()
+
         Text = m_strImageFile & " (" & m_intImageIndex + 1 & " of " & m_lstImageFiles.Count & ")"
+        getEXIFData()
+
         '    ' Detemine the size of the image shown in the window
         '    Dim w, h As Integer
 
@@ -166,7 +174,7 @@ Public Class frmImage
         '    End Try
 
         ' Disable the buttons depending on what the image list holds.
-        ' This way ensures that all cases are covered, eg: a single file
+        ' This method ensures that all cases are covered, eg: a single file
         ' in a directory should prompt these buttons to both be greyed out.
         btnPrev.Enabled = True
         btnNext.Enabled = True
@@ -176,7 +184,6 @@ Public Class frmImage
         If m_intImageIndex = m_lstImageFiles.Count - 1 Then
             btnNext.Enabled = False
         End If
-
     End Sub
 
     ''' <summary>
@@ -226,17 +233,28 @@ Public Class frmImage
         'SplitContainer1.Panel1.AutoScroll = True
     End Sub
 
-    Private Sub ScaleImage(ByRef i As Bitmap)
-        If i.Height > PictureBox1.Height Then
-            Dim diff As Integer = i.Height - PictureBox1.Height
-            Dim Resized As Bitmap = New Bitmap(i, New Size(i.Width - diff, i.Height - diff))
-            i = Resized
-        End If
-        If i.Width > PictureBox1.Width Then
-            Dim diff As Integer = i.Width - PictureBox1.Width
-            Dim Resized As Bitmap = New Bitmap(i, New Size(i.Width - diff, i.Height - diff))
-            i = Resized
-        End If
+    Private Sub ScaleImage()
+        Dim imageSize As Size = PictureBox1.Image.Size
+        ' Dim aspectRatio As Double = imageSize.Height / imageSize.Width
+        Dim dblScaleHeight As Double = PictureBox1.Height / imageSize.Height
+        Dim dblScaleWidth As Double = PictureBox1.Width / imageSize.Width
+        Dim dblScale As Double = Math.Min(dblScaleHeight, dblScaleWidth)
+        Dim intNewHeight As Integer = Math.Floor(imageSize.Height * dblScale)
+        Dim intNewWidth As Integer = Math.Floor(imageSize.Width * dblScale)
+        Dim bmpResized As Bitmap = New Bitmap(PictureBox1.Image, New Size(intNewWidth, intNewHeight))
+        PictureBox1.Image = bmpResized
+
+        'If imageSize.Height > PictureBox1.Height Then
+        '    Dim diff As Integer = imageSize.Height - PictureBox1.Height
+        '    Dim bmpResized As Bitmap = New Bitmap(imageSize, New Size(imageSize.Width - diff, imageSize.Height - diff))
+        '    PictureBox1.Image = bmpResized
+        'End If
+        'If i.Width > PictureBox1.Width Then
+        '    Dim diff As Integer = i.Width - PictureBox1.Width
+        '    Dim Resized As Bitmap = New Bitmap(i, New Size(i.Width - diff, i.Height - diff))
+        '    i = Resized
+        'End If
+        'PictureBox1.Width = Convert.ToInt32(Math.Round(Me.PictureBox1.Height / aspectRatio))
     End Sub
 
     ''' <summary>
