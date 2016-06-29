@@ -22,6 +22,7 @@ Partial Class frmStringDataViewer
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmStringDataViewer))
         Me.txtStringData = New System.Windows.Forms.TextBox()
         Me.cmdPause = New System.Windows.Forms.Button()
         Me.Panel1 = New System.Windows.Forms.Panel()
@@ -100,6 +101,7 @@ Partial Class frmStringDataViewer
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(675, 753)
         Me.Controls.Add(Me.Panel1)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "frmStringDataViewer"
         Me.Text = "VideoMiner Serial Port Data Viewer"
         Me.Panel1.ResumeLayout(False)

@@ -22,130 +22,132 @@ Partial Class frmRelayNames
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Label1 = New System.Windows.Forms.Label
-        Label2 = New System.Windows.Forms.Label
-        Label3 = New System.Windows.Forms.Label
-        Label4 = New System.Windows.Forms.Label
-        txtRelay1 = New System.Windows.Forms.TextBox
-        txtRelay2 = New System.Windows.Forms.TextBox
-        txtRelay3 = New System.Windows.Forms.TextBox
-        txtRelay4 = New System.Windows.Forms.TextBox
-        lblDescription = New System.Windows.Forms.Label
-        cmdOK = New System.Windows.Forms.Button
-        cmdCancel = New System.Windows.Forms.Button
-        SuspendLayout()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmRelayNames))
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.txtRelay1 = New System.Windows.Forms.TextBox()
+        Me.txtRelay2 = New System.Windows.Forms.TextBox()
+        Me.txtRelay3 = New System.Windows.Forms.TextBox()
+        Me.txtRelay4 = New System.Windows.Forms.TextBox()
+        Me.lblDescription = New System.Windows.Forms.Label()
+        Me.cmdOK = New System.Windows.Forms.Button()
+        Me.cmdCancel = New System.Windows.Forms.Button()
+        Me.SuspendLayout()
         '
         'Label1
         '
-        Label1.AutoSize = True
-        Label1.Location = New System.Drawing.Point(12, 41)
-        Label1.Name = "Label1"
-        Label1.Size = New System.Drawing.Size(77, 13)
-        Label1.TabIndex = 0
-        Label1.Text = "Relay 1 Name:"
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(12, 41)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(77, 13)
+        Me.Label1.TabIndex = 0
+        Me.Label1.Text = "Relay 1 Name:"
         '
         'Label2
         '
-        Label2.AutoSize = True
-        Label2.Location = New System.Drawing.Point(12, 72)
-        Label2.Name = "Label2"
-        Label2.Size = New System.Drawing.Size(77, 13)
-        Label2.TabIndex = 0
-        Label2.Text = "Relay 2 Name:"
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(12, 72)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(77, 13)
+        Me.Label2.TabIndex = 0
+        Me.Label2.Text = "Relay 2 Name:"
         '
         'Label3
         '
-        Label3.AutoSize = True
-        Label3.Location = New System.Drawing.Point(12, 104)
-        Label3.Name = "Label3"
-        Label3.Size = New System.Drawing.Size(77, 13)
-        Label3.TabIndex = 0
-        Label3.Text = "Relay 3 Name:"
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(12, 104)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(77, 13)
+        Me.Label3.TabIndex = 0
+        Me.Label3.Text = "Relay 3 Name:"
         '
         'Label4
         '
-        Label4.AutoSize = True
-        Label4.Location = New System.Drawing.Point(12, 133)
-        Label4.Name = "Label4"
-        Label4.Size = New System.Drawing.Size(77, 13)
-        Label4.TabIndex = 0
-        Label4.Text = "Relay 4 Name:"
+        Me.Label4.AutoSize = True
+        Me.Label4.Location = New System.Drawing.Point(12, 133)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(77, 13)
+        Me.Label4.TabIndex = 0
+        Me.Label4.Text = "Relay 4 Name:"
         '
         'txtRelay1
         '
-        txtRelay1.Location = New System.Drawing.Point(95, 38)
-        txtRelay1.Name = "txtRelay1"
-        txtRelay1.Size = New System.Drawing.Size(185, 20)
-        txtRelay1.TabIndex = 1
+        Me.txtRelay1.Location = New System.Drawing.Point(95, 38)
+        Me.txtRelay1.Name = "txtRelay1"
+        Me.txtRelay1.Size = New System.Drawing.Size(185, 20)
+        Me.txtRelay1.TabIndex = 1
         '
         'txtRelay2
         '
-        txtRelay2.Location = New System.Drawing.Point(95, 69)
-        txtRelay2.Name = "txtRelay2"
-        txtRelay2.Size = New System.Drawing.Size(185, 20)
-        txtRelay2.TabIndex = 1
+        Me.txtRelay2.Location = New System.Drawing.Point(95, 69)
+        Me.txtRelay2.Name = "txtRelay2"
+        Me.txtRelay2.Size = New System.Drawing.Size(185, 20)
+        Me.txtRelay2.TabIndex = 1
         '
         'txtRelay3
         '
-        txtRelay3.Location = New System.Drawing.Point(95, 101)
-        txtRelay3.Name = "txtRelay3"
-        txtRelay3.Size = New System.Drawing.Size(185, 20)
-        txtRelay3.TabIndex = 1
+        Me.txtRelay3.Location = New System.Drawing.Point(95, 101)
+        Me.txtRelay3.Name = "txtRelay3"
+        Me.txtRelay3.Size = New System.Drawing.Size(185, 20)
+        Me.txtRelay3.TabIndex = 1
         '
         'txtRelay4
         '
-        txtRelay4.Location = New System.Drawing.Point(95, 130)
-        txtRelay4.Name = "txtRelay4"
-        txtRelay4.Size = New System.Drawing.Size(185, 20)
-        txtRelay4.TabIndex = 1
+        Me.txtRelay4.Location = New System.Drawing.Point(95, 130)
+        Me.txtRelay4.Name = "txtRelay4"
+        Me.txtRelay4.Size = New System.Drawing.Size(185, 20)
+        Me.txtRelay4.TabIndex = 1
         '
         'lblDescription
         '
-        lblDescription.AutoSize = True
-        lblDescription.Location = New System.Drawing.Point(9, 9)
-        lblDescription.Name = "lblDescription"
-        lblDescription.Size = New System.Drawing.Size(279, 13)
-        lblDescription.TabIndex = 2
-        lblDescription.Text = "Type in the desired relay names or leave blank for default."
+        Me.lblDescription.AutoSize = True
+        Me.lblDescription.Location = New System.Drawing.Point(9, 9)
+        Me.lblDescription.Name = "lblDescription"
+        Me.lblDescription.Size = New System.Drawing.Size(279, 13)
+        Me.lblDescription.TabIndex = 2
+        Me.lblDescription.Text = "Type in the desired relay names or leave blank for default."
         '
         'cmdOK
         '
-        cmdOK.Location = New System.Drawing.Point(58, 177)
-        cmdOK.Name = "cmdOK"
-        cmdOK.Size = New System.Drawing.Size(75, 23)
-        cmdOK.TabIndex = 3
-        cmdOK.Text = "OK"
-        cmdOK.UseVisualStyleBackColor = True
+        Me.cmdOK.Location = New System.Drawing.Point(58, 177)
+        Me.cmdOK.Name = "cmdOK"
+        Me.cmdOK.Size = New System.Drawing.Size(75, 23)
+        Me.cmdOK.TabIndex = 3
+        Me.cmdOK.Text = "OK"
+        Me.cmdOK.UseVisualStyleBackColor = True
         '
         'cmdCancel
         '
-        cmdCancel.Location = New System.Drawing.Point(139, 177)
-        cmdCancel.Name = "cmdCancel"
-        cmdCancel.Size = New System.Drawing.Size(75, 23)
-        cmdCancel.TabIndex = 3
-        cmdCancel.Text = "Cancel"
-        cmdCancel.UseVisualStyleBackColor = True
+        Me.cmdCancel.Location = New System.Drawing.Point(139, 177)
+        Me.cmdCancel.Name = "cmdCancel"
+        Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
+        Me.cmdCancel.TabIndex = 3
+        Me.cmdCancel.Text = "Cancel"
+        Me.cmdCancel.UseVisualStyleBackColor = True
         '
         'frmRelayNames
         '
-        AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        ClientSize = New System.Drawing.Size(292, 212)
-        Controls.Add(cmdCancel)
-        Controls.Add(cmdOK)
-        Controls.Add(lblDescription)
-        Controls.Add(txtRelay4)
-        Controls.Add(txtRelay3)
-        Controls.Add(txtRelay2)
-        Controls.Add(txtRelay1)
-        Controls.Add(Label4)
-        Controls.Add(Label3)
-        Controls.Add(Label2)
-        Controls.Add(Label1)
-        Name = "frmRelayNames"
-        Text = "Relay Names"
-        ResumeLayout(False)
-        PerformLayout()
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(292, 212)
+        Me.Controls.Add(Me.cmdCancel)
+        Me.Controls.Add(Me.cmdOK)
+        Me.Controls.Add(Me.lblDescription)
+        Me.Controls.Add(Me.txtRelay4)
+        Me.Controls.Add(Me.txtRelay3)
+        Me.Controls.Add(Me.txtRelay2)
+        Me.Controls.Add(Me.txtRelay1)
+        Me.Controls.Add(Me.Label4)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.Label1)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.Name = "frmRelayNames"
+        Me.Text = "Relay Names"
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
     Friend WithEvents Label1 As System.Windows.Forms.Label

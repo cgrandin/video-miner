@@ -22,66 +22,68 @@ Partial Class frmAssignDevice
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        components = New System.ComponentModel.Container
-        lblCurrentDevice = New System.Windows.Forms.Label
-        lblDeviceNumber = New System.Windows.Forms.Label
-        cmdChange = New System.Windows.Forms.Button
-        cmdKeepConfiguration = New System.Windows.Forms.Button
-        AssignSerialPort = New System.IO.Ports.SerialPort(components)
-        SuspendLayout()
+        Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmAssignDevice))
+        Me.lblCurrentDevice = New System.Windows.Forms.Label()
+        Me.lblDeviceNumber = New System.Windows.Forms.Label()
+        Me.cmdChange = New System.Windows.Forms.Button()
+        Me.cmdKeepConfiguration = New System.Windows.Forms.Button()
+        Me.AssignSerialPort = New System.IO.Ports.SerialPort(Me.components)
+        Me.SuspendLayout()
         '
         'lblCurrentDevice
         '
-        lblCurrentDevice.AutoSize = True
-        lblCurrentDevice.Location = New System.Drawing.Point(12, 32)
-        lblCurrentDevice.Name = "lblCurrentDevice"
-        lblCurrentDevice.Size = New System.Drawing.Size(213, 13)
-        lblCurrentDevice.TabIndex = 0
-        lblCurrentDevice.Text = "The device wired in is currently assigned to:"
+        Me.lblCurrentDevice.AutoSize = True
+        Me.lblCurrentDevice.Location = New System.Drawing.Point(12, 32)
+        Me.lblCurrentDevice.Name = "lblCurrentDevice"
+        Me.lblCurrentDevice.Size = New System.Drawing.Size(213, 13)
+        Me.lblCurrentDevice.TabIndex = 0
+        Me.lblCurrentDevice.Text = "The device wired in is currently assigned to:"
         '
         'lblDeviceNumber
         '
-        lblDeviceNumber.AutoSize = True
-        lblDeviceNumber.Location = New System.Drawing.Point(231, 32)
-        lblDeviceNumber.Name = "lblDeviceNumber"
-        lblDeviceNumber.Size = New System.Drawing.Size(0, 13)
-        lblDeviceNumber.TabIndex = 1
+        Me.lblDeviceNumber.AutoSize = True
+        Me.lblDeviceNumber.Location = New System.Drawing.Point(231, 32)
+        Me.lblDeviceNumber.Name = "lblDeviceNumber"
+        Me.lblDeviceNumber.Size = New System.Drawing.Size(0, 13)
+        Me.lblDeviceNumber.TabIndex = 1
         '
         'cmdChange
         '
-        cmdChange.Location = New System.Drawing.Point(14, 76)
-        cmdChange.Name = "cmdChange"
-        cmdChange.Size = New System.Drawing.Size(131, 23)
-        cmdChange.TabIndex = 2
-        cmdChange.Text = "Change Device to "
-        cmdChange.UseVisualStyleBackColor = True
+        Me.cmdChange.Location = New System.Drawing.Point(14, 76)
+        Me.cmdChange.Name = "cmdChange"
+        Me.cmdChange.Size = New System.Drawing.Size(131, 23)
+        Me.cmdChange.TabIndex = 2
+        Me.cmdChange.Text = "Change Device to "
+        Me.cmdChange.UseVisualStyleBackColor = True
         '
         'cmdKeepConfiguration
         '
-        cmdKeepConfiguration.Location = New System.Drawing.Point(151, 76)
-        cmdKeepConfiguration.Name = "cmdKeepConfiguration"
-        cmdKeepConfiguration.Size = New System.Drawing.Size(131, 23)
-        cmdKeepConfiguration.TabIndex = 3
-        cmdKeepConfiguration.Text = "Keep Device Number"
-        cmdKeepConfiguration.UseVisualStyleBackColor = True
+        Me.cmdKeepConfiguration.Location = New System.Drawing.Point(151, 76)
+        Me.cmdKeepConfiguration.Name = "cmdKeepConfiguration"
+        Me.cmdKeepConfiguration.Size = New System.Drawing.Size(131, 23)
+        Me.cmdKeepConfiguration.TabIndex = 3
+        Me.cmdKeepConfiguration.Text = "Keep Device Number"
+        Me.cmdKeepConfiguration.UseVisualStyleBackColor = True
         '
         'AssignSerialPort
         '
-        AssignSerialPort.ReadTimeout = 5000
+        Me.AssignSerialPort.ReadTimeout = 5000
         '
         'frmAssignDevice
         '
-        AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        ClientSize = New System.Drawing.Size(294, 131)
-        Controls.Add(cmdKeepConfiguration)
-        Controls.Add(cmdChange)
-        Controls.Add(lblDeviceNumber)
-        Controls.Add(lblCurrentDevice)
-        Name = "frmAssignDevice"
-        Text = "Assign Device as Number "
-        ResumeLayout(False)
-        PerformLayout()
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(294, 131)
+        Me.Controls.Add(Me.cmdKeepConfiguration)
+        Me.Controls.Add(Me.cmdChange)
+        Me.Controls.Add(Me.lblDeviceNumber)
+        Me.Controls.Add(Me.lblCurrentDevice)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.Name = "frmAssignDevice"
+        Me.Text = "Assign Device as Number "
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
     Friend WithEvents lblCurrentDevice As System.Windows.Forms.Label

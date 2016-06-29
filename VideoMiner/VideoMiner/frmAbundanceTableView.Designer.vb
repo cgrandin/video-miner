@@ -22,6 +22,7 @@ Partial Class frmAbundanceTableView
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmAbundanceTableView))
         Me.txtCommentBox = New System.Windows.Forms.TextBox()
         Me.cmdCancel = New System.Windows.Forms.Button()
         Me.grdAbundance = New System.Windows.Forms.DataGridView()
@@ -85,6 +86,7 @@ Partial Class frmAbundanceTableView
         Me.Controls.Add(Me.txtCommentBox)
         Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.grdAbundance)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "frmAbundanceTableView"

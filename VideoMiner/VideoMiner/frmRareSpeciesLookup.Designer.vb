@@ -22,6 +22,7 @@ Partial Class frmRareSpeciesLookup
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmRareSpeciesLookup))
         Me.lblCommonNameValue = New System.Windows.Forms.Label()
         Me.lblScientificNameValue = New System.Windows.Forms.Label()
         Me.lblLatinNameValue = New System.Windows.Forms.Label()
@@ -203,6 +204,7 @@ Partial Class frmRareSpeciesLookup
         Me.Controls.Add(Me.lblLatinNameValue)
         Me.Controls.Add(Me.lblScientificNameValue)
         Me.Controls.Add(Me.lblCommonNameValue)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "frmRareSpeciesLookup"
         Me.Text = "Rare Species Lookup"
         Me.ResumeLayout(False)

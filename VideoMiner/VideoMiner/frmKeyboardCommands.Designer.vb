@@ -22,125 +22,127 @@ Partial Class frmKeyboardCommands
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        lblSpeciesEntry = New System.Windows.Forms.Label
-        lblImageControl = New System.Windows.Forms.Label
-        lblLeftArrow = New System.Windows.Forms.Label
-        lblRightArrow = New System.Windows.Forms.Label
-        lblLeftArrowValue = New System.Windows.Forms.Label
-        lblNextImageValue = New System.Windows.Forms.Label
-        cmdOK = New System.Windows.Forms.Button
-        lstSpecies = New System.Windows.Forms.ListView
-        cmdAssignShortcut = New System.Windows.Forms.Button
-        SuspendLayout()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmKeyboardCommands))
+        Me.lblSpeciesEntry = New System.Windows.Forms.Label()
+        Me.lblImageControl = New System.Windows.Forms.Label()
+        Me.lblLeftArrow = New System.Windows.Forms.Label()
+        Me.lblRightArrow = New System.Windows.Forms.Label()
+        Me.lblLeftArrowValue = New System.Windows.Forms.Label()
+        Me.lblNextImageValue = New System.Windows.Forms.Label()
+        Me.cmdOK = New System.Windows.Forms.Button()
+        Me.lstSpecies = New System.Windows.Forms.ListView()
+        Me.cmdAssignShortcut = New System.Windows.Forms.Button()
+        Me.SuspendLayout()
         '
         'lblSpeciesEntry
         '
-        lblSpeciesEntry.AutoSize = True
-        lblSpeciesEntry.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblSpeciesEntry.Location = New System.Drawing.Point(12, 9)
-        lblSpeciesEntry.Name = "lblSpeciesEntry"
-        lblSpeciesEntry.Size = New System.Drawing.Size(116, 23)
-        lblSpeciesEntry.TabIndex = 0
-        lblSpeciesEntry.Text = "Species Entry"
+        Me.lblSpeciesEntry.AutoSize = True
+        Me.lblSpeciesEntry.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblSpeciesEntry.Location = New System.Drawing.Point(12, 9)
+        Me.lblSpeciesEntry.Name = "lblSpeciesEntry"
+        Me.lblSpeciesEntry.Size = New System.Drawing.Size(116, 23)
+        Me.lblSpeciesEntry.TabIndex = 0
+        Me.lblSpeciesEntry.Text = "Species Entry"
         '
         'lblImageControl
         '
-        lblImageControl.AutoSize = True
-        lblImageControl.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblImageControl.Location = New System.Drawing.Point(12, 432)
-        lblImageControl.Name = "lblImageControl"
-        lblImageControl.Size = New System.Drawing.Size(121, 23)
-        lblImageControl.TabIndex = 0
-        lblImageControl.Text = "Image Control"
+        Me.lblImageControl.AutoSize = True
+        Me.lblImageControl.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblImageControl.Location = New System.Drawing.Point(12, 432)
+        Me.lblImageControl.Name = "lblImageControl"
+        Me.lblImageControl.Size = New System.Drawing.Size(121, 23)
+        Me.lblImageControl.TabIndex = 0
+        Me.lblImageControl.Text = "Image Control"
         '
         'lblLeftArrow
         '
-        lblLeftArrow.AutoSize = True
-        lblLeftArrow.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblLeftArrow.ForeColor = System.Drawing.SystemColors.ControlText
-        lblLeftArrow.Location = New System.Drawing.Point(34, 470)
-        lblLeftArrow.Name = "lblLeftArrow"
-        lblLeftArrow.Size = New System.Drawing.Size(85, 19)
-        lblLeftArrow.TabIndex = 0
-        lblLeftArrow.Text = "Left Arrow:"
+        Me.lblLeftArrow.AutoSize = True
+        Me.lblLeftArrow.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblLeftArrow.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lblLeftArrow.Location = New System.Drawing.Point(34, 470)
+        Me.lblLeftArrow.Name = "lblLeftArrow"
+        Me.lblLeftArrow.Size = New System.Drawing.Size(85, 19)
+        Me.lblLeftArrow.TabIndex = 0
+        Me.lblLeftArrow.Text = "Left Arrow:"
         '
         'lblRightArrow
         '
-        lblRightArrow.AutoSize = True
-        lblRightArrow.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblRightArrow.Location = New System.Drawing.Point(34, 495)
-        lblRightArrow.Name = "lblRightArrow"
-        lblRightArrow.Size = New System.Drawing.Size(96, 19)
-        lblRightArrow.TabIndex = 0
-        lblRightArrow.Text = "Right Arrow:"
+        Me.lblRightArrow.AutoSize = True
+        Me.lblRightArrow.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblRightArrow.Location = New System.Drawing.Point(34, 495)
+        Me.lblRightArrow.Name = "lblRightArrow"
+        Me.lblRightArrow.Size = New System.Drawing.Size(96, 19)
+        Me.lblRightArrow.TabIndex = 0
+        Me.lblRightArrow.Text = "Right Arrow:"
         '
         'lblLeftArrowValue
         '
-        lblLeftArrowValue.AutoSize = True
-        lblLeftArrowValue.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblLeftArrowValue.Location = New System.Drawing.Point(145, 470)
-        lblLeftArrowValue.Name = "lblLeftArrowValue"
-        lblLeftArrowValue.Size = New System.Drawing.Size(108, 19)
-        lblLeftArrowValue.TabIndex = 0
-        lblLeftArrowValue.Text = "Previous Image"
+        Me.lblLeftArrowValue.AutoSize = True
+        Me.lblLeftArrowValue.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblLeftArrowValue.Location = New System.Drawing.Point(145, 470)
+        Me.lblLeftArrowValue.Name = "lblLeftArrowValue"
+        Me.lblLeftArrowValue.Size = New System.Drawing.Size(108, 19)
+        Me.lblLeftArrowValue.TabIndex = 0
+        Me.lblLeftArrowValue.Text = "Previous Image"
         '
         'lblNextImageValue
         '
-        lblNextImageValue.AutoSize = True
-        lblNextImageValue.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblNextImageValue.Location = New System.Drawing.Point(145, 495)
-        lblNextImageValue.Name = "lblNextImageValue"
-        lblNextImageValue.Size = New System.Drawing.Size(83, 19)
-        lblNextImageValue.TabIndex = 0
-        lblNextImageValue.Text = "Next Image"
+        Me.lblNextImageValue.AutoSize = True
+        Me.lblNextImageValue.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblNextImageValue.Location = New System.Drawing.Point(145, 495)
+        Me.lblNextImageValue.Name = "lblNextImageValue"
+        Me.lblNextImageValue.Size = New System.Drawing.Size(83, 19)
+        Me.lblNextImageValue.TabIndex = 0
+        Me.lblNextImageValue.Text = "Next Image"
         '
         'cmdOK
         '
-        cmdOK.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        cmdOK.Location = New System.Drawing.Point(105, 541)
-        cmdOK.Name = "cmdOK"
-        cmdOK.Size = New System.Drawing.Size(110, 30)
-        cmdOK.TabIndex = 1
-        cmdOK.Text = "OK"
-        cmdOK.UseVisualStyleBackColor = True
+        Me.cmdOK.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdOK.Location = New System.Drawing.Point(105, 541)
+        Me.cmdOK.Name = "cmdOK"
+        Me.cmdOK.Size = New System.Drawing.Size(110, 30)
+        Me.cmdOK.TabIndex = 1
+        Me.cmdOK.Text = "OK"
+        Me.cmdOK.UseVisualStyleBackColor = True
         '
         'lstSpecies
         '
-        lstSpecies.Location = New System.Drawing.Point(16, 50)
-        lstSpecies.Name = "lstSpecies"
-        lstSpecies.Size = New System.Drawing.Size(310, 311)
-        lstSpecies.TabIndex = 2
-        lstSpecies.UseCompatibleStateImageBehavior = False
+        Me.lstSpecies.Location = New System.Drawing.Point(16, 50)
+        Me.lstSpecies.Name = "lstSpecies"
+        Me.lstSpecies.Size = New System.Drawing.Size(310, 311)
+        Me.lstSpecies.TabIndex = 2
+        Me.lstSpecies.UseCompatibleStateImageBehavior = False
         '
         'cmdAssignShortcut
         '
-        cmdAssignShortcut.Location = New System.Drawing.Point(16, 367)
-        cmdAssignShortcut.Name = "cmdAssignShortcut"
-        cmdAssignShortcut.Size = New System.Drawing.Size(110, 30)
-        cmdAssignShortcut.TabIndex = 3
-        cmdAssignShortcut.Text = "Assign Shortcut"
-        cmdAssignShortcut.UseVisualStyleBackColor = True
+        Me.cmdAssignShortcut.Location = New System.Drawing.Point(16, 367)
+        Me.cmdAssignShortcut.Name = "cmdAssignShortcut"
+        Me.cmdAssignShortcut.Size = New System.Drawing.Size(110, 30)
+        Me.cmdAssignShortcut.TabIndex = 3
+        Me.cmdAssignShortcut.Text = "Assign Shortcut"
+        Me.cmdAssignShortcut.UseVisualStyleBackColor = True
         '
         'frmKeyboardCommands
         '
-        AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        ClientSize = New System.Drawing.Size(338, 610)
-        Controls.Add(cmdAssignShortcut)
-        Controls.Add(lstSpecies)
-        Controls.Add(cmdOK)
-        Controls.Add(lblNextImageValue)
-        Controls.Add(lblRightArrow)
-        Controls.Add(lblLeftArrowValue)
-        Controls.Add(lblLeftArrow)
-        Controls.Add(lblImageControl)
-        Controls.Add(lblSpeciesEntry)
-        MaximizeBox = False
-        MinimizeBox = False
-        Name = "frmKeyboardCommands"
-        Text = "Keyboard Shortcuts"
-        ResumeLayout(False)
-        PerformLayout()
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(338, 610)
+        Me.Controls.Add(Me.cmdAssignShortcut)
+        Me.Controls.Add(Me.lstSpecies)
+        Me.Controls.Add(Me.cmdOK)
+        Me.Controls.Add(Me.lblNextImageValue)
+        Me.Controls.Add(Me.lblRightArrow)
+        Me.Controls.Add(Me.lblLeftArrowValue)
+        Me.Controls.Add(Me.lblLeftArrow)
+        Me.Controls.Add(Me.lblImageControl)
+        Me.Controls.Add(Me.lblSpeciesEntry)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "frmKeyboardCommands"
+        Me.Text = "Keyboard Shortcuts"
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
     Friend WithEvents lblSpeciesEntry As System.Windows.Forms.Label

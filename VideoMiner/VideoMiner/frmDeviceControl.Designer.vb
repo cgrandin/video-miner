@@ -22,269 +22,271 @@ Partial Class frmDeviceControl
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        components = New System.ComponentModel.Container
-        AllRelaySerialPort = New System.IO.Ports.SerialPort(components)
-        cmdToggleRelay4 = New System.Windows.Forms.Button
-        lblRelay4 = New System.Windows.Forms.Label
-        lblRelay3 = New System.Windows.Forms.Label
-        cmdToggleRelay3 = New System.Windows.Forms.Button
-        cmdToggleRelay5 = New System.Windows.Forms.Button
-        lblRelay5 = New System.Windows.Forms.Label
-        lblRelay2 = New System.Windows.Forms.Label
-        cmdToggleRelay2 = New System.Windows.Forms.Button
-        cmdToggleRelay6 = New System.Windows.Forms.Button
-        lblRelay6 = New System.Windows.Forms.Label
-        lblRelay1 = New System.Windows.Forms.Label
-        cmdToggleRelay7 = New System.Windows.Forms.Button
-        lblRelay7 = New System.Windows.Forms.Label
-        cmdToggleRelay8 = New System.Windows.Forms.Button
-        lblRelay8 = New System.Windows.Forms.Label
-        cmdToggleRelay1 = New System.Windows.Forms.Button
-        cmdToggleAll = New System.Windows.Forms.Button
-        cmdAllRelayConfiguration = New System.Windows.Forms.Button
-        lblRelayBoard1 = New System.Windows.Forms.Label
-        lblRelayBoard2 = New System.Windows.Forms.Label
-        PortOneSerialPort = New System.IO.Ports.SerialPort(components)
-        PortTwoSerialPort = New System.IO.Ports.SerialPort(components)
-        SuspendLayout()
+        Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmDeviceControl))
+        Me.AllRelaySerialPort = New System.IO.Ports.SerialPort(Me.components)
+        Me.cmdToggleRelay4 = New System.Windows.Forms.Button()
+        Me.lblRelay4 = New System.Windows.Forms.Label()
+        Me.lblRelay3 = New System.Windows.Forms.Label()
+        Me.cmdToggleRelay3 = New System.Windows.Forms.Button()
+        Me.cmdToggleRelay5 = New System.Windows.Forms.Button()
+        Me.lblRelay5 = New System.Windows.Forms.Label()
+        Me.lblRelay2 = New System.Windows.Forms.Label()
+        Me.cmdToggleRelay2 = New System.Windows.Forms.Button()
+        Me.cmdToggleRelay6 = New System.Windows.Forms.Button()
+        Me.lblRelay6 = New System.Windows.Forms.Label()
+        Me.lblRelay1 = New System.Windows.Forms.Label()
+        Me.cmdToggleRelay7 = New System.Windows.Forms.Button()
+        Me.lblRelay7 = New System.Windows.Forms.Label()
+        Me.cmdToggleRelay8 = New System.Windows.Forms.Button()
+        Me.lblRelay8 = New System.Windows.Forms.Label()
+        Me.cmdToggleRelay1 = New System.Windows.Forms.Button()
+        Me.cmdToggleAll = New System.Windows.Forms.Button()
+        Me.cmdAllRelayConfiguration = New System.Windows.Forms.Button()
+        Me.lblRelayBoard1 = New System.Windows.Forms.Label()
+        Me.lblRelayBoard2 = New System.Windows.Forms.Label()
+        Me.PortOneSerialPort = New System.IO.Ports.SerialPort(Me.components)
+        Me.PortTwoSerialPort = New System.IO.Ports.SerialPort(Me.components)
+        Me.SuspendLayout()
         '
         'AllRelaySerialPort
         '
-        AllRelaySerialPort.ReadTimeout = 5000
+        Me.AllRelaySerialPort.ReadTimeout = 5000
         '
         'cmdToggleRelay4
         '
-        cmdToggleRelay4.Location = New System.Drawing.Point(12, 181)
-        cmdToggleRelay4.Name = "cmdToggleRelay4"
-        cmdToggleRelay4.Size = New System.Drawing.Size(96, 23)
-        cmdToggleRelay4.TabIndex = 0
-        cmdToggleRelay4.Text = "Toggle Relay 4"
-        cmdToggleRelay4.UseVisualStyleBackColor = True
+        Me.cmdToggleRelay4.Location = New System.Drawing.Point(12, 181)
+        Me.cmdToggleRelay4.Name = "cmdToggleRelay4"
+        Me.cmdToggleRelay4.Size = New System.Drawing.Size(96, 23)
+        Me.cmdToggleRelay4.TabIndex = 0
+        Me.cmdToggleRelay4.Text = "Toggle Relay 4"
+        Me.cmdToggleRelay4.UseVisualStyleBackColor = True
         '
         'lblRelay4
         '
-        lblRelay4.AutoSize = True
-        lblRelay4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblRelay4.ForeColor = System.Drawing.Color.Red
-        lblRelay4.Location = New System.Drawing.Point(114, 186)
-        lblRelay4.Name = "lblRelay4"
-        lblRelay4.Size = New System.Drawing.Size(30, 13)
-        lblRelay4.TabIndex = 1
-        lblRelay4.Text = "OFF"
+        Me.lblRelay4.AutoSize = True
+        Me.lblRelay4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblRelay4.ForeColor = System.Drawing.Color.Red
+        Me.lblRelay4.Location = New System.Drawing.Point(114, 186)
+        Me.lblRelay4.Name = "lblRelay4"
+        Me.lblRelay4.Size = New System.Drawing.Size(30, 13)
+        Me.lblRelay4.TabIndex = 1
+        Me.lblRelay4.Text = "OFF"
         '
         'lblRelay3
         '
-        lblRelay3.AutoSize = True
-        lblRelay3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblRelay3.ForeColor = System.Drawing.Color.Red
-        lblRelay3.Location = New System.Drawing.Point(114, 157)
-        lblRelay3.Name = "lblRelay3"
-        lblRelay3.Size = New System.Drawing.Size(30, 13)
-        lblRelay3.TabIndex = 1
-        lblRelay3.Text = "OFF"
+        Me.lblRelay3.AutoSize = True
+        Me.lblRelay3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblRelay3.ForeColor = System.Drawing.Color.Red
+        Me.lblRelay3.Location = New System.Drawing.Point(114, 157)
+        Me.lblRelay3.Name = "lblRelay3"
+        Me.lblRelay3.Size = New System.Drawing.Size(30, 13)
+        Me.lblRelay3.TabIndex = 1
+        Me.lblRelay3.Text = "OFF"
         '
         'cmdToggleRelay3
         '
-        cmdToggleRelay3.Location = New System.Drawing.Point(12, 152)
-        cmdToggleRelay3.Name = "cmdToggleRelay3"
-        cmdToggleRelay3.Size = New System.Drawing.Size(96, 23)
-        cmdToggleRelay3.TabIndex = 0
-        cmdToggleRelay3.Text = "Toggle Relay 3"
-        cmdToggleRelay3.UseVisualStyleBackColor = True
+        Me.cmdToggleRelay3.Location = New System.Drawing.Point(12, 152)
+        Me.cmdToggleRelay3.Name = "cmdToggleRelay3"
+        Me.cmdToggleRelay3.Size = New System.Drawing.Size(96, 23)
+        Me.cmdToggleRelay3.TabIndex = 0
+        Me.cmdToggleRelay3.Text = "Toggle Relay 3"
+        Me.cmdToggleRelay3.UseVisualStyleBackColor = True
         '
         'cmdToggleRelay5
         '
-        cmdToggleRelay5.Location = New System.Drawing.Point(194, 94)
-        cmdToggleRelay5.Name = "cmdToggleRelay5"
-        cmdToggleRelay5.Size = New System.Drawing.Size(96, 23)
-        cmdToggleRelay5.TabIndex = 0
-        cmdToggleRelay5.Text = "Toggle Relay 1"
-        cmdToggleRelay5.UseVisualStyleBackColor = True
+        Me.cmdToggleRelay5.Location = New System.Drawing.Point(194, 94)
+        Me.cmdToggleRelay5.Name = "cmdToggleRelay5"
+        Me.cmdToggleRelay5.Size = New System.Drawing.Size(96, 23)
+        Me.cmdToggleRelay5.TabIndex = 0
+        Me.cmdToggleRelay5.Text = "Toggle Relay 1"
+        Me.cmdToggleRelay5.UseVisualStyleBackColor = True
         '
         'lblRelay5
         '
-        lblRelay5.AutoSize = True
-        lblRelay5.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblRelay5.ForeColor = System.Drawing.Color.Red
-        lblRelay5.Location = New System.Drawing.Point(296, 99)
-        lblRelay5.Name = "lblRelay5"
-        lblRelay5.Size = New System.Drawing.Size(30, 13)
-        lblRelay5.TabIndex = 1
-        lblRelay5.Text = "OFF"
+        Me.lblRelay5.AutoSize = True
+        Me.lblRelay5.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblRelay5.ForeColor = System.Drawing.Color.Red
+        Me.lblRelay5.Location = New System.Drawing.Point(296, 99)
+        Me.lblRelay5.Name = "lblRelay5"
+        Me.lblRelay5.Size = New System.Drawing.Size(30, 13)
+        Me.lblRelay5.TabIndex = 1
+        Me.lblRelay5.Text = "OFF"
         '
         'lblRelay2
         '
-        lblRelay2.AutoSize = True
-        lblRelay2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblRelay2.ForeColor = System.Drawing.Color.Red
-        lblRelay2.Location = New System.Drawing.Point(114, 128)
-        lblRelay2.Name = "lblRelay2"
-        lblRelay2.Size = New System.Drawing.Size(30, 13)
-        lblRelay2.TabIndex = 1
-        lblRelay2.Text = "OFF"
+        Me.lblRelay2.AutoSize = True
+        Me.lblRelay2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblRelay2.ForeColor = System.Drawing.Color.Red
+        Me.lblRelay2.Location = New System.Drawing.Point(114, 128)
+        Me.lblRelay2.Name = "lblRelay2"
+        Me.lblRelay2.Size = New System.Drawing.Size(30, 13)
+        Me.lblRelay2.TabIndex = 1
+        Me.lblRelay2.Text = "OFF"
         '
         'cmdToggleRelay2
         '
-        cmdToggleRelay2.Location = New System.Drawing.Point(12, 123)
-        cmdToggleRelay2.Name = "cmdToggleRelay2"
-        cmdToggleRelay2.Size = New System.Drawing.Size(96, 23)
-        cmdToggleRelay2.TabIndex = 0
-        cmdToggleRelay2.Text = "Toggle Relay 2"
-        cmdToggleRelay2.UseVisualStyleBackColor = True
+        Me.cmdToggleRelay2.Location = New System.Drawing.Point(12, 123)
+        Me.cmdToggleRelay2.Name = "cmdToggleRelay2"
+        Me.cmdToggleRelay2.Size = New System.Drawing.Size(96, 23)
+        Me.cmdToggleRelay2.TabIndex = 0
+        Me.cmdToggleRelay2.Text = "Toggle Relay 2"
+        Me.cmdToggleRelay2.UseVisualStyleBackColor = True
         '
         'cmdToggleRelay6
         '
-        cmdToggleRelay6.Location = New System.Drawing.Point(194, 123)
-        cmdToggleRelay6.Name = "cmdToggleRelay6"
-        cmdToggleRelay6.Size = New System.Drawing.Size(96, 23)
-        cmdToggleRelay6.TabIndex = 0
-        cmdToggleRelay6.Text = "Toggle Relay 2"
-        cmdToggleRelay6.UseVisualStyleBackColor = True
+        Me.cmdToggleRelay6.Location = New System.Drawing.Point(194, 123)
+        Me.cmdToggleRelay6.Name = "cmdToggleRelay6"
+        Me.cmdToggleRelay6.Size = New System.Drawing.Size(96, 23)
+        Me.cmdToggleRelay6.TabIndex = 0
+        Me.cmdToggleRelay6.Text = "Toggle Relay 2"
+        Me.cmdToggleRelay6.UseVisualStyleBackColor = True
         '
         'lblRelay6
         '
-        lblRelay6.AutoSize = True
-        lblRelay6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblRelay6.ForeColor = System.Drawing.Color.Red
-        lblRelay6.Location = New System.Drawing.Point(296, 128)
-        lblRelay6.Name = "lblRelay6"
-        lblRelay6.Size = New System.Drawing.Size(30, 13)
-        lblRelay6.TabIndex = 1
-        lblRelay6.Text = "OFF"
+        Me.lblRelay6.AutoSize = True
+        Me.lblRelay6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblRelay6.ForeColor = System.Drawing.Color.Red
+        Me.lblRelay6.Location = New System.Drawing.Point(296, 128)
+        Me.lblRelay6.Name = "lblRelay6"
+        Me.lblRelay6.Size = New System.Drawing.Size(30, 13)
+        Me.lblRelay6.TabIndex = 1
+        Me.lblRelay6.Text = "OFF"
         '
         'lblRelay1
         '
-        lblRelay1.AutoSize = True
-        lblRelay1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblRelay1.ForeColor = System.Drawing.Color.Red
-        lblRelay1.Location = New System.Drawing.Point(114, 99)
-        lblRelay1.Name = "lblRelay1"
-        lblRelay1.Size = New System.Drawing.Size(30, 13)
-        lblRelay1.TabIndex = 1
-        lblRelay1.Text = "OFF"
+        Me.lblRelay1.AutoSize = True
+        Me.lblRelay1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblRelay1.ForeColor = System.Drawing.Color.Red
+        Me.lblRelay1.Location = New System.Drawing.Point(114, 99)
+        Me.lblRelay1.Name = "lblRelay1"
+        Me.lblRelay1.Size = New System.Drawing.Size(30, 13)
+        Me.lblRelay1.TabIndex = 1
+        Me.lblRelay1.Text = "OFF"
         '
         'cmdToggleRelay7
         '
-        cmdToggleRelay7.Location = New System.Drawing.Point(194, 152)
-        cmdToggleRelay7.Name = "cmdToggleRelay7"
-        cmdToggleRelay7.Size = New System.Drawing.Size(96, 23)
-        cmdToggleRelay7.TabIndex = 0
-        cmdToggleRelay7.Text = "Toggle Relay 3"
-        cmdToggleRelay7.UseVisualStyleBackColor = True
+        Me.cmdToggleRelay7.Location = New System.Drawing.Point(194, 152)
+        Me.cmdToggleRelay7.Name = "cmdToggleRelay7"
+        Me.cmdToggleRelay7.Size = New System.Drawing.Size(96, 23)
+        Me.cmdToggleRelay7.TabIndex = 0
+        Me.cmdToggleRelay7.Text = "Toggle Relay 3"
+        Me.cmdToggleRelay7.UseVisualStyleBackColor = True
         '
         'lblRelay7
         '
-        lblRelay7.AutoSize = True
-        lblRelay7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblRelay7.ForeColor = System.Drawing.Color.Red
-        lblRelay7.Location = New System.Drawing.Point(296, 157)
-        lblRelay7.Name = "lblRelay7"
-        lblRelay7.Size = New System.Drawing.Size(30, 13)
-        lblRelay7.TabIndex = 1
-        lblRelay7.Text = "OFF"
+        Me.lblRelay7.AutoSize = True
+        Me.lblRelay7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblRelay7.ForeColor = System.Drawing.Color.Red
+        Me.lblRelay7.Location = New System.Drawing.Point(296, 157)
+        Me.lblRelay7.Name = "lblRelay7"
+        Me.lblRelay7.Size = New System.Drawing.Size(30, 13)
+        Me.lblRelay7.TabIndex = 1
+        Me.lblRelay7.Text = "OFF"
         '
         'cmdToggleRelay8
         '
-        cmdToggleRelay8.Location = New System.Drawing.Point(194, 181)
-        cmdToggleRelay8.Name = "cmdToggleRelay8"
-        cmdToggleRelay8.Size = New System.Drawing.Size(96, 23)
-        cmdToggleRelay8.TabIndex = 0
-        cmdToggleRelay8.Text = "Toggle Relay 4"
-        cmdToggleRelay8.UseVisualStyleBackColor = True
+        Me.cmdToggleRelay8.Location = New System.Drawing.Point(194, 181)
+        Me.cmdToggleRelay8.Name = "cmdToggleRelay8"
+        Me.cmdToggleRelay8.Size = New System.Drawing.Size(96, 23)
+        Me.cmdToggleRelay8.TabIndex = 0
+        Me.cmdToggleRelay8.Text = "Toggle Relay 4"
+        Me.cmdToggleRelay8.UseVisualStyleBackColor = True
         '
         'lblRelay8
         '
-        lblRelay8.AutoSize = True
-        lblRelay8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblRelay8.ForeColor = System.Drawing.Color.Red
-        lblRelay8.Location = New System.Drawing.Point(296, 186)
-        lblRelay8.Name = "lblRelay8"
-        lblRelay8.Size = New System.Drawing.Size(30, 13)
-        lblRelay8.TabIndex = 1
-        lblRelay8.Text = "OFF"
+        Me.lblRelay8.AutoSize = True
+        Me.lblRelay8.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblRelay8.ForeColor = System.Drawing.Color.Red
+        Me.lblRelay8.Location = New System.Drawing.Point(296, 186)
+        Me.lblRelay8.Name = "lblRelay8"
+        Me.lblRelay8.Size = New System.Drawing.Size(30, 13)
+        Me.lblRelay8.TabIndex = 1
+        Me.lblRelay8.Text = "OFF"
         '
         'cmdToggleRelay1
         '
-        cmdToggleRelay1.Location = New System.Drawing.Point(12, 94)
-        cmdToggleRelay1.Name = "cmdToggleRelay1"
-        cmdToggleRelay1.Size = New System.Drawing.Size(96, 23)
-        cmdToggleRelay1.TabIndex = 0
-        cmdToggleRelay1.Text = "Toggle Relay 1"
-        cmdToggleRelay1.UseVisualStyleBackColor = True
+        Me.cmdToggleRelay1.Location = New System.Drawing.Point(12, 94)
+        Me.cmdToggleRelay1.Name = "cmdToggleRelay1"
+        Me.cmdToggleRelay1.Size = New System.Drawing.Size(96, 23)
+        Me.cmdToggleRelay1.TabIndex = 0
+        Me.cmdToggleRelay1.Text = "Toggle Relay 1"
+        Me.cmdToggleRelay1.UseVisualStyleBackColor = True
         '
         'cmdToggleAll
         '
-        cmdToggleAll.Location = New System.Drawing.Point(99, 222)
-        cmdToggleAll.Name = "cmdToggleAll"
-        cmdToggleAll.Size = New System.Drawing.Size(106, 23)
-        cmdToggleAll.TabIndex = 2
-        cmdToggleAll.Text = "Toggle All"
-        cmdToggleAll.UseVisualStyleBackColor = True
+        Me.cmdToggleAll.Location = New System.Drawing.Point(99, 222)
+        Me.cmdToggleAll.Name = "cmdToggleAll"
+        Me.cmdToggleAll.Size = New System.Drawing.Size(106, 23)
+        Me.cmdToggleAll.TabIndex = 2
+        Me.cmdToggleAll.Text = "Toggle All"
+        Me.cmdToggleAll.UseVisualStyleBackColor = True
         '
         'cmdAllRelayConfiguration
         '
-        cmdAllRelayConfiguration.Location = New System.Drawing.Point(99, 12)
-        cmdAllRelayConfiguration.Name = "cmdAllRelayConfiguration"
-        cmdAllRelayConfiguration.Size = New System.Drawing.Size(126, 23)
-        cmdAllRelayConfiguration.TabIndex = 5
-        cmdAllRelayConfiguration.Text = "Relay Configuration"
-        cmdAllRelayConfiguration.UseVisualStyleBackColor = True
+        Me.cmdAllRelayConfiguration.Location = New System.Drawing.Point(99, 12)
+        Me.cmdAllRelayConfiguration.Name = "cmdAllRelayConfiguration"
+        Me.cmdAllRelayConfiguration.Size = New System.Drawing.Size(126, 23)
+        Me.cmdAllRelayConfiguration.TabIndex = 5
+        Me.cmdAllRelayConfiguration.Text = "Relay Configuration"
+        Me.cmdAllRelayConfiguration.UseVisualStyleBackColor = True
         '
         'lblRelayBoard1
         '
-        lblRelayBoard1.AutoSize = True
-        lblRelayBoard1.Location = New System.Drawing.Point(12, 65)
-        lblRelayBoard1.Name = "lblRelayBoard1"
-        lblRelayBoard1.Size = New System.Drawing.Size(74, 13)
-        lblRelayBoard1.TabIndex = 6
-        lblRelayBoard1.Text = "Relay Board 1"
+        Me.lblRelayBoard1.AutoSize = True
+        Me.lblRelayBoard1.Location = New System.Drawing.Point(12, 65)
+        Me.lblRelayBoard1.Name = "lblRelayBoard1"
+        Me.lblRelayBoard1.Size = New System.Drawing.Size(74, 13)
+        Me.lblRelayBoard1.TabIndex = 6
+        Me.lblRelayBoard1.Text = "Relay Board 1"
         '
         'lblRelayBoard2
         '
-        lblRelayBoard2.AutoSize = True
-        lblRelayBoard2.Location = New System.Drawing.Point(191, 65)
-        lblRelayBoard2.Name = "lblRelayBoard2"
-        lblRelayBoard2.Size = New System.Drawing.Size(74, 13)
-        lblRelayBoard2.TabIndex = 6
-        lblRelayBoard2.Text = "Relay Board 2"
+        Me.lblRelayBoard2.AutoSize = True
+        Me.lblRelayBoard2.Location = New System.Drawing.Point(191, 65)
+        Me.lblRelayBoard2.Name = "lblRelayBoard2"
+        Me.lblRelayBoard2.Size = New System.Drawing.Size(74, 13)
+        Me.lblRelayBoard2.TabIndex = 6
+        Me.lblRelayBoard2.Text = "Relay Board 2"
         '
         'PortOneSerialPort
         '
-        PortOneSerialPort.ReadTimeout = 5000
+        Me.PortOneSerialPort.ReadTimeout = 5000
         '
         'PortTwoSerialPort
         '
-        PortTwoSerialPort.ReadTimeout = 5000
+        Me.PortTwoSerialPort.ReadTimeout = 5000
         '
         'frmDeviceControl
         '
-        AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        ClientSize = New System.Drawing.Size(339, 301)
-        Controls.Add(lblRelayBoard2)
-        Controls.Add(lblRelayBoard1)
-        Controls.Add(cmdAllRelayConfiguration)
-        Controls.Add(cmdToggleAll)
-        Controls.Add(cmdToggleRelay1)
-        Controls.Add(lblRelay8)
-        Controls.Add(cmdToggleRelay8)
-        Controls.Add(cmdToggleRelay4)
-        Controls.Add(lblRelay7)
-        Controls.Add(lblRelay4)
-        Controls.Add(cmdToggleRelay7)
-        Controls.Add(lblRelay3)
-        Controls.Add(lblRelay1)
-        Controls.Add(cmdToggleRelay3)
-        Controls.Add(lblRelay6)
-        Controls.Add(cmdToggleRelay5)
-        Controls.Add(cmdToggleRelay6)
-        Controls.Add(lblRelay5)
-        Controls.Add(cmdToggleRelay2)
-        Controls.Add(lblRelay2)
-        Name = "frmDeviceControl"
-        Text = "Device Control"
-        ResumeLayout(False)
-        PerformLayout()
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(339, 301)
+        Me.Controls.Add(Me.lblRelayBoard2)
+        Me.Controls.Add(Me.lblRelayBoard1)
+        Me.Controls.Add(Me.cmdAllRelayConfiguration)
+        Me.Controls.Add(Me.cmdToggleAll)
+        Me.Controls.Add(Me.cmdToggleRelay1)
+        Me.Controls.Add(Me.lblRelay8)
+        Me.Controls.Add(Me.cmdToggleRelay8)
+        Me.Controls.Add(Me.cmdToggleRelay4)
+        Me.Controls.Add(Me.lblRelay7)
+        Me.Controls.Add(Me.lblRelay4)
+        Me.Controls.Add(Me.cmdToggleRelay7)
+        Me.Controls.Add(Me.lblRelay3)
+        Me.Controls.Add(Me.lblRelay1)
+        Me.Controls.Add(Me.cmdToggleRelay3)
+        Me.Controls.Add(Me.lblRelay6)
+        Me.Controls.Add(Me.cmdToggleRelay5)
+        Me.Controls.Add(Me.cmdToggleRelay6)
+        Me.Controls.Add(Me.lblRelay5)
+        Me.Controls.Add(Me.cmdToggleRelay2)
+        Me.Controls.Add(Me.lblRelay2)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.Name = "frmDeviceControl"
+        Me.Text = "Device Control"
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
     Friend WithEvents AllRelaySerialPort As System.IO.Ports.SerialPort

@@ -22,14 +22,15 @@ Partial Class frmProjectNames
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.lstProjects = New System.Windows.Forms.ListBox
-        Me.txtProject = New System.Windows.Forms.TextBox
-        Me.lblSelect = New System.Windows.Forms.Label
-        Me.lblPreviousProjects = New System.Windows.Forms.Label
-        Me.lblProjectName = New System.Windows.Forms.Label
-        Me.cmdOK = New System.Windows.Forms.Button
-        Me.cmdCancel = New System.Windows.Forms.Button
-        Me.cmdDelete = New System.Windows.Forms.Button
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmProjectNames))
+        Me.lstProjects = New System.Windows.Forms.ListBox()
+        Me.txtProject = New System.Windows.Forms.TextBox()
+        Me.lblSelect = New System.Windows.Forms.Label()
+        Me.lblPreviousProjects = New System.Windows.Forms.Label()
+        Me.lblProjectName = New System.Windows.Forms.Label()
+        Me.cmdOK = New System.Windows.Forms.Button()
+        Me.cmdCancel = New System.Windows.Forms.Button()
+        Me.cmdDelete = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'lstProjects
@@ -117,6 +118,7 @@ Partial Class frmProjectNames
         Me.Controls.Add(Me.lblSelect)
         Me.Controls.Add(Me.txtProject)
         Me.Controls.Add(Me.lstProjects)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "frmProjectNames"

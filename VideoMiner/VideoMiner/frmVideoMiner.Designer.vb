@@ -90,16 +90,9 @@ Partial Class VideoMiner
         Me.txtFramesToSkip = New System.Windows.Forms.TextBox()
         Me.chkDefineAll = New System.Windows.Forms.CheckBox()
         Me.chkResumeVideo = New System.Windows.Forms.CheckBox()
-        Me.cmdScreenCapture = New System.Windows.Forms.Button()
-        Me.cmdNext = New System.Windows.Forms.Button()
-        Me.cmdPrevious = New System.Windows.Forms.Button()
         Me.lblVideoRate = New System.Windows.Forms.Label()
         Me.LblRate = New System.Windows.Forms.Label()
-        Me.cmdStop = New System.Windows.Forms.Button()
         Me.lblVideoControls = New System.Windows.Forms.Label()
-        Me.cmdPlayPause = New System.Windows.Forms.Button()
-        Me.cmdIncreaseRate = New System.Windows.Forms.Button()
-        Me.cmdDecreaseRate = New System.Windows.Forms.Button()
         Me.cmdPlayForSeconds = New System.Windows.Forms.Button()
         Me.txtPlaySeconds = New System.Windows.Forms.TextBox()
         Me.txtTransectDate = New System.Windows.Forms.TextBox()
@@ -139,6 +132,13 @@ Partial Class VideoMiner
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
+        Me.cmdScreenCapture = New System.Windows.Forms.Button()
+        Me.cmdNext = New System.Windows.Forms.Button()
+        Me.cmdPrevious = New System.Windows.Forms.Button()
+        Me.cmdStop = New System.Windows.Forms.Button()
+        Me.cmdPlayPause = New System.Windows.Forms.Button()
+        Me.cmdIncreaseRate = New System.Windows.Forms.Button()
+        Me.cmdDecreaseRate = New System.Windows.Forms.Button()
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -341,14 +341,14 @@ Partial Class VideoMiner
         'mnuOpenImg
         '
         Me.mnuOpenImg.Name = "mnuOpenImg"
-        Me.mnuOpenImg.Size = New System.Drawing.Size(152, 22)
+        Me.mnuOpenImg.Size = New System.Drawing.Size(139, 22)
         Me.mnuOpenImg.Text = "Open Image"
         '
         'CloseImageFileToolStripMenuItem
         '
         Me.CloseImageFileToolStripMenuItem.Enabled = False
         Me.CloseImageFileToolStripMenuItem.Name = "CloseImageFileToolStripMenuItem"
-        Me.CloseImageFileToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CloseImageFileToolStripMenuItem.Size = New System.Drawing.Size(139, 22)
         Me.CloseImageFileToolStripMenuItem.Text = "Close"
         '
         'mnuConfigureTools
@@ -805,37 +805,6 @@ Partial Class VideoMiner
         Me.chkResumeVideo.Text = "Resume Video" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "After Species Entry"
         Me.chkResumeVideo.UseVisualStyleBackColor = True
         '
-        'cmdScreenCapture
-        '
-        Me.cmdScreenCapture.BackgroundImage = CType(resources.GetObject("cmdScreenCapture.BackgroundImage"), System.Drawing.Image)
-        Me.cmdScreenCapture.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.cmdScreenCapture.Location = New System.Drawing.Point(145, 22)
-        Me.cmdScreenCapture.Name = "cmdScreenCapture"
-        Me.cmdScreenCapture.Size = New System.Drawing.Size(33, 26)
-        Me.cmdScreenCapture.TabIndex = 57
-        Me.cmdScreenCapture.UseVisualStyleBackColor = True
-        '
-        'cmdNext
-        '
-        Me.cmdNext.BackgroundImage = CType(resources.GetObject("cmdNext.BackgroundImage"), System.Drawing.Image)
-        Me.cmdNext.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.cmdNext.Location = New System.Drawing.Point(109, 22)
-        Me.cmdNext.Name = "cmdNext"
-        Me.cmdNext.Size = New System.Drawing.Size(33, 26)
-        Me.cmdNext.TabIndex = 57
-        Me.cmdNext.UseVisualStyleBackColor = True
-        '
-        'cmdPrevious
-        '
-        Me.cmdPrevious.BackgroundImage = CType(resources.GetObject("cmdPrevious.BackgroundImage"), System.Drawing.Image)
-        Me.cmdPrevious.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.cmdPrevious.Enabled = False
-        Me.cmdPrevious.Location = New System.Drawing.Point(74, 22)
-        Me.cmdPrevious.Name = "cmdPrevious"
-        Me.cmdPrevious.Size = New System.Drawing.Size(33, 26)
-        Me.cmdPrevious.TabIndex = 56
-        Me.cmdPrevious.UseVisualStyleBackColor = True
-        '
         'lblVideoRate
         '
         Me.lblVideoRate.AutoSize = True
@@ -857,16 +826,6 @@ Partial Class VideoMiner
         Me.LblRate.TabIndex = 55
         Me.LblRate.Text = "Rate:"
         '
-        'cmdStop
-        '
-        Me.cmdStop.BackgroundImage = CType(resources.GetObject("cmdStop.BackgroundImage"), System.Drawing.Image)
-        Me.cmdStop.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.cmdStop.Location = New System.Drawing.Point(38, 22)
-        Me.cmdStop.Name = "cmdStop"
-        Me.cmdStop.Size = New System.Drawing.Size(33, 26)
-        Me.cmdStop.TabIndex = 38
-        Me.cmdStop.UseVisualStyleBackColor = True
-        '
         'lblVideoControls
         '
         Me.lblVideoControls.AutoSize = True
@@ -876,40 +835,6 @@ Partial Class VideoMiner
         Me.lblVideoControls.Size = New System.Drawing.Size(100, 15)
         Me.lblVideoControls.TabIndex = 54
         Me.lblVideoControls.Text = "Video Controls"
-        '
-        'cmdPlayPause
-        '
-        Me.cmdPlayPause.BackColor = System.Drawing.SystemColors.Control
-        Me.cmdPlayPause.BackgroundImage = CType(resources.GetObject("cmdPlayPause.BackgroundImage"), System.Drawing.Image)
-        Me.cmdPlayPause.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.cmdPlayPause.Location = New System.Drawing.Point(2, 22)
-        Me.cmdPlayPause.Margin = New System.Windows.Forms.Padding(2)
-        Me.cmdPlayPause.Name = "cmdPlayPause"
-        Me.cmdPlayPause.Size = New System.Drawing.Size(33, 26)
-        Me.cmdPlayPause.TabIndex = 46
-        Me.cmdPlayPause.UseVisualStyleBackColor = False
-        '
-        'cmdIncreaseRate
-        '
-        Me.cmdIncreaseRate.BackgroundImage = CType(resources.GetObject("cmdIncreaseRate.BackgroundImage"), System.Drawing.Image)
-        Me.cmdIncreaseRate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.cmdIncreaseRate.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdIncreaseRate.Location = New System.Drawing.Point(144, 54)
-        Me.cmdIncreaseRate.Name = "cmdIncreaseRate"
-        Me.cmdIncreaseRate.Size = New System.Drawing.Size(33, 26)
-        Me.cmdIncreaseRate.TabIndex = 38
-        Me.cmdIncreaseRate.UseVisualStyleBackColor = True
-        '
-        'cmdDecreaseRate
-        '
-        Me.cmdDecreaseRate.BackgroundImage = CType(resources.GetObject("cmdDecreaseRate.BackgroundImage"), System.Drawing.Image)
-        Me.cmdDecreaseRate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.cmdDecreaseRate.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdDecreaseRate.Location = New System.Drawing.Point(110, 54)
-        Me.cmdDecreaseRate.Name = "cmdDecreaseRate"
-        Me.cmdDecreaseRate.Size = New System.Drawing.Size(33, 26)
-        Me.cmdDecreaseRate.TabIndex = 38
-        Me.cmdDecreaseRate.UseVisualStyleBackColor = True
         '
         'cmdPlayForSeconds
         '
@@ -1306,6 +1231,81 @@ Partial Class VideoMiner
         'tmrComputerTime
         '
         Me.tmrComputerTime.Interval = 500
+        '
+        'cmdScreenCapture
+        '
+        Me.cmdScreenCapture.BackgroundImage = CType(resources.GetObject("cmdScreenCapture.BackgroundImage"), System.Drawing.Image)
+        Me.cmdScreenCapture.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.cmdScreenCapture.Location = New System.Drawing.Point(145, 22)
+        Me.cmdScreenCapture.Name = "cmdScreenCapture"
+        Me.cmdScreenCapture.Size = New System.Drawing.Size(33, 26)
+        Me.cmdScreenCapture.TabIndex = 57
+        Me.cmdScreenCapture.UseVisualStyleBackColor = True
+        '
+        'cmdNext
+        '
+        Me.cmdNext.BackgroundImage = CType(resources.GetObject("cmdNext.BackgroundImage"), System.Drawing.Image)
+        Me.cmdNext.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.cmdNext.Location = New System.Drawing.Point(109, 22)
+        Me.cmdNext.Name = "cmdNext"
+        Me.cmdNext.Size = New System.Drawing.Size(33, 26)
+        Me.cmdNext.TabIndex = 57
+        Me.cmdNext.UseVisualStyleBackColor = True
+        '
+        'cmdPrevious
+        '
+        Me.cmdPrevious.BackgroundImage = CType(resources.GetObject("cmdPrevious.BackgroundImage"), System.Drawing.Image)
+        Me.cmdPrevious.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.cmdPrevious.Enabled = False
+        Me.cmdPrevious.Location = New System.Drawing.Point(74, 22)
+        Me.cmdPrevious.Name = "cmdPrevious"
+        Me.cmdPrevious.Size = New System.Drawing.Size(33, 26)
+        Me.cmdPrevious.TabIndex = 56
+        Me.cmdPrevious.UseVisualStyleBackColor = True
+        '
+        'cmdStop
+        '
+        Me.cmdStop.BackgroundImage = CType(resources.GetObject("cmdStop.BackgroundImage"), System.Drawing.Image)
+        Me.cmdStop.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.cmdStop.Location = New System.Drawing.Point(38, 22)
+        Me.cmdStop.Name = "cmdStop"
+        Me.cmdStop.Size = New System.Drawing.Size(33, 26)
+        Me.cmdStop.TabIndex = 38
+        Me.cmdStop.UseVisualStyleBackColor = True
+        '
+        'cmdPlayPause
+        '
+        Me.cmdPlayPause.BackColor = System.Drawing.SystemColors.Control
+        Me.cmdPlayPause.BackgroundImage = CType(resources.GetObject("cmdPlayPause.BackgroundImage"), System.Drawing.Image)
+        Me.cmdPlayPause.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.cmdPlayPause.Location = New System.Drawing.Point(2, 22)
+        Me.cmdPlayPause.Margin = New System.Windows.Forms.Padding(2)
+        Me.cmdPlayPause.Name = "cmdPlayPause"
+        Me.cmdPlayPause.Size = New System.Drawing.Size(33, 26)
+        Me.cmdPlayPause.TabIndex = 46
+        Me.cmdPlayPause.UseVisualStyleBackColor = False
+        '
+        'cmdIncreaseRate
+        '
+        Me.cmdIncreaseRate.BackgroundImage = CType(resources.GetObject("cmdIncreaseRate.BackgroundImage"), System.Drawing.Image)
+        Me.cmdIncreaseRate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.cmdIncreaseRate.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdIncreaseRate.Location = New System.Drawing.Point(144, 54)
+        Me.cmdIncreaseRate.Name = "cmdIncreaseRate"
+        Me.cmdIncreaseRate.Size = New System.Drawing.Size(33, 26)
+        Me.cmdIncreaseRate.TabIndex = 38
+        Me.cmdIncreaseRate.UseVisualStyleBackColor = True
+        '
+        'cmdDecreaseRate
+        '
+        Me.cmdDecreaseRate.BackgroundImage = CType(resources.GetObject("cmdDecreaseRate.BackgroundImage"), System.Drawing.Image)
+        Me.cmdDecreaseRate.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.cmdDecreaseRate.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdDecreaseRate.Location = New System.Drawing.Point(110, 54)
+        Me.cmdDecreaseRate.Name = "cmdDecreaseRate"
+        Me.cmdDecreaseRate.Size = New System.Drawing.Size(33, 26)
+        Me.cmdDecreaseRate.TabIndex = 38
+        Me.cmdDecreaseRate.UseVisualStyleBackColor = True
         '
         'VideoMiner
         '

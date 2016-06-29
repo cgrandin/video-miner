@@ -19,6 +19,7 @@ Partial Class frmSpeciesList
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmSpeciesList))
         Me.lstSpecies = New System.Windows.Forms.ListView()
         Me.cmdMoveUp = New System.Windows.Forms.Button()
         Me.cmdMoveDown = New System.Windows.Forms.Button()
@@ -136,6 +137,7 @@ Partial Class frmSpeciesList
         Me.Controls.Add(Me.cmdMoveToTop)
         Me.Controls.Add(Me.cmdMoveUp)
         Me.Controls.Add(Me.lstSpecies)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False

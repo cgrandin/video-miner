@@ -22,171 +22,173 @@ Partial Class frmConfigureButtonFormat
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        lblButtonSize = New System.Windows.Forms.Label
-        lblButtonHeight = New System.Windows.Forms.Label
-        lblButtonWidth = New System.Windows.Forms.Label
-        lblButtonText = New System.Windows.Forms.Label
-        lblButtonFont = New System.Windows.Forms.Label
-        lblButtonTextSize = New System.Windows.Forms.Label
-        txtButtonHeight = New System.Windows.Forms.TextBox
-        txtButtonWidth = New System.Windows.Forms.TextBox
-        cboButtonFont = New System.Windows.Forms.ComboBox
-        cboButtonTextSize = New System.Windows.Forms.ComboBox
-        lblPreview = New System.Windows.Forms.Label
-        cmdPreviewButton = New System.Windows.Forms.Button
-        cmdOK = New System.Windows.Forms.Button
-        cmdCancel = New System.Windows.Forms.Button
-        SuspendLayout()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmConfigureButtonFormat))
+        Me.lblButtonSize = New System.Windows.Forms.Label()
+        Me.lblButtonHeight = New System.Windows.Forms.Label()
+        Me.lblButtonWidth = New System.Windows.Forms.Label()
+        Me.lblButtonText = New System.Windows.Forms.Label()
+        Me.lblButtonFont = New System.Windows.Forms.Label()
+        Me.lblButtonTextSize = New System.Windows.Forms.Label()
+        Me.txtButtonHeight = New System.Windows.Forms.TextBox()
+        Me.txtButtonWidth = New System.Windows.Forms.TextBox()
+        Me.cboButtonFont = New System.Windows.Forms.ComboBox()
+        Me.cboButtonTextSize = New System.Windows.Forms.ComboBox()
+        Me.lblPreview = New System.Windows.Forms.Label()
+        Me.cmdPreviewButton = New System.Windows.Forms.Button()
+        Me.cmdOK = New System.Windows.Forms.Button()
+        Me.cmdCancel = New System.Windows.Forms.Button()
+        Me.SuspendLayout()
         '
         'lblButtonSize
         '
-        lblButtonSize.AutoSize = True
-        lblButtonSize.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblButtonSize.Location = New System.Drawing.Point(12, 9)
-        lblButtonSize.Name = "lblButtonSize"
-        lblButtonSize.Size = New System.Drawing.Size(96, 17)
-        lblButtonSize.TabIndex = 0
-        lblButtonSize.Text = "Button Size:"
+        Me.lblButtonSize.AutoSize = True
+        Me.lblButtonSize.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblButtonSize.Location = New System.Drawing.Point(12, 9)
+        Me.lblButtonSize.Name = "lblButtonSize"
+        Me.lblButtonSize.Size = New System.Drawing.Size(96, 17)
+        Me.lblButtonSize.TabIndex = 0
+        Me.lblButtonSize.Text = "Button Size:"
         '
         'lblButtonHeight
         '
-        lblButtonHeight.AutoSize = True
-        lblButtonHeight.Location = New System.Drawing.Point(12, 35)
-        lblButtonHeight.Name = "lblButtonHeight"
-        lblButtonHeight.Size = New System.Drawing.Size(41, 13)
-        lblButtonHeight.TabIndex = 0
-        lblButtonHeight.Text = "Height:"
+        Me.lblButtonHeight.AutoSize = True
+        Me.lblButtonHeight.Location = New System.Drawing.Point(12, 35)
+        Me.lblButtonHeight.Name = "lblButtonHeight"
+        Me.lblButtonHeight.Size = New System.Drawing.Size(41, 13)
+        Me.lblButtonHeight.TabIndex = 0
+        Me.lblButtonHeight.Text = "Height:"
         '
         'lblButtonWidth
         '
-        lblButtonWidth.AutoSize = True
-        lblButtonWidth.Location = New System.Drawing.Point(12, 61)
-        lblButtonWidth.Name = "lblButtonWidth"
-        lblButtonWidth.Size = New System.Drawing.Size(38, 13)
-        lblButtonWidth.TabIndex = 0
-        lblButtonWidth.Text = "Width:"
+        Me.lblButtonWidth.AutoSize = True
+        Me.lblButtonWidth.Location = New System.Drawing.Point(12, 61)
+        Me.lblButtonWidth.Name = "lblButtonWidth"
+        Me.lblButtonWidth.Size = New System.Drawing.Size(38, 13)
+        Me.lblButtonWidth.TabIndex = 0
+        Me.lblButtonWidth.Text = "Width:"
         '
         'lblButtonText
         '
-        lblButtonText.AutoSize = True
-        lblButtonText.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblButtonText.Location = New System.Drawing.Point(12, 90)
-        lblButtonText.Name = "lblButtonText"
-        lblButtonText.Size = New System.Drawing.Size(96, 17)
-        lblButtonText.TabIndex = 0
-        lblButtonText.Text = "Button Text:"
+        Me.lblButtonText.AutoSize = True
+        Me.lblButtonText.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblButtonText.Location = New System.Drawing.Point(12, 90)
+        Me.lblButtonText.Name = "lblButtonText"
+        Me.lblButtonText.Size = New System.Drawing.Size(96, 17)
+        Me.lblButtonText.TabIndex = 0
+        Me.lblButtonText.Text = "Button Text:"
         '
         'lblButtonFont
         '
-        lblButtonFont.AutoSize = True
-        lblButtonFont.Location = New System.Drawing.Point(12, 113)
-        lblButtonFont.Name = "lblButtonFont"
-        lblButtonFont.Size = New System.Drawing.Size(31, 13)
-        lblButtonFont.TabIndex = 0
-        lblButtonFont.Text = "Font:"
+        Me.lblButtonFont.AutoSize = True
+        Me.lblButtonFont.Location = New System.Drawing.Point(12, 113)
+        Me.lblButtonFont.Name = "lblButtonFont"
+        Me.lblButtonFont.Size = New System.Drawing.Size(31, 13)
+        Me.lblButtonFont.TabIndex = 0
+        Me.lblButtonFont.Text = "Font:"
         '
         'lblButtonTextSize
         '
-        lblButtonTextSize.AutoSize = True
-        lblButtonTextSize.Location = New System.Drawing.Point(12, 140)
-        lblButtonTextSize.Name = "lblButtonTextSize"
-        lblButtonTextSize.Size = New System.Drawing.Size(54, 13)
-        lblButtonTextSize.TabIndex = 0
-        lblButtonTextSize.Text = "Text Size:"
+        Me.lblButtonTextSize.AutoSize = True
+        Me.lblButtonTextSize.Location = New System.Drawing.Point(12, 140)
+        Me.lblButtonTextSize.Name = "lblButtonTextSize"
+        Me.lblButtonTextSize.Size = New System.Drawing.Size(54, 13)
+        Me.lblButtonTextSize.TabIndex = 0
+        Me.lblButtonTextSize.Text = "Text Size:"
         '
         'txtButtonHeight
         '
-        txtButtonHeight.Location = New System.Drawing.Point(72, 32)
-        txtButtonHeight.Name = "txtButtonHeight"
-        txtButtonHeight.Size = New System.Drawing.Size(100, 20)
-        txtButtonHeight.TabIndex = 1
+        Me.txtButtonHeight.Location = New System.Drawing.Point(72, 32)
+        Me.txtButtonHeight.Name = "txtButtonHeight"
+        Me.txtButtonHeight.Size = New System.Drawing.Size(100, 20)
+        Me.txtButtonHeight.TabIndex = 1
         '
         'txtButtonWidth
         '
-        txtButtonWidth.Location = New System.Drawing.Point(72, 58)
-        txtButtonWidth.Name = "txtButtonWidth"
-        txtButtonWidth.Size = New System.Drawing.Size(100, 20)
-        txtButtonWidth.TabIndex = 1
+        Me.txtButtonWidth.Location = New System.Drawing.Point(72, 58)
+        Me.txtButtonWidth.Name = "txtButtonWidth"
+        Me.txtButtonWidth.Size = New System.Drawing.Size(100, 20)
+        Me.txtButtonWidth.TabIndex = 1
         '
         'cboButtonFont
         '
-        cboButtonFont.FormattingEnabled = True
-        cboButtonFont.Location = New System.Drawing.Point(72, 110)
-        cboButtonFont.Name = "cboButtonFont"
-        cboButtonFont.Size = New System.Drawing.Size(200, 21)
-        cboButtonFont.TabIndex = 2
+        Me.cboButtonFont.FormattingEnabled = True
+        Me.cboButtonFont.Location = New System.Drawing.Point(72, 110)
+        Me.cboButtonFont.Name = "cboButtonFont"
+        Me.cboButtonFont.Size = New System.Drawing.Size(200, 21)
+        Me.cboButtonFont.TabIndex = 2
         '
         'cboButtonTextSize
         '
-        cboButtonTextSize.FormattingEnabled = True
-        cboButtonTextSize.Location = New System.Drawing.Point(72, 137)
-        cboButtonTextSize.Name = "cboButtonTextSize"
-        cboButtonTextSize.Size = New System.Drawing.Size(100, 21)
-        cboButtonTextSize.TabIndex = 2
+        Me.cboButtonTextSize.FormattingEnabled = True
+        Me.cboButtonTextSize.Location = New System.Drawing.Point(72, 137)
+        Me.cboButtonTextSize.Name = "cboButtonTextSize"
+        Me.cboButtonTextSize.Size = New System.Drawing.Size(100, 21)
+        Me.cboButtonTextSize.TabIndex = 2
         '
         'lblPreview
         '
-        lblPreview.AutoSize = True
-        lblPreview.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblPreview.Location = New System.Drawing.Point(12, 169)
-        lblPreview.Name = "lblPreview"
-        lblPreview.Size = New System.Drawing.Size(48, 13)
-        lblPreview.TabIndex = 0
-        lblPreview.Text = "Preview:"
+        Me.lblPreview.AutoSize = True
+        Me.lblPreview.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblPreview.Location = New System.Drawing.Point(12, 169)
+        Me.lblPreview.Name = "lblPreview"
+        Me.lblPreview.Size = New System.Drawing.Size(48, 13)
+        Me.lblPreview.TabIndex = 0
+        Me.lblPreview.Text = "Preview:"
         '
         'cmdPreviewButton
         '
-        cmdPreviewButton.Location = New System.Drawing.Point(15, 185)
-        cmdPreviewButton.Name = "cmdPreviewButton"
-        cmdPreviewButton.Size = New System.Drawing.Size(75, 23)
-        cmdPreviewButton.TabIndex = 3
-        cmdPreviewButton.Text = "Button Text"
-        cmdPreviewButton.UseVisualStyleBackColor = True
+        Me.cmdPreviewButton.Location = New System.Drawing.Point(15, 185)
+        Me.cmdPreviewButton.Name = "cmdPreviewButton"
+        Me.cmdPreviewButton.Size = New System.Drawing.Size(75, 23)
+        Me.cmdPreviewButton.TabIndex = 3
+        Me.cmdPreviewButton.Text = "Button Text"
+        Me.cmdPreviewButton.UseVisualStyleBackColor = True
         '
         'cmdOK
         '
-        cmdOK.Location = New System.Drawing.Point(56, 259)
-        cmdOK.Name = "cmdOK"
-        cmdOK.Size = New System.Drawing.Size(75, 23)
-        cmdOK.TabIndex = 5
-        cmdOK.Text = "OK"
-        cmdOK.UseVisualStyleBackColor = True
+        Me.cmdOK.Location = New System.Drawing.Point(56, 259)
+        Me.cmdOK.Name = "cmdOK"
+        Me.cmdOK.Size = New System.Drawing.Size(75, 23)
+        Me.cmdOK.TabIndex = 5
+        Me.cmdOK.Text = "OK"
+        Me.cmdOK.UseVisualStyleBackColor = True
         '
         'cmdCancel
         '
-        cmdCancel.Location = New System.Drawing.Point(137, 259)
-        cmdCancel.Name = "cmdCancel"
-        cmdCancel.Size = New System.Drawing.Size(75, 23)
-        cmdCancel.TabIndex = 5
-        cmdCancel.Text = "Cancel"
-        cmdCancel.UseVisualStyleBackColor = True
+        Me.cmdCancel.Location = New System.Drawing.Point(137, 259)
+        Me.cmdCancel.Name = "cmdCancel"
+        Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
+        Me.cmdCancel.TabIndex = 5
+        Me.cmdCancel.Text = "Cancel"
+        Me.cmdCancel.UseVisualStyleBackColor = True
         '
         'frmConfigureButtonFormat
         '
-        AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        ClientSize = New System.Drawing.Size(284, 293)
-        ControlBox = False
-        Controls.Add(cmdCancel)
-        Controls.Add(cmdOK)
-        Controls.Add(cmdPreviewButton)
-        Controls.Add(cboButtonTextSize)
-        Controls.Add(cboButtonFont)
-        Controls.Add(txtButtonWidth)
-        Controls.Add(txtButtonHeight)
-        Controls.Add(lblButtonWidth)
-        Controls.Add(lblButtonHeight)
-        Controls.Add(lblPreview)
-        Controls.Add(lblButtonTextSize)
-        Controls.Add(lblButtonFont)
-        Controls.Add(lblButtonText)
-        Controls.Add(lblButtonSize)
-        MaximizeBox = False
-        Name = "frmConfigureButtonFormat"
-        ShowIcon = False
-        Text = "Configure Button Format"
-        ResumeLayout(False)
-        PerformLayout()
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(284, 293)
+        Me.ControlBox = False
+        Me.Controls.Add(Me.cmdCancel)
+        Me.Controls.Add(Me.cmdOK)
+        Me.Controls.Add(Me.cmdPreviewButton)
+        Me.Controls.Add(Me.cboButtonTextSize)
+        Me.Controls.Add(Me.cboButtonFont)
+        Me.Controls.Add(Me.txtButtonWidth)
+        Me.Controls.Add(Me.txtButtonHeight)
+        Me.Controls.Add(Me.lblButtonWidth)
+        Me.Controls.Add(Me.lblButtonHeight)
+        Me.Controls.Add(Me.lblPreview)
+        Me.Controls.Add(Me.lblButtonTextSize)
+        Me.Controls.Add(Me.lblButtonFont)
+        Me.Controls.Add(Me.lblButtonText)
+        Me.Controls.Add(Me.lblButtonSize)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.MaximizeBox = False
+        Me.Name = "frmConfigureButtonFormat"
+        Me.ShowIcon = False
+        Me.Text = "Configure Button Format"
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
     Friend WithEvents lblButtonSize As System.Windows.Forms.Label

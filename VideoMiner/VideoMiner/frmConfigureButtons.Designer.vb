@@ -22,116 +22,118 @@ Partial Class frmConfigureButtons
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        cmdDeleteButton = New System.Windows.Forms.Button
-        cmdEditButton = New System.Windows.Forms.Button
-        cmdCreateNewButton = New System.Windows.Forms.Button
-        cmdMoveDown = New System.Windows.Forms.Button
-        cmdMoveUp = New System.Windows.Forms.Button
-        cmdDone = New System.Windows.Forms.Button
-        lstButtons = New System.Windows.Forms.ListView
-        cmdMoveToPanel = New System.Windows.Forms.Button
-        SuspendLayout()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmConfigureButtons))
+        Me.cmdDeleteButton = New System.Windows.Forms.Button()
+        Me.cmdEditButton = New System.Windows.Forms.Button()
+        Me.cmdCreateNewButton = New System.Windows.Forms.Button()
+        Me.cmdMoveDown = New System.Windows.Forms.Button()
+        Me.cmdMoveUp = New System.Windows.Forms.Button()
+        Me.cmdDone = New System.Windows.Forms.Button()
+        Me.lstButtons = New System.Windows.Forms.ListView()
+        Me.cmdMoveToPanel = New System.Windows.Forms.Button()
+        Me.SuspendLayout()
         '
         'cmdDeleteButton
         '
-        cmdDeleteButton.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        cmdDeleteButton.Location = New System.Drawing.Point(260, 237)
-        cmdDeleteButton.Name = "cmdDeleteButton"
-        cmdDeleteButton.Size = New System.Drawing.Size(118, 30)
-        cmdDeleteButton.TabIndex = 16
-        cmdDeleteButton.Text = "Delete Button"
-        cmdDeleteButton.UseVisualStyleBackColor = True
+        Me.cmdDeleteButton.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdDeleteButton.Location = New System.Drawing.Point(260, 237)
+        Me.cmdDeleteButton.Name = "cmdDeleteButton"
+        Me.cmdDeleteButton.Size = New System.Drawing.Size(118, 30)
+        Me.cmdDeleteButton.TabIndex = 16
+        Me.cmdDeleteButton.Text = "Delete Button"
+        Me.cmdDeleteButton.UseVisualStyleBackColor = True
         '
         'cmdEditButton
         '
-        cmdEditButton.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        cmdEditButton.Location = New System.Drawing.Point(136, 237)
-        cmdEditButton.Name = "cmdEditButton"
-        cmdEditButton.Size = New System.Drawing.Size(118, 30)
-        cmdEditButton.TabIndex = 15
-        cmdEditButton.Text = "Edit Button"
-        cmdEditButton.UseVisualStyleBackColor = True
+        Me.cmdEditButton.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdEditButton.Location = New System.Drawing.Point(136, 237)
+        Me.cmdEditButton.Name = "cmdEditButton"
+        Me.cmdEditButton.Size = New System.Drawing.Size(118, 30)
+        Me.cmdEditButton.TabIndex = 15
+        Me.cmdEditButton.Text = "Edit Button"
+        Me.cmdEditButton.UseVisualStyleBackColor = True
         '
         'cmdCreateNewButton
         '
-        cmdCreateNewButton.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        cmdCreateNewButton.Location = New System.Drawing.Point(12, 237)
-        cmdCreateNewButton.Name = "cmdCreateNewButton"
-        cmdCreateNewButton.Size = New System.Drawing.Size(118, 30)
-        cmdCreateNewButton.TabIndex = 14
-        cmdCreateNewButton.Text = "Create New Button"
-        cmdCreateNewButton.UseVisualStyleBackColor = True
+        Me.cmdCreateNewButton.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdCreateNewButton.Location = New System.Drawing.Point(12, 237)
+        Me.cmdCreateNewButton.Name = "cmdCreateNewButton"
+        Me.cmdCreateNewButton.Size = New System.Drawing.Size(118, 30)
+        Me.cmdCreateNewButton.TabIndex = 14
+        Me.cmdCreateNewButton.Text = "Create New Button"
+        Me.cmdCreateNewButton.UseVisualStyleBackColor = True
         '
         'cmdMoveDown
         '
-        cmdMoveDown.Font = New System.Drawing.Font("Calibri", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        cmdMoveDown.Location = New System.Drawing.Point(288, 143)
-        cmdMoveDown.Name = "cmdMoveDown"
-        cmdMoveDown.Size = New System.Drawing.Size(90, 23)
-        cmdMoveDown.TabIndex = 13
-        cmdMoveDown.Text = "Move Down"
-        cmdMoveDown.UseVisualStyleBackColor = True
+        Me.cmdMoveDown.Font = New System.Drawing.Font("Calibri", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdMoveDown.Location = New System.Drawing.Point(288, 143)
+        Me.cmdMoveDown.Name = "cmdMoveDown"
+        Me.cmdMoveDown.Size = New System.Drawing.Size(90, 23)
+        Me.cmdMoveDown.TabIndex = 13
+        Me.cmdMoveDown.Text = "Move Down"
+        Me.cmdMoveDown.UseVisualStyleBackColor = True
         '
         'cmdMoveUp
         '
-        cmdMoveUp.Font = New System.Drawing.Font("Calibri", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        cmdMoveUp.Location = New System.Drawing.Point(288, 102)
-        cmdMoveUp.Name = "cmdMoveUp"
-        cmdMoveUp.Size = New System.Drawing.Size(90, 23)
-        cmdMoveUp.TabIndex = 12
-        cmdMoveUp.Text = "Move Up"
-        cmdMoveUp.UseVisualStyleBackColor = True
+        Me.cmdMoveUp.Font = New System.Drawing.Font("Calibri", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdMoveUp.Location = New System.Drawing.Point(288, 102)
+        Me.cmdMoveUp.Name = "cmdMoveUp"
+        Me.cmdMoveUp.Size = New System.Drawing.Size(90, 23)
+        Me.cmdMoveUp.TabIndex = 12
+        Me.cmdMoveUp.Text = "Move Up"
+        Me.cmdMoveUp.UseVisualStyleBackColor = True
         '
         'cmdDone
         '
-        cmdDone.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        cmdDone.Location = New System.Drawing.Point(136, 293)
-        cmdDone.Name = "cmdDone"
-        cmdDone.Size = New System.Drawing.Size(118, 47)
-        cmdDone.TabIndex = 11
-        cmdDone.Text = "Done"
-        cmdDone.UseVisualStyleBackColor = True
+        Me.cmdDone.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdDone.Location = New System.Drawing.Point(136, 293)
+        Me.cmdDone.Name = "cmdDone"
+        Me.cmdDone.Size = New System.Drawing.Size(118, 47)
+        Me.cmdDone.TabIndex = 11
+        Me.cmdDone.Text = "Done"
+        Me.cmdDone.UseVisualStyleBackColor = True
         '
         'lstButtons
         '
-        lstButtons.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lstButtons.FullRowSelect = True
-        lstButtons.HideSelection = False
-        lstButtons.Location = New System.Drawing.Point(12, 48)
-        lstButtons.MultiSelect = False
-        lstButtons.Name = "lstButtons"
-        lstButtons.Size = New System.Drawing.Size(270, 183)
-        lstButtons.TabIndex = 10
-        lstButtons.UseCompatibleStateImageBehavior = False
-        lstButtons.View = System.Windows.Forms.View.Details
+        Me.lstButtons.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lstButtons.FullRowSelect = True
+        Me.lstButtons.HideSelection = False
+        Me.lstButtons.Location = New System.Drawing.Point(12, 48)
+        Me.lstButtons.MultiSelect = False
+        Me.lstButtons.Name = "lstButtons"
+        Me.lstButtons.Size = New System.Drawing.Size(270, 183)
+        Me.lstButtons.TabIndex = 10
+        Me.lstButtons.UseCompatibleStateImageBehavior = False
+        Me.lstButtons.View = System.Windows.Forms.View.Details
         '
         'cmdMoveToPanel
         '
-        cmdMoveToPanel.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        cmdMoveToPanel.Location = New System.Drawing.Point(12, 12)
-        cmdMoveToPanel.Name = "cmdMoveToPanel"
-        cmdMoveToPanel.Size = New System.Drawing.Size(270, 30)
-        cmdMoveToPanel.TabIndex = 14
-        cmdMoveToPanel.UseVisualStyleBackColor = True
+        Me.cmdMoveToPanel.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cmdMoveToPanel.Location = New System.Drawing.Point(12, 12)
+        Me.cmdMoveToPanel.Name = "cmdMoveToPanel"
+        Me.cmdMoveToPanel.Size = New System.Drawing.Size(270, 30)
+        Me.cmdMoveToPanel.TabIndex = 14
+        Me.cmdMoveToPanel.UseVisualStyleBackColor = True
         '
         'frmConfigureButtons
         '
-        AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        ClientSize = New System.Drawing.Size(395, 397)
-        Controls.Add(cmdDeleteButton)
-        Controls.Add(cmdEditButton)
-        Controls.Add(cmdMoveToPanel)
-        Controls.Add(cmdCreateNewButton)
-        Controls.Add(cmdMoveDown)
-        Controls.Add(cmdMoveUp)
-        Controls.Add(cmdDone)
-        Controls.Add(lstButtons)
-        MaximizeBox = False
-        MinimizeBox = False
-        Name = "frmConfigureButtons"
-        Text = "Configure Buttons"
-        ResumeLayout(False)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(395, 397)
+        Me.Controls.Add(Me.cmdDeleteButton)
+        Me.Controls.Add(Me.cmdEditButton)
+        Me.Controls.Add(Me.cmdMoveToPanel)
+        Me.Controls.Add(Me.cmdCreateNewButton)
+        Me.Controls.Add(Me.cmdMoveDown)
+        Me.Controls.Add(Me.cmdMoveUp)
+        Me.Controls.Add(Me.cmdDone)
+        Me.Controls.Add(Me.lstButtons)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "frmConfigureButtons"
+        Me.Text = "Configure Buttons"
+        Me.ResumeLayout(False)
 
     End Sub
     Friend WithEvents cmdDeleteButton As System.Windows.Forms.Button

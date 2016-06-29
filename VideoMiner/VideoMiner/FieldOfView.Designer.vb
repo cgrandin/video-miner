@@ -22,6 +22,7 @@ Partial Class frmFOV
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmFOV))
         Me.txtFOV = New System.Windows.Forms.TextBox()
         Me.lblFOV = New System.Windows.Forms.Label()
         Me.btnCancel = New System.Windows.Forms.Button()
@@ -74,6 +75,7 @@ Partial Class frmFOV
         Me.Controls.Add(Me.btnOK)
         Me.Controls.Add(Me.txtFOV)
         Me.Controls.Add(Me.lblFOV)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "frmFOV"
         Me.Text = "Field Of View"
         Me.ResumeLayout(False)

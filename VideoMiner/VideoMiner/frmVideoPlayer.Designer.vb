@@ -49,6 +49,7 @@ Partial Class frmVideoPlayer
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(710, 584)
         Me.Controls.Add(Me.plyrVideoPlayer)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.KeyPreview = True
         Me.MinimizeBox = False
         Me.Name = "frmVideoPlayer"
