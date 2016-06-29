@@ -168,7 +168,7 @@ Public Class frmImage
         ' Set up and run the EXIF tool for the file selected
         Dim strExeDirname As String = GetDirectoryName(System.Windows.Forms.Application.ExecutablePath.ToString())
         Dim strCommand As String = Combine(strExeDirname, EXIF_FILE_NAME)
-        Dim strArguments As String = String.Concat(EXIF_ARGS, Combine(m_strImagePath, m_strImageFile))
+        Dim strArguments As String = String.Concat(EXIF_ARGS, m_strImageFile)
         Dim oProcess As New Process()
         Dim oStartInfo As New ProcessStartInfo(strCommand)
         oStartInfo.Arguments = strArguments
@@ -484,12 +484,21 @@ Public Class frmImage
         Select Case keyPressed
             Case Keys.Right
                 m_intImageIndex += 1
+                If m_intImageIndex > m_lstImageFiles.Count - 1 Then
+                    m_intImageIndex = 0
+                End If
                 LoadImage()
             Case Keys.Left
                 m_intImageIndex -= 1
+                If m_intImageIndex < 0 Then
+                    m_intImageIndex = m_lstImageFiles.Count - 1
+                End If
                 LoadImage()
         End Select
         Return MyBase.ProcessCmdKey(msg, keyData)
     End Function
 
+    Private Sub EXIFDataToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EXIFDataToolStripMenuItem.Click
+
+    End Sub
 End Class

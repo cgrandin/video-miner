@@ -20,15 +20,18 @@ Partial Class frmImage
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
+        Me.ZoomPictureBox1 = New ZPBlib.ZoomPictureBox()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.btnPrev = New System.Windows.Forms.Button()
         Me.btnNext = New System.Windows.Forms.Button()
-        Me.ZoomPictureBox1 = New ZPBlib.ZoomPictureBox()
+        Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
+        Me.EXIFDataToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
+        Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'SplitContainer1
@@ -42,6 +45,7 @@ Partial Class frmImage
         'SplitContainer1.Panel1
         '
         Me.SplitContainer1.Panel1.Controls.Add(Me.ZoomPictureBox1)
+        Me.SplitContainer1.Panel1.Controls.Add(Me.MenuStrip1)
         '
         'SplitContainer1.Panel2
         '
@@ -49,6 +53,24 @@ Partial Class frmImage
         Me.SplitContainer1.Size = New System.Drawing.Size(701, 763)
         Me.SplitContainer1.SplitterDistance = 680
         Me.SplitContainer1.TabIndex = 9
+        '
+        'ZoomPictureBox1
+        '
+        Me.ZoomPictureBox1.BackColor = System.Drawing.Color.Black
+        Me.ZoomPictureBox1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ZoomPictureBox1.EnableMouseDragging = True
+        Me.ZoomPictureBox1.EnableMouseWheelZooming = True
+        Me.ZoomPictureBox1.Image = Nothing
+        Me.ZoomPictureBox1.ImagePosition = New System.Drawing.Point(0, 0)
+        Me.ZoomPictureBox1.Location = New System.Drawing.Point(0, 24)
+        Me.ZoomPictureBox1.MaximumZoomFactor = 64.0R
+        Me.ZoomPictureBox1.MinimumImageHeight = 10
+        Me.ZoomPictureBox1.MinimumImageWidth = 10
+        Me.ZoomPictureBox1.MouseWheelDivisor = 4000
+        Me.ZoomPictureBox1.Name = "ZoomPictureBox1"
+        Me.ZoomPictureBox1.Size = New System.Drawing.Size(701, 656)
+        Me.ZoomPictureBox1.TabIndex = 1
+        Me.ZoomPictureBox1.ZoomFactor = 0R
         '
         'TableLayoutPanel1
         '
@@ -88,23 +110,20 @@ Partial Class frmImage
         Me.btnNext.Text = ">"
         Me.btnNext.UseVisualStyleBackColor = True
         '
-        'ZoomPictureBox1
+        'MenuStrip1
         '
-        Me.ZoomPictureBox1.BackColor = System.Drawing.Color.Black
-        Me.ZoomPictureBox1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ZoomPictureBox1.EnableMouseDragging = True
-        Me.ZoomPictureBox1.EnableMouseWheelZooming = True
-        Me.ZoomPictureBox1.Image = Nothing
-        Me.ZoomPictureBox1.ImagePosition = New System.Drawing.Point(0, 0)
-        Me.ZoomPictureBox1.Location = New System.Drawing.Point(0, 0)
-        Me.ZoomPictureBox1.MaximumZoomFactor = 64.0R
-        Me.ZoomPictureBox1.MinimumImageHeight = 10
-        Me.ZoomPictureBox1.MinimumImageWidth = 10
-        Me.ZoomPictureBox1.MouseWheelDivisor = 4000
-        Me.ZoomPictureBox1.Name = "ZoomPictureBox1"
-        Me.ZoomPictureBox1.Size = New System.Drawing.Size(701, 680)
-        Me.ZoomPictureBox1.TabIndex = 1
-        Me.ZoomPictureBox1.ZoomFactor = 0R
+        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EXIFDataToolStripMenuItem})
+        Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
+        Me.MenuStrip1.Name = "MenuStrip1"
+        Me.MenuStrip1.Size = New System.Drawing.Size(701, 24)
+        Me.MenuStrip1.TabIndex = 2
+        Me.MenuStrip1.Text = "MenuStrip1"
+        '
+        'EXIFDataToolStripMenuItem
+        '
+        Me.EXIFDataToolStripMenuItem.Name = "EXIFDataToolStripMenuItem"
+        Me.EXIFDataToolStripMenuItem.Size = New System.Drawing.Size(67, 20)
+        Me.EXIFDataToolStripMenuItem.Text = "EXIF data"
         '
         'frmImage
         '
@@ -114,14 +133,18 @@ Partial Class frmImage
         Me.ClientSize = New System.Drawing.Size(701, 763)
         Me.Controls.Add(Me.SplitContainer1)
         Me.KeyPreview = True
+        Me.MainMenuStrip = Me.MenuStrip1
         Me.Name = "frmImage"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
         Me.Text = "frmImage"
         Me.SplitContainer1.Panel1.ResumeLayout(False)
+        Me.SplitContainer1.Panel1.PerformLayout()
         Me.SplitContainer1.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer1.ResumeLayout(False)
         Me.TableLayoutPanel1.ResumeLayout(False)
+        Me.MenuStrip1.ResumeLayout(False)
+        Me.MenuStrip1.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -130,4 +153,6 @@ Partial Class frmImage
     Friend WithEvents btnPrev As Button
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents ZoomPictureBox1 As ZPBlib.ZoomPictureBox
+    Friend WithEvents MenuStrip1 As MenuStrip
+    Friend WithEvents EXIFDataToolStripMenuItem As ToolStripMenuItem
 End Class
