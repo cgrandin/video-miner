@@ -114,33 +114,29 @@ Public Class frmImage
         '        txtDateSource.BackColor = Color.LightGray
         '        txtDateSource.ForeColor = Color.LimeGreen
         '        txtDateSource.TextAlign = HorizontalAlignment.Center
-
-        ' Disable the buttons depending on what the image list holds.
-        ' This method ensures that all cases are covered, eg: a single file
-        ' in a directory should prompt these buttons to both be greyed out.
-        btnPrev.Enabled = True
-        btnNext.Enabled = True
-        If m_intImageIndex = 0 Then
-            btnPrev.Enabled = False
-        End If
-        If m_intImageIndex = m_lstImageFiles.Count - 1 Then
-            btnNext.Enabled = False
-        End If
     End Sub
 
     ''' <summary>
-    ''' Go back to the previous picture in the current image directory.
+    ''' Go back to the previous picture in the current image directory. If currently on the first picture,
+    ''' wrap back to last picture.
     ''' </summary>
     Private Sub btnPrev_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPrev.Click
         m_intImageIndex -= 1
+        If m_intImageIndex < 0 Then
+            m_intImageIndex = m_lstImageFiles.Count - 1
+        End If
         LoadImage()
     End Sub
 
     ''' <summary>
-    ''' Go forward to the next picture in the current image directory.
+    ''' Go forward to the next picture in the current image directory. If currently on the last picture,
+    ''' wrap to the first picture.
     ''' </summary>
     Private Sub btnNext_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnNext.Click
         m_intImageIndex += 1
+        If m_intImageIndex > m_lstImageFiles.Count - 1 Then
+            m_intImageIndex = 0
+        End If
         LoadImage()
     End Sub
 
@@ -366,7 +362,6 @@ Public Class frmImage
         'End If
         'End If
     End Sub
-
 
     Private Sub frmImage_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         RaiseEvent ImageFormClosingEvent()
