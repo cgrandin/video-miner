@@ -120,6 +120,20 @@ Public Class frmImage
     End Sub
 
     ''' <summary>
+    ''' Go back previous 10 pictures in the current image direcctory. If this spans the first
+    ''' picture, it will wrap back to the last photos.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub btnPrev10_Click(sender As Object, e As EventArgs) Handles btnPrev10.Click
+        m_intImageIndex -= 10
+        If m_intImageIndex < 0 Then
+            m_intImageIndex = m_lstImageFiles.Count + m_intImageIndex
+        End If
+        LoadImage()
+    End Sub
+
+    ''' <summary>
     ''' Go back to the previous picture in the current image directory. If currently on the first picture,
     ''' wrap back to last picture.
     ''' </summary>
@@ -139,6 +153,20 @@ Public Class frmImage
         m_intImageIndex += 1
         If m_intImageIndex > m_lstImageFiles.Count - 1 Then
             m_intImageIndex = 0
+        End If
+        LoadImage()
+    End Sub
+
+    ''' <summary>
+    ''' Go forward 10 pictures in the current image direcctory. If this spans the last
+    ''' picture, it will wrap back to the first photos.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub btnNext10_Click(sender As Object, e As EventArgs) Handles btnNext10.Click
+        m_intImageIndex += 10
+        If m_intImageIndex > m_lstImageFiles.Count - 1 Then
+            m_intImageIndex = m_intImageIndex - m_lstImageFiles.Count
         End If
         LoadImage()
     End Sub
@@ -512,4 +540,5 @@ Public Class frmImage
         m_frmEXIFViewer.Dispose()
         m_frmEXIFViewer = Nothing
     End Sub
+
 End Class

@@ -26,7 +26,9 @@ Partial Class frmImage
         Me.EXIFDataToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.btnPrev = New System.Windows.Forms.Button()
+        Me.btnPrev10 = New System.Windows.Forms.Button()
         Me.btnNext = New System.Windows.Forms.Button()
+        Me.btnNext10 = New System.Windows.Forms.Button()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
@@ -90,17 +92,20 @@ Partial Class frmImage
         '
         'TableLayoutPanel1
         '
-        Me.TableLayoutPanel1.ColumnCount = 2
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.ColumnCount = 4
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15.0!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35.0!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35.0!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15.0!))
         Me.TableLayoutPanel1.Controls.Add(Me.btnPrev, 0, 0)
         Me.TableLayoutPanel1.Controls.Add(Me.btnNext, 1, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.btnPrev10, 0, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.btnNext10, 3, 0)
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 1
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TableLayoutPanel1.Size = New System.Drawing.Size(701, 79)
         Me.TableLayoutPanel1.TabIndex = 0
         '
@@ -108,12 +113,23 @@ Partial Class frmImage
         '
         Me.btnPrev.Dock = System.Windows.Forms.DockStyle.Fill
         Me.btnPrev.Font = New System.Drawing.Font("Microsoft Sans Serif", 48.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnPrev.Location = New System.Drawing.Point(3, 3)
+        Me.btnPrev.Location = New System.Drawing.Point(108, 3)
         Me.btnPrev.Name = "btnPrev"
-        Me.btnPrev.Size = New System.Drawing.Size(344, 73)
+        Me.btnPrev.Size = New System.Drawing.Size(239, 73)
         Me.btnPrev.TabIndex = 0
         Me.btnPrev.Text = "<"
         Me.btnPrev.UseVisualStyleBackColor = True
+        '
+        'btnPrev10
+        '
+        Me.btnPrev10.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.btnPrev10.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnPrev10.Location = New System.Drawing.Point(3, 3)
+        Me.btnPrev10.Name = "btnPrev10"
+        Me.btnPrev10.Size = New System.Drawing.Size(99, 73)
+        Me.btnPrev10.TabIndex = 3
+        Me.btnPrev10.Text = "<<10"
+        Me.btnPrev10.UseVisualStyleBackColor = True
         '
         'btnNext
         '
@@ -121,10 +137,21 @@ Partial Class frmImage
         Me.btnNext.Font = New System.Drawing.Font("Microsoft Sans Serif", 48.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnNext.Location = New System.Drawing.Point(353, 3)
         Me.btnNext.Name = "btnNext"
-        Me.btnNext.Size = New System.Drawing.Size(345, 73)
+        Me.btnNext.Size = New System.Drawing.Size(239, 73)
         Me.btnNext.TabIndex = 1
         Me.btnNext.Text = ">"
         Me.btnNext.UseVisualStyleBackColor = True
+        '
+        'btnNext10
+        '
+        Me.btnNext10.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.btnNext10.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnNext10.Location = New System.Drawing.Point(598, 3)
+        Me.btnNext10.Name = "btnNext10"
+        Me.btnNext10.Size = New System.Drawing.Size(100, 73)
+        Me.btnNext10.TabIndex = 2
+        Me.btnNext10.Text = ">>10"
+        Me.btnNext10.UseVisualStyleBackColor = True
         '
         'frmImage
         '
@@ -157,4 +184,6 @@ Partial Class frmImage
     Friend WithEvents ZoomPictureBox1 As ZPBlib.ZoomPictureBox
     Friend WithEvents MenuStrip1 As MenuStrip
     Friend WithEvents EXIFDataToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents btnPrev10 As Button
+    Friend WithEvents btnNext10 As Button
 End Class
