@@ -92,7 +92,14 @@ Public Class frmImage
     ''' </summary>
     Private Sub LoadImage()
         m_strImageFile = m_lstImageFiles.Item(m_intImageIndex)
-        ZoomPictureBox1.Image = Image.FromFile(m_strImageFile)
+        Try
+            ZoomPictureBox1.Image = Image.FromFile(m_strImageFile)
+        Catch ex As Exception
+            MessageBox.Show("Error loading the file (" & m_strImageFile & "). Remove this file from the directory and try again. The error message was:" & vbCrLf & vbCrLf & ex.Message,
+                            "Error loading image", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+            Exit Sub
+        End Try
         Text = m_strImageFile & " (" & m_intImageIndex + 1 & " of " & m_lstImageFiles.Count & ")"
         getEXIFData()
         If Not m_frmEXIFViewer Is Nothing Then
@@ -128,7 +135,11 @@ Public Class frmImage
     Private Sub btnPrev10_Click(sender As Object, e As EventArgs) Handles btnPrev10.Click
         m_intImageIndex -= 10
         If m_intImageIndex < 0 Then
-            m_intImageIndex = m_lstImageFiles.Count + m_intImageIndex
+            If m_lstImageFiles.Count <= 10 Then
+                m_intImageIndex = 0
+            Else
+                m_intImageIndex = m_lstImageFiles.Count + m_intImageIndex
+            End If
         End If
         LoadImage()
     End Sub
@@ -166,7 +177,11 @@ Public Class frmImage
     Private Sub btnNext10_Click(sender As Object, e As EventArgs) Handles btnNext10.Click
         m_intImageIndex += 10
         If m_intImageIndex > m_lstImageFiles.Count - 1 Then
-            m_intImageIndex = m_intImageIndex - m_lstImageFiles.Count
+            If m_lstImageFiles.Count <= 10 Then
+                m_intImageIndex = m_lstImageFiles.Count - 1
+            Else
+                m_intImageIndex = m_intImageIndex - m_lstImageFiles.Count
+            End If
         End If
         LoadImage()
     End Sub
