@@ -30,28 +30,31 @@ Public Class frmImage
     ''' </summary>
     Private m_dictEXIF As Dictionary(Of String, String)
     ''' <summary>
-    ''' The factor for zooming; The mousewheel delta (typically +/-120) for a single
-    ''' wheel notch will be divided by this number and the result will be used as the
-    ''' multiplier for the zooming operation. Higher number means lower zoom scale.
+    ''' The form which shows the EXIF data for the currently displayed image
     ''' </summary>
-    Private m_intZoomFactor As Integer = 100
+    Private WithEvents m_frmEXIFViewer As frmEXIFViewer
 
-    Private ptPanStartPoint As New Point
-    Event ImageFormClosingEvent()
+    Public Event ImageFormClosingEvent()
+
+    ''' <summary>
+    ''' A dictionary of key value pairs (String, String) for all the exif data
+    ''' associated with the currently-displayed image.
+    ''' </summary>
+    Public ReadOnly Property EXIFDictionary As Dictionary(Of String, String)
+        Get
+            Return m_dictEXIF
+        End Get
+    End Property
 
     ''' <summary>
     ''' Set up the image file to start with and it's path.
     ''' Sets up the indexing so that when LoadImage() is called
-    ''' everything will work without further error checks.
+    ''' everything will work without needing further error checks.
     ''' </summary>
     ''' <param name="strFilePath">The full path to the image</param>
     ''' <param name="strFileName">The filename of the image without path information</param>
     Public Sub New(strFilePath As String, strFileName As String)
         InitializeComponent()
-
-        ' Double-buffering. Trying to reduce flickering on zooms.
-        SetStyle(ControlStyles.AllPaintingInWmPaint, True)
-        SetStyle(ControlStyles.DoubleBuffer, True)
 
         m_strImagePath = strFilePath
         m_strImageFile = Combine(m_strImagePath, strFileName)
@@ -90,11 +93,11 @@ Public Class frmImage
     Private Sub LoadImage()
         m_strImageFile = m_lstImageFiles.Item(m_intImageIndex)
         ZoomPictureBox1.Image = Image.FromFile(m_strImageFile)
-
         Text = m_strImageFile & " (" & m_intImageIndex + 1 & " of " & m_lstImageFiles.Count & ")"
         getEXIFData()
-
-        '        ' TODO: Fix next line, I added a dim in there to make it compile
+        If Not m_frmEXIFViewer Is Nothing Then
+            m_frmEXIFViewer.ReloadData(m_dictEXIF)
+        End If
         '        Dim strTimeDateSource As String = "EXIF"
         '        intTimeSource = 3
         '        txtTimeSource.Text = strTimeDateSource
@@ -499,6 +502,14 @@ Public Class frmImage
     End Function
 
     Private Sub EXIFDataToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EXIFDataToolStripMenuItem.Click
+        If m_frmEXIFViewer Is Nothing Then
+            m_frmEXIFViewer = New frmEXIFViewer(m_dictEXIF, RectangleToScreen(ClientRectangle))
+        End If
+        m_frmEXIFViewer.Show()
+    End Sub
 
+    Private Sub frmEXIFViewerClosing() Handles m_frmEXIFViewer.EXIFViewerClosingEvent
+        m_frmEXIFViewer.Dispose()
+        m_frmEXIFViewer = Nothing
     End Sub
 End Class

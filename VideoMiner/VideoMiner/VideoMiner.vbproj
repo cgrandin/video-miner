@@ -269,6 +269,12 @@
     <Compile Include="frmEditLookupTable.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmEXIFViewer.Designer.vb">
+      <DependentUpon>frmEXIFViewer.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmEXIFViewer.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmKeyboardCommands.Designer.vb">
       <DependentUpon>frmKeyboardCommands.vb</DependentUpon>
     </Compile>
@@ -425,6 +431,9 @@
     <EmbeddedResource Include="frmDeviceControl.resx">
       <DependentUpon>frmDeviceControl.vb</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmEXIFViewer.resx">
+      <DependentUpon>frmEXIFViewer.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmKeyboardCommands.resx">
       <DependentUpon>frmKeyboardCommands.vb</DependentUpon>
