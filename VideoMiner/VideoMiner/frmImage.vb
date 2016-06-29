@@ -193,7 +193,7 @@ Public Class frmImage
     Private Sub ZoomPictureBox1_Paint(ByVal sender As Object, ByVal e As System.Windows.Forms.PaintEventArgs) Handles ZoomPictureBox1.Paint
         Dim g As Graphics = e.Graphics
         g.DrawString(m_intImageIndex + 1 & " of " & m_lstImageFiles.Count,
-            New Font("Arial", 14), Brushes.Red, New PointF(30.0F, 30.0F))
+            New Font("Arial", 16), Brushes.Red, New PointF(30.0F, 30.0F))
         ' Example of how to draw a line in the ZoomPictureBox.
         'g.DrawLine(System.Drawing.Pens.Red, ZoomPictureBox1.Left,
         ' ZoomPictureBox1.Top, ZoomPictureBox1.Right, ZoomPictureBox1.Bottom)
@@ -410,6 +410,10 @@ Public Class frmImage
     End Sub
 
     Private Sub frmImage_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+        If Not m_frmEXIFViewer Is Nothing Then
+            m_frmEXIFViewer.Close()
+            m_frmEXIFViewer = Nothing
+        End If
         RaiseEvent ImageFormClosingEvent()
     End Sub
 
