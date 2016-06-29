@@ -1,4 +1,6 @@
 Imports Microsoft.Win32
+Imports VideoMiner
+
 Public Class Point
 
 #Region "Fields"

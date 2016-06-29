@@ -30,9 +30,11 @@ Public Class frmImage
     ''' </summary>
     Private m_dictEXIF As Dictionary(Of String, String)
     ''' <summary>
-    ''' The factor for zooming; The mousewheel delta will be divided by this number.
+    ''' The factor for zooming; The mousewheel delta (typically +/-120) for a single
+    ''' wheel notch will be divided by this number and the result will be used as the
+    ''' multiplier for the zooming operation. Higher number means lower zoom scale.
     ''' </summary>
-    Private m_intZoomFactor As Integer = 10
+    Private m_intZoomFactor As Integer = 100
 
     Private ptPanStartPoint As New Point
     Event ImageFormClosingEvent()
@@ -87,8 +89,8 @@ Public Class frmImage
     ''' </summary>
     Private Sub LoadImage()
         m_strImageFile = m_lstImageFiles.Item(m_intImageIndex)
-        PictureBox1.Image = Image.FromFile(m_strImageFile)
-        ScaleImage()
+        ZoomPictureBox1.Image = Image.FromFile(m_strImageFile)
+        'ScaleImage()
 
         Text = m_strImageFile & " (" & m_intImageIndex + 1 & " of " & m_lstImageFiles.Count & ")"
         getEXIFData()
@@ -131,20 +133,20 @@ Public Class frmImage
         '        ' Display the image in the picture box.
         '        'Dim bmp As Bitmap = New Bitmap(Image.FromFile(currentImage), w, h)
         '        'Dim g As Graphics = Graphics.FromImage(bmp)
-        '        'frmImage.PictureBox1.Image.Dispose()
-        '        'frmImage.PictureBox1.Image = Nothing
+        '        'frmImage.ZoomPictureBox1.Image.Dispose()
+        '        'frmImage.ZoomPictureBox1.Image = Nothing
         '        'GC.Collect()
-        '        'frmImage.PictureBox1.Image = bmp
+        '        'frmImage.ZoomPictureBox1.Image = bmp
         '        'frmImage.Text = Me.fileNames(m_intImageIndex)
         '        'blSizeChanged = True
-        '        frmImage.PictureBox1.Image.Dispose()
-        '        frmImage.PictureBox1.Image = Nothing
+        '        frmImage.ZoomPictureBox1.Image.Dispose()
+        '        frmImage.ZoomPictureBox1.Image = Nothing
         '        GC.Collect()
 
         '        Dim Dir As String = m_lstImageFiles(m_intImageIndex)
         '        Dim bmp As Bitmap = New Bitmap(Image.FromFile(Dir), w, h)
         '        Dim g As Graphics = Graphics.FromImage(bmp)
-        '        frmImage.PictureBox1.Image = bmp
+        '        frmImage.ZoomPictureBox1.Image = bmp
         '        frmImage.Text = m_lstImageFiles(m_intImageIndex)
         '        VideoFileName = m_lstImageFiles(m_intImageIndex)
         '        currentImage = m_lstImageFiles(m_intImageIndex)
@@ -202,7 +204,18 @@ Public Class frmImage
         LoadImage()
     End Sub
 
-    Private Sub pictureBox1_Paint(ByVal sender As Object, ByVal e As System.Windows.Forms.PaintEventArgs) Handles PictureBox1.Paint
+    Public Sub ZoomImage(ByRef ZoomValue As Integer)
+        'Create a new image based on the zoom parameters we require
+        Dim zoomImage As New Bitmap(ZoomPictureBox1.Image,
+                                    CInt(ZoomPictureBox1.Image.Width * ZoomValue / 100),
+                                    CInt(ZoomPictureBox1.Image.Height * ZoomValue / 100))
+        Dim converted As Graphics = Graphics.FromImage(zoomImage)
+        converted.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+        ZoomPictureBox1.Image = Nothing
+        ZoomPictureBox1.Image = zoomImage
+    End Sub
+
+    Private Sub ZoomPictureBox1_Paint(ByVal sender As Object, ByVal e As System.Windows.Forms.PaintEventArgs)
         'Whenever the 
         ' Create a local version of the graphics object for the PictureBox.
 
@@ -211,50 +224,49 @@ Public Class frmImage
         'g.DrawString("This is a diagonal line drawn on the control",
         'New Font("Arial", 10), Brushes.Red, New PointF(30.0F, 30.0F))
         ' Draw a line in the PictureBox.
-        'g.DrawLine(System.Drawing.Pens.Red, PictureBox1.Left,
-        ' PictureBox1.Top, PictureBox1.Right, PictureBox1.Bottom)
+        'g.DrawLine(System.Drawing.Pens.Red, ZoomPictureBox1.Left,
+        ' ZoomPictureBox1.Top, ZoomPictureBox1.Right, ZoomPictureBox1.Bottom)
     End Sub
 
     ''' <summary>
     ''' Required to make the mouse wheel zooming work
     ''' </summary>
-    Private Sub PictureBox1_MouseEnter(ByVal sender As Object, ByVal e As System.EventArgs) Handles PictureBox1.MouseEnter
-        PictureBox1.Focus()
-    End Sub
+    'Private Sub ZoomPictureBox1_MouseEnter(ByVal sender As Object, ByVal e As System.EventArgs)
+    '    ZoomPictureBox1.Focus()
+    'End Sub
 
-    Private Sub PictureBox_MouseWheel(ByVal sender As System.Object, ByVal e As MouseEventArgs) Handles PictureBox1.MouseWheel
-        ' Get current mouse position reletive to the picturebox
-        Dim pntMousePosition As Drawing.Point = MousePosition
-        ' Set up the new bounds of the picture, based on the e.Delta value
-        ' which is how much the wheel was moved
+    'Private Sub PictureBox_MouseWheel(ByVal sender As System.Object, ByVal e As MouseEventArgs)
+    'ZoomPictureBox1.Size = New Drawing.Size(ZoomPictureBox1.Width + e.Delta / 10, ZoomPictureBox1.Height + e.Delta / 10)
+    'ZoomPictureBox1.Location = New Drawing.Point(Control.MousePosition.X - ZoomPictureBox1.Width / 2, Control.MousePosition.Y - ZoomPictureBox1.Height / 2)
+    ' Get current mouse position reletive to the picturebox
+    'Dim pntMousePosition As Drawing.Point = MousePosition
+    ' Set up the new bounds of the picture, based on the e.Delta value
+    ' which is how much the wheel was moved
+    'Dim intZoomFactor As Integer
+    'If e.Delta < 0 Then
+    '       intZoomFactor = Math.Floor(-e.Delta * 3)
+    'Else
+    '       intZoomFactor = Math.Floor(e.Delta / 3)
+    'End If
+    '   ZoomImage(intZoomFactor)
+    'SplitContainer1.Panel1.AutoScroll = False
+    'SplitContainer1.Panel1.AutoScroll = True
+    'End Sub
 
-        'Dim ZoomFactor As Double = ZoomFactor + (e.Delta / 10)
-        'SplitContainer1.Panel1.AutoScroll = False
-        'SplitContainer1.Panel1.AutoScroll = True
-    End Sub
-
+    ''' <summary>
+    ''' Scale the image to fit in the Picturebox. Preserves aspect ratio
+    ''' while maximizing the size of the picture in the Picturebox.
+    ''' </summary>
     Private Sub ScaleImage()
-        Dim imageSize As Size = PictureBox1.Image.Size
+        Dim imageSize As Size = ZoomPictureBox1.Image.Size
         ' Dim aspectRatio As Double = imageSize.Height / imageSize.Width
-        Dim dblScaleHeight As Double = PictureBox1.Height / imageSize.Height
-        Dim dblScaleWidth As Double = PictureBox1.Width / imageSize.Width
+        Dim dblScaleHeight As Double = ZoomPictureBox1.Height / imageSize.Height
+        Dim dblScaleWidth As Double = ZoomPictureBox1.Width / imageSize.Width
         Dim dblScale As Double = Math.Min(dblScaleHeight, dblScaleWidth)
         Dim intNewHeight As Integer = Math.Floor(imageSize.Height * dblScale)
         Dim intNewWidth As Integer = Math.Floor(imageSize.Width * dblScale)
-        Dim bmpResized As Bitmap = New Bitmap(PictureBox1.Image, New Size(intNewWidth, intNewHeight))
-        PictureBox1.Image = bmpResized
-
-        'If imageSize.Height > PictureBox1.Height Then
-        '    Dim diff As Integer = imageSize.Height - PictureBox1.Height
-        '    Dim bmpResized As Bitmap = New Bitmap(imageSize, New Size(imageSize.Width - diff, imageSize.Height - diff))
-        '    PictureBox1.Image = bmpResized
-        'End If
-        'If i.Width > PictureBox1.Width Then
-        '    Dim diff As Integer = i.Width - PictureBox1.Width
-        '    Dim Resized As Bitmap = New Bitmap(i, New Size(i.Width - diff, i.Height - diff))
-        '    i = Resized
-        'End If
-        'PictureBox1.Width = Convert.ToInt32(Math.Round(Me.PictureBox1.Height / aspectRatio))
+        Dim bmpResized As Bitmap = New Bitmap(ZoomPictureBox1.Image, New Size(intNewWidth, intNewHeight))
+        ZoomPictureBox1.Image = bmpResized
     End Sub
 
     ''' <summary>
@@ -467,11 +479,11 @@ Public Class frmImage
         'End If
     End Sub
 
-    Private Sub PictureBox1_MouseDown(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
+    Private Sub ZoomPictureBox1_MouseDown(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
         ptPanStartPoint = New Point(e.X, e.Y)
     End Sub
 
-    Private Sub PictureBox1_MouseMove(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
+    Private Sub ZoomPictureBox1_MouseMove(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
         If e.Button = Windows.Forms.MouseButtons.Left Then
             Dim DeltaX As Integer = (ptPanStartPoint.X - e.X)
             Dim DeltaY As Integer = (ptPanStartPoint.Y - e.Y)
@@ -539,16 +551,16 @@ Public Class frmImage
     '''' </summary>
     '''' <param name="w"></param>
     '''' <param name="h"></param>
-    Public Sub redraw_Image(ByVal w As Integer, ByVal h As Integer)
+    Private Sub redrawImage(ByVal w As Integer, ByVal h As Integer)
         Try
             Dim bmp As Bitmap = New Bitmap(Image.FromFile(m_lstImageFiles(m_intImageIndex)), w, h)
             Dim g As Graphics = Graphics.FromImage(bmp)
-            PictureBox1.Image.Dispose()
-            PictureBox1.Image = Nothing
+            ZoomPictureBox1.Image.Dispose()
+            ZoomPictureBox1.Image = Nothing
             GC.Collect()
-            PictureBox1.Width = w
-            PictureBox1.Height = h
-            PictureBox1.Image = bmp
+            ZoomPictureBox1.Width = w
+            ZoomPictureBox1.Height = h
+            ZoomPictureBox1.Image = bmp
             'blSizeChanged = True
         Catch ex As Exception
             MsgBox("The image size you selected is too big, please try again")
@@ -662,15 +674,6 @@ Public Class frmImage
             Case Else
                 Exit Sub
         End Select
-
-        ' CJG while removing myformslibrary
-        'Try
-        '    If Not myFormLibrary.frmVideoMiner.speciesButtons(intIndex) Is Nothing Then
-        '        myFormLibrary.frmVideoMiner.SpeciesVariableButtonHandler(myFormLibrary.frmVideoMiner.speciesButtons(intIndex), Nothing)
-        '    End If
-        'Catch ex As Exception
-
-        'End Try
     End Sub
 
     ' CJG while removing myformslibrary

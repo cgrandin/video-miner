@@ -20,7 +20,7 @@ Public Class VideoMiner
     Private Const XPATH_DATABASE_PATH As String = "/DatabasePath"
     Private Const XPATH_SESSION_PATH As String = "/SessionPath"
     Private Const XPATH_VIDEO_PATH As String = "/VideoPath"
-    Private Const XPATH_IMAGE_PATH As String = "/m_strImagePath"
+    Private Const XPATH_IMAGE_PATH As String = "/ImagePath"
 
     Private Const XPATH_GPS_COM_PORT As String = "/GPS/ComPort"
     Private Const XPATH_GPS_NMEA_STRING As String = "/GPS/NMEA"
@@ -1034,17 +1034,6 @@ Public Class VideoMiner
         toggle_bottom()
 
         lblDirtyData.Visible = False
-
-        Me.cboZoom.Items.Add("25%")
-        Me.cboZoom.Items.Add("50%")
-        Me.cboZoom.Items.Add("75%")
-        Me.cboZoom.Items.Add("100%")
-        Me.cboZoom.Items.Add("200%")
-        Me.cboZoom.Text = "100%"
-
-        Me.cmdPreviousImage.Enabled = False
-        Me.cmdNextImage.Enabled = False
-        Me.cboZoom.Enabled = False
 
         intNumberDisplayRecords = intDefaultNumberDisplayRecords
 
@@ -2664,8 +2653,8 @@ Public Class VideoMiner
                     frmImage.Show()
                 End If
                 currentImage = strFileName
-                frmImage.PictureBox1.Image = Image.FromFile(strImageFileName)
-                frmImage.Text = strImageFileName.Substring(strImageFileName.LastIndexOf("\") + 1, (strImageFileName.Length - strImageFileName.LastIndexOf("\") - 1))
+                'frmImage.PictureBox1.Image = Image.FromFile(strImageFileName)
+                'frmImage.Text = strImageFileName.Substring(strImageFileName.LastIndexOf("\") + 1, (strImageFileName.Length - strImageFileName.LastIndexOf("\") - 1))
                 VideoFileName = strImageFileName.Substring(strImageFileName.LastIndexOf("\") + 1, (strImageFileName.Length - strImageFileName.LastIndexOf("\") - 1))
 
                 ' set the flag "image_open" to be true.
@@ -2693,17 +2682,7 @@ Public Class VideoMiner
                 ' be a part of a file name
                 fileNames = Split(cur_folder_files, "|")
                 image_prefix = strImageFileName.Substring(0, strImageFileName.LastIndexOf("."))
-                Me.cmdPreviousImage.Enabled = True
-                Me.cmdNextImage.Enabled = True
-                Me.cboZoom.Enabled = True
-                Me.cmdPreviousImage.Visible = True
-                Me.cmdNextImage.Visible = True
-                Me.cboZoom.Visible = True
-                Me.lblImageSize.Visible = True
-                'Me.lblVideoControls.Visible = True
-                'Me.lblVideoControls.Text = "Photo Controls"
                 Me.cmdNothingInPhoto.Visible = True
-                intCurrentZoom = Me.cboZoom.SelectedIndex
                 enableDisableImageMenu(True)
             End If
             If blVideoOpen Then
@@ -3250,14 +3229,13 @@ Public Class VideoMiner
         ofd.FilterIndex = 1
         ofd.RestoreDirectory = True
         ofd.Multiselect = False
-        If ofd.ShowDialog() = Windows.Forms.DialogResult.OK Then
-            m_strImagePath = Path.GetDirectoryName(ofd.FileName)
+        If ofd.ShowDialog() = DialogResult.OK Then
+            m_strImagePath = GetDirectoryName(ofd.FileName)
             ' Store the new image path in XML file each time an image is opened
             SaveConfiguration(XPATH_IMAGE_PATH, m_strImagePath)
 
             If frmImage Is Nothing Then
                 frmImage = New frmImage(m_strImagePath, GetFileName(ofd.FileName))
-                pnlImageControls.Visible = True
                 pnlVideoControls.Visible = False
                 Dim intX As Integer = 0
                 Dim intY As Integer = 0
@@ -3311,19 +3289,10 @@ Public Class VideoMiner
 
             fldlgOpenFD.Reset()
 
-            cmdPreviousImage.Enabled = True
-            cmdNextImage.Enabled = True
-            cboZoom.Enabled = True
-            cmdPreviousImage.Visible = True
-            cmdNextImage.Visible = True
-            cboZoom.Visible = True
-            lblImageSize.Visible = True
             lblVideoControls.Visible = True
             lblVideoControls.Text = "Photo Controls"
 
             cmdNothingInPhoto.Visible = True
-
-            intCurrentZoom = cboZoom.SelectedIndex
 
             enableDisableImageMenu(True)
         Else
@@ -3387,10 +3356,6 @@ Public Class VideoMiner
                 mnuItem.Enabled = mnuState
             End If
         Next
-    End Sub
-
-    Private Sub cboZoom_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cboZoom.Click
-        Me.cboZoom.Text = NULL_STRING
     End Sub
 
     'Private Sub cboZoom_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles cboZoom.KeyDown
@@ -3974,31 +3939,11 @@ Public Class VideoMiner
         decreaseRate()
     End Sub
 
-    Private Sub mnuImageZoom25_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuImageZoom25.Click
-        Me.cboZoom.SelectedItem = "25%"
-    End Sub
-
-    Private Sub mnuImageZoom50_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuImageZoom50.Click
-        Me.cboZoom.SelectedItem = "50%"
-    End Sub
-
-    Private Sub mnuImageZoom75_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuImageZoom75.Click
-        Me.cboZoom.SelectedItem = "75%"
-    End Sub
-
-    Private Sub mnuImageZoom100_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuImageZoom100.Click
-        Me.cboZoom.SelectedItem = "100%"
-    End Sub
-
-    Private Sub mnuImageZoom200_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuImageZoom200.Click
-        Me.cboZoom.SelectedItem = "200%"
-    End Sub
-
-    Private Sub NextImageToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles NextImageToolStripMenuItem.Click
+    Private Sub NextImageToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         'cmdNextImage_Click(sender, e)
     End Sub
 
-    Private Sub PreviousImageToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PreviousImageToolStripMenuItem.Click
+    Private Sub PreviousImageToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         'cmdPreviousImage_Click(sender, e)
     End Sub
 
@@ -4811,7 +4756,6 @@ Public Class VideoMiner
     End Sub
 
     Private Sub image_form_closing() Handles frmImage.ImageFormClosingEvent
-        pnlImageControls.Visible = False
         cmdNothingInPhoto.Visible = False
         image_open = False
         enableDisableImageMenu(False)

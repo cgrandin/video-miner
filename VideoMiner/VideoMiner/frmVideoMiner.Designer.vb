@@ -45,15 +45,7 @@ Partial Class VideoMiner
         Me.MnuNameOption_9 = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuImageTools = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuOpenImg = New System.Windows.Forms.ToolStripMenuItem()
-        Me.NextImageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.PreviousImageToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CloseImageFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ZoomToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuImageZoom25 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuImageZoom50 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuImageZoom75 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuImageZoom100 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuImageZoom200 = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuConfigureTools = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureSpeciesEventToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureHabitatButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -92,6 +84,7 @@ Partial Class VideoMiner
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer3 = New System.Windows.Forms.SplitContainer()
         Me.mnthCalendar = New System.Windows.Forms.MonthCalendar()
+        Me.cmdOffBottom = New System.Windows.Forms.Button()
         Me.cmdCloseCalendar = New System.Windows.Forms.Button()
         Me.pnlVideoControls = New System.Windows.Forms.Panel()
         Me.txtFramesToSkip = New System.Windows.Forms.TextBox()
@@ -118,16 +111,9 @@ Partial Class VideoMiner
         Me.txtTransectTextbox = New System.Windows.Forms.TextBox()
         Me.lblProjectName = New System.Windows.Forms.Label()
         Me.txtOnOffBottomTextbox = New System.Windows.Forms.TextBox()
-        Me.cmdOffBottom = New System.Windows.Forms.Button()
         Me.lblTransectDate = New System.Windows.Forms.Label()
         Me.cmdTransectStart = New System.Windows.Forms.Button()
         Me.cmdShowSetTimecode = New System.Windows.Forms.Button()
-        Me.pnlImageControls = New System.Windows.Forms.Panel()
-        Me.lblImageControls = New System.Windows.Forms.Label()
-        Me.cmdPreviousImage = New System.Windows.Forms.Button()
-        Me.lblImageSize = New System.Windows.Forms.Label()
-        Me.cmdNextImage = New System.Windows.Forms.Button()
-        Me.cboZoom = New System.Windows.Forms.ComboBox()
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer6 = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer7 = New System.Windows.Forms.SplitContainer()
@@ -172,7 +158,6 @@ Partial Class VideoMiner
         Me.SplitContainer3.Panel2.SuspendLayout()
         Me.SplitContainer3.SuspendLayout()
         Me.pnlVideoControls.SuspendLayout()
-        Me.pnlImageControls.SuspendLayout()
         CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer2.Panel1.SuspendLayout()
         Me.SplitContainer2.Panel2.SuspendLayout()
@@ -348,7 +333,7 @@ Partial Class VideoMiner
         '
         'mnuImageTools
         '
-        Me.mnuImageTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuOpenImg, Me.NextImageToolStripMenuItem, Me.PreviousImageToolStripMenuItem, Me.CloseImageFileToolStripMenuItem, Me.ZoomToolStripMenuItem})
+        Me.mnuImageTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuOpenImg, Me.CloseImageFileToolStripMenuItem})
         Me.mnuImageTools.Name = "mnuImageTools"
         Me.mnuImageTools.Size = New System.Drawing.Size(52, 20)
         Me.mnuImageTools.Text = "Image"
@@ -356,67 +341,15 @@ Partial Class VideoMiner
         'mnuOpenImg
         '
         Me.mnuOpenImg.Name = "mnuOpenImg"
-        Me.mnuOpenImg.Size = New System.Drawing.Size(155, 22)
+        Me.mnuOpenImg.Size = New System.Drawing.Size(152, 22)
         Me.mnuOpenImg.Text = "Open Image"
-        '
-        'NextImageToolStripMenuItem
-        '
-        Me.NextImageToolStripMenuItem.Enabled = False
-        Me.NextImageToolStripMenuItem.Name = "NextImageToolStripMenuItem"
-        Me.NextImageToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
-        Me.NextImageToolStripMenuItem.Text = "Next Image"
-        '
-        'PreviousImageToolStripMenuItem
-        '
-        Me.PreviousImageToolStripMenuItem.Enabled = False
-        Me.PreviousImageToolStripMenuItem.Name = "PreviousImageToolStripMenuItem"
-        Me.PreviousImageToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
-        Me.PreviousImageToolStripMenuItem.Text = "Previous Image"
         '
         'CloseImageFileToolStripMenuItem
         '
         Me.CloseImageFileToolStripMenuItem.Enabled = False
         Me.CloseImageFileToolStripMenuItem.Name = "CloseImageFileToolStripMenuItem"
-        Me.CloseImageFileToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
+        Me.CloseImageFileToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.CloseImageFileToolStripMenuItem.Text = "Close"
-        '
-        'ZoomToolStripMenuItem
-        '
-        Me.ZoomToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuImageZoom25, Me.mnuImageZoom50, Me.mnuImageZoom75, Me.mnuImageZoom100, Me.mnuImageZoom200})
-        Me.ZoomToolStripMenuItem.Enabled = False
-        Me.ZoomToolStripMenuItem.Name = "ZoomToolStripMenuItem"
-        Me.ZoomToolStripMenuItem.Size = New System.Drawing.Size(155, 22)
-        Me.ZoomToolStripMenuItem.Text = "Zoom"
-        '
-        'mnuImageZoom25
-        '
-        Me.mnuImageZoom25.Name = "mnuImageZoom25"
-        Me.mnuImageZoom25.Size = New System.Drawing.Size(102, 22)
-        Me.mnuImageZoom25.Text = "25%"
-        '
-        'mnuImageZoom50
-        '
-        Me.mnuImageZoom50.Name = "mnuImageZoom50"
-        Me.mnuImageZoom50.Size = New System.Drawing.Size(102, 22)
-        Me.mnuImageZoom50.Text = "50%"
-        '
-        'mnuImageZoom75
-        '
-        Me.mnuImageZoom75.Name = "mnuImageZoom75"
-        Me.mnuImageZoom75.Size = New System.Drawing.Size(102, 22)
-        Me.mnuImageZoom75.Text = "75%"
-        '
-        'mnuImageZoom100
-        '
-        Me.mnuImageZoom100.Name = "mnuImageZoom100"
-        Me.mnuImageZoom100.Size = New System.Drawing.Size(102, 22)
-        Me.mnuImageZoom100.Text = "100%"
-        '
-        'mnuImageZoom200
-        '
-        Me.mnuImageZoom200.Name = "mnuImageZoom200"
-        Me.mnuImageZoom200.Size = New System.Drawing.Size(102, 22)
-        Me.mnuImageZoom200.Text = "200%"
         '
         'mnuConfigureTools
         '
@@ -763,6 +696,7 @@ Partial Class VideoMiner
         'SplitContainer3.Panel1
         '
         Me.SplitContainer3.Panel1.Controls.Add(Me.mnthCalendar)
+        Me.SplitContainer3.Panel1.Controls.Add(Me.cmdOffBottom)
         Me.SplitContainer3.Panel1.Controls.Add(Me.cmdCloseCalendar)
         Me.SplitContainer3.Panel1.Controls.Add(Me.pnlVideoControls)
         Me.SplitContainer3.Panel1.Controls.Add(Me.txtTransectDate)
@@ -774,11 +708,9 @@ Partial Class VideoMiner
         Me.SplitContainer3.Panel1.Controls.Add(Me.txtTransectTextbox)
         Me.SplitContainer3.Panel1.Controls.Add(Me.lblProjectName)
         Me.SplitContainer3.Panel1.Controls.Add(Me.txtOnOffBottomTextbox)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.cmdOffBottom)
         Me.SplitContainer3.Panel1.Controls.Add(Me.lblTransectDate)
         Me.SplitContainer3.Panel1.Controls.Add(Me.cmdTransectStart)
         Me.SplitContainer3.Panel1.Controls.Add(Me.cmdShowSetTimecode)
-        Me.SplitContainer3.Panel1.Controls.Add(Me.pnlImageControls)
         '
         'SplitContainer3.Panel2
         '
@@ -789,13 +721,24 @@ Partial Class VideoMiner
         '
         'mnthCalendar
         '
-        Me.mnthCalendar.Location = New System.Drawing.Point(6, 101)
+        Me.mnthCalendar.Location = New System.Drawing.Point(12, 103)
         Me.mnthCalendar.MaxSelectionCount = 1
         Me.mnthCalendar.Name = "mnthCalendar"
         Me.mnthCalendar.ShowToday = False
         Me.mnthCalendar.ShowTodayCircle = False
         Me.mnthCalendar.TabIndex = 50
         Me.mnthCalendar.Visible = False
+        '
+        'cmdOffBottom
+        '
+        Me.cmdOffBottom.Enabled = False
+        Me.cmdOffBottom.Location = New System.Drawing.Point(13, 276)
+        Me.cmdOffBottom.Margin = New System.Windows.Forms.Padding(2)
+        Me.cmdOffBottom.Name = "cmdOffBottom"
+        Me.cmdOffBottom.Size = New System.Drawing.Size(186, 25)
+        Me.cmdOffBottom.TabIndex = 43
+        Me.cmdOffBottom.Text = "On Bottom"
+        Me.cmdOffBottom.UseVisualStyleBackColor = True
         '
         'cmdCloseCalendar
         '
@@ -1076,23 +1019,12 @@ Partial Class VideoMiner
         'txtOnOffBottomTextbox
         '
         Me.txtOnOffBottomTextbox.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.txtOnOffBottomTextbox.Location = New System.Drawing.Point(11, 267)
+        Me.txtOnOffBottomTextbox.Location = New System.Drawing.Point(107, 288)
         Me.txtOnOffBottomTextbox.Margin = New System.Windows.Forms.Padding(2)
         Me.txtOnOffBottomTextbox.Name = "txtOnOffBottomTextbox"
         Me.txtOnOffBottomTextbox.ReadOnly = True
         Me.txtOnOffBottomTextbox.Size = New System.Drawing.Size(116, 13)
         Me.txtOnOffBottomTextbox.TabIndex = 44
-        '
-        'cmdOffBottom
-        '
-        Me.cmdOffBottom.Enabled = False
-        Me.cmdOffBottom.Location = New System.Drawing.Point(11, 238)
-        Me.cmdOffBottom.Margin = New System.Windows.Forms.Padding(2)
-        Me.cmdOffBottom.Name = "cmdOffBottom"
-        Me.cmdOffBottom.Size = New System.Drawing.Size(186, 25)
-        Me.cmdOffBottom.TabIndex = 43
-        Me.cmdOffBottom.Text = "On Bottom"
-        Me.cmdOffBottom.UseVisualStyleBackColor = True
         '
         'lblTransectDate
         '
@@ -1124,69 +1056,6 @@ Partial Class VideoMiner
         Me.cmdShowSetTimecode.TabIndex = 40
         Me.cmdShowSetTimecode.Text = "Set Time"
         Me.cmdShowSetTimecode.UseVisualStyleBackColor = True
-        '
-        'pnlImageControls
-        '
-        Me.pnlImageControls.Controls.Add(Me.lblImageControls)
-        Me.pnlImageControls.Controls.Add(Me.cmdPreviousImage)
-        Me.pnlImageControls.Controls.Add(Me.lblImageSize)
-        Me.pnlImageControls.Controls.Add(Me.cmdNextImage)
-        Me.pnlImageControls.Controls.Add(Me.cboZoom)
-        Me.pnlImageControls.Location = New System.Drawing.Point(6, 195)
-        Me.pnlImageControls.Name = "pnlImageControls"
-        Me.pnlImageControls.Size = New System.Drawing.Size(169, 108)
-        Me.pnlImageControls.TabIndex = 38
-        Me.pnlImageControls.Visible = False
-        '
-        'lblImageControls
-        '
-        Me.lblImageControls.AutoSize = True
-        Me.lblImageControls.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblImageControls.Location = New System.Drawing.Point(3, 0)
-        Me.lblImageControls.Name = "lblImageControls"
-        Me.lblImageControls.Size = New System.Drawing.Size(104, 15)
-        Me.lblImageControls.TabIndex = 54
-        Me.lblImageControls.Text = "Image Controls"
-        '
-        'cmdPreviousImage
-        '
-        Me.cmdPreviousImage.Location = New System.Drawing.Point(6, 27)
-        Me.cmdPreviousImage.Name = "cmdPreviousImage"
-        Me.cmdPreviousImage.Size = New System.Drawing.Size(32, 23)
-        Me.cmdPreviousImage.TabIndex = 50
-        Me.cmdPreviousImage.Text = "<"
-        Me.cmdPreviousImage.UseVisualStyleBackColor = True
-        Me.cmdPreviousImage.Visible = False
-        '
-        'lblImageSize
-        '
-        Me.lblImageSize.AutoSize = True
-        Me.lblImageSize.Location = New System.Drawing.Point(7, 60)
-        Me.lblImageSize.Name = "lblImageSize"
-        Me.lblImageSize.Size = New System.Drawing.Size(62, 13)
-        Me.lblImageSize.TabIndex = 53
-        Me.lblImageSize.Text = "Image Size:"
-        Me.lblImageSize.Visible = False
-        '
-        'cmdNextImage
-        '
-        Me.cmdNextImage.Location = New System.Drawing.Point(53, 27)
-        Me.cmdNextImage.Name = "cmdNextImage"
-        Me.cmdNextImage.Size = New System.Drawing.Size(32, 23)
-        Me.cmdNextImage.TabIndex = 51
-        Me.cmdNextImage.Text = ">"
-        Me.cmdNextImage.UseVisualStyleBackColor = True
-        Me.cmdNextImage.Visible = False
-        '
-        'cboZoom
-        '
-        Me.cboZoom.FormattingEnabled = True
-        Me.cboZoom.Location = New System.Drawing.Point(5, 78)
-        Me.cboZoom.MaxLength = 4
-        Me.cboZoom.Name = "cboZoom"
-        Me.cboZoom.Size = New System.Drawing.Size(177, 21)
-        Me.cboZoom.TabIndex = 52
-        Me.cboZoom.Visible = False
         '
         'SplitContainer2
         '
@@ -1434,11 +1303,6 @@ Partial Class VideoMiner
         '
         Me.tmrPlayForSeconds.Interval = 10
         '
-        'svDlgFileDialogScrCap
-        '
-        'Me.svDlgFileDialogScrCap.Filter = "Jpeg (*.jpg)|*.jpg|Bitmap (*.bmp)|*.bmp"
-        'Me.svDlgFileDialogScrCap.Title = "Save Screen Capture as..."
-        '
         'tmrComputerTime
         '
         Me.tmrComputerTime.Interval = 500
@@ -1484,8 +1348,6 @@ Partial Class VideoMiner
         Me.SplitContainer3.ResumeLayout(False)
         Me.pnlVideoControls.ResumeLayout(False)
         Me.pnlVideoControls.PerformLayout()
-        Me.pnlImageControls.ResumeLayout(False)
-        Me.pnlImageControls.PerformLayout()
         Me.SplitContainer2.Panel1.ResumeLayout(False)
         Me.SplitContainer2.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).EndInit()
@@ -1547,10 +1409,6 @@ Partial Class VideoMiner
     Friend WithEvents SplitContainer1 As System.Windows.Forms.SplitContainer
     Friend WithEvents SplitContainer3 As System.Windows.Forms.SplitContainer
     Friend WithEvents lblVideoControls As System.Windows.Forms.Label
-    Friend WithEvents lblImageSize As System.Windows.Forms.Label
-    Friend WithEvents cboZoom As System.Windows.Forms.ComboBox
-    Friend WithEvents cmdNextImage As System.Windows.Forms.Button
-    Friend WithEvents cmdPreviousImage As System.Windows.Forms.Button
     Friend WithEvents txtPlaySeconds As System.Windows.Forms.TextBox
     Friend WithEvents cmdPlayForSeconds As System.Windows.Forms.Button
     Friend WithEvents txtTransectDate As System.Windows.Forms.TextBox
@@ -1560,7 +1418,6 @@ Partial Class VideoMiner
     Friend WithEvents txtTransectTextbox As System.Windows.Forms.TextBox
     Friend WithEvents lblProjectName As System.Windows.Forms.Label
     Friend WithEvents txtOnOffBottomTextbox As System.Windows.Forms.TextBox
-    Friend WithEvents cmdOffBottom As System.Windows.Forms.Button
     Friend WithEvents lblTransectDate As System.Windows.Forms.Label
     Friend WithEvents cmdTransectStart As System.Windows.Forms.Button
     Friend WithEvents cmdShowSetTimecode As System.Windows.Forms.Button
@@ -1583,20 +1440,10 @@ Partial Class VideoMiner
     Friend WithEvents cmdIncreaseRate As System.Windows.Forms.Button
     Friend WithEvents cmdStop As System.Windows.Forms.Button
     Friend WithEvents pnlVideoControls As System.Windows.Forms.Panel
-    Friend WithEvents pnlImageControls As System.Windows.Forms.Panel
-    Friend WithEvents lblImageControls As System.Windows.Forms.Label
     Friend WithEvents mnuImageTools As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuOpenFile As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuOpenImg As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents CloseImageFileToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents NextImageToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents PreviousImageToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents ZoomToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents mnuImageZoom25 As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents mnuImageZoom50 As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents mnuImageZoom75 As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents mnuImageZoom100 As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents mnuImageZoom200 As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents GPSToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuGPSSettings As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents LblRate As System.Windows.Forms.Label
@@ -1641,5 +1488,5 @@ Partial Class VideoMiner
     Friend WithEvents cmdRevertDatabase As System.Windows.Forms.Button
     Friend WithEvents SplitContainer8 As System.Windows.Forms.SplitContainer
     Friend WithEvents AlwaysShowNewestRecordToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-
+    Friend WithEvents cmdOffBottom As Button
 End Class

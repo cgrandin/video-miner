@@ -20,15 +20,14 @@ Partial Class frmImage
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
-        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.btnPrev = New System.Windows.Forms.Button()
         Me.btnNext = New System.Windows.Forms.Button()
+        Me.ZoomPictureBox1 = New ZPBlib.ZoomPictureBox()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -42,7 +41,7 @@ Partial Class frmImage
         '
         'SplitContainer1.Panel1
         '
-        Me.SplitContainer1.Panel1.Controls.Add(Me.PictureBox1)
+        Me.SplitContainer1.Panel1.Controls.Add(Me.ZoomPictureBox1)
         '
         'SplitContainer1.Panel2
         '
@@ -50,17 +49,6 @@ Partial Class frmImage
         Me.SplitContainer1.Size = New System.Drawing.Size(701, 763)
         Me.SplitContainer1.SplitterDistance = 680
         Me.SplitContainer1.TabIndex = 9
-        '
-        'PictureBox1
-        '
-        Me.PictureBox1.BackColor = System.Drawing.Color.Black
-        Me.PictureBox1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.PictureBox1.Location = New System.Drawing.Point(0, 0)
-        Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(701, 680)
-        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
-        Me.PictureBox1.TabIndex = 0
-        Me.PictureBox1.TabStop = False
         '
         'TableLayoutPanel1
         '
@@ -100,6 +88,24 @@ Partial Class frmImage
         Me.btnNext.Text = ">"
         Me.btnNext.UseVisualStyleBackColor = True
         '
+        'ZoomPictureBox1
+        '
+        Me.ZoomPictureBox1.BackColor = System.Drawing.Color.Black
+        Me.ZoomPictureBox1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ZoomPictureBox1.EnableMouseDragging = True
+        Me.ZoomPictureBox1.EnableMouseWheelZooming = True
+        Me.ZoomPictureBox1.Image = Nothing
+        Me.ZoomPictureBox1.ImagePosition = New System.Drawing.Point(0, 0)
+        Me.ZoomPictureBox1.Location = New System.Drawing.Point(0, 0)
+        Me.ZoomPictureBox1.MaximumZoomFactor = 64.0R
+        Me.ZoomPictureBox1.MinimumImageHeight = 10
+        Me.ZoomPictureBox1.MinimumImageWidth = 10
+        Me.ZoomPictureBox1.MouseWheelDivisor = 4000
+        Me.ZoomPictureBox1.Name = "ZoomPictureBox1"
+        Me.ZoomPictureBox1.Size = New System.Drawing.Size(701, 680)
+        Me.ZoomPictureBox1.TabIndex = 1
+        Me.ZoomPictureBox1.ZoomFactor = 0R
+        '
         'frmImage
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -115,7 +121,6 @@ Partial Class frmImage
         Me.SplitContainer1.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer1.ResumeLayout(False)
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.ResumeLayout(False)
 
@@ -124,5 +129,5 @@ Partial Class frmImage
     Friend WithEvents btnNext As Button
     Friend WithEvents btnPrev As Button
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
-    Friend WithEvents PictureBox1 As PictureBox
+    Friend WithEvents ZoomPictureBox1 As ZPBlib.ZoomPictureBox
 End Class
