@@ -90,67 +90,10 @@ Public Class frmImage
     Private Sub LoadImage()
         m_strImageFile = m_lstImageFiles.Item(m_intImageIndex)
         ZoomPictureBox1.Image = Image.FromFile(m_strImageFile)
-        'ScaleImage()
 
         Text = m_strImageFile & " (" & m_intImageIndex + 1 & " of " & m_lstImageFiles.Count & ")"
         getEXIFData()
 
-        '    ' Detemine the size of the image shown in the window
-        '    Dim w, h As Integer
-
-        '    Select Case Me.cboZoom.SelectedItem
-        '        Case "25%"
-        '            w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width / 4
-        '            h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height / 4
-        '        Case "50%"
-        '            w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width / 2
-        '            h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height / 2
-        '        Case "75%"
-        '            w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width / 1.3333
-        '            h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height / 1.3333
-        '        Case "100%"
-        '            w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width
-        '            h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height
-        '        Case "200%"
-        '            w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width * 2
-        '            h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height * 2
-        '        Case Else
-        '            Dim intValue As Integer
-        '            Dim dblImageSize As Double
-        '            intValue = cboZoom.Text.Substring(0, cboZoom.Text.Length - 1)
-
-        '            If intValue <= 100 Then
-        '                dblImageSize = 100 / intValue
-        '                w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width / dblImageSize
-        '                h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height / dblImageSize
-        '            Else
-        '                dblImageSize = intValue / 100
-        '                w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width * dblImageSize
-        '                h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height * dblImageSize
-        '            End If
-        '    End Select
-        '    Try
-        '        ' Display the image in the picture box.
-        '        'Dim bmp As Bitmap = New Bitmap(Image.FromFile(currentImage), w, h)
-        '        'Dim g As Graphics = Graphics.FromImage(bmp)
-        '        'frmImage.ZoomPictureBox1.Image.Dispose()
-        '        'frmImage.ZoomPictureBox1.Image = Nothing
-        '        'GC.Collect()
-        '        'frmImage.ZoomPictureBox1.Image = bmp
-        '        'frmImage.Text = Me.fileNames(m_intImageIndex)
-        '        'blSizeChanged = True
-        '        frmImage.ZoomPictureBox1.Image.Dispose()
-        '        frmImage.ZoomPictureBox1.Image = Nothing
-        '        GC.Collect()
-
-        '        Dim Dir As String = m_lstImageFiles(m_intImageIndex)
-        '        Dim bmp As Bitmap = New Bitmap(Image.FromFile(Dir), w, h)
-        '        Dim g As Graphics = Graphics.FromImage(bmp)
-        '        frmImage.ZoomPictureBox1.Image = bmp
-        '        frmImage.Text = m_lstImageFiles(m_intImageIndex)
-        '        VideoFileName = m_lstImageFiles(m_intImageIndex)
-        '        currentImage = m_lstImageFiles(m_intImageIndex)
-        '        getEXIFData()
         '        ' TODO: Fix next line, I added a dim in there to make it compile
         '        Dim strTimeDateSource As String = "EXIF"
         '        intTimeSource = 3
@@ -171,9 +114,6 @@ Public Class frmImage
         '        txtDateSource.BackColor = Color.LightGray
         '        txtDateSource.ForeColor = Color.LimeGreen
         '        txtDateSource.TextAlign = HorizontalAlignment.Center
-        '    Catch ex As Exception
-        '        MsgBox(ex.Message)
-        '    End Try
 
         ' Disable the buttons depending on what the image list holds.
         ' This method ensures that all cases are covered, eg: a single file
@@ -204,69 +144,17 @@ Public Class frmImage
         LoadImage()
     End Sub
 
-    Public Sub ZoomImage(ByRef ZoomValue As Integer)
-        'Create a new image based on the zoom parameters we require
-        Dim zoomImage As New Bitmap(ZoomPictureBox1.Image,
-                                    CInt(ZoomPictureBox1.Image.Width * ZoomValue / 100),
-                                    CInt(ZoomPictureBox1.Image.Height * ZoomValue / 100))
-        Dim converted As Graphics = Graphics.FromImage(zoomImage)
-        converted.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
-        ZoomPictureBox1.Image = Nothing
-        ZoomPictureBox1.Image = zoomImage
-    End Sub
-
-    Private Sub ZoomPictureBox1_Paint(ByVal sender As Object, ByVal e As System.Windows.Forms.PaintEventArgs)
-        'Whenever the 
-        ' Create a local version of the graphics object for the PictureBox.
-
-        'Dim g As Graphics = e.Graphics
-        ' Draw a string on the PictureBox.
-        'g.DrawString("This is a diagonal line drawn on the control",
-        'New Font("Arial", 10), Brushes.Red, New PointF(30.0F, 30.0F))
-        ' Draw a line in the PictureBox.
+    ''' <summary>
+    ''' Write the text of how many pictures there are and which one you're currently on
+    ''' in the top left corner.
+    ''' </summary>
+    Private Sub ZoomPictureBox1_Paint(ByVal sender As Object, ByVal e As System.Windows.Forms.PaintEventArgs) Handles ZoomPictureBox1.Paint
+        Dim g As Graphics = e.Graphics
+        g.DrawString(m_intImageIndex + 1 & " of " & m_lstImageFiles.Count,
+            New Font("Arial", 14), Brushes.Red, New PointF(30.0F, 30.0F))
+        ' Example of how to draw a line in the ZoomPictureBox.
         'g.DrawLine(System.Drawing.Pens.Red, ZoomPictureBox1.Left,
         ' ZoomPictureBox1.Top, ZoomPictureBox1.Right, ZoomPictureBox1.Bottom)
-    End Sub
-
-    ''' <summary>
-    ''' Required to make the mouse wheel zooming work
-    ''' </summary>
-    'Private Sub ZoomPictureBox1_MouseEnter(ByVal sender As Object, ByVal e As System.EventArgs)
-    '    ZoomPictureBox1.Focus()
-    'End Sub
-
-    'Private Sub PictureBox_MouseWheel(ByVal sender As System.Object, ByVal e As MouseEventArgs)
-    'ZoomPictureBox1.Size = New Drawing.Size(ZoomPictureBox1.Width + e.Delta / 10, ZoomPictureBox1.Height + e.Delta / 10)
-    'ZoomPictureBox1.Location = New Drawing.Point(Control.MousePosition.X - ZoomPictureBox1.Width / 2, Control.MousePosition.Y - ZoomPictureBox1.Height / 2)
-    ' Get current mouse position reletive to the picturebox
-    'Dim pntMousePosition As Drawing.Point = MousePosition
-    ' Set up the new bounds of the picture, based on the e.Delta value
-    ' which is how much the wheel was moved
-    'Dim intZoomFactor As Integer
-    'If e.Delta < 0 Then
-    '       intZoomFactor = Math.Floor(-e.Delta * 3)
-    'Else
-    '       intZoomFactor = Math.Floor(e.Delta / 3)
-    'End If
-    '   ZoomImage(intZoomFactor)
-    'SplitContainer1.Panel1.AutoScroll = False
-    'SplitContainer1.Panel1.AutoScroll = True
-    'End Sub
-
-    ''' <summary>
-    ''' Scale the image to fit in the Picturebox. Preserves aspect ratio
-    ''' while maximizing the size of the picture in the Picturebox.
-    ''' </summary>
-    Private Sub ScaleImage()
-        Dim imageSize As Size = ZoomPictureBox1.Image.Size
-        ' Dim aspectRatio As Double = imageSize.Height / imageSize.Width
-        Dim dblScaleHeight As Double = ZoomPictureBox1.Height / imageSize.Height
-        Dim dblScaleWidth As Double = ZoomPictureBox1.Width / imageSize.Width
-        Dim dblScale As Double = Math.Min(dblScaleHeight, dblScaleWidth)
-        Dim intNewHeight As Integer = Math.Floor(imageSize.Height * dblScale)
-        Dim intNewWidth As Integer = Math.Floor(imageSize.Width * dblScale)
-        Dim bmpResized As Bitmap = New Bitmap(ZoomPictureBox1.Image, New Size(intNewWidth, intNewHeight))
-        ZoomPictureBox1.Image = bmpResized
     End Sub
 
     ''' <summary>
@@ -479,96 +367,6 @@ Public Class frmImage
         'End If
     End Sub
 
-    Private Sub ZoomPictureBox1_MouseDown(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
-        ptPanStartPoint = New Point(e.X, e.Y)
-    End Sub
-
-    Private Sub ZoomPictureBox1_MouseMove(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
-        If e.Button = Windows.Forms.MouseButtons.Left Then
-            Dim DeltaX As Integer = (ptPanStartPoint.X - e.X)
-            Dim DeltaY As Integer = (ptPanStartPoint.Y - e.Y)
-            SplitContainer1.Panel1.AutoScrollPosition = New Drawing.Point((DeltaX - SplitContainer1.Panel1.AutoScrollPosition.X), (DeltaY - SplitContainer1.Panel1.AutoScrollPosition.Y))
-        End If
-    End Sub
-
-    'Private Sub cboZoom_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles cboZoom.KeyPress
-    '    numericTextboxValidation(e)
-    'End Sub
-
-    'Private Sub cboZoom_LostFocus(ByVal sender As Object, ByVal e As System.EventArgs) Handles cboZoom.LostFocus
-    '    Me.cboZoom.SelectedIndex = intCurrentZoom
-    'End Sub
-
-    'Private Sub cboZoom_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboZoom.SelectedIndexChanged
-
-    '    If Me.pnlImageControls.Visible = True Then
-    '        Dim w As Integer
-    '        Dim h As Integer
-
-    '        Select Case Me.cboZoom.SelectedItem
-    '            Case "25%"
-    '                w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width / 4
-    '                h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height / 4
-    '            Case "50%"
-    '                w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width / 2
-    '                h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height / 2
-    '            Case "75%"
-    '                w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width / 1.3333
-    '                h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height / 1.3333
-    '            Case "100%"
-    '                w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width
-    '                h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height
-    '            Case "200%"
-    '                w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width * 2
-    '                h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height * 2
-    '            Case Else
-    '                Dim intValue As Integer
-    '                Dim dblImageSize As Double
-    '                intValue = cboZoom.Text.Substring(0, cboZoom.Text.Length - 1)
-
-    '                If intValue <= 100 Then
-    '                    dblImageSize = 100 / intValue
-    '                    w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width / dblImageSize
-    '                    h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height / dblImageSize
-    '                Else
-    '                    dblImageSize = intValue / 100
-    '                    w = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Width * dblImageSize
-    '                    h = Image.FromFile(m_lstImageFiles(m_intImageIndex)).Height * dblImageSize
-    '                End If
-    '        End Select
-
-    '        redraw_Image(w, h)
-
-    '        intCurrentZoom = Me.cboZoom.SelectedIndex
-    '    End If
-
-    'End Sub
-
-    '''' <summary>
-    '''' This Function is the common part For the Next 4 functions.
-    '''' Basic it takes the width Of height Of the image And redraw the
-    '''' Image inside the display window.
-    '''' </summary>
-    '''' <param name="w"></param>
-    '''' <param name="h"></param>
-    Private Sub redrawImage(ByVal w As Integer, ByVal h As Integer)
-        Try
-            Dim bmp As Bitmap = New Bitmap(Image.FromFile(m_lstImageFiles(m_intImageIndex)), w, h)
-            Dim g As Graphics = Graphics.FromImage(bmp)
-            ZoomPictureBox1.Image.Dispose()
-            ZoomPictureBox1.Image = Nothing
-            GC.Collect()
-            ZoomPictureBox1.Width = w
-            ZoomPictureBox1.Height = h
-            ZoomPictureBox1.Image = bmp
-            'blSizeChanged = True
-        Catch ex As Exception
-            MsgBox("The image size you selected is too big, please try again")
-            'blSizeChanged = False
-            Exit Sub
-        End Try
-
-    End Sub
 
     Private Sub frmImage_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         RaiseEvent ImageFormClosingEvent()
@@ -644,75 +442,59 @@ Public Class frmImage
     '    strKeyboardShortcut = NULL_STRING
     '    strCurrentKey = NULL_STRING
     'End Sub
+
+    ''' <summary>
+    ''' Accept function keypresses in the form. The F1-F12 keys allow quick access to images 0-11.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub frmImage_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
-        Dim intIndex As Integer
         Select Case e.KeyValue
             Case Keys.F1
-                intIndex = 0
+                m_intImageIndex = 0
             Case Keys.F2
-                intIndex = 1
+                m_intImageIndex = 1
             Case Keys.F3
-                intIndex = 2
+                m_intImageIndex = 2
             Case Keys.F4
-                intIndex = 3
+                m_intImageIndex = 3
             Case Keys.F5
-                intIndex = 4
+                m_intImageIndex = 4
             Case Keys.F6
-                intIndex = 5
+                m_intImageIndex = 5
             Case Keys.F7
-                intIndex = 6
+                m_intImageIndex = 6
             Case Keys.F8
-                intIndex = 7
+                m_intImageIndex = 7
             Case Keys.F9
-                intIndex = 8
+                m_intImageIndex = 8
             Case Keys.F10
-                intIndex = 19
+                m_intImageIndex = 19
             Case Keys.F11
-                intIndex = 10
+                m_intImageIndex = 10
             Case Keys.F12
-                intIndex = 11
-            Case Else
-                Exit Sub
+                m_intImageIndex = 11
         End Select
+        LoadImage()
     End Sub
 
-    ' CJG while removing myformslibrary
-    ' TODO: Fix this!!!
-    'Protected Overrides Function ProcessCmdKey(ByRef msg As System.Windows.Forms.Message, ByVal keyData As System.Windows.Forms.Keys) As Boolean
-    '    Dim keyPressed As Keys = CType(msg.WParam.ToInt32(), Keys)
-    '    Dim intAnswer As Integer
-
-    '    Select Case keyPressed
-    '        Case Keys.Right
-    '            If (myFormLibrary.frmVideoMiner.image_index + 1) > (myFormLibrary.frmVideoMiner.imageFilesList.Count - 1) Then
-    '                intAnswer = MessageBox.Show("You have reached the last image in the folder, would you like to start again at the first image?", "Last Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-    '                If intAnswer = vbYes Then
-    '                    myFormLibrary.frmVideoMiner.image_index = 0
-    '                Else
-    '                    Exit Function
-    '                End If
-    '            Else
-    '                myFormLibrary.frmVideoMiner.image_index += 1
-    '            End If
-    '            myFormLibrary.frmVideoMiner.LoadImg()
-
-    '        Case Keys.Left
-    '            If (myFormLibrary.frmVideoMiner.image_index - 1) < 0 Then
-    '                intAnswer = MessageBox.Show("You have reached the first image in the folder, would you like to start again at the last image?", "First Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-    '                If intAnswer = vbYes Then
-    '                    myFormLibrary.frmVideoMiner.image_index = myFormLibrary.frmVideoMiner.imageFilesList.Count - 1
-    '                Else
-    '                    Exit Function
-    '                End If
-    '            Else
-    '                myFormLibrary.frmVideoMiner.image_index -= 1
-    '            End If
-    '            myFormLibrary.frmVideoMiner.LoadImg()
-
-    '        Case Else
-    '            Return MyBase.ProcessCmdKey(msg, keyData)
-
-    '    End Select
-    'End Function
+    ''' <summary>
+    ''' Accepts the right and left arrow keys to make moving to previous and next images easier.
+    ''' </summary>
+    ''' <param name="msg"></param>
+    ''' <param name="keyData"></param>
+    ''' <returns></returns>
+    Protected Overrides Function ProcessCmdKey(ByRef msg As System.Windows.Forms.Message, ByVal keyData As System.Windows.Forms.Keys) As Boolean
+        Dim keyPressed As Keys = CType(msg.WParam.ToInt32(), Keys)
+        Select Case keyPressed
+            Case Keys.Right
+                m_intImageIndex += 1
+                LoadImage()
+            Case Keys.Left
+                m_intImageIndex -= 1
+                LoadImage()
+        End Select
+        Return MyBase.ProcessCmdKey(msg, keyData)
+    End Function
 
 End Class
