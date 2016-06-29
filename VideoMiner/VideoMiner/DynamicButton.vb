@@ -1,6 +1,7 @@
 ﻿''' <summary>
-''' A Videominer dynamic button. This button extends a regular button by holding the database table name,
-''' an instance of the DataTable, the current data code, and the code name.
+''' A Videominer dynamic button. This button extends a regular button by holding 
+''' the database table name, an instance of the DataTable, the current data code,
+''' and the code name.
 ''' </summary>
 ''' <remarks></remarks>
 Public Class DynamicButton
@@ -244,6 +245,10 @@ Public Class DynamicButton
     ''' Signals the parent that a button has been pressed and we request that the video be paused while data entry takes place.
     ''' </summary>
     Public Event SignalVideoPause(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Signals the parent that the data entry is complete and to resime playback.
+    ''' </summary>
+    Public Event SignalVideoPlay(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
 #End Region
 
@@ -425,6 +430,14 @@ Public Class DynamicButton
         ' For example, when the user presses a species button it will bring up the form needed to fill in the information for the species.
         ' The video needs to be paused at this point, and restarted when the user presses OK on the form which is being worked on
         RaiseEvent SignalVideoPause(Me, e)
+    End Sub
+
+    ''' <summary>
+    ''' Raise ane event when the species form has raised one (User pressed OK or Cancel
+    ''' on the species form).
+    ''' </summary>
+    Private Sub signal_video_play() Handles frmSpeciesEvent.SignalPlay, m_table_view.SignalPlay
+        RaiseEvent SignalVideoPlay(Me, EventArgs.Empty)
     End Sub
 
     ''' <summary>

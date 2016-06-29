@@ -60,6 +60,11 @@ Public Class frmSpeciesEvent
 #End Region
 
     Public Event NewSpeciesEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Once the OK or Cancel buttons are pressed, this will signal to resume playback on the
+    ''' video player.
+    ''' </summary>
+    Public Event SignalPlay(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
 #Region "Properties"
     Public Property SpeciesData() As Dictionary(Of String, Tuple(Of String, String, Boolean))
@@ -328,6 +333,7 @@ Public Class frmSpeciesEvent
         ' Raise Event to tell parent form that we wish a record to be added to the database
         RaiseEvent NewSpeciesEntryEvent(Me, EventArgs.Empty)
         Me.Hide()
+        RaiseEvent SignalPlay(Me, EventArgs.Empty)
     End Sub
 
     Private Sub ok_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles ok.Click
@@ -435,6 +441,7 @@ Public Class frmSpeciesEvent
     ''' </summary>
     Private Sub btnCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCancel.Click
         Me.Hide()
+        RaiseEvent SignalPlay(Me, EventArgs.Empty)
     End Sub
 
     ''' <summary>

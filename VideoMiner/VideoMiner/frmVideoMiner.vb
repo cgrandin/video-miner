@@ -279,6 +279,10 @@ Public Class VideoMiner
     Private m_db_file_open As Boolean
     Private m_db_filename As String
     Private m_db_id_num As Long
+    ''' <summary>
+    ''' Used to store the state of the video when a data entry button is clicked.
+    ''' </summary>
+    Private m_blWasPlaying As Boolean
 
     ' GPS connection settings to initialize frmGpsSettings form with
     Private m_strComPort As String
@@ -1109,21 +1113,6 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
-    ''' Handles the event request to insert a new entry into the database.
-    ''' </summary>
-    Private Sub new_species_entry_handler(speciesName As String, speciesCode As String, range As String, side As String,
-                                          idConfidence As String, abundance As String, count As String, height As String,
-                                          width As String, length As String, comments As String)
-
-        'MsgBox("Made it here! - Videominer main form")
-        ' Here is where the call to build the query goes...
-    End Sub
-
-    Private Sub signal_video_pause(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pnlHabitatData.SignalVideoPause, pnlTransectData.SignalVideoPause, pnlSpeciesData.SignalVideoPause
-        'frmVideoPlayer.pauseVideo()
-    End Sub
-
-    ''' <summary>
     ''' Load the metadata found in the VideoMiner configuration file into member variables.
     ''' If the configuration file is not found, defaults will be assigned for GPS settings
     ''' and the path variables.
@@ -1632,11 +1621,10 @@ Public Class VideoMiner
         'refresh_database()
     End Sub
 
-    ' ==========================================================================================================
-    ' Name: mnuOpenDV_Click
-    ' Description: When a user selects "Open a DV Device" from the file menu, the openDV() function to
-    '              see a dialogue where the user can open a DV file.
-    ' ==========================================================================================================
+    ''' <summary>
+    ''' When a user selects "Open a DV Device" from the file menu, the openDV() function to
+    ''' see a dialogue where the user can open a DV file.
+    ''' </summary>
     Private Sub mnuOpenDV_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         openDV()
     End Sub
@@ -1649,30 +1637,20 @@ Public Class VideoMiner
     End Sub
 
     Private Sub mnuUseExternalVideo_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuUseExternalVideo.Click
-        'MsgBox(Me.UseExternalVideoToolStripMenuItem.Checked)
-        booUseExternalVideo = Me.mnuUseExternalVideo.Checked
-        If booUseExternalVideo Then
-            Me.mnuOpenFile.Enabled = False
-
-            'booUseGPSTimeCodes = True
-            'Me.mnuUseGPSTimeCodes.Checked = True
-            'Me.mnuUseGPSTimeCodes.Enabled = False
-
-            If Not frmVideoPlayer Is Nothing Then
-                frmVideoPlayer.Close()
-            End If
-
+        If Not frmVideoPlayer Is Nothing Then
+            frmVideoPlayer.Close()
+        End If
+        If mnuUseExternalVideo.Checked Then
             VideoFileName = "External Video"
             frmSetTime.Show()
             frmSetTime.BringToFront()
+            mnuOpenImg.Enabled = False
+            mnuOpenFile.Enabled = False
         Else
-            'Me.mnuPlay.Enabled = True
-            'Me.mnuStop.Enabled = True
-            'Me.mnuPause.Enabled = True
-            Me.mnuOpenFile.Enabled = True
-
-            booUseGPSTimeCodes = False
-
+            ' Return everything to no-loaded status
+            VideoFileName = ""
+            mnuOpenImg.Enabled = True
+            mnuOpenFile.Enabled = True
         End If
     End Sub
 
@@ -1888,14 +1866,30 @@ Public Class VideoMiner
         fetch_data()
     End Sub
 
+    Private Sub dataButtonNewEntry() Handles pnlHabitatData.SignalVideoPause, pnlSpeciesData.SignalVideoPause, pnlTransectData.SignalVideoPause
+        ' First store whether or not the video is playing so we can do the appropriate thing after
+        ' the data are inserted
+        m_blWasPlaying = frmVideoPlayer.IsPlaying
+        If m_blWasPlaying Then
+            frmVideoPlayer.pauseVideo()
+        End If
+    End Sub
+
+    Private Sub dataButtonEntryFinished() Handles pnlHabitatData.SignalVideoPlay, pnlSpeciesData.SignalVideoPlay, pnlHabitatData.SignalVideoPlay
+        If m_blWasPlaying Then
+            frmVideoPlayer.playVideo()
+        End If
+    End Sub
     ''' <summary>
-    ''' Handle the changing of button data by creating an insert query and saving to the database
+    ''' Handle the changing of button data by creating an insert query and
+    ''' saving to the database.
     ''' </summary>
     Private Sub buttonDataChanged(sender As System.Object, e As System.EventArgs) Handles pnlHabitatData.DataChanged, pnlTransectData.DataChanged, pnlSpeciesData.DataChanged
         Dim panel As DynamicPanel = CType(sender, DynamicPanel)
         Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = panel.Dictionary
         Dim tuple As Tuple(Of String, String, Boolean)
-        ' If the calling panel is the species panel, check the setting of the habitat and transect panels and if set to record on every record,
+        ' If the calling panel is the species panel, check the setting of the
+        ' habitat And transect panels And If Set To record On every record,
         ' merge the two dictionaries before running the insert query.
         Select Case panel.Name
             Case PANEL_NAME_SPECIES
@@ -1946,7 +1940,6 @@ Public Class VideoMiner
 
         runInsertQuery(dict)
         fetch_data()
-        ' frmVideoPlayer.playVideo()
     End Sub
 
     ''' <summary>
@@ -2618,7 +2611,7 @@ Public Class VideoMiner
                     frmImage.Close()
                 End If
                 If frmImage Is Nothing Then
-                    'frmImage = New frmImage(m_str)
+                    'frmImage = New frmImage(m_strImagePath, m_strimagefile)
                     Dim intX As Integer = 0
                     Dim intY As Integer = 0
 
@@ -2683,7 +2676,7 @@ Public Class VideoMiner
                 fileNames = Split(cur_folder_files, "|")
                 image_prefix = strImageFileName.Substring(0, strImageFileName.LastIndexOf("."))
                 Me.cmdNothingInPhoto.Visible = True
-                enableDisableImageMenu(True)
+                mnuOpenImg.Enabled = True
             End If
             If blVideoOpen Then
                 If Not frmVideoPlayer Is Nothing Then
@@ -3021,21 +3014,6 @@ Public Class VideoMiner
     End Function
 
     ''' <summary>
-    ''' Enable or disable the video menu items
-    ''' </summary>
-    ''' <remarks></remarks>
-    Public Sub toggleVideoMenu(ByVal mnuState As Boolean)
-        ' Enable (mnuState=True) or Disable (mnuState=False) the menu item for opening video or opening external video
-        Dim mnuItem As ToolStripMenuItem
-        For Each mnuItem In mnuVideoTools.DropDownItems
-            If mnuItem.Text = OPEN_VID_TITLE Or mnuItem.Text = OPEN_EXT_VID Then
-                mnuItem.Enabled = mnuState
-            Else
-                mnuItem.Enabled = Not mnuState
-            End If
-        Next
-    End Sub
-    ''' <summary>
     ''' Returns the filename without its path
     ''' </summary>
     ''' <remarks></remarks>
@@ -3210,18 +3188,17 @@ Public Class VideoMiner
 #Region "Image Functions"
 
     ''' <summary>
-    ''' Open an image in windows media player
+    ''' Open an image.
     ''' </summary>
     Private Sub mnuOpenImg_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuOpenImg.Click
         openImage()
     End Sub
 
     ''' <summary>
-    ''' Open a video file. Creates a new instance of frmVideoPlayer
+    ''' Open an image. Creates a new instance of frmImage. Greys out the video menu
+    ''' as we should only have either video or image open, not both.
     ''' </summary>
-    ''' <returns>Boolean representing success</returns>
-    ''' <remarks>Returns True if the user chose an existing file to play, False is they pressed cancel or clicked the 'X'</remarks>
-    Private Function openImage() As Boolean
+    Private Sub openImage()
         Dim ofd As OpenFileDialog = New OpenFileDialog
         ofd.Title = OPEN_IMAGE_TITLE
         ofd.InitialDirectory = m_strImagePath
@@ -3233,7 +3210,6 @@ Public Class VideoMiner
             m_strImagePath = GetDirectoryName(ofd.FileName)
             ' Store the new image path in XML file each time an image is opened
             SaveConfiguration(XPATH_IMAGE_PATH, m_strImagePath)
-
             If frmImage Is Nothing Then
                 frmImage = New frmImage(m_strImagePath, GetFileName(ofd.FileName))
                 pnlVideoControls.Visible = False
@@ -3265,8 +3241,6 @@ Public Class VideoMiner
                 End If
                 frmImage.Show()
             End If
-            'currentImage = m_strImageFile
-
             image_open = True
             txtTimeSource.ForeColor = Color.LimeGreen
             Me.txtTime.ForeColor = Color.LimeGreen
@@ -3286,121 +3260,14 @@ Public Class VideoMiner
             txtDateSource.BackColor = Color.LightGray
             txtDateSource.ForeColor = Color.LimeGreen
             txtDateSource.TextAlign = HorizontalAlignment.Center
-
             fldlgOpenFD.Reset()
-
-            lblVideoControls.Visible = True
-            lblVideoControls.Text = "Photo Controls"
-
+            lblVideoControls.Visible = False
             cmdNothingInPhoto.Visible = True
-
-            enableDisableImageMenu(True)
-        Else
-            Return False
+            mnuOpenImg.Enabled = False
+            mnuOpenFile.Enabled = False
+            mnuUseExternalVideo.Enabled = False
         End If
-
-
-        Return True
-    End Function
-
-    'Protected Overrides Function ProcessCmdKey(ByRef msg As System.Windows.Forms.Message, ByVal keyData As System.Windows.Forms.Keys) As Boolean
-    '    If Not frmImage Is Nothing Then
-    '        Dim keyPressed As Keys = CType(msg.WParam.ToInt32(), Keys)
-    '        Dim intAnswer As Integer
-    '        Select Case keyPressed
-    '            Case Keys.Right
-    '                m_intImageIndex += 1
-    '                ' If the index of the image is larger than the number
-    '                ' of images in the folder, then set it to 0, which means
-    '                ' the first image in the folder is displayed.
-    '                If m_intImageIndex >= fileNames.Length Then
-    '                    intAnswer = MessageBox.Show("You have reached the last image In the folder, would you Like To start again at the first image?", "Last Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-    '                    If intAnswer = vbYes Then
-    '                        m_intImageIndex = 0
-    '                    Else
-    '                        m_intImageIndex -= 1
-    '                        Exit Function
-    '                    End If
-    '                End If
-    '                ' this function to load the image and display it in the window
-    '                LoadImg()
-
-    '            Case Keys.Left
-    '                m_intImageIndex -= 1
-    '                ' If the index of the image is smaller than 0, then set 
-    '                ' it to be the second last image
-    '                If m_intImageIndex < 0 Then
-    '                    intAnswer = MessageBox.Show("You have reached the first image In the folder, would you Like To start again at the last image?", "First Image Reached", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-    '                    If intAnswer = vbYes Then
-    '                        m_intImageIndex = fileNames.Length - 1
-    '                    Else
-    '                        m_intImageIndex += 1
-    '                        Exit Function
-    '                    End If
-    '                End If
-    '                ' this function to load the image and display it in the window
-    '                LoadImg()
-
-    '            Case Else
-    '                Return MyBase.ProcessCmdKey(msg, keyData)
-
-    '        End Select
-    '    End If
-    'End Function
-
-
-    Public Sub enableDisableImageMenu(ByVal mnuState As Boolean)
-        Dim mnuItem As ToolStripMenuItem
-        For Each mnuItem In mnuImageTools.DropDownItems
-            If mnuItem.Text <> "Open Image" Then
-                mnuItem.Enabled = mnuState
-            End If
-        Next
     End Sub
-
-    'Private Sub cboZoom_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles cboZoom.KeyDown
-    '    If e.KeyCode = Keys.Enter Then
-    '        Dim intValue As Integer = 0
-    '        Dim intImageSize As Double = 0
-    '        Dim w As Integer = 0
-    '        Dim h As Integer = 0
-    '        Dim strZoomValue As String = NULL_STRING
-    '        Dim c As Char
-
-    '        For Each c In cboZoom.Text
-    '            If IsNumeric(c) Then
-    '                strZoomValue = strZoomValue & c
-    '            End If
-    '        Next
-
-    '        intValue = strZoomValue
-
-    '        If intValue <= 250 Then
-    '            If intValue <= 100 Then
-    '                intImageSize = 100 / intValue
-    '                w = Image.FromFile(currentImage).Width / intImageSize
-    '                h = Image.FromFile(currentImage).Height / intImageSize
-    '            Else
-    '                intImageSize = intValue / 100
-    '                w = Image.FromFile(currentImage).Width * intImageSize
-    '                h = Image.FromFile(currentImage).Height * intImageSize
-    '            End If
-
-    '            redraw_Image(w, h)
-
-    '            Me.cboZoom.Text = strZoomValue & "%"
-    '            If m_intLastImageIndex <> 0 Then
-    '                Me.cboZoom.Items.RemoveAt(m_intLastImageIndex)
-    '            End If
-    '            Me.cboZoom.Items.Add(Me.cboZoom.Text)
-    '            m_intLastImageIndex = Me.cboZoom.Items.IndexOf(cboZoom.Text)
-    '            intCurrentZoom = m_intLastImageIndex
-    '        Else
-    '            cboZoom.Text = cboZoom.Items.Item(intCurrentZoom)
-    '        End If
-    '    End If
-    'End Sub
-
 
 #End Region
 
@@ -3413,7 +3280,6 @@ Public Class VideoMiner
     ''' <param name="e"></param>
     Private Sub mnuOpenFile_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuOpenFile.Click
         If openVideo() Then
-            toggleVideoMenu(False)
             playVideo()
             pauseVideo()
             cmdShowSetTimecode.Enabled = True
@@ -3471,7 +3337,6 @@ Public Class VideoMiner
                 frmVideoPlayer.TopMost = True
             Else
                 'aPoint.X = intX + priMon.Bounds.Width
-
                 'aPoint.Y = intY / 2
                 ' Use these settings when debugging, and comment out the windowstate and topmost lines below
                 aPoint.X = intX + priMon.Bounds.Width / 3
@@ -3501,6 +3366,9 @@ Public Class VideoMiner
             'Me.lblVideo.Text = "Video File '" & VideoFileName & "' is open (" & frmVideoPlayer.FPS & " frames per second)"
             Me.lblVideo.Text = "Video File '" & VideoFileName & "' is open"
             m_video_file_open = True
+            mnuOpenImg.Enabled = False
+            mnuOpenFile.Enabled = False
+            mnuUseExternalVideo.Enabled = False
             Return True
         Else
             'frmVideoPlayer.frmVideoPlayer_Load(Me, New System.EventArgs)
@@ -3559,7 +3427,9 @@ Public Class VideoMiner
         End If
         lblVideo.Text = VIDEO_FILE_STATUS_UNLOADED
         pnlVideoControls.Visible = False
-        toggleVideoMenu(True)
+        mnuOpenImg.Enabled = True
+        mnuOpenFile.Enabled = True
+        mnuUseExternalVideo.Enabled = True
         unsetTimes()
         cmdShowSetTimecode.Enabled = False
         Me.txtTransectDate.Enabled = False
@@ -3945,14 +3815,6 @@ Public Class VideoMiner
 
     Private Sub PreviousImageToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         'cmdPreviousImage_Click(sender, e)
-    End Sub
-
-    Private Sub CloseImageFileToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CloseImageFileToolStripMenuItem.Click
-        frmImage.Close()
-    End Sub
-
-    Private Sub CloseVideoFileToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        frmVideoPlayer.Close()
     End Sub
 
     Public Sub cmdNext_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdNext.Click
@@ -4758,7 +4620,9 @@ Public Class VideoMiner
     Private Sub image_form_closing() Handles frmImage.ImageFormClosingEvent
         cmdNothingInPhoto.Visible = False
         image_open = False
-        enableDisableImageMenu(False)
+        mnuOpenImg.Enabled = True
+        mnuOpenFile.Enabled = True
+        mnuUseExternalVideo.Enabled = True
         frmImage = Nothing
     End Sub
 

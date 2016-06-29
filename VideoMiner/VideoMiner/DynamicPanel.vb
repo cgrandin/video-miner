@@ -125,6 +125,10 @@ Public Class DynamicPanel
     ''' </summary>
     Public Event SignalVideoPause(ByVal sender As System.Object, ByVal e As System.EventArgs)
     ''' <summary>
+    ''' Signals the parent that a button has been pressed on this panel and we request that the video be paused while data entry takes place.
+    ''' </summary>
+    Public Event SignalVideoPlay(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
     ''' Fire event to have parent form check for dirty data or anything else prior to launching the button code.
     ''' </summary>
     Public Event CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
@@ -283,9 +287,6 @@ Public Class DynamicPanel
                                                          r.Item(6).ToString(),
                                                          m_button_font,
                                                          m_button_text_size)
-                ' Adds a handler for each button for the event which is fired originally by the SpeciesEvent form, and bubbled through the DynamicButton class.
-                AddHandler m_dynamic_buttons(i).NewSpeciesEntryEvent, AddressOf new_species_entry_handler
-                AddHandler m_dynamic_buttons(i).SignalVideoPause, AddressOf signal_video_pause
             Else
                 ' It's a table-data button
                 m_dynamic_buttons(i) = New DynamicButton(r.Item(0),
@@ -298,8 +299,11 @@ Public Class DynamicPanel
                                                          m_button_text_size)
                 m_dynamic_textboxes(i) = New DynamicTextbox(r.Item(0), r.Item(1).ToString(), m_button_font, m_button_text_size)
             End If
+            ' Adds a handler for each button for the event which is fired originally
+            ' by the SpeciesEvent form, And bubbled through the DynamicButton class.
             AddHandler m_dynamic_buttons(i).DataChanged, AddressOf PanelDataChanged
             AddHandler m_dynamic_buttons(i).SignalVideoPause, AddressOf signal_video_pause
+            AddHandler m_dynamic_buttons(i).SignalVideoPlay, AddressOf signal_video_play
             AddHandler m_dynamic_buttons(i).Click, AddressOf button_CheckForDirtyDataEvent
             i += 1
         Next
@@ -498,6 +502,14 @@ Public Class DynamicPanel
     ''' <param name="sender">The DynamicButton that was pressed</param>
     Private Sub signal_video_pause(ByVal sender As System.Object, ByVal e As System.EventArgs)
         RaiseEvent SignalVideoPause(sender, e)
+    End Sub
+
+    ''' <summary>
+    ''' Tell the program to issue a play video command
+    ''' </summary>
+    ''' <param name="sender">The DynamicButton that was pressed</param>
+    Private Sub signal_video_play(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        RaiseEvent SignalVideoPlay(sender, e)
     End Sub
 
     ''' <summary>

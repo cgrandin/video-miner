@@ -58,6 +58,12 @@ Public Class frmTableView
     ''' If user edits the comment box, this event will be raised so that the main form can write a record to the database
     ''' </summary>
     Public Event DataChanged(sender As System.Object, e As System.EventArgs)
+    ''' <summary>
+    ''' Once the form is left by the user, this will signal to resume playback on the
+    ''' video player.
+    ''' </summary>
+    Public Event SignalPlay(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
 #End Region
 
     Public Sub New(titleText As String, dataTable As DataTable)
@@ -146,11 +152,13 @@ Public Class frmTableView
         If DataGridView1.SelectedRows.Count = 1 Then
             RaiseEvent DataChanged(Me, e)
             Me.Hide()
+            RaiseEvent SignalPlay(Me, e)
         End If
     End Sub
 
     Private Sub btnSkipSpatial_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSkipSpatial.Click
         Me.Hide()
+        RaiseEvent SignalPlay(Me, EventArgs.Empty)
     End Sub
 
     ''' <summary>
@@ -160,6 +168,7 @@ Public Class frmTableView
         clearSelection()
         RaiseEvent ClearEvent()
         Me.Hide()
+        RaiseEvent SignalPlay(Me, EventArgs.Empty)
     End Sub
 
     Private Sub cmdScreenCapture_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdScreenCapture.Click
