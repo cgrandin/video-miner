@@ -287,6 +287,7 @@ Public Class DynamicPanel
                                                          r.Item(6).ToString(),
                                                          m_button_font,
                                                          m_button_text_size)
+                AddHandler m_dynamic_buttons(i).NewSpeciesEntryEvent, AddressOf new_species_entry_handler
             Else
                 ' It's a table-data button
                 m_dynamic_buttons(i) = New DynamicButton(r.Item(0),

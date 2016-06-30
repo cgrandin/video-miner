@@ -461,7 +461,7 @@ Public Class DynamicButton
         RaiseEvent NewSpeciesEntryEvent(sender, e)
     End Sub
 
-    Private Sub abundanceDataChanged(sender As System.Object, e As System.EventArgs) Handles m_abundance_table.DataChanged
-        ' TODO: Finish this!
-    End Sub
+    'Private Sub abundanceDataChanged(sender As System.Object, e As System.EventArgs) Handles m_abundance_table.DataChanged
+    '    RaiseEvent DataChanged(sender, e)
+    'End Sub
 End Class
