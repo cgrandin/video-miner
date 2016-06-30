@@ -13,10 +13,10 @@ Public Class frmDataCodes
     End Sub
 
     Private Sub frmDataCodes_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        grdDataCodes.Columns.Item(0).Width = 100
-        grdDataCodes.Columns.Item(1).Width = 250
-        grdDataCodes.Columns.Item(0).DefaultCellStyle.ForeColor = Color.DarkGreen
-        grdDataCodes.Columns.Item(0).DefaultCellStyle.SelectionForeColor = Color.DarkGreen
-        grdDataCodes.Columns.Item(1).DefaultCellStyle.ForeColor = Color.Black
+        'grdDataCodes.Columns.Item(0).Width = 100
+        'grdDataCodes.Columns.Item(1).Width = 250
+        'grdDataCodes.Columns.Item(0).DefaultCellStyle.ForeColor = Color.DarkGreen
+        'grdDataCodes.Columns.Item(0).DefaultCellStyle.SelectionForeColor = Color.DarkGreen
+        'grdDataCodes.Columns.Item(1).DefaultCellStyle.ForeColor = Color.Black
     End Sub
 End Class

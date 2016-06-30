@@ -1,8 +1,5 @@
-﻿Imports System.Data.OleDb
+﻿Public Class frmCreateKeyboardShortcut
 
-Public Class frmCreateKeyboardShortcut
-
-    Private m_conn As OleDbConnection
     Private m_ButtonText As String
     Private m_KeyboardShortcut As String
 
@@ -29,6 +26,10 @@ Public Class frmCreateKeyboardShortcut
     Private blTyping As Boolean = False
     Private strCurrentKey As String = ""
     Private value As Array = [Enum].GetValues(GetType(Keys))
+
+    Public Sub New()
+        InitializeComponent()
+    End Sub
 
     Private Sub frmCreateKeyboardShortcut_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
         If blTyping = True Then
@@ -70,17 +71,9 @@ Public Class frmCreateKeyboardShortcut
             cmdStart.Text = "Start Typing"
             cmdOK.Enabled = True
             cmdCancel.Enabled = True
-            Dim query As String
-            Dim oComm As OleDb.OleDbCommand
-            query = "SELECT KeyboardShortcut FROM " & DB_SPECIES_BUTTONS_TABLE & " WHERE KeyboardShortcut = " & DoubleQuote(txtCurrentShortcut.Text)
-            Dim sub_data_set As DataSet = New DataSet()
-            oComm = New OleDb.OleDbCommand(query, m_conn)
-            Dim sub_data_adapter As OleDb.OleDbDataAdapter = New OleDb.OleDbDataAdapter(oComm)
-            sub_data_adapter.Fill(sub_data_set, DB_SPECIES_BUTTONS_TABLE)
-            Dim r As DataRow
-            Dim d As DataTable
-            d = sub_data_set.Tables(0)
-            If d.Rows.Count <> 0 Then
+            Dim strQuery As String = "SELECT KeyboardShortcut FROM " & DB_SPECIES_BUTTONS_TABLE & " WHERE KeyboardShortcut = " & DoubleQuote(txtCurrentShortcut.Text)
+            Dim dt As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_BUTTONS_TABLE)
+            If dt.Rows.Count <> 0 Then
                 MsgBox("That keyboard shortcut is already in use, please enter a new one.")
                 txtCurrentShortcut.Text = KeyboardShortcut
             End If
@@ -92,19 +85,12 @@ Public Class frmCreateKeyboardShortcut
     End Sub
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
-        Try
-            Dim query As String
-            Dim oComm As OleDb.OleDbCommand
-            query = "UPDATE " & DB_SPECIES_BUTTONS_TABLE & " " & _
-                        "SET KeyboardShortCut = " & DoubleQuote(txtCurrentShortcut.Text) & " " & _
-                        "WHERE ButtonText = " & DoubleQuote(ButtonText)
-
-            oComm = New OleDb.OleDbCommand(query, m_conn)
-            oComm.ExecuteNonQuery()
-            RaiseEvent AddedNewShortcut()
-        Catch ex As Exception
-
-        End Try
+        Dim strQuery As String
+        strQuery = "UPDATE " & DB_SPECIES_BUTTONS_TABLE &
+                   " SET KeyboardShortCut = " & DoubleQuote(txtCurrentShortcut.Text) &
+                   " WHERE ButtonText = " & DoubleQuote(ButtonText)
+        Database.ExecuteNonQuery(strQuery)
+        RaiseEvent AddedNewShortcut()
         Close()
     End Sub
 End Class

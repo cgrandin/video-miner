@@ -3581,6 +3581,8 @@ Public Class VideoMiner
         Me.lblDatabase.Text = DB_FILE_STATUS_UNLOADED
         mnuOpenDatabase.Enabled = True
         mnuCloseDatabase.Enabled = False
+        DataCodeAssignmentsToolStripMenuItem.Enabled = False
+        KeyboardShortcutsToolStripMenuItem.Enabled = False
         pnlTransectData.removeAllDynamicControls()
         pnlHabitatData.removeAllDynamicControls()
         pnlSpeciesData.removeAllDynamicControls()
@@ -3601,6 +3603,8 @@ Public Class VideoMiner
             Me.lblDatabase.Text = DB_FILE_STATUS_LOADED & m_db_filename & " is open"
             mnuOpenDatabase.Enabled = False
             mnuCloseDatabase.Enabled = True
+            DataCodeAssignmentsToolStripMenuItem.Enabled = True
+            KeyboardShortcutsToolStripMenuItem.Enabled = True
             fetch_data()
             database_is_open_toggle_visibility()
         End If

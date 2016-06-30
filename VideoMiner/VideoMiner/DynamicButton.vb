@@ -88,8 +88,8 @@ Public Class DynamicButton
     ''' <summary>
     ''' Currently entered comment in the frmTableView
     ''' </summary>
-    ''' <remarks></remarks>
     Private m_current_comment As String
+    ''' <summary>
     ''' Distinguishes between the two types of data this button can represent, database table
     ''' data (lookup tables stored as type DataTable) or singular data which are not a DataTable
     ''' Typically the singular type is used for species code entry buttons.
@@ -457,11 +457,7 @@ Public Class DynamicButton
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub new_species_entry_handler(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles frmSpeciesEvent.NewSpeciesEntryEvent
-        'Pass the species event object along
         RaiseEvent NewSpeciesEntryEvent(sender, e)
     End Sub
 
-    'Private Sub abundanceDataChanged(sender As System.Object, e As System.EventArgs) Handles m_abundance_table.DataChanged
-    '    RaiseEvent DataChanged(sender, e)
-    'End Sub
 End Class
