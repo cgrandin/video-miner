@@ -425,11 +425,12 @@ Public Class DynamicButton
     Public Sub clickMe(sender As Object, e As MouseEventArgs) Handles Me.Click
         If My.Computer.Keyboard.CtrlKeyDown Then
             clearData()
+        Else
+            ' Raise an event to signal the beginning of the process of filling in a form which will be recorded to the database.
+            ' For example, when the user presses a species button it will bring up the form needed to fill in the information for the species.
+            ' The video needs to be paused at this point, and restarted when the user presses OK on the form which is being worked on
+            RaiseEvent SignalVideoPause(Me, e)
         End If
-        ' Raise an event to signal the beginning of the process of filling in a form which will be recorded to the database.
-        ' For example, when the user presses a species button it will bring up the form needed to fill in the information for the species.
-        ' The video needs to be paused at this point, and restarted when the user presses OK on the form which is being worked on
-        RaiseEvent SignalVideoPause(Me, e)
     End Sub
 
     ''' <summary>

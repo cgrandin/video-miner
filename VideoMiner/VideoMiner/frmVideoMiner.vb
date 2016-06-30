@@ -1676,7 +1676,7 @@ Public Class VideoMiner
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub TransectStart_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdTransectStart.Click
-        pauseVideo()
+        frmVideoPlayer.pauseVideo()
         Dim start_or_end As String
 
         ' Create the insert query for the transect start/stop button
@@ -1786,7 +1786,7 @@ Public Class VideoMiner
         toggle_bottom()
 
         If blVideoWasPlaying = True Then
-            playVideo()
+            frmVideoPlayer.playVideo()
             blVideoWasPlaying = False
         End If
 
@@ -1875,7 +1875,7 @@ Public Class VideoMiner
         End If
     End Sub
 
-    Private Sub dataButtonEntryFinished() Handles pnlHabitatData.SignalVideoPlay, pnlSpeciesData.SignalVideoPlay, pnlHabitatData.SignalVideoPlay
+    Private Sub dataButtonEntryFinished() Handles pnlHabitatData.SignalVideoPlay, pnlSpeciesData.SignalVideoPlay, pnlTransectData.SignalVideoPlay
         If m_blWasPlaying Then
             frmVideoPlayer.playVideo()
         End If
