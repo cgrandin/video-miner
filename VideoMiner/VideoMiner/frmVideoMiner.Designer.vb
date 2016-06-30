@@ -340,7 +340,7 @@ Partial Class VideoMiner
         'mnuOpenImg
         '
         Me.mnuOpenImg.Name = "mnuOpenImg"
-        Me.mnuOpenImg.Size = New System.Drawing.Size(152, 22)
+        Me.mnuOpenImg.Size = New System.Drawing.Size(139, 22)
         Me.mnuOpenImg.Text = "Open Image"
         '
         'mnuConfigureTools
@@ -348,7 +348,7 @@ Partial Class VideoMiner
         Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ConfigureSpeciesEventToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureButtonFormatToolStripMenuItem, Me.DisableHabitatButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem, Me.AlwaysShowNewestRecordToolStripMenuItem})
         Me.mnuConfigureTools.Enabled = False
         Me.mnuConfigureTools.Name = "mnuConfigureTools"
-        Me.mnuConfigureTools.Size = New System.Drawing.Size(94, 20)
+        Me.mnuConfigureTools.Size = New System.Drawing.Size(72, 20)
         Me.mnuConfigureTools.Text = "Configure"
         '
         'ConfigureSpeciesEventToolStripMenuItem
@@ -1310,7 +1310,6 @@ Partial Class VideoMiner
         Me.DoubleBuffered = True
         Me.ForeColor = System.Drawing.Color.Black
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.KeyPreview = True
         Me.MainMenuStrip = Me.mnStrVideoMinerMenu
         Me.Name = "VideoMiner"
         Me.Text = "VideoMiner 3.1.0.0 BETA"

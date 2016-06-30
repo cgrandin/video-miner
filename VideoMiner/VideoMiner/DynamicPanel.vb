@@ -520,4 +520,19 @@ Public Class DynamicPanel
     Private Sub button_CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
         RaiseEvent CheckForDirtyDataEvent(sender, e)
     End Sub
+
+    ''' <summary>
+    ''' The dynamic button with the text 'str' will be clicked programmatically.
+    ''' This is so that when keyboard shortcuts are used in the main Videominer form,
+    ''' the correct button will be clicked causing the cascading events which lead to
+    ''' correct entry into the database
+    ''' </summary>
+    ''' <param name="str"></param>
+    Public Sub ClickButton(str As String)
+        For i As Integer = 0 To m_num_dynamic_buttons - 1
+            If m_dynamic_buttons(i).Text = str Then
+                m_dynamic_buttons(i).PerformClick()
+            End If
+        Next
+    End Sub
 End Class

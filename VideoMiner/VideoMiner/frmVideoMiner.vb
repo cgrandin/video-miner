@@ -302,9 +302,9 @@ Public Class VideoMiner
     Private substrate_name As String
     Private substrate_code As String
 
-    Public strKeyboardShortcut As String = NULL_STRING
-    Public strCurrentKey As String = NULL_STRING
-    Private value As Array = [Enum].GetValues(GetType(Keys))
+    'Public strKeyboardShortcut As String = NULL_STRING
+    'Public strCurrentKey As String = NULL_STRING
+    'Private value As Array = [Enum].GetValues(GetType(Keys))
 
     Public image_open As Boolean = False
     Public image_prefix As String
@@ -976,16 +976,6 @@ Public Class VideoMiner
         MyBase.Finalize()
     End Sub
 
-    Protected Overrides Function ProcessCmdKey(ByRef msg As System.Windows.Forms.Message, ByVal keyData As System.Windows.Forms.Keys) As Boolean
-        Select Case CType(msg.WParam.ToInt32, Keys)
-            Case Keys.Enter
-                'indicates you've handled the message sent by the enter key press here; basically, you're eating up these messages
-                Return True
-            Case Else
-                Return MyBase.ProcessCmdKey(msg, keyData)
-        End Select
-    End Function
-
     ''' <summary>
     ''' Get version name from assembly, read and process the Config file, and setup the form controls for an unloaded state.
     ''' </summary>
@@ -1109,7 +1099,6 @@ Public Class VideoMiner
 
         ' Create this form once, since it loads comboboxes with large amounts of data.
         frmRareSpeciesLookup = New frmRareSpeciesLookup
-
     End Sub
 
     ''' <summary>
@@ -1234,7 +1223,7 @@ Public Class VideoMiner
     ''' <param name="xPath">An XPath String representing the XML node name</param>
     ''' <param name="strValue">The value to save in the node represented by xPath</param>
     ''' <returns>A Boolean representing success or failure</returns>
-    Public Function SaveConfiguration(ByVal xPath As String, ByVal strValue As String, Optional forceCreate As Boolean = vbFalse) As Boolean
+    Public Function SaveConfiguration(ByVal xPath As String, ByVal strValue As String, Optional forceCreate As Boolean = False) As Boolean
         Dim strPath As String = VMCD & xPath
         If File.Exists(m_strConfigFile) Then
             Dim xmlDoc As New XmlDocument
@@ -1483,24 +1472,58 @@ Public Class VideoMiner
 
     End Function
 
-    'Public Sub VideoMiner_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
-    '    If strCurrentKey <> CStr(e.KeyValue) Then
-    '        strCurrentKey = CStr(e.KeyValue)
-    '        Dim key As Object
-    '        For Each key In value
-    '            If e.KeyValue = key Then
-    '                If strKeyboardShortcut = NULL_STRING Then
-    '                    strKeyboardShortcut = key.ToString
-    '                Else
-    '                    strKeyboardShortcut = strKeyboardShortcut & "+" & key.ToString
-    '                End If
-    '                If e.KeyValue = Keys.Alt Then
-    '                    e.SuppressKeyPress = True
-    '                End If
-    '            End If
+    ''' <summary>
+    ''' Handles the keyboard shortcuts from the main Videominer window.
+    ''' </summary>
+    ''' <param name="e">The key that was pressed</param>
+    Public Sub VideoMiner_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
+        ' If delete or shift were pressed, it could be to select or delete something from the data grid.
+        If e.KeyValue = Keys.Delete Or e.KeyValue = Keys.ShiftKey Then Exit Sub
+        ' If control key was pressed, it could be to clear a habitat type.
+        If e.KeyValue = Keys.ControlKey Then Exit Sub
+        ' If arrow keys were pressed, it could be to navigate the data grid.
+        If e.KeyValue = Keys.Left Or
+            e.KeyValue = Keys.Right Or
+            e.KeyValue = Keys.Up Or
+            e.KeyValue = Keys.Down Then
+            Exit Sub
+        End If
+        ' Ignore Alt and Escape since they are used for other thing in windows.
+        If e.KeyValue = Keys.Menu Or e.KeyValue = Keys.Escape Then Exit Sub
 
-    '        Next
-    '    End If
+        Dim kc As New KeysConverter
+        Dim strKeyboardShortcut As String = kc.ConvertToString(e.KeyValue)
+
+        ' Fetch the record corresponding to the shortcut
+        Dim d As DataTable = Database.GetDataTable("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor, KeyboardShortcut from " &
+                                                   DB_SPECIES_BUTTONS_TABLE & " WHERE KeyboardShortcut = " & DoubleQuote(strKeyboardShortcut) &
+                                                   " ORDER BY DrawingOrder;", DB_SPECIES_BUTTONS_TABLE)
+        If d.Rows.Count <= 0 Then
+            'MessageBox.Show("You pressed " & strKeyboardShortcut & " but it is not a valid keyboard shortcut. No data were entered.",
+            '                "Unknown keyboard shortcut", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        Else
+            ' The idea here is to cause a click of the button that corresponds to the shortcut, because the
+            ' code to build the query is complex and already implemented in buttonDataChanged()
+            'If Not grdVideoMinerDatabase.Focused Then
+            pnlSpeciesData.ClickButton(d.Rows(0).Item(1))
+            'End If
+        End If
+    End Sub
+
+    Protected Overrides Function ProcessCmdKey(ByRef msg As System.Windows.Forms.Message, ByVal keyData As System.Windows.Forms.Keys) As Boolean
+        Select Case CType(msg.WParam.ToInt32, Keys)
+            Case Keys.Enter
+                'indicates you've handled the message sent by the enter key press here; basically, you're eating up these messages
+                Return True
+            Case Else
+                Return MyBase.ProcessCmdKey(msg, keyData)
+        End Select
+    End Function
+
+    'Private Sub frmVideoMiner_Keypress(sender As Object, e As KeyPressEventArgs) Handles Me.KeyPress
+    ' If grdVideoMinerDatabase.Focused Then
+    '         e.Handled = True
+    'End If
     'End Sub
 
     ''' <summary>
@@ -1869,15 +1892,19 @@ Public Class VideoMiner
     Private Sub dataButtonNewEntry() Handles pnlHabitatData.SignalVideoPause, pnlSpeciesData.SignalVideoPause, pnlTransectData.SignalVideoPause
         ' First store whether or not the video is playing so we can do the appropriate thing after
         ' the data are inserted
-        m_blWasPlaying = frmVideoPlayer.IsPlaying
-        If m_blWasPlaying Then
-            frmVideoPlayer.pauseVideo()
+        If Not frmVideoPlayer Is Nothing Then
+            m_blWasPlaying = frmVideoPlayer.IsPlaying
+            If m_blWasPlaying Then
+                frmVideoPlayer.pauseVideo()
+            End If
         End If
     End Sub
 
     Private Sub dataButtonEntryFinished() Handles pnlHabitatData.SignalVideoPlay, pnlSpeciesData.SignalVideoPlay, pnlTransectData.SignalVideoPlay
-        If m_blWasPlaying Then
-            frmVideoPlayer.playVideo()
+        If Not frmVideoPlayer Is Nothing Then
+            If m_blWasPlaying Then
+                frmVideoPlayer.playVideo()
+            End If
         End If
     End Sub
     ''' <summary>

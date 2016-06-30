@@ -422,7 +422,7 @@ Public Class DynamicButton
     ''' <summary>
     ''' If this button is Ctrl-clicked, the selection will be cleared.
     ''' </summary>
-    Public Sub clickMe(sender As Object, e As MouseEventArgs) Handles Me.Click
+    Public Sub clickMe(sender As Object, e As EventArgs) Handles Me.Click
         If My.Computer.Keyboard.CtrlKeyDown Then
             clearData()
         Else
