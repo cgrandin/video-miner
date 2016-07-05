@@ -1271,9 +1271,9 @@ Public Class VideoMiner
         SaveConfiguration("/a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p", "A New Hope")
         SaveConfiguration("/a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p", "The Empire Strikes Back")
         ' Test forcibly creating the node, even if it has the same name
-        SaveConfiguration("/PreviousProjects/ProjectName", "testSave1", vbTrue)
-        SaveConfiguration("/PreviousProjects/ProjectName", "testSave2", vbTrue)
-        SaveConfiguration("/PreviousProjects/ProjectName", "testSave3", vbTrue)
+        SaveConfiguration("/PreviousProjects/ProjectName", "testSave1", True)
+        SaveConfiguration("/PreviousProjects/ProjectName", "testSave2", True)
+        SaveConfiguration("/PreviousProjects/ProjectName", "testSave3", True)
     End Sub
 
     ''' <summary>
@@ -1492,7 +1492,8 @@ Public Class VideoMiner
         If e.KeyValue = Keys.Menu Or e.KeyValue = Keys.Escape Then Exit Sub
 
         Dim kc As New KeysConverter
-        Dim strKeyboardShortcut As String = kc.ConvertToString(e.KeyValue)
+        Dim strKeyboardShortcut0 As String = kc.ConvertToString(e.KeyValue)
+        Dim strKeyboardShortcut As String = kc.ConvertToString(e.KeyData)
 
         ' Fetch the record corresponding to the shortcut
         Dim d As DataTable = Database.GetDataTable("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor, KeyboardShortcut from " &
@@ -1988,10 +1989,6 @@ Public Class VideoMiner
         For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlHabitatData.Dictionary
             dict.Add(kvp.Key, kvp.Value)
         Next
-        ' Need to add the DataCode of '4' in for a species record.
-        '        If frm.Dictionary.ContainsKey("DataCode") Then
-        'frm.Dictionary.Remove("DataCode")
-        'End If
         tuple = New Tuple(Of String, String, Boolean)("4", "4", True)
         dict.Add("DataCode", tuple)
 

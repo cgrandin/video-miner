@@ -24,7 +24,6 @@ Partial Class frmCreateKeyboardShortcut
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCreateKeyboardShortcut))
         Me.txtCurrentShortcut = New System.Windows.Forms.TextBox()
-        Me.cmdStart = New System.Windows.Forms.Button()
         Me.cmdOK = New System.Windows.Forms.Button()
         Me.cmdCancel = New System.Windows.Forms.Button()
         Me.SuspendLayout()
@@ -37,15 +36,6 @@ Partial Class frmCreateKeyboardShortcut
         Me.txtCurrentShortcut.Size = New System.Drawing.Size(156, 20)
         Me.txtCurrentShortcut.TabIndex = 0
         Me.txtCurrentShortcut.TabStop = False
-        '
-        'cmdStart
-        '
-        Me.cmdStart.Location = New System.Drawing.Point(174, 10)
-        Me.cmdStart.Name = "cmdStart"
-        Me.cmdStart.Size = New System.Drawing.Size(75, 23)
-        Me.cmdStart.TabIndex = 1
-        Me.cmdStart.Text = "Start Typing"
-        Me.cmdStart.UseVisualStyleBackColor = True
         '
         'cmdOK
         '
@@ -69,23 +59,23 @@ Partial Class frmCreateKeyboardShortcut
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(261, 72)
+        Me.ClientSize = New System.Drawing.Size(181, 67)
+        Me.ControlBox = False
         Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.cmdOK)
-        Me.Controls.Add(Me.cmdStart)
         Me.Controls.Add(Me.txtCurrentShortcut)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.KeyPreview = True
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "frmCreateKeyboardShortcut"
-        Me.Text = "Create Keyboard Shortcut"
+        Me.Text = "Press keys to create..."
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
     Friend WithEvents txtCurrentShortcut As System.Windows.Forms.TextBox
-    Friend WithEvents cmdStart As System.Windows.Forms.Button
     Friend WithEvents cmdOK As System.Windows.Forms.Button
     Friend WithEvents cmdCancel As System.Windows.Forms.Button
 End Class
