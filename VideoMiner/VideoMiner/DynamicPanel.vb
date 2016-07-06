@@ -52,7 +52,7 @@ Public Class DynamicPanel
     ''' </summary>
     Private m_num_static_controls As Integer
     ''' <summary>
-    ''' Distinguishes between the two types of data this panel can hold, DynamicButtons linked to database table
+    ''' Distinguishes between the two types of buttons this panel can hold, DynamicButtons linked to database table
     ''' data (lookup tables stored as type DataTable) or singular data which are not a DataTable, and have a keyboard shortcut.
     ''' Typically the singular type is used for species code entry buttons.
     ''' </summary>
@@ -61,9 +61,21 @@ Public Class DynamicPanel
         Singular
     End Enum
     ''' <summary>
+    ''' The style of entry for a species entry. Used only when WhichTypeEnum is Singular.
+    ''' </summary>
+    Public Enum WhichEntryStyleEnum
+        Quick
+        Detailed
+        Abundance
+    End Enum
+    ''' <summary>
     ''' Holds the enumeration type for this instance
     ''' </summary>
     Private m_which_type As WhichTypeEnum
+    ''' <summary>
+    ''' Holds the style of entry for species data
+    ''' </summary>
+    Private m_which_entry_style As WhichEntryStyleEnum
     ''' <summary>
     ''' A tuple for the Dictionary object, m_dict.
     ''' </summary>
@@ -94,6 +106,21 @@ Public Class DynamicPanel
         End Get
         Set(value As WhichTypeEnum)
             m_which_type = value
+
+        End Set
+    End Property
+
+    ''' <summary>
+    ''' Enumeration type for style of entry for this panel. Only applies to species panels.
+    ''' See WhichEntryStyleEnum for descriptions.
+    ''' </summary>
+    Public Property WhichEntryStyle As WhichEntryStyleEnum
+        Get
+            Return m_which_entry_style
+        End Get
+        Set(value As WhichEntryStyleEnum)
+            m_which_entry_style = value
+            setWhichEntryStyleButtons()
         End Set
     End Property
 
@@ -148,10 +175,18 @@ Public Class DynamicPanel
     ''' <param name="blRepeatIsChecked">If True, the 'Repeat for each record' checkbox will be checked on creation.</param>
     ''' <param name="intRepeatWidth">Width of the 'Repeat for each record' checkbox.</param>
     ''' <param name="intRepeatHeight">Height of the 'Repeat for each record' checkbox.</param>
-    Public Sub New(strPanelName As String, Optional blIncludeDefineAllButton As Boolean = True, Optional intButtonWidth As Integer = 170,
-                   Optional intButtonHeight As Integer = 44, Optional strButtonFont As String = "Microsoft Sans Serif", Optional intButtonTextSize As Integer = 8,
-                   Optional blIncludeRepeatCheckbox As Boolean = False, Optional blRepeatIsChecked As Boolean = True, Optional intRepeatWidth As Integer = 210,
-                   Optional intRepeatHeight As Integer = 17)
+    ''' <param name="whichEntryStyle">Entry style (quick, detailed, abundance) for a species panel.</param>
+    Public Sub New(strPanelName As String,
+                   Optional blIncludeDefineAllButton As Boolean = True,
+                   Optional intButtonWidth As Integer = 170,
+                   Optional intButtonHeight As Integer = 44,
+                   Optional strButtonFont As String = "Microsoft Sans Serif",
+                   Optional intButtonTextSize As Integer = 8,
+                   Optional blIncludeRepeatCheckbox As Boolean = False,
+                   Optional blRepeatIsChecked As Boolean = True,
+                   Optional intRepeatWidth As Integer = 210,
+                   Optional intRepeatHeight As Integer = 17,
+                   Optional whichEntryStyle As WhichEntryStyleEnum = WhichEntryStyleEnum.Detailed)
 
         Name = strPanelName
 
@@ -162,6 +197,7 @@ Public Class DynamicPanel
         m_gap = 2
         m_tuple = New Tuple(Of String, String, Boolean)(Nothing, Nothing, False)
         m_dict = New Dictionary(Of String, Tuple(Of String, String, Boolean))
+        m_which_entry_style = whichEntryStyle
 
         'Panel label load`
         m_label = New Label()
@@ -286,7 +322,8 @@ Public Class DynamicPanel
                                                          r.Item(5).ToString(),
                                                          r.Item(6).ToString(),
                                                          m_button_font,
-                                                         m_button_text_size)
+                                                         m_button_text_size,
+                                                         m_which_entry_style)
                 AddHandler m_dynamic_buttons(i).NewSpeciesEntryEvent, AddressOf new_species_entry_handler
             Else
                 ' It's a table-data button
@@ -455,6 +492,15 @@ Public Class DynamicPanel
                 m_tuple = New Tuple(Of String, String, Boolean)(m_dynamic_buttons(i).DataCode, m_dynamic_buttons(i).DataValue, False)
                 m_dict.Add(m_dynamic_buttons(i).DataCodeName, m_tuple)
             End If
+        Next
+    End Sub
+
+    ''' <summary>
+    ''' Set all dynamic buttons to have the same WhichEntryStyle as this panel.
+    ''' </summary>
+    Private Sub setWhichEntryStyleButtons()
+        For i As Integer = 0 To m_num_dynamic_buttons - 1
+            m_dynamic_buttons(i).WhichEntryStyle = CType(m_which_entry_style, DynamicButton.WhichEntryStyleEnum)
         Next
     End Sub
 

@@ -1085,13 +1085,16 @@ Public Class VideoMiner
         frmSetTime = New frmSetTime(m_tsUserTime)
 
         ' Add DynamicPanels to the SplitContainerPanels
-        pnlTransectData = New DynamicPanel(PANEL_NAME_TRANSECT, True, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, True, True)
+        pnlTransectData = New DynamicPanel(PANEL_NAME_TRANSECT, True, Me.ButtonWidth, Me.ButtonHeight,
+                                           Me.ButtonFont, Me.ButtonTextSize, True, True)
         SplitContainer7.Panel1.Controls.Add(pnlTransectData)
 
-        pnlHabitatData = New DynamicPanel(PANEL_NAME_HABITAT, True, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, True, True)
+        pnlHabitatData = New DynamicPanel(PANEL_NAME_HABITAT, True, Me.ButtonWidth, Me.ButtonHeight,
+                                          Me.ButtonFont, Me.ButtonTextSize, True, True)
         SplitContainer7.Panel2.Controls.Add(pnlHabitatData)
 
-        pnlSpeciesData = New DynamicPanel(PANEL_NAME_SPECIES, False, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize, False)
+        pnlSpeciesData = New DynamicPanel(PANEL_NAME_SPECIES, False, Me.ButtonWidth, Me.ButtonHeight,
+                                          Me.ButtonFont, Me.ButtonTextSize, False)
         pnlSpeciesData.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         pnlSpeciesData.Dock = DockStyle.Fill
         'AddHandler pnlSpeciesData.NewSpeciesEntryEvent, AddressOf new_species_entry_handler
@@ -3790,6 +3793,10 @@ Public Class VideoMiner
             Me.lblQuickSpeciesCount.Visible = False
             Me.txtQuickSpeciesCount.Visible = False
         End If
+        ' Tell the species panel that the buttons should all be quick entry type
+        If Not IsNothing(pnlSpeciesData) Then
+            pnlSpeciesData.WhichEntryStyle = DynamicPanel.WhichEntryStyleEnum.Quick
+        End If
     End Sub
 
     ''' <summary>
@@ -4868,4 +4875,17 @@ Public Class VideoMiner
         Throw New NotImplementedException
     End Function
 
+    Private Sub radDetailedEntry_CheckedChanged(sender As Object, e As EventArgs) Handles radDetailedEntry.CheckedChanged
+        ' Tell the species panel that the buttons should all be detailed entry type
+        If Not IsNothing(pnlSpeciesData) Then
+            pnlSpeciesData.WhichEntryStyle = DynamicPanel.WhichEntryStyleEnum.Detailed
+        End If
+    End Sub
+
+    Private Sub radAbundanceEntry_CheckedChanged(sender As Object, e As EventArgs) Handles radAbundanceEntry.CheckedChanged
+        ' Tell the species panel that the buttons should all be abundance entry type
+        If Not IsNothing(pnlSpeciesData) Then
+            pnlSpeciesData.WhichEntryStyle = DynamicPanel.WhichEntryStyleEnum.Abundance
+        End If
+    End Sub
 End Class

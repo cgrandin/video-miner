@@ -102,6 +102,19 @@ Public Class DynamicButton
     ''' Holds the enumeration type for this instance
     ''' </summary>
     Private m_which_type As WhichTypeEnum
+    ''' <summary>
+    ''' The style of entry for a species entry. Used only when WhichTypeEnum is Singular.
+    ''' </summary>
+    Public Enum WhichEntryStyleEnum
+        Quick
+        Detailed
+        Abundance
+    End Enum
+    ''' <summary>
+    ''' Holds the style of entry for species data
+    ''' </summary>
+    Private m_which_entry_style As WhichEntryStyleEnum
+
 #End Region
 
 #Region "Properties"
@@ -180,6 +193,20 @@ Public Class DynamicButton
             m_current_comment = value
         End Set
     End Property
+
+    ''' <summary>
+    ''' Enumeration type for style of entry for this panel. Only applies to species panels.
+    ''' See WhichEntryStyleEnum for descriptions.
+    ''' </summary>
+    Public Property WhichEntryStyle As WhichEntryStyleEnum
+        Get
+            Return m_which_entry_style
+        End Get
+        Set(value As WhichEntryStyleEnum)
+            m_which_entry_style = value
+        End Set
+    End Property
+
 
     Public Property ForeColorString As String
         Get
@@ -263,7 +290,15 @@ Public Class DynamicButton
     ''' <param name="buttonFont">The font to use for this button (e.g. "Microsoft Sans Serif")</param>
     ''' <param name="buttonTextSize">The font size to use for this button's text (in pts)</param>
     ''' <remarks></remarks>
-    Public Sub New(controlCode As Integer, buttonText As String, tableName As String, dataCode As Integer, dataCodeName As String, buttonColor As String, buttonFont As String, buttonTextSize As Integer)
+    Public Sub New(controlCode As Integer,
+                   buttonText As String,
+                   tableName As String,
+                   dataCode As Integer,
+                   dataCodeName As String,
+                   buttonColor As String,
+                   buttonFont As String,
+                   buttonTextSize As Integer,
+                   Optional whichEntryStyle As WhichEntryStyleEnum = WhichEntryStyleEnum.Detailed)
         Dim d As DataTable
         Me.ControlCode = controlCode
         Me.Name = buttonText
@@ -321,8 +356,18 @@ Public Class DynamicButton
     ''' <param name="keyboardShortcut">Keyboard shortcut that will run the Click event for this button</param>
     ''' <param name="buttonFont">The font to use for this button (e.g. "Microsoft Sans Serif")</param>
     ''' <param name="buttonTextSize">The font size to use for this button's text (in pts)</param>
+    ''' <param name="whichEntryStyle">Entry style (quick, detailed, abundance) for a species button.</param>
     ''' <remarks></remarks>
-    Public Sub New(controlCode As Integer, buttonText As String, buttonCode As String, buttonCodeName As String, dataCode As Integer, buttonColor As String, keyboardShortcut As String, buttonFont As String, buttonTextSize As Integer)
+    Public Sub New(controlCode As Integer,
+                   buttonText As String,
+                   buttonCode As String,
+                   buttonCodeName As String,
+                   dataCode As Integer,
+                   buttonColor As String,
+                   keyboardShortcut As String,
+                   buttonFont As String,
+                   buttonTextSize As Integer,
+                   Optional whichEntryStyle As WhichEntryStyleEnum = WhichEntryStyleEnum.Detailed)
         Me.ControlCode = controlCode
         Me.Name = buttonText
         Me.Text = buttonText
@@ -347,14 +392,11 @@ Public Class DynamicButton
         m_button_code = buttonCode
         m_button_code_name = buttonCodeName
         m_keyboard_shortcut = keyboardShortcut
+        m_which_entry_style = whichEntryStyle
+
         DataValue = UNINITIALIZED_DATA_VALUE
         ' The species event form is unique for each dynamic button and is created once when the dynamic button is created
         frmSpeciesEvent = New frmSpeciesEvent(buttonText)
-        ' Handler for when the user presses a species button, it should just call up the Species Event form with the button's data sent as sender
-        'AddHandler Me.Click, AddressOf Me.ShowSpeciesEventForm
-        ' Handler is commented out because of the implementation of dirty data checking in frmVideoMiner. Now, the button click is handled in the DynamicPanel
-        ' which holds these buttons, which raises another event (see sub button_CheckForDirtyDataEvent) to the main form, which casts the sender to DynamicButton
-        ' and calls the public sub ShowDataForm()
     End Sub
 
     ''' <summary>
@@ -369,9 +411,11 @@ Public Class DynamicButton
                 Me.DataFormVisible = True
             End If
         ElseIf WhichType = WhichTypeEnum.Singular Then
-            frmSpeciesEvent.Show()
+            If WhichEntryStyle = WhichEntryStyleEnum.Detailed Then
+                frmSpeciesEvent.Show()
+            End If
         ElseIf m_db_table_name = "UserEntered" Then
-            Me.DataFormVisible = True
+                Me.DataFormVisible = True
         End If
         ' Raise an event to signal the beginning of the process of filling in a form which will be recorded to the database.
         ' For example, when the user presses a species button it will bring up the form needed to fill in the information for the species.
