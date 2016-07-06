@@ -29,10 +29,18 @@
         InitializeComponent()
     End Sub
 
+    ''' <summary>
+    ''' Allows the Enter key to be used to submit the keyboard shortcut to the database instead
+    ''' of requiring the user press the OK button. Any other keypresses are passed down for the
+    ''' KyDown event to catch.
+    ''' </summary>
+    ''' <param name="msg"></param>
+    ''' <param name="keyData"></param>
+    ''' <returns></returns>
     Protected Overrides Function ProcessCmdKey(ByRef msg As System.Windows.Forms.Message, ByVal keyData As System.Windows.Forms.Keys) As Boolean
         Select Case CType(msg.WParam.ToInt32, Keys)
             Case Keys.Enter
-                cmdOK_Click(Me, EventArgs.Empty)
+                assignShortcut()
                 Return True
             Case Else
                 Return MyBase.ProcessCmdKey(msg, keyData)
@@ -42,8 +50,8 @@
     ''' <summary>
     ''' Read user keypresses, and show them in the textbox.
     ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
+    ''' <param name="sender">Object</param>
+    ''' <param name="e">KeyEventArgs</param>
     Private Sub frmCreateKeyboardShortcut_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
         Dim kc As KeysConverter = New KeysConverter()
         Dim strKey As String = kc.ConvertToString(e.KeyCode)
@@ -54,7 +62,7 @@
            strKey <> "ControlKey" And
            strKey <> "ShiftKey" Then
             If e.Modifiers = Keys.Control Then
-                strKey = "Control+" & strKey
+                strKey = "Ctrl+" & strKey
             End If
             If e.Modifiers = Keys.Shift Then
                 strKey = "Shift+" & strKey
@@ -73,6 +81,14 @@
     End Sub
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
+        assignShortcut()
+    End Sub
+
+    ''' <summary>
+    ''' Record the keyboard shortcut in the database. If it already exists in the database,
+    ''' inform user and go back to 'waiting for input' mode.
+    ''' </summary>
+    Private Sub assignShortcut()
         Dim strQuery As String
         ' Check to see if the entered shortcut is valid
         strQuery = "SELECT KeyboardShortcut FROM " & DB_SPECIES_BUTTONS_TABLE &
@@ -81,7 +97,7 @@
         If dt.Rows.Count <> 0 Then
             MessageBox.Show("That keyboard shortcut is already in use, please try again.",
                             "Shortcut already used", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            txtCurrentShortcut.Text = KeyboardShortcut
+            txtCurrentShortcut.Text = NULL_STRING
         Else
             strQuery = "UPDATE " & DB_SPECIES_BUTTONS_TABLE &
                        " SET KeyboardShortCut = " & DoubleQuote(txtCurrentShortcut.Text) &
@@ -91,5 +107,4 @@
             Close()
         End If
     End Sub
-
 End Class

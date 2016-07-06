@@ -1480,7 +1480,7 @@ Public Class VideoMiner
         ' If delete or shift were pressed, it could be to select or delete something from the data grid.
         If e.KeyValue = Keys.Delete Or e.KeyValue = Keys.ShiftKey Then Exit Sub
         ' If control key was pressed, it could be to clear a habitat type.
-        If e.KeyValue = Keys.ControlKey Then Exit Sub
+        ' If e.KeyValue = Keys.ControlKey Then Exit Sub
         ' If arrow keys were pressed, it could be to navigate the data grid.
         If e.KeyValue = Keys.Left Or
             e.KeyValue = Keys.Right Or
@@ -1488,11 +1488,10 @@ Public Class VideoMiner
             e.KeyValue = Keys.Down Then
             Exit Sub
         End If
-        ' Ignore Alt and Escape since they are used for other thing in windows.
+        ' Ignore Alt and Escape since they are used for other things in windows.
         If e.KeyValue = Keys.Menu Or e.KeyValue = Keys.Escape Then Exit Sub
 
         Dim kc As New KeysConverter
-        Dim strKeyboardShortcut0 As String = kc.ConvertToString(e.KeyValue)
         Dim strKeyboardShortcut As String = kc.ConvertToString(e.KeyData)
 
         ' Fetch the record corresponding to the shortcut
@@ -1512,7 +1511,8 @@ Public Class VideoMiner
     End Sub
 
     Protected Overrides Function ProcessCmdKey(ByRef msg As System.Windows.Forms.Message, ByVal keyData As System.Windows.Forms.Keys) As Boolean
-        Select Case CType(msg.WParam.ToInt32, Keys)
+        Dim k As Keys = CType(msg.WParam.ToInt32, Keys)
+        Select Case k
             Case Keys.Enter
                 'indicates you've handled the message sent by the enter key press here; basically, you're eating up these messages
                 Return True
@@ -1832,14 +1832,14 @@ Public Class VideoMiner
                     ElseIf radAbundanceEntry.Checked Then
                         btn.RecordAbundance()
                     Else
-                        btn.ShowDataForm()
+                        btn.ShowDataForm(sender, e)
                     End If
                 Else
-                    btn.ShowDataForm()
+                    btn.ShowDataForm(sender, e)
                 End If
             Else
                 If My.Computer.Keyboard.CtrlKeyDown Then
-                    btn.ShowDataForm()
+                    btn.ShowDataForm(sender, e)
                     Exit Sub
                 End If
                 If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
@@ -1848,10 +1848,10 @@ Public Class VideoMiner
                         If radQuickEntry.Checked Then
                             btn.RecordQuick(txtQuickSpeciesCount.Text)
                         Else
-                            btn.ShowDataForm()
+                            btn.ShowDataForm(sender, e)
                         End If
                     Else
-                        btn.ShowDataForm()
+                        btn.ShowDataForm(sender, e)
                     End If
                 End If
             End If

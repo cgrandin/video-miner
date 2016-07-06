@@ -298,11 +298,11 @@ Public Class DynamicPanel
                                                          r.Item(5).ToString(),
                                                          m_button_font,
                                                          m_button_text_size)
+                AddHandler m_dynamic_buttons(i).DataChanged, AddressOf PanelDataChanged
                 m_dynamic_textboxes(i) = New DynamicTextbox(r.Item(0), r.Item(1).ToString(), m_button_font, m_button_text_size)
             End If
             ' Adds a handler for each button for the event which is fired originally
             ' by the SpeciesEvent form, And bubbled through the DynamicButton class.
-            AddHandler m_dynamic_buttons(i).DataChanged, AddressOf PanelDataChanged
             AddHandler m_dynamic_buttons(i).SignalVideoPause, AddressOf signal_video_pause
             AddHandler m_dynamic_buttons(i).SignalVideoPlay, AddressOf signal_video_play
             AddHandler m_dynamic_buttons(i).Click, AddressOf button_CheckForDirtyDataEvent
@@ -379,7 +379,7 @@ Public Class DynamicPanel
         Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
         ' Find associated DynamicTextbox, so we can change the text to reflect the change
         For i As Integer = 0 To m_num_dynamic_buttons - 1
-            If m_dynamic_textboxes(i).ControlCode = btn.ControlCode Then
+            If m_dynamic_textboxes(i).ControlCode = btn.ControlCode.ToString() Then
                 If btn.DataValue = DynamicButton.UNINITIALIZED_DATA_VALUE Then
                     ' The data have been cleared, so change the textbox to reflect this
                     m_dynamic_textboxes(i).setNoData()

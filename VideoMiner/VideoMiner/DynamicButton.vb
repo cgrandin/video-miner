@@ -360,18 +360,23 @@ Public Class DynamicButton
     ''' <summary>
     ''' Show the species event form for the current species.
     ''' </summary>
-    Public Sub ShowDataForm()
-        If My.Computer.Keyboard.CtrlKeyDown Then
-            clearData()
-            Exit Sub
-        End If
-        If m_db_table_name = "UserEntered" Then
-            Me.DataFormVisible = True
+    Public Sub ShowDataForm(sender As Object, e As EventArgs)
+        If WhichType = WhichTypeEnum.DataTable Then
+            If My.Computer.Keyboard.CtrlKeyDown Then
+                clearData()
+                Exit Sub
+            Else
+                Me.DataFormVisible = True
+            End If
         ElseIf WhichType = WhichTypeEnum.Singular Then
             frmSpeciesEvent.Show()
-        Else
+        ElseIf m_db_table_name = "UserEntered" Then
             Me.DataFormVisible = True
         End If
+        ' Raise an event to signal the beginning of the process of filling in a form which will be recorded to the database.
+        ' For example, when the user presses a species button it will bring up the form needed to fill in the information for the species.
+        ' The video needs to be paused at this point, and restarted when the user presses OK on the form which is being worked on
+        RaiseEvent SignalVideoPause(Me, e)
     End Sub
 
     ''' <summary>
@@ -423,14 +428,7 @@ Public Class DynamicButton
     ''' If this button is Ctrl-clicked, the selection will be cleared.
     ''' </summary>
     Public Sub clickMe(sender As Object, e As EventArgs) Handles Me.Click
-        If My.Computer.Keyboard.CtrlKeyDown Then
-            clearData()
-        Else
-            ' Raise an event to signal the beginning of the process of filling in a form which will be recorded to the database.
-            ' For example, when the user presses a species button it will bring up the form needed to fill in the information for the species.
-            ' The video needs to be paused at this point, and restarted when the user presses OK on the form which is being worked on
-            RaiseEvent SignalVideoPause(Me, e)
-        End If
+        ShowDataForm(sender, e)
     End Sub
 
     ''' <summary>
