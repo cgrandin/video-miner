@@ -269,7 +269,8 @@ Public Class frmSpeciesEvent
     End Sub
 
     ''' <summary>
-    ''' Acknowledge that everything is verified by setting all member variables and building the dictionary. An event will be fired to let the parents know we are ready.
+    ''' Acknowledge that everything is verified by setting all member variables and building the dictionary.
+    ''' An event will be fired to let the parents know we are ready.
     ''' </summary>
     ''' <param name="speciesCount">The species count to enter for this quick species entry.</param>
     ''' <param name="speciesAbundance">The abundance to enter for this quick species entry.</param>

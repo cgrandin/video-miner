@@ -1,16 +1,11 @@
 ﻿''' <summary>
-''' A panel which supports loading of dynamic buttons and dynamic textboxes and may include a
-''' 'DEFINE ALL' button which runs the Click events for each button in the panel in succession.
+''' A panel which supports loading of dynamic buttons which load database table forms when pressed.
 ''' </summary>
 ''' <remarks></remarks>
-Public Class DynamicPanel
+Public Class DynamicTableButtonPanel
     Inherits Panel
 
 #Region "Member variables"
-    ''' <summary>
-    ''' Panel label, typically which kind of data are stored in panel buttons
-    ''' </summary>
-    Private m_label As Label
     ''' <summary>
     ''' If checked, the data will be recorded for every insert
     ''' </summary>
@@ -34,11 +29,7 @@ Public Class DynamicPanel
     ''' <summary>
     ''' Array of Dynamic buttons. This will be redimensioned at runtime
     ''' </summary>
-    Private m_dynamic_buttons As DynamicButton()
-    ''' <summary>
-    ''' Array of Dynamic textboxes. This will be redimensioned at runtime. This is the same length as the m_dynamic_buttons array
-    ''' </summary>
-    Private m_dynamic_textboxes As DynamicTextbox()
+    Private m_dynamic_buttons As DynamicTableButton()
     ''' <summary>
     ''' Lets the fillPanel functioin know at what vertical level to start placing dynamic buttons
     ''' </summary>
@@ -47,35 +38,6 @@ Public Class DynamicPanel
     ''' Gap between dynamic buttons (and the other controls)
     ''' </summary>
     Private m_gap As Integer
-    ''' <summary>
-    ''' The number of non-dynamic controls on the panel, i.e. label and repeat checkbox and DEFINE ALL button would make 3.
-    ''' </summary>
-    Private m_num_static_controls As Integer
-    ''' <summary>
-    ''' Distinguishes between the two types of buttons this panel can hold, DynamicButtons linked to database table
-    ''' data (lookup tables stored as type DataTable) or singular data which are not a DataTable, and have a keyboard shortcut.
-    ''' Typically the singular type is used for species code entry buttons.
-    ''' </summary>
-    Public Enum WhichTypeEnum
-        DataTable
-        Singular
-    End Enum
-    ''' <summary>
-    ''' The style of entry for a species entry. Used only when WhichTypeEnum is Singular.
-    ''' </summary>
-    Public Enum WhichEntryStyleEnum
-        Quick
-        Detailed
-        Abundance
-    End Enum
-    ''' <summary>
-    ''' Holds the enumeration type for this instance
-    ''' </summary>
-    Private m_which_type As WhichTypeEnum
-    ''' <summary>
-    ''' Holds the style of entry for species data
-    ''' </summary>
-    Private m_which_entry_style As WhichEntryStyleEnum
     ''' <summary>
     ''' A tuple for the Dictionary object, m_dict.
     ''' </summary>
@@ -93,37 +55,9 @@ Public Class DynamicPanel
     ''' </summary>
     ''' <remarks></remarks>
     Private m_data_code As Integer
-
 #End Region
 
 #Region "Properties"
-    ''' <summary>
-    ''' Enumeration type for this instance. See WhichTypeEnum for descriptions.
-    ''' </summary>
-    Public Property WhichType As WhichTypeEnum
-        Get
-            Return m_which_type
-        End Get
-        Set(value As WhichTypeEnum)
-            m_which_type = value
-
-        End Set
-    End Property
-
-    ''' <summary>
-    ''' Enumeration type for style of entry for this panel. Only applies to species panels.
-    ''' See WhichEntryStyleEnum for descriptions.
-    ''' </summary>
-    Public Property WhichEntryStyle As WhichEntryStyleEnum
-        Get
-            Return m_which_entry_style
-        End Get
-        Set(value As WhichEntryStyleEnum)
-            m_which_entry_style = value
-            setWhichEntryStyleButtons()
-        End Set
-    End Property
-
     ''' Dictionary of key/value pairs that hold the currently set data for this panel.
     ''' If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
     ''' not just the most recently-pressed button's data.
@@ -132,7 +66,6 @@ Public Class DynamicPanel
             Return m_dict
         End Get
     End Property
-
     Public ReadOnly Property RepeatForEveryRecord As Boolean
         Get
             Return m_repeat_for_every_record.Checked
@@ -142,11 +75,6 @@ Public Class DynamicPanel
 
 #Region "Events"
     Public Event DataChanged(sender As System.Object, e As System.EventArgs)
-    ''' <summary>
-    ''' This event will propagate or bubble up the same event raised from within the DynamicButton class. It signals that the user wants to enter a new record in the database
-    ''' for a species sighting.
-    ''' </summary>
-    Public Event NewSpeciesEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
     ''' <summary>
     ''' Signals the parent that a button has been pressed on this panel and we request that the video be paused while data entry takes place.
     ''' </summary>
@@ -159,13 +87,11 @@ Public Class DynamicPanel
     ''' Fire event to have parent form check for dirty data or anything else prior to launching the button code.
     ''' </summary>
     Public Event CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
-
 #End Region
 
     ''' <summary>
-    ''' Create the DynamicPanel object.
+    ''' Create the DynamicTableButtonPanel object.
     ''' </summary>
-    ''' <param name="strPanelName">Name for the Panel.</param>
     ''' <param name="blIncludeDefineAllButton">True if you want to include a 'Define All' button.</param>
     ''' <param name="intButtonWidth">The width of all the buttons on the panel.</param>
     ''' <param name="intButtonHeight">The height of all the buttons on the panel.</param>
@@ -175,9 +101,7 @@ Public Class DynamicPanel
     ''' <param name="blRepeatIsChecked">If True, the 'Repeat for each record' checkbox will be checked on creation.</param>
     ''' <param name="intRepeatWidth">Width of the 'Repeat for each record' checkbox.</param>
     ''' <param name="intRepeatHeight">Height of the 'Repeat for each record' checkbox.</param>
-    ''' <param name="whichEntryStyle">Entry style (quick, detailed, abundance) for a species panel.</param>
-    Public Sub New(strPanelName As String,
-                   Optional blIncludeDefineAllButton As Boolean = True,
+    Public Sub New(Optional blIncludeDefineAllButton As Boolean = True,
                    Optional intButtonWidth As Integer = 170,
                    Optional intButtonHeight As Integer = 44,
                    Optional strButtonFont As String = "Microsoft Sans Serif",
@@ -185,30 +109,14 @@ Public Class DynamicPanel
                    Optional blIncludeRepeatCheckbox As Boolean = False,
                    Optional blRepeatIsChecked As Boolean = True,
                    Optional intRepeatWidth As Integer = 210,
-                   Optional intRepeatHeight As Integer = 17,
-                   Optional whichEntryStyle As WhichEntryStyleEnum = WhichEntryStyleEnum.Detailed)
+                   Optional intRepeatHeight As Integer = 17)
 
-        Name = strPanelName
-
-        m_label = Nothing
         m_repeat_for_every_record = Nothing
         m_define_all_button = Nothing
         m_y_offset = 0
         m_gap = 2
         m_tuple = New Tuple(Of String, String, Boolean)(Nothing, Nothing, False)
         m_dict = New Dictionary(Of String, Tuple(Of String, String, Boolean))
-        m_which_entry_style = whichEntryStyle
-
-        'Panel label load`
-        m_label = New Label()
-        m_label.Name = "lblPanel"
-        m_label.Text = strPanelName
-        m_label.TextAlign = ContentAlignment.TopLeft
-        m_label.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-        m_label.Left = 3
-        m_label.Top = 3
-        m_y_offset = m_label.Bottom + m_gap
-        m_num_static_controls = 1
 
         ' Load button constructs into member variables
         m_button_height = intButtonHeight
@@ -230,7 +138,6 @@ Public Class DynamicPanel
             m_repeat_for_every_record.Top = 19
             m_y_offset = m_repeat_for_every_record.Bottom + m_gap
             m_repeat_for_every_record.Visible = False
-            m_num_static_controls += 1
         Else
             m_repeat_for_every_record = Nothing
         End If
@@ -251,35 +158,19 @@ Public Class DynamicPanel
                 m_define_all_button.Top = 19
             End If
             m_y_offset = m_define_all_button.Bottom + m_gap
-            m_num_static_controls += 1
             m_define_all_button.Visible = False
             AddHandler m_define_all_button.Click, AddressOf DefineAll
-            Me.Controls.Add(m_define_all_button)
+            Controls.Add(m_define_all_button)
         Else
             m_define_all_button = Nothing
         End If
         If blIncludeRepeatCheckbox Then
-            Me.Controls.Add(m_repeat_for_every_record)
+            Controls.Add(m_repeat_for_every_record)
         End If
-
-        Me.BorderStyle = Windows.Forms.BorderStyle.Fixed3D
-        Me.Dock = DockStyle.Fill
-        Me.Controls.Add(m_label)
-
-        Me.AutoScroll = True
+        BorderStyle = Windows.Forms.BorderStyle.Fixed3D
+        Dock = DockStyle.Fill
+        AutoScroll = True
         m_num_dynamic_buttons = 0
-
-    End Sub
-
-    ''' <summary>
-    ''' Destructor. Dispose of dynamic arrays of DynamicButtons and Textboxes correctly
-    ''' </summary>
-    Protected Overridable Overloads Sub Dispose(ByVal disposing As Boolean)
-        If Not IsDisposed Then
-            If disposing Then
-
-            End If
-        End If
     End Sub
 
     ''' <summary>
@@ -300,46 +191,17 @@ Public Class DynamicPanel
         Dim d As DataTable = Database.GetDataTable("select * from " & strTableName & " order by DrawingOrder;", strTableName)
         m_num_dynamic_buttons = d.Rows.Count
         ReDim m_dynamic_buttons(m_num_dynamic_buttons)
-        If WhichType = WhichTypeEnum.DataTable Then
-            ReDim m_dynamic_textboxes(m_num_dynamic_buttons)
-        End If
         Dim i As Integer = 0
 
-        ' TODO: There should be a better way than using a 7 here. Maybe another field in the database telling the class what it is.
-        If d.Columns.Count = 7 Then
-            Me.WhichType = WhichTypeEnum.Singular
-        Else
-            Me.WhichType = WhichTypeEnum.DataTable
-        End If
         For Each r As DataRow In d.Rows
-            If WhichType = WhichTypeEnum.Singular Then
-                ' It's a singular-data button
-                m_dynamic_buttons(i) = New DynamicButton(r.Item(0),
-                                                         r.Item(1).ToString(),
-                                                         r.Item(2).ToString(),
-                                                         r.Item(3).ToString(),
-                                                         r.Item(4),
-                                                         r.Item(5).ToString(),
-                                                         r.Item(6).ToString(),
-                                                         m_button_font,
-                                                         m_button_text_size,
-                                                         m_which_entry_style)
-                AddHandler m_dynamic_buttons(i).NewSpeciesEntryEvent, AddressOf new_species_entry_handler
-            Else
-                ' It's a table-data button
-                m_dynamic_buttons(i) = New DynamicButton(r.Item(0),
-                                                         r.Item(1).ToString(),
-                                                         r.Item(2).ToString(),
-                                                         r.Item(3),
-                                                         r.Item(4).ToString(),
-                                                         r.Item(5).ToString(),
-                                                         m_button_font,
-                                                         m_button_text_size)
-                AddHandler m_dynamic_buttons(i).DataChanged, AddressOf PanelDataChanged
-                m_dynamic_textboxes(i) = New DynamicTextbox(r.Item(0), r.Item(1).ToString(), m_button_font, m_button_text_size)
-            End If
-            ' Adds a handler for each button for the event which is fired originally
-            ' by the SpeciesEvent form, And bubbled through the DynamicButton class.
+            m_dynamic_buttons(i) = New DynamicTableButton(r.Item(1).ToString(),
+                                                          r.Item(2).ToString(),
+                                                          r.Item(3),
+                                                          r.Item(4).ToString(),
+                                                          r.Item(5).ToString(),
+                                                          m_button_font,
+                                                          m_button_text_size)
+            AddHandler m_dynamic_buttons(i).DataChanged, AddressOf PanelDataChanged
             AddHandler m_dynamic_buttons(i).SignalVideoPause, AddressOf signal_video_pause
             AddHandler m_dynamic_buttons(i).SignalVideoPlay, AddressOf signal_video_play
             AddHandler m_dynamic_buttons(i).Click, AddressOf button_CheckForDirtyDataEvent
@@ -349,8 +211,7 @@ Public Class DynamicPanel
     End Sub
 
     ''' <summary>
-    ''' Place the controls in the panel in a grid fashion. The two different enumeration types require two different algorithms,
-    ''' because one includes textboxes and one doesn't
+    ''' Place the controls in the panel in a grid fashion.
     ''' </summary>
     Private Sub placeControls()
         Dim h As Integer = Me.Height
@@ -363,41 +224,24 @@ Public Class DynamicPanel
         Dim cellsizex As Integer = sizex + m_gap
         Dim cellsizey As Integer = sizey + m_gap
         intCountPerRow = Math.Floor(w / (cellsizex))
-        If WhichType = WhichTypeEnum.Singular Then
-            For i As Integer = 0 To m_num_dynamic_buttons - 1
-                m_dynamic_buttons(i).Size = New Size(sizex, sizey)
-                m_dynamic_buttons(i).Location = New System.Drawing.Point(m_gap + (cellsizex * (i - intAdd)), m_y_offset + (cellsizey * intMultiply))
-                Me.Controls.Add(m_dynamic_buttons(i))
-                If i Mod intCountPerRow = intCountPerRow - 1 Then
-                    intAdd += intCountPerRow
-                    intMultiply += 1
-                End If
-            Next
-        ElseIf WhichType = WhichTypeEnum.DataTable Then
-            For i As Integer = 0 To m_num_dynamic_buttons - 1
-                m_dynamic_buttons(i).Size = New Size(sizex, sizey)
-                m_dynamic_textboxes(i).Size = New Size(sizex, sizey / 2)
-                cellsizex = sizex + m_gap
-                cellsizey = (1.5 * sizey) + m_gap
-                m_dynamic_buttons(i).Location = New System.Drawing.Point(m_gap + (cellsizex * intMultiply), m_y_offset + (cellsizey * (i - intAdd)))
-                m_dynamic_textboxes(i).Location = New System.Drawing.Point(m_gap + (cellsizex * intMultiply), (cellsizey * (i - intAdd)) + (sizey + m_y_offset + m_gap))
-                Me.Controls.Add(m_dynamic_buttons(i))
-                Me.Controls.Add(m_dynamic_textboxes(i))
-                If i Mod 5 = 4 Then
-                    intAdd += 5
-                    intMultiply += 1
-                End If
-            Next
-        End If
+        For i As Integer = 0 To m_num_dynamic_buttons - 1
+            m_dynamic_buttons(i).Size = New Size(sizex, sizey)
+            cellsizex = sizex + m_gap
+            cellsizey = (1.5 * sizey) + m_gap
+            m_dynamic_buttons(i).Location = New System.Drawing.Point(m_gap + (cellsizex * intMultiply), m_y_offset + (cellsizey * (i - intAdd)))
+            Me.Controls.Add(m_dynamic_buttons(i))
+            If i Mod 5 = 4 Then
+                intAdd += 5
+                intMultiply += 1
+            End If
+        Next
     End Sub
 
     ''' <summary>
     ''' Removes all dynamic controls (DynamicButton and DynamicTextbox controls) from the panel.
     ''' </summary>
     Public Sub removeAllDynamicControls()
-        Do While Me.Controls.Count > m_num_static_controls
-            Me.Controls.RemoveAt(m_num_static_controls)
-        Loop
+        Me.Controls.RemoveAt(0)
         If Not IsNothing(m_repeat_for_every_record) Then
             m_repeat_for_every_record.Visible = False
         End If
@@ -413,21 +257,14 @@ Public Class DynamicPanel
     ''' </summary>
     ''' <param name="sender">The DynamicButton that raised the event</param>
     Private Sub PanelDataChanged(ByVal sender As Object, ByVal e As EventArgs)
-        Dim btn As DynamicButton = DirectCast(sender, DynamicButton)
+        Dim btn As DynamicTableButton = DirectCast(sender, DynamicTableButton)
         ' Find associated DynamicTextbox, so we can change the text to reflect the change
         For i As Integer = 0 To m_num_dynamic_buttons - 1
-            If m_dynamic_textboxes(i).ControlCode = btn.ControlCode.ToString() Then
-                If btn.DataValue = DynamicButton.UNINITIALIZED_DATA_VALUE Then
-                    ' The data have been cleared, so change the textbox to reflect this
-                    m_dynamic_textboxes(i).setNoData()
-                Else
-                    m_dynamic_textboxes(i).setData(btn.DataDescription)
-                    buildDictionary(btn)
-                    RaiseEvent DataChanged(Me, e)
-                End If
+            If btn.DataValue <> DynamicTableButton.UNINITIALIZED_DATA_VALUE Then
+                buildDictionary(btn)
+                RaiseEvent DataChanged(Me, e)
             End If
         Next
-        'End If
     End Sub
 
     ''' <summary>
@@ -435,17 +272,17 @@ Public Class DynamicPanel
     ''' and all items if the checkbox is checked.
     ''' </summary>
     ''' <param name="btn">The button to build the dictionary for, unless the checkbox is checked in which case this is ignored.</param>
-    Private Sub buildDictionary(btn As DynamicButton)
+    Private Sub buildDictionary(btn As DynamicTableButton)
         m_dict.Clear()
         If IsNothing(m_repeat_for_every_record) Then
             ' One button's data
-            If btn.DataValue <> DynamicButton.UNINITIALIZED_DATA_VALUE Then
+            If btn.DataValue <> DynamicTableButton.UNINITIALIZED_DATA_VALUE Then
                 m_tuple = New Tuple(Of String, String, Boolean)(btn.DataCode, btn.DataValue, True)
                 m_dict.Add(btn.DataCodeName, m_tuple)
             End If
         ElseIf Not m_repeat_for_every_record.Checked Then
             ' One button's data
-            If btn.DataValue <> DynamicButton.UNINITIALIZED_DATA_VALUE Then
+            If btn.DataValue <> DynamicTableButton.UNINITIALIZED_DATA_VALUE Then
                 m_tuple = New Tuple(Of String, String, Boolean)(btn.DataCode, btn.DataValue, True)
                 m_dict.Add(btn.DataCodeName, m_tuple)
             End If
@@ -453,7 +290,7 @@ Public Class DynamicPanel
             ' All buttons data
             For i As Integer = 0 To m_num_dynamic_buttons - 1
                 ' If the button has data selected...
-                If m_dynamic_buttons(i).DataValue <> DynamicButton.UNINITIALIZED_DATA_VALUE Then
+                If m_dynamic_buttons(i).DataValue <> DynamicTableButton.UNINITIALIZED_DATA_VALUE Then
                     m_tuple = New Tuple(Of String, String, Boolean)(m_dynamic_buttons(i).DataCode, m_dynamic_buttons(i).DataValue, btn.Name = m_dynamic_buttons(i).Name)
                     m_dict.Add(m_dynamic_buttons(i).DataCodeName, m_tuple)
                     ' Insert the comment if it exists for only the button which was pressed
@@ -472,35 +309,22 @@ Public Class DynamicPanel
     End Sub
 
     ''' <summary>
-    ''' Build the dictionary of key/value pairs for all values which have been set on this panel. Note this is only apllicable to WhichTypeEnum.DataTable,
-    ''' not WhichTypeEnum.Singular (Species event buttons)
+    ''' Build the dictionary of key/value pairs for all values which have been set on this panel.
     ''' The 'repeat for every record' checkbox must exist and be checked for this to work.
     ''' Note that there will be no 'True' items because this call is made for a summary of the items, not for a single button press.
-    ''' This sub should not be used to make a single record emtry into the database or the DataCode field will be missing.
+    ''' This sub should not be used to make a single record entry into the database or the DataCode field will be missing.
     ''' </summary>
     Public Sub buildDictionary()
-        If WhichType <> WhichTypeEnum.DataTable Then
-            Exit Sub
-        End If
         m_dict.Clear()
         ' If the checkbox is not present or it's unchecked, leave the dictionary blank
         If IsNothing(m_repeat_for_every_record) Then Exit Sub
         If Not m_repeat_for_every_record.Checked Then Exit Sub
 
         For i As Integer = 0 To m_num_dynamic_buttons - 1
-            If m_dynamic_buttons(i).DataValue <> DynamicButton.UNINITIALIZED_DATA_VALUE Then
+            If m_dynamic_buttons(i).DataValue <> DynamicTableButton.UNINITIALIZED_DATA_VALUE Then
                 m_tuple = New Tuple(Of String, String, Boolean)(m_dynamic_buttons(i).DataCode, m_dynamic_buttons(i).DataValue, False)
                 m_dict.Add(m_dynamic_buttons(i).DataCodeName, m_tuple)
             End If
-        Next
-    End Sub
-
-    ''' <summary>
-    ''' Set all dynamic buttons to have the same WhichEntryStyle as this panel.
-    ''' </summary>
-    Private Sub setWhichEntryStyleButtons()
-        For i As Integer = 0 To m_num_dynamic_buttons - 1
-            m_dynamic_buttons(i).WhichEntryStyle = CType(m_which_entry_style, DynamicButton.WhichEntryStyleEnum)
         Next
     End Sub
 
@@ -534,16 +358,6 @@ Public Class DynamicPanel
     End Sub
 
     ''' <summary>
-    ''' Handles the event request to insert a new entry into the database. Checks the setting from the Habitat panel, if set to record habitat on every record, 
-    ''' the current dictionary will be merged with the species dict, and the result will be inserted into the database.
-    ''' </summary>
-    Private Sub new_species_entry_handler(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        Dim s As frmSpeciesEvent = CType(sender, frmSpeciesEvent)
-        m_dict = s.Dictionary
-        RaiseEvent DataChanged(Me, e)
-    End Sub
-
-    ''' <summary>
     ''' Tell the program to issue a pause video command
     ''' </summary>
     ''' <param name="sender">The DynamicButton that was pressed</param>
@@ -571,7 +385,7 @@ Public Class DynamicPanel
     ''' The dynamic button with the text 'str' will be clicked programmatically.
     ''' This is so that when keyboard shortcuts are used in the main Videominer form,
     ''' the correct button will be clicked causing the cascading events which lead to
-    ''' correct entry into the database
+    ''' correct entry into the database.
     ''' </summary>
     ''' <param name="str"></param>
     Public Sub ClickButton(str As String)
@@ -581,4 +395,5 @@ Public Class DynamicPanel
             End If
         Next
     End Sub
+
 End Class

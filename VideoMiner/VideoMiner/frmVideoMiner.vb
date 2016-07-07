@@ -142,9 +142,9 @@ Public Class VideoMiner
 
 #Region "Variables"
     ' These are the dynamic panels to be added to the splitcontainers at runtime
-    Friend WithEvents pnlTransectData As DynamicPanel
-    Friend WithEvents pnlHabitatData As DynamicPanel
-    Friend WithEvents pnlSpeciesData As DynamicPanel
+    Friend WithEvents pnlTransectData As DynamicTableButtonPanel
+    Friend WithEvents pnlHabitatData As DynamicTableButtonPanel
+    Friend WithEvents pnlSpeciesData As DynamicSpeciesButtonPanel
     ' These are the forms which this form creates and they report directly to this form only
     Private WithEvents frmSpeciesList As frmSpeciesList
     Private WithEvents frmSetTime As frmSetTime
@@ -363,7 +363,6 @@ Public Class VideoMiner
     ' Transect variables
     Private Transect_Textboxes() As DynamicTextbox
     Private strTransectButtonCodeNames() As String
-    Private Transect_Buttons() As DynamicButton
     Private intTransectButtonCodes() As Integer
     Private strTransectButtonTables() As String
     Private strTransectButtonUserCodeChoice() As String
@@ -1085,16 +1084,15 @@ Public Class VideoMiner
         frmSetTime = New frmSetTime(m_tsUserTime)
 
         ' Add DynamicPanels to the SplitContainerPanels
-        pnlTransectData = New DynamicPanel(PANEL_NAME_TRANSECT, True, Me.ButtonWidth, Me.ButtonHeight,
-                                           Me.ButtonFont, Me.ButtonTextSize, True, True)
+        pnlTransectData = New DynamicTableButtonPanel(True, Me.ButtonWidth, Me.ButtonHeight,
+                                                      Me.ButtonFont, Me.ButtonTextSize, True, True)
         SplitContainer7.Panel1.Controls.Add(pnlTransectData)
 
-        pnlHabitatData = New DynamicPanel(PANEL_NAME_HABITAT, True, Me.ButtonWidth, Me.ButtonHeight,
-                                          Me.ButtonFont, Me.ButtonTextSize, True, True)
+        pnlHabitatData = New DynamicTableButtonPanel(True, Me.ButtonWidth, Me.ButtonHeight,
+                                                     Me.ButtonFont, Me.ButtonTextSize, True, True)
         SplitContainer7.Panel2.Controls.Add(pnlHabitatData)
 
-        pnlSpeciesData = New DynamicPanel(PANEL_NAME_SPECIES, False, Me.ButtonWidth, Me.ButtonHeight,
-                                          Me.ButtonFont, Me.ButtonTextSize, False)
+        pnlSpeciesData = New DynamicSpeciesButtonPanel(Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize)
         pnlSpeciesData.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         pnlSpeciesData.Dock = DockStyle.Fill
         'AddHandler pnlSpeciesData.NewSpeciesEntryEvent, AddressOf new_species_entry_handler
@@ -1822,40 +1820,30 @@ Public Class VideoMiner
 
     ''' <summary>
     ''' Handler to check to make sure that the Data grid is not dirty. If it isn't, or the user says to disregard changes and save the record anyway,
-    ''' the appropriate thing will happen for data recording (species event form will be shown or data table form sill be shown, or quick entry will happen).
+    ''' the appropriate thing will happen for data recording (species event form will be shown or data table form be shown, or quick entry will happen).
     ''' </summary>
     Private Sub button_CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pnlHabitatData.CheckForDirtyDataEvent, pnlTransectData.CheckForDirtyDataEvent, pnlSpeciesData.CheckForDirtyDataEvent
-        If TypeOf sender Is DynamicButton Then
-            Dim btn As DynamicButton = CType(sender, DynamicButton)
-            ' If the data table is not dirty...
-            If IsNothing(m_data_table.GetChanges()) Then
-                If btn.WhichType = DynamicButton.WhichTypeEnum.Singular Then
+        Dim btn As Object
+        If TypeOf sender Is DynamicSpeciesButton Then
+            btn = CType(sender, DynamicSpeciesButton)
+        ElseIf TypeOf sender Is DynamicTableButton Then
+            btn = CType(sender, DynamicTableButton)
+        End If
+
+        ' If the data table is not dirty...
+        If IsNothing(m_data_table.GetChanges()) Then
+            btn.ShowForm(sender, e)
+        Else
+            If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
+                fetch_data() ' Cleans up the table first
+                If TypeOf btn Is DynamicSpeciesButton Then
                     If radQuickEntry.Checked Then
                         btn.RecordQuick(txtQuickSpeciesCount.Text)
-                    ElseIf radAbundanceEntry.Checked Then
-                        btn.RecordAbundance()
                     Else
                         btn.ShowDataForm(sender, e)
                     End If
                 Else
                     btn.ShowDataForm(sender, e)
-                End If
-            Else
-                If My.Computer.Keyboard.CtrlKeyDown Then
-                    btn.ShowDataForm(sender, e)
-                    Exit Sub
-                End If
-                If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
-                    fetch_data() ' Cleans up the table first
-                    If btn.WhichType = DynamicButton.WhichTypeEnum.Singular Then
-                        If radQuickEntry.Checked Then
-                            btn.RecordQuick(txtQuickSpeciesCount.Text)
-                        Else
-                            btn.ShowDataForm(sender, e)
-                        End If
-                    Else
-                        btn.ShowDataForm(sender, e)
-                    End If
                 End If
             End If
         End If
@@ -1915,8 +1903,13 @@ Public Class VideoMiner
     ''' Handle the changing of button data by creating an insert query and
     ''' saving to the database.
     ''' </summary>
-    Private Sub buttonDataChanged(sender As System.Object, e As System.EventArgs) Handles pnlHabitatData.DataChanged, pnlTransectData.DataChanged, pnlSpeciesData.DataChanged
-        Dim panel As DynamicPanel = CType(sender, DynamicPanel)
+    Private Sub buttonDataChanged(sender As System.Object, e As System.EventArgs) Handles pnlHabitatData.DataChanged, pnlTransectData.DataChanged, pnlSpeciesData.NewSpeciesEntryEvent
+        Dim panel As Object
+        If TypeOf sender Is DynamicSpeciesButtonPanel Then
+            panel = CType(sender, DynamicSpeciesButtonPanel)
+        ElseIf TypeOf sender Is DynamicTableButtonPanel Then
+            panel = CType(sender, DynamicTableButtonPanel)
+        End If
         Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = panel.Dictionary
         Dim tuple As Tuple(Of String, String, Boolean)
         ' If the calling panel is the species panel, check the setting of the
@@ -3795,7 +3788,7 @@ Public Class VideoMiner
         End If
         ' Tell the species panel that the buttons should all be quick entry type
         If Not IsNothing(pnlSpeciesData) Then
-            pnlSpeciesData.WhichEntryStyle = DynamicPanel.WhichEntryStyleEnum.Quick
+            pnlSpeciesData.WhichEntryStyle = DynamicSpeciesButton.WhichEntryStyleEnum.Quick
         End If
     End Sub
 
@@ -4878,14 +4871,14 @@ Public Class VideoMiner
     Private Sub radDetailedEntry_CheckedChanged(sender As Object, e As EventArgs) Handles radDetailedEntry.CheckedChanged
         ' Tell the species panel that the buttons should all be detailed entry type
         If Not IsNothing(pnlSpeciesData) Then
-            pnlSpeciesData.WhichEntryStyle = DynamicPanel.WhichEntryStyleEnum.Detailed
+            pnlSpeciesData.WhichEntryStyle = DynamicSpeciesButton.WhichEntryStyleEnum.Detailed
         End If
     End Sub
 
     Private Sub radAbundanceEntry_CheckedChanged(sender As Object, e As EventArgs) Handles radAbundanceEntry.CheckedChanged
         ' Tell the species panel that the buttons should all be abundance entry type
         If Not IsNothing(pnlSpeciesData) Then
-            pnlSpeciesData.WhichEntryStyle = DynamicPanel.WhichEntryStyleEnum.Abundance
+            pnlSpeciesData.WhichEntryStyle = DynamicSpeciesButton.WhichEntryStyleEnum.Abundance
         End If
     End Sub
 End Class

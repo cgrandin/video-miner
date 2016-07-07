@@ -191,10 +191,16 @@
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="BitmapEncoder.vb" />
     <Compile Include="Database.vb" />
-    <Compile Include="DynamicButton.vb">
+    <Compile Include="DynamicSpeciesButton.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="DynamicPanel.vb">
+    <Compile Include="DynamicSpeciesButtonPanel.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DynamicTableButton.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DynamicTableButtonPanel.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DynamicTextbox.vb">
