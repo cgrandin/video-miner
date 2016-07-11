@@ -1088,9 +1088,9 @@ Public Class VideoMiner
                                                       Me.ButtonFont, Me.ButtonTextSize, True, True)
         SplitContainer7.Panel1.Controls.Add(pnlTransectData)
 
-        pnlHabitatData = New DynamicTableButtonPanel(True, Me.ButtonWidth, Me.ButtonHeight,
-                                                     Me.ButtonFont, Me.ButtonTextSize, True, True)
-        SplitContainer7.Panel2.Controls.Add(pnlHabitatData)
+        '     pnlHabitatData = New DynamicTableButtonPanel(True, Me.ButtonWidth, Me.ButtonHeight,
+        '    Me.ButtonFont, Me.ButtonTextSize, True, True)
+        '   SplitContainer7.Panel2.Controls.Add(pnlHabitatData)
 
         pnlSpeciesData = New DynamicSpeciesButtonPanel(Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize)
         pnlSpeciesData.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
@@ -1824,8 +1824,8 @@ Public Class VideoMiner
     ''' </summary>
     Private Sub button_CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pnlHabitatData.CheckForDirtyDataEvent, pnlTransectData.CheckForDirtyDataEvent, pnlSpeciesData.CheckForDirtyDataEvent
         Dim btn As Object
-        If TypeOf sender Is DynamicSpeciesButton Then
-            btn = CType(sender, DynamicSpeciesButton)
+        If TypeOf sender Is DynamicButton Then
+            btn = CType(sender, DynamicButton)
         ElseIf TypeOf sender Is DynamicTableButton Then
             btn = CType(sender, DynamicTableButton)
         End If
@@ -1836,7 +1836,7 @@ Public Class VideoMiner
         Else
             If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
                 fetch_data() ' Cleans up the table first
-                If TypeOf btn Is DynamicSpeciesButton Then
+                If TypeOf btn Is DynamicButton Then
                     If radQuickEntry.Checked Then
                         btn.RecordQuick(txtQuickSpeciesCount.Text)
                     Else
@@ -1881,7 +1881,7 @@ Public Class VideoMiner
         fetch_data()
     End Sub
 
-    Private Sub dataButtonNewEntry() Handles pnlHabitatData.SignalVideoPause, pnlSpeciesData.SignalVideoPause, pnlTransectData.SignalVideoPause
+    Private Sub dataButtonNewEntry() Handles pnlSpeciesData.StartDataEntryEvent, pnlTransectData.StartDataEntryEvent ', pnlHabitatData.StartDataEntryEvent,  
         ' First store whether or not the video is playing so we can do the appropriate thing after
         ' the data are inserted
         If Not frmVideoPlayer Is Nothing Then
@@ -1892,7 +1892,7 @@ Public Class VideoMiner
         End If
     End Sub
 
-    Private Sub dataButtonEntryFinished() Handles pnlHabitatData.SignalVideoPlay, pnlSpeciesData.SignalVideoPlay, pnlTransectData.SignalVideoPlay
+    Private Sub dataButtonEntryFinished() Handles pnlSpeciesData.EndDataEntryEvent, pnlTransectData.EndDataEntryEvent ', pnlHabitatData.EndDataEntryEvent
         If Not frmVideoPlayer Is Nothing Then
             If m_blWasPlaying Then
                 frmVideoPlayer.playVideo()
@@ -1903,13 +1903,13 @@ Public Class VideoMiner
     ''' Handle the changing of button data by creating an insert query and
     ''' saving to the database.
     ''' </summary>
-    Private Sub buttonDataChanged(sender As System.Object, e As System.EventArgs) Handles pnlHabitatData.DataChanged, pnlTransectData.DataChanged, pnlSpeciesData.NewSpeciesEntryEvent
-        Dim panel As Object
-        If TypeOf sender Is DynamicSpeciesButtonPanel Then
-            panel = CType(sender, DynamicSpeciesButtonPanel)
-        ElseIf TypeOf sender Is DynamicTableButtonPanel Then
-            panel = CType(sender, DynamicTableButtonPanel)
-        End If
+    Private Sub buttonDataChanged(sender As System.Object, e As System.EventArgs) Handles pnlHabitatData.DataChanged, pnlTransectData.DataChanged, pnlSpeciesData.EndDataEntryEvent
+        Dim panel As Object = CType(sender, DynamicButton)
+        'If TypeOf sender Is DynamicSpeciesButtonPanel Then
+        '    panel = CType(sender, DynamicSpeciesButtonPanel)
+        'ElseIf TypeOf sender Is DynamicTableButtonPanel Then
+        '    panel = CType(sender, DynamicTableButtonPanel)
+        'End If
         Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = panel.Dictionary
         Dim tuple As Tuple(Of String, String, Boolean)
         ' If the calling panel is the species panel, check the setting of the
@@ -3604,7 +3604,7 @@ Public Class VideoMiner
         DataCodeAssignmentsToolStripMenuItem.Enabled = False
         KeyboardShortcutsToolStripMenuItem.Enabled = False
         pnlTransectData.removeAllDynamicControls()
-        pnlHabitatData.removeAllDynamicControls()
+        'pnlHabitatData.removeAllDynamicControls()
         pnlSpeciesData.removeAllDynamicControls()
     End Sub
 
@@ -3618,7 +3618,7 @@ Public Class VideoMiner
             m_db_filename = get_rel_filename(m_strDatabaseFilePath)
             m_db_file_open = True
             pnlTransectData.fillPanel(DB_TRANSECT_BUTTONS_TABLE)
-            pnlHabitatData.fillPanel(DB_HABITAT_BUTTONS_TABLE)
+            'pnlHabitatData.fillPanel(DB_HABITAT_BUTTONS_TABLE)
             pnlSpeciesData.fillPanel(DB_SPECIES_BUTTONS_TABLE)
             Me.lblDatabase.Text = DB_FILE_STATUS_LOADED & m_db_filename & " is open"
             mnuOpenDatabase.Enabled = False
@@ -3679,7 +3679,7 @@ Public Class VideoMiner
         Next
         ' If data was freshly fetched, no grid cells wil be dirty, so we can allow the 'Define All' buttons to be pressed
         pnlTransectData.EnableDefineAllButton()
-        pnlHabitatData.EnableDefineAllButton()
+        'pnlHabitatData.EnableDefineAllButton()
 
         ' Make the colun headers on the DataGridView non-clickable. If they are clickable, the coloring introduced when data is dirty will dissapear on the sort.
         ' TODO: Store the coloring data in a data structure and re-apply the coloring after the sort.
@@ -3788,7 +3788,7 @@ Public Class VideoMiner
         End If
         ' Tell the species panel that the buttons should all be quick entry type
         If Not IsNothing(pnlSpeciesData) Then
-            pnlSpeciesData.WhichEntryStyle = DynamicSpeciesButton.WhichEntryStyleEnum.Quick
+            pnlSpeciesData.WhichEntryStyle = DynamicButton.WhichEntryStyleEnum.Quick
         End If
     End Sub
 
@@ -4871,14 +4871,14 @@ Public Class VideoMiner
     Private Sub radDetailedEntry_CheckedChanged(sender As Object, e As EventArgs) Handles radDetailedEntry.CheckedChanged
         ' Tell the species panel that the buttons should all be detailed entry type
         If Not IsNothing(pnlSpeciesData) Then
-            pnlSpeciesData.WhichEntryStyle = DynamicSpeciesButton.WhichEntryStyleEnum.Detailed
+            pnlSpeciesData.WhichEntryStyle = DynamicButton.WhichEntryStyleEnum.Detailed
         End If
     End Sub
 
     Private Sub radAbundanceEntry_CheckedChanged(sender As Object, e As EventArgs) Handles radAbundanceEntry.CheckedChanged
         ' Tell the species panel that the buttons should all be abundance entry type
         If Not IsNothing(pnlSpeciesData) Then
-            pnlSpeciesData.WhichEntryStyle = DynamicSpeciesButton.WhichEntryStyleEnum.Abundance
+            pnlSpeciesData.WhichEntryStyle = DynamicButton.WhichEntryStyleEnum.Abundance
         End If
     End Sub
 End Class

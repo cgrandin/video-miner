@@ -7,6 +7,16 @@ Public Class frmTableView
     Private m_data_table As DataTable
     Private prevWidth As Integer
     Private prevWindowState As FormWindowState
+    ''' <summary>
+    ''' A tuple for the Dictionary object, m_dict.
+    ''' </summary>
+    Private m_tuple As Tuple(Of String, String, Boolean)
+    ''' <summary>
+    ''' Dictionary of key/value pairs that hold the currently selected data for this variable.
+    ''' The first parameter is the name of the field in the database table lu_data. The tuple is a triplet of data code (from lu_data_codes),
+    ''' the data value to be inserted, and a boolean for whether or not the item was the one pressed (in case there are more than one in the dictionary).
+    ''' </summary>
+    Private m_dict As Dictionary(Of String, Tuple(Of String, String, Boolean))
 
 #Region "Properties"
     ''' <summary>
@@ -45,6 +55,13 @@ Public Class frmTableView
             Return txtCommentBox.Text
         End Get
     End Property
+
+    Public ReadOnly Property Dictionary As Dictionary(Of String, Tuple(Of String, String, Boolean))
+        Get
+            Return m_dict
+        End Get
+    End Property
+
 #End Region
 
 #Region "Events"
@@ -53,17 +70,10 @@ Public Class frmTableView
     ''' </summary>
     ''' <remarks></remarks>
     Public Event ClearEvent()
-
     ''' <summary>
-    ''' If user edits the comment box, this event will be raised so that the main form can write a record to the database
+    ''' Fires when a new row is selected.
     ''' </summary>
-    Public Event DataChanged(sender As System.Object, e As System.EventArgs)
-    ''' <summary>
-    ''' Once the form is left by the user, this will signal to resume playback on the
-    ''' video player.
-    ''' </summary>
-    Public Event SignalPlay(ByVal sender As System.Object, ByVal e As System.EventArgs)
-
+    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
 #End Region
 
     Public Sub New(titleText As String, dataTable As DataTable)
@@ -82,13 +92,6 @@ Public Class frmTableView
         ' m_strSelectedButtonName = strButtonNames(intCurrentSpatialVariable)
         ' End If
     End Sub
-
-    ''' <summary>
-    '''  Set the form to be shown where the mouse pointer is.
-    ''' </summary>
-    'Private Sub TableViewForm_FormShown(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Shown
-    '    Me.Location = MousePosition()
-    'End Sub
 
     Private Sub TableViewForm_FormClosed(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
         'Me.UserClosedForm = True
@@ -150,15 +153,15 @@ Public Class frmTableView
     ''' </summary>
     Private Sub DataGridView1_SelectionChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles DataGridView1.SelectionChanged
         If DataGridView1.SelectedRows.Count = 1 Then
-            RaiseEvent DataChanged(Me, e)
+
+            RaiseEvent EndDataEntryEvent(Me, e)
             Me.Hide()
-            RaiseEvent SignalPlay(Me, e)
         End If
     End Sub
 
     Private Sub btnSkipSpatial_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSkipSpatial.Click
         Me.Hide()
-        RaiseEvent SignalPlay(Me, EventArgs.Empty)
+        'RaiseEvent SignalPlay(Me, EventArgs.Empty)
     End Sub
 
     ''' <summary>
@@ -168,14 +171,11 @@ Public Class frmTableView
         clearSelection()
         RaiseEvent ClearEvent()
         Me.Hide()
-        RaiseEvent SignalPlay(Me, EventArgs.Empty)
+        'RaiseEvent SignalPlay(Me, EventArgs.Empty)
     End Sub
 
     Private Sub cmdScreenCapture_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdScreenCapture.Click
         'TODO: Screen capture... not sure why though
-        'myFormLibrary.frmVideoMiner.blScreenCaptureCalled = True
-        'myFormLibrary.frmVideoMiner.mnuCapScr_Click(sender, e)
-        'myFormLibrary.frmVideoMiner.blScreenCaptureCalled = False
     End Sub
 
     ''' <summary>

@@ -59,23 +59,7 @@ Public Class frmSpeciesEvent
     Private m_dict As Dictionary(Of String, Tuple(Of String, String, Boolean))
 #End Region
 
-    Public Event NewSpeciesEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
-    ''' <summary>
-    ''' Once the OK or Cancel buttons are pressed, this will signal to resume playback on the
-    ''' video player.
-    ''' </summary>
-    Public Event SignalPlay(ByVal sender As System.Object, ByVal e As System.EventArgs)
-
 #Region "Properties"
-    Public Property SpeciesData() As Dictionary(Of String, Tuple(Of String, String, Boolean))
-        Get
-            Return m_dict
-        End Get
-        Set(ByVal value As Dictionary(Of String, Tuple(Of String, String, Boolean)))
-            m_dict = value
-        End Set
-    End Property
-
     Public Property SpeciesName() As String
         Get
             Return m_speciesName
@@ -180,6 +164,25 @@ Public Class frmSpeciesEvent
             Return m_dict
         End Get
     End Property
+
+    ''' <summary>
+    ''' Return the key value data for the current value
+    ''' </summary>
+    ''' <returns></returns>
+    Public ReadOnly Property DataTuple As Tuple(Of String, String, Boolean)
+        Get
+            Return m_tuple
+        End Get
+    End Property
+
+#End Region
+
+#Region "Events"
+    ''' <summary>
+    ''' Fires when the OK button is pressed.
+    ''' </summary>
+    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
 #End Region
 
     Public Sub New(species_name As String, Optional species_code As String = "")
@@ -207,7 +210,7 @@ Public Class frmSpeciesEvent
             .SelectedIndex = -1 ' If 0, the first item will be preselected, if -1, no items will be selected (default fresh loaded condition).
         End With
         ' Populate the 'Side' combobox. Uses the table lu_observed_side from the database
-        strQuery = "SELECT * FROM " & DB_OBSERVED_SIDE_TABLE & " ORDER BY Code;"
+        strQuery = "select * from " & DB_OBSERVED_SIDE_TABLE & " order by Code;"
         Dim dtSide As DataTable = Database.GetDataTable(strQuery, DB_OBSERVED_SIDE_TABLE)
         With cboSide
             .DataSource = dtSide
@@ -216,7 +219,7 @@ Public Class frmSpeciesEvent
             .SelectedIndex = 0
         End With
         ' Populate the 'ID Confidence' combobox
-        strQuery = "SELECT * FROM " & DB_CONFIDENCE_IDS_TABLE & " ORDER BY ConfidenceId;"
+        strQuery = "select * from " & DB_CONFIDENCE_IDS_TABLE & " order by ConfidenceId;"
         Dim dtIDConfidence As DataTable = Database.GetDataTable(strQuery, DB_CONFIDENCE_IDS_TABLE)
         With cboIDConfidence
             .DataSource = dtIDConfidence
@@ -225,7 +228,7 @@ Public Class frmSpeciesEvent
             .SelectedIndex = 0
         End With
         ' Populate the 'Abundance' combobox
-        strQuery = "SELECT * FROM " & DB_ABUNDANCE_TABLE & " ORDER BY ACFORScaleID;"
+        strQuery = "select * from " & DB_ABUNDANCE_TABLE & " order by ACFORScaleID;"
         Dim dtAbundance As DataTable = Database.GetDataTable(strQuery, DB_ABUNDANCE_TABLE)
         With cboAbundance
             .DataSource = dtAbundance
@@ -244,10 +247,10 @@ Public Class frmSpeciesEvent
     ''' Get the next unique ID from the species buttons table so that the new button can be inserted properly into the database table.
     ''' </summary>
     Private Function GetNextSequenceId() As Integer
-        Dim strQuery = "SELECT Max(DrawingOrder) FROM " & DB_SPECIES_BUTTONS_TABLE & ";"
+        Dim strQuery As String = "select Max(DrawingOrder) from " & DB_SPECIES_BUTTONS_TABLE & ";"
         Dim idTable As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_BUTTONS_TABLE)
         Dim intId = idTable.Rows(0).Item(0) ' The query will only return 1 result because it is a MAX query.
-        Return intId + 1
+        Return CInt(intId) + 1
     End Function
 
     ''' <summary>
@@ -278,7 +281,7 @@ Public Class frmSpeciesEvent
     Public Sub Acknowledge(Optional speciesCount As String = NULL_STRING, Optional speciesAbundance As String = NULL_STRING, Optional ackComment As String = NULL_STRING)
         ' The codes 1 and 2 below reflect Port and Starboard. The commented out if statement shows what is really going on here.
         ' If cboSide.SelectedItem = "Port" Or cboSide.SelectedItem = "Starboard" Then
-        If cboSide.SelectedValue = 1 Or cboSide.SelectedValue = 2 Then
+        If CInt(cboSide.SelectedValue) = 1 Or CInt(cboSide.SelectedValue) = 2 Then
             If txtRange.Text = "" Then
                 MessageBox.Show("You must enter a value in the Range textbox when you choose 'Port' or 'Starboard' for 'Side'.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
                 Exit Sub
@@ -290,41 +293,41 @@ Public Class frmSpeciesEvent
         ' Record all member variables to reflect all the changes which have been validated. Also check for empty strings and change them to "NULL"
         ' so the query won't break later.
         SpeciesName = cboSpecies.Text
-        SpeciesCode = cboSpecies.SelectedValue
+        SpeciesCode = cboSpecies.SelectedValue.ToString()
         ' If speciesCount argument was supplied, then this is meant to be a quick entry and some fields must be made null
         If speciesCount <> NULL_STRING Then
             Count = speciesCount
-            Side = "NULL"
-            IDConfidence = "NULL"
-            Abundance = "NULL"
+            Side = UNINITIALIZED_DATA_VALUE
+            IDConfidence = UNINITIALIZED_DATA_VALUE
+            Abundance = UNINITIALIZED_DATA_VALUE
         Else
             Count = txtCount.Text
-            Side = cboSide.SelectedValue
-            IDConfidence = cboIDConfidence.SelectedValue
-            Abundance = cboAbundance.SelectedValue
+            Side = cboSide.SelectedValue.ToString()
+            IDConfidence = cboIDConfidence.SelectedValue.ToString()
+            Abundance = cboAbundance.SelectedValue.ToString()
         End If
         If speciesAbundance <> NULL_STRING Then
             Abundance = speciesAbundance
             Comments = ackComment
-            Side = "NULL"
-            Count = "NULL"
-            IDConfidence = "NULL"
+            Side = UNINITIALIZED_DATA_VALUE
+            Count = UNINITIALIZED_DATA_VALUE
+            IDConfidence = UNINITIALIZED_DATA_VALUE
         Else
             Comments = rtxtComments.Text
         End If
-        If Side = "" Then Side = "NULL"
-        If IDConfidence = "" Then IDConfidence = "NULL"
-        If Abundance = "" Then Abundance = "NULL"
-        If Count = "" Then Count = "NULL"
+        If Side = "" Then Side = UNINITIALIZED_DATA_VALUE
+        If IDConfidence = "" Then IDConfidence = UNINITIALIZED_DATA_VALUE
+        If Abundance = "" Then Abundance = UNINITIALIZED_DATA_VALUE
+        If Count = "" Then Count = UNINITIALIZED_DATA_VALUE
 
         Range = txtRange.Text
-        If Range = "" Then Range = "NULL"
+        If Range = "" Then Range = UNINITIALIZED_DATA_VALUE
         SpeciesHeight = txtHeight.Text
-        If SpeciesHeight = "" Then SpeciesHeight = "NULL"
+        If SpeciesHeight = "" Then SpeciesHeight = UNINITIALIZED_DATA_VALUE
         SpeciesWidth = txtWidth.Text
-        If SpeciesWidth = "" Then SpeciesWidth = "NULL"
+        If SpeciesWidth = "" Then SpeciesWidth = UNINITIALIZED_DATA_VALUE
         SpeciesLength = txtLength.Text
-        If SpeciesLength = "" Then SpeciesLength = "NULL"
+        If SpeciesLength = "" Then SpeciesLength = UNINITIALIZED_DATA_VALUE
         If Comments = "" Then
             ' This one is a bit different, this needs to be "" instead of NULL.
             Comments = ""
@@ -332,9 +335,9 @@ Public Class frmSpeciesEvent
         ' build the dictionary of data..
         buildDictionary()
         ' Raise Event to tell parent form that we wish a record to be added to the database
-        RaiseEvent NewSpeciesEntryEvent(Me, EventArgs.Empty)
+        'RaiseEvent NewSpeciesEntryEvent(Me, EventArgs.Empty)
+        RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
         Me.Hide()
-        RaiseEvent SignalPlay(Me, EventArgs.Empty)
     End Sub
 
     Private Sub ok_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles ok.Click
@@ -441,8 +444,7 @@ Public Class frmSpeciesEvent
     ''' When user presses cancel, hide the form instead of closing it. It is created only once and needs to remain persistent.
     ''' </summary>
     Private Sub btnCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCancel.Click
-        Me.Hide()
-        RaiseEvent SignalPlay(Me, EventArgs.Empty)
+        Hide()
     End Sub
 
     ''' <summary>

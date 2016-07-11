@@ -191,10 +191,10 @@
     End Sub
 
     ''' <summary>
-    ''' Tell Videominer that the user widhes to submit a database record addition for the species listed.
+    ''' Tell Videominer that the user wishes to submit a database record addition for the species listed.
     ''' </summary>
-    Private Sub species_entry_event(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles frmSpeciesEvent.NewSpeciesEntryEvent
-        RaiseEvent SpeciesCodeChangedEvent(sender, e)
-        Me.Hide()
-    End Sub
+    'Private Sub species_entry_event(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles frmSpeciesEvent.NewSpeciesEntryEvent
+    '    RaiseEvent SpeciesCodeChangedEvent(sender, e)
+    '    Me.Hide()
+    'End Sub
 End Class

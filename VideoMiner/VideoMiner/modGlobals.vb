@@ -44,6 +44,24 @@ Module modGlobals
     Public Const VIDEO_TIME_FORMAT As String = "{0:D2}:{1:D2}:{2:D2}.{3:D4}"
 
     Public Const NULL_STRING As String = ""
+    Public Const UNINITIALIZED_DATA_VALUE = "NULL"
+
+    ' Names of database columns
+    Public Const DRAWING_ORDER As String = "DrawingOrder"
+    Public Const BUTTON_TEXT As String = "ButtonText"
+    Public Const TABLE_NAME As String = "TableName"
+    Public Const DATA_CODE As String = "DataCode"
+    Public Const DATA_CODE_NAME As String = "DataCodeName"
+    Public Const BUTTON_COLOR As String = "ButtonColor"
+    Public Const BUTTON_FONT As String = "ButtonFont"
+    Public Const BUTTON_TEXT_SIZE As String = "ButtonTextSize"
+    Public Const BUTTON_CODE As String = "ButtonCode"
+    Public Const BUTTON_CODE_NAME As String = "ButtonCodeName"
+    Public Const KEYBOARD_SHORTCUT As String = "KeyboardShortcut"
+    Public Const USER_ENTERED As String = "UserEntered"
+    Public Const DEFAULT_BUTTON_FONT As String = "Microsoft Sans Serif"
+    Public Const DEFAULT_BUTTON_TEXT_SIZE As String = "10"
+
     Public blRareSpecies As Boolean = False
 
     Public dictHabitatFieldValues As Dictionary(Of String, String)

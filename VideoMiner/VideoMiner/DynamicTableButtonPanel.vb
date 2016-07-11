@@ -1,5 +1,5 @@
 ﻿''' <summary>
-''' A panel which supports loading of dynamic buttons which load database table forms when pressed.
+''' A panel that holds dynamic buttons which load database table forms when pressed.
 ''' </summary>
 ''' <remarks></remarks>
 Public Class DynamicTableButtonPanel
@@ -76,13 +76,13 @@ Public Class DynamicTableButtonPanel
 #Region "Events"
     Public Event DataChanged(sender As System.Object, e As System.EventArgs)
     ''' <summary>
-    ''' Signals the parent that a button has been pressed on this panel and we request that the video be paused while data entry takes place.
+    ''' Signals the parent that a button has been pressed on this panel and data entry has started.
     ''' </summary>
-    Public Event SignalVideoPause(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    Public Event StartDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
     ''' <summary>
-    ''' Signals the parent that a button has been pressed on this panel and we request that the video be paused while data entry takes place.
+    ''' Signals the parent that data entry has ended.
     ''' </summary>
-    Public Event SignalVideoPlay(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
     ''' <summary>
     ''' Fire event to have parent form check for dirty data or anything else prior to launching the button code.
     ''' </summary>
@@ -178,33 +178,23 @@ Public Class DynamicTableButtonPanel
     ''' </summary>
     ''' <param name="strTableName">Name of the button description table in the MS Access database</param>
     Public Sub fillPanel(strTableName As String)
-        ' If any dynamic buttons are currently loaded, remove them all
         removeAllDynamicControls()
-
         If Not IsNothing(m_repeat_for_every_record) Then
             m_repeat_for_every_record.Visible = True
         End If
         If Not IsNothing(m_define_all_button) Then
             m_define_all_button.Visible = True
         End If
-
         Dim d As DataTable = Database.GetDataTable("select * from " & strTableName & " order by DrawingOrder;", strTableName)
         m_num_dynamic_buttons = d.Rows.Count
         ReDim m_dynamic_buttons(m_num_dynamic_buttons)
         Dim i As Integer = 0
-
         For Each r As DataRow In d.Rows
-            m_dynamic_buttons(i) = New DynamicTableButton(r.Item(1).ToString(),
-                                                          r.Item(2).ToString(),
-                                                          r.Item(3),
-                                                          r.Item(4).ToString(),
-                                                          r.Item(5).ToString(),
-                                                          m_button_font,
-                                                          m_button_text_size)
-            AddHandler m_dynamic_buttons(i).DataChanged, AddressOf PanelDataChanged
-            AddHandler m_dynamic_buttons(i).SignalVideoPause, AddressOf signal_video_pause
-            AddHandler m_dynamic_buttons(i).SignalVideoPlay, AddressOf signal_video_play
-            AddHandler m_dynamic_buttons(i).Click, AddressOf button_CheckForDirtyDataEvent
+            m_dynamic_buttons(i) = New DynamicTableButton(r, m_button_height, m_button_width, DynamicTableButton.WhichTypeEnum.DataTable)
+            AddHandler m_dynamic_buttons(i).StartDataEntryEvent, AddressOf startDataEntryEventHandler
+            AddHandler m_dynamic_buttons(i).EndDataEntryEvent, AddressOf endDataEntryEventHandler
+            'AddHandler m_dynamic_buttons(i).DataChanged, AddressOf PanelDataChanged
+            'AddHandler m_dynamic_buttons(i).Click, AddressOf button_CheckForDirtyDataEvent
             i += 1
         Next
         placeControls()
@@ -214,20 +204,14 @@ Public Class DynamicTableButtonPanel
     ''' Place the controls in the panel in a grid fashion.
     ''' </summary>
     Private Sub placeControls()
-        Dim h As Integer = Me.Height
-        Dim w As Integer = Me.Width
-        Dim sizex As Integer = m_button_width
-        Dim sizey As Integer = m_button_height
         Dim intAdd As Integer = 0
         Dim intMultiply As Integer = 0
-        Dim intCountPerRow As Integer
-        Dim cellsizex As Integer = sizex + m_gap
-        Dim cellsizey As Integer = sizey + m_gap
-        intCountPerRow = Math.Floor(w / (cellsizex))
+        Dim cellsizex As Integer = m_button_width + m_gap
+        Dim cellsizey As Integer = m_button_height + m_gap
         For i As Integer = 0 To m_num_dynamic_buttons - 1
-            m_dynamic_buttons(i).Size = New Size(sizex, sizey)
-            cellsizex = sizex + m_gap
-            cellsizey = (1.5 * sizey) + m_gap
+            cellsizex = m_dynamic_buttons(i).ControlWidth + m_gap
+            cellsizey = m_dynamic_buttons(i).ControlHeight + m_gap
+            'cellsizey = (1.5 * m_dynamic_buttons(i).ControlHeight) + m_gap
             m_dynamic_buttons(i).Location = New System.Drawing.Point(m_gap + (cellsizex * intMultiply), m_y_offset + (cellsizey * (i - intAdd)))
             Me.Controls.Add(m_dynamic_buttons(i))
             If i Mod 5 = 4 Then
@@ -260,7 +244,7 @@ Public Class DynamicTableButtonPanel
         Dim btn As DynamicTableButton = DirectCast(sender, DynamicTableButton)
         ' Find associated DynamicTextbox, so we can change the text to reflect the change
         For i As Integer = 0 To m_num_dynamic_buttons - 1
-            If btn.DataValue <> DynamicTableButton.UNINITIALIZED_DATA_VALUE Then
+            If btn.DataValue <> UNINITIALIZED_DATA_VALUE Then
                 buildDictionary(btn)
                 RaiseEvent DataChanged(Me, e)
             End If
@@ -276,13 +260,10 @@ Public Class DynamicTableButtonPanel
         m_dict.Clear()
         If IsNothing(m_repeat_for_every_record) Then
             ' One button's data
-            If btn.DataValue <> DynamicTableButton.UNINITIALIZED_DATA_VALUE Then
-                m_tuple = New Tuple(Of String, String, Boolean)(btn.DataCode, btn.DataValue, True)
-                m_dict.Add(btn.DataCodeName, m_tuple)
-            End If
+            m_dict.Add(btn.DataCodeName, m_tuple)
         ElseIf Not m_repeat_for_every_record.Checked Then
             ' One button's data
-            If btn.DataValue <> DynamicTableButton.UNINITIALIZED_DATA_VALUE Then
+            If btn.DataValue <> UNINITIALIZED_DATA_VALUE Then
                 m_tuple = New Tuple(Of String, String, Boolean)(btn.DataCode, btn.DataValue, True)
                 m_dict.Add(btn.DataCodeName, m_tuple)
             End If
@@ -290,7 +271,7 @@ Public Class DynamicTableButtonPanel
             ' All buttons data
             For i As Integer = 0 To m_num_dynamic_buttons - 1
                 ' If the button has data selected...
-                If m_dynamic_buttons(i).DataValue <> DynamicTableButton.UNINITIALIZED_DATA_VALUE Then
+                If m_dynamic_buttons(i).DataValue <> UNINITIALIZED_DATA_VALUE Then
                     m_tuple = New Tuple(Of String, String, Boolean)(m_dynamic_buttons(i).DataCode, m_dynamic_buttons(i).DataValue, btn.Name = m_dynamic_buttons(i).Name)
                     m_dict.Add(m_dynamic_buttons(i).DataCodeName, m_tuple)
                     ' Insert the comment if it exists for only the button which was pressed
@@ -321,7 +302,7 @@ Public Class DynamicTableButtonPanel
         If Not m_repeat_for_every_record.Checked Then Exit Sub
 
         For i As Integer = 0 To m_num_dynamic_buttons - 1
-            If m_dynamic_buttons(i).DataValue <> DynamicTableButton.UNINITIALIZED_DATA_VALUE Then
+            If m_dynamic_buttons(i).DataValue <> UNINITIALIZED_DATA_VALUE Then
                 m_tuple = New Tuple(Of String, String, Boolean)(m_dynamic_buttons(i).DataCode, m_dynamic_buttons(i).DataValue, False)
                 m_dict.Add(m_dynamic_buttons(i).DataCodeName, m_tuple)
             End If
@@ -353,7 +334,7 @@ Public Class DynamicTableButtonPanel
     ''' </summary>
     Private Sub DefineAll(ByVal sender As System.Object, ByVal e As System.EventArgs)
         For i As Integer = m_num_dynamic_buttons - 1 To 0 Step -1
-            m_dynamic_buttons(i).DataFormVisible = True
+            'm_dynamic_buttons(i).DataFormVisible = True
         Next
     End Sub
 
@@ -362,7 +343,7 @@ Public Class DynamicTableButtonPanel
     ''' </summary>
     ''' <param name="sender">The DynamicButton that was pressed</param>
     Private Sub signal_video_pause(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        RaiseEvent SignalVideoPause(sender, e)
+        'RaiseEvent SignalVideoPause(sender, e)
     End Sub
 
     ''' <summary>
@@ -370,7 +351,7 @@ Public Class DynamicTableButtonPanel
     ''' </summary>
     ''' <param name="sender">The DynamicButton that was pressed</param>
     Private Sub signal_video_play(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        RaiseEvent SignalVideoPlay(sender, e)
+        'RaiseEvent SignalVideoPlay(sender, e)
     End Sub
 
     ''' <summary>
@@ -391,9 +372,25 @@ Public Class DynamicTableButtonPanel
     Public Sub ClickButton(str As String)
         For i As Integer = 0 To m_num_dynamic_buttons - 1
             If m_dynamic_buttons(i).Text = str Then
-                m_dynamic_buttons(i).PerformClick()
+                'm_dynamic_buttons(i).PerformClick()
             End If
         Next
+    End Sub
+
+    ''' <summary>
+    ''' Tell the program to issue a pause video command
+    ''' </summary>
+    ''' <param name="sender">The DynamicSpeciesButton that was pressed</param>
+    Private Sub startDataEntryEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        RaiseEvent StartDataEntryEvent(sender, e)
+    End Sub
+
+    ''' <summary>
+    ''' Tell the program to issue a play video command
+    ''' </summary>
+    ''' <param name="sender">The DynamicSpeciesButton that was pressed</param>
+    Private Sub endDataEntryEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        RaiseEvent EndDataEntryEvent(sender, e)
     End Sub
 
 End Class

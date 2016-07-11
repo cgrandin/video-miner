@@ -191,7 +191,7 @@
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="BitmapEncoder.vb" />
     <Compile Include="Database.vb" />
-    <Compile Include="DynamicSpeciesButton.vb">
+    <Compile Include="DynamicButton.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DynamicSpeciesButtonPanel.vb">

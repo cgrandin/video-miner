@@ -1,84 +1,28 @@
 ﻿''' <summary>
-''' A Videominer dynamic table button. This button extends a regular button by holding 
-''' the database table name, an instance of the DataTable, the current data code,
-''' and the code name. It also holds a textbox for the status of the variable.
+''' A Videominer dynamic table button and textbox on a small panel.
 ''' When the button is pressed, a database table will be shown and the user can
 ''' select the row they want. Once the row is selected, the value will be shown in the Textbox.
+''' The DynamicTextbox shows the current status of the variable the button
+''' represents.
 ''' </summary>
 ''' <remarks></remarks>
 Public Class DynamicTableButton
-    Inherits Button
-
-    ''' <summary>
-    ''' The default, uninitialized value for the DataValue property
-    ''' </summary>
-    Public Const UNINITIALIZED_DATA_VALUE = "NULL"
+    Inherits SplitContainer
 
 #Region "Member variables"
     ''' <summary>
-    ''' The current value of the variable for this button.
+    ''' The button used to issue a data changed event for the variable the button represents.
     ''' </summary>
-    Private txtStatus As TextBox
+    Private m_btnButton As DynamicButton
     ''' <summary>
-    ''' Name of the MS Access table associated with this button
+    ''' A textbox attached below the button which shows the current value of the variable for the button.
     ''' </summary>
-    Private m_db_table_name As String
+    Private m_txtStatus As DynamicTextbox
     ''' <summary>
-    ''' Text to appear on the button
+    ''' The form showing the data table requested.
     ''' </summary>
-    Private m_button_text As String
-    ''' <summary>
-    ''' Code for the button. This may not be set if the button type is for a data table.
-    ''' </summary>
-    Private m_button_code As String
-    ''' <summary>
-    ''' Name for the button code. This may not be set if the button type is for a data table.
-    ''' </summary>
-    Private m_button_code_name As String
-    ''' <summary>
-    ''' Data code for this button as found in the lu_data_codes table.
-    ''' This is NOT the code chosen by the user in the table view, this is the
-    ''' code for this particular table.
-    ''' </summary>
-    Private m_data_code As Integer
-    ''' <summary>
-    ''' Name of the data code (description) as found in the lu_data_codes table.
-    ''' This is NOT the code chosen by the user in the table view, this is the
-    ''' code for this particular table.
-    ''' </summary>
-    Private m_data_code_name As String
-    ''' <summary>
-    ''' A description of the data code
-    ''' </summary>
-    Private m_data_code_description As String
-    ''' <summary>
-    ''' The value of the chosen data, i.e. from row selection in a table or entry such as Field of View.
-    ''' It must be a string so that "NULL" can be passed to the SQL query if it was not chosen to be part of the query.
-    ''' </summary>
-    Private m_data_value As String
-    ''' <summary>
-    ''' Table of data found in the m_db_table_name table in the MS Access database.
-    ''' </summary>
-    ''' <remarks></remarks>
-    Private m_data_table As DataTable
-    ''' <summary>
-    ''' The table view of the m_data_table.
-    ''' </summary>
-    Private WithEvents m_table_view As frmTableView
-    ''' <summary>
-    ''' Currently selected code for the variable that m_table_name represents.
-    ''' This is changed when the user selects a new row in the underlying table view form.     
-    ''' </summary>
-    Private m_current_data_code As String
-    ''' <summary>
-    ''' Currently selected code name for the variable that m_table_name represents.
-    ''' This is changed when the user selects a new row in the underlying table view form.     
-    ''' </summary>
-    Private m_current_data_code_name As String
-    ''' <summary>
-    ''' Currently entered comment in the frmTableView
-    ''' </summary>
-    Private m_current_comment As String
+    Private WithEvents m_frmTableView As frmTableView
+
     ''' <summary>
     ''' Distinguishes between the two types of data this button can represent, database table
     ''' data (lookup tables stored as type DataTable) or UserEntered which are not a DataTable
@@ -94,13 +38,25 @@ Public Class DynamicTableButton
     Private m_which_type As WhichTypeEnum
 #End Region
 
+#Region "Events"
+    ''' <summary>
+    ''' This event will be fired when the user clicks the button.
+    ''' </summary>
+    Public Event StartDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' This event will propagate an event sent by either m_frmSpeciesEvent, m_frmAbundanceTableView, or m_frmTableView.
+    ''' It is sent to signal the end of the data entry, i.e. when the subforms mentioned are closed.
+    ''' </summary>
+    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+#End Region
+
 #Region "Properties"
     Public Property ButtonCode As String
         Get
-            Return m_button_code
+            Return m_btnButton.ButtonCode
         End Get
         Set(value As String)
-            m_button_code = value
+            m_btnButton.ButtonCode = value
         End Set
     End Property
     ''' <summary>
@@ -108,159 +64,95 @@ Public Class DynamicTableButton
     ''' </summary>
     Public Property DataCode As Integer
         Get
-            Return m_data_code
+            Return m_btnButton.DataCode
         End Get
         Set(value As Integer)
-            m_data_code = value
+            m_btnButton.DataCode = value
         End Set
     End Property
     Public Property DataCodeName As String
         Get
-            Return m_data_code_name
+            Return m_btnButton.DataCodeName
         End Get
         Set(value As String)
-            m_data_code_name = value
+            m_btnButton.DataCodeName = value
         End Set
     End Property
     Public Property DataValue As String
         Get
-            Return m_data_value
+            Return m_btnButton.DataValue
         End Get
         Set(value As String)
-            m_data_value = value
-        End Set
-    End Property
-    Public Property DataDescription As String
-        Get
-            Return m_data_code_description
-        End Get
-        Set(value As String)
-            m_data_code_description = value
+            m_btnButton.DataValue = value
         End Set
     End Property
     Public Property DataComment As String
         Get
-            Return m_current_comment
+            Return m_btnButton.DataComment
         End Get
         Set(value As String)
-            m_current_comment = value
+            m_btnButton.DataComment = value
         End Set
     End Property
-    Public Property DataFormVisible As Boolean
+    Public Property Dictionary As Dictionary(Of String, Tuple(Of String, String, Boolean))
         Get
-            Return m_table_view.Visible
+            Return m_btnButton.Dictionary
         End Get
-        Set(value As Boolean)
-            If m_db_table_name = "UserEntered" Then
-                Dim frmFOV As New frmFOV
-                If frmFOV.ShowDialog() = Windows.Forms.DialogResult.OK Then
-                    DataCode = 16
-                    DataValue = frmFOV.Data
-                    DataCodeName = "FieldOfView"
-                    DataDescription = DataValue
-                    RaiseEvent DataChanged(Me, Nothing)
-                End If
-            Else
-                ' The check here for nothing distinguishes between the species buttons and the other (habitat and transect buttons).
-                ' If m_table_view is nothing, the handler Button_Click which was added dynamically will be run for the species event buttons only
-                If m_table_view IsNot Nothing Then
-                    m_table_view.Visible = value
-                End If
-            End If
+        Set(value As Dictionary(Of String, Tuple(Of String, String, Boolean)))
+            m_btnButton.Dictionary = value
         End Set
     End Property
-#End Region
 
-#Region "Events"
     ''' <summary>
-    ''' Fired when the button data has changed.
+    ''' Width of the control
     ''' </summary>
-    Public Event DataChanged(ByVal sender As Object, ByVal e As EventArgs)
+    ''' <returns></returns>
+    Public ReadOnly Property ControlWidth As Integer
+        Get
+            Return ClientSize.Width
+        End Get
+    End Property
     ''' <summary>
-    ''' Signals the parent that a button has been pressed and we request that the video be paused while data entry takes place.
+    ''' Height of the control, including button and textbox
     ''' </summary>
-    Public Event SignalVideoPause(ByVal sender As System.Object, ByVal e As System.EventArgs)
-    ''' <summary>
-    ''' Signals the parent that the data entry is complete and to resume playback.
-    ''' </summary>
-    Public Event SignalVideoPlay(ByVal sender As System.Object, ByVal e As System.EventArgs)
-#End Region
+    ''' <returns></returns>
+    Public ReadOnly Property ControlHeight As Integer
+        Get
+            Return ClientSize.Height
+        End Get
+    End Property
 
+#End Region
     ''' <summary>
     ''' Creates the button, for the case in which the button refers to a database code table.
     ''' </summary>
-    ''' <param name="buttonText">Text to appear on the button</param>
-    ''' <param name="tableName">Name of the MS Access database table </param>
-    ''' <param name="dataCode">Code that is in the database table for this button</param>
-    ''' <param name="dataCodeName">Name of the code that is in the database table for this button</param>
-    ''' <param name="buttonColor">The microsoft color for this button's text (e.g. "DarkBlue")</param>
-    ''' <param name="buttonFont">The font to use for this button (e.g. "Microsoft Sans Serif")</param>
-    ''' <param name="buttonTextSize">The font size to use for this button's text (in pts)</param>
+    ''' <param name="row">A DataRow object holding a row of data used to initialize the button</param>
+    ''' <param name="whichType">Used to signify the difference between database-table based forms or a user form.</param>
     ''' <remarks></remarks>
-    Public Sub New(buttonText As String,
-                   tableName As String,
-                   dataCode As Integer,
-                   dataCodeName As String,
-                   buttonColor As String,
-                   buttonFont As String,
-                   buttonTextSize As Integer,
+    Public Sub New(row As DataRow,
+                   intHeight As Integer,
+                   intWidth As Integer,
                    Optional whichType As WhichTypeEnum = WhichTypeEnum.DataTable)
-        Dim d As DataTable
-        Me.Name = buttonText
-        Me.Text = buttonText
-        m_db_table_name = tableName
-
-        m_which_type = WhichTypeEnum.DataTable
-        Dim colConvert As ColorConverter = New ColorConverter()
-        Try
-            Me.ForeColor = colConvert.ConvertFromString(buttonColor)
-        Catch ex As Exception
-            Me.ForeColor = Color.Black
-        End Try
-        Dim font_family As FontFamily = New FontFamily(buttonFont)
-        If font_family.IsStyleAvailable(FontStyle.Regular) Then
-            Me.Font = New Font(font_family, buttonTextSize, FontStyle.Regular)
-        ElseIf font_family.IsStyleAvailable(FontStyle.Bold) Then
-            Me.Font = New Font(font_family, buttonTextSize, FontStyle.Bold)
-        ElseIf font_family.IsStyleAvailable(FontStyle.Italic) Then
-            Me.Font = New Font(font_family, buttonTextSize, FontStyle.Italic)
-        End If
-        m_data_code_name = dataCodeName
-        If m_db_table_name = "UserEntered" Then
-            ' In the database, the name 'UserEntered' is in place of the tablename, so we must ask user here for the code value
-            d = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE & " where Description = '" & buttonText & "';", DB_DATA_CODES_TABLE)
-            m_data_code = d.Rows(0).Item(0)
-        Else
-            m_data_table = Database.GetDataTable("select * from " & m_db_table_name & " order by 1;", m_db_table_name)
-            d = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE & " where LookupTable = '" & m_db_table_name & "';", DB_DATA_CODES_TABLE)
-            m_data_code = d.Rows(0).Item(0)
-            ' Create new Table view form, but don't show it yet.
-            m_table_view = New frmTableView(Me.Text, m_data_table)
-        End If
-        If d.Rows.Count > 1 Then
-            ' There may be more than one rows which have the same lookup table. e.g. substrate or substrate percent tables will do this
-            ' so this tries to match the first 8 characters and use that one.
-            ' TODO: Fix this. It works for now, but if two descriptions start with the same 8 letters, there will be erroneous data
-            For i As Integer = 0 To d.Rows.Count - 1
-                If Strings.Left(m_data_code_name, 8) = Strings.Left(d.Rows(i).Item("Description"), 8) Then
-                    m_data_code = d.Rows(i).Item(0)
-                End If
-            Next
-        End If
-        m_data_value = UNINITIALIZED_DATA_VALUE
+        m_which_type = whichType
+        m_btnButton = New DynamicButton(row, intHeight, intWidth, DynamicButton.WhichEntryStyleEnum.Table)
+        m_txtStatus = New DynamicTextbox(m_btnButton.ButtonFont, m_btnButton.ButtonTextSize)
+        Me.Orientation = Orientation.Horizontal
+        Panel1.Controls.Add(m_btnButton)
+        Panel2.Controls.Add(m_txtStatus)
+        m_btnButton.Dock = DockStyle.Fill
+        m_txtStatus.Dock = DockStyle.Fill
+        m_txtStatus.Text = m_btnButton.ButtonText
     End Sub
 
     ''' <summary>
     ''' Handle the clearing of the data field in the table by resetting the DataCode and DataComment to Nothing and
     ''' firing an event to signal the parent.
     ''' </summary>
-    Private Sub clearData() Handles m_table_view.ClearEvent
-        m_data_value = UNINITIALIZED_DATA_VALUE
-        m_current_comment = NULL_STRING
-        If Not IsNothing(m_table_view) Then
-            m_table_view.clearSelection()
+    Private Sub clearData() Handles m_frmTableView.ClearEvent
+        If Not IsNothing(m_frmTableView) Then
+            m_frmTableView.clearSelection()
         End If
-        RaiseEvent DataChanged(Me, EventArgs.Empty)
+        'RaiseEvent DataChanged(Me, EventArgs.Empty)
     End Sub
 
     ''' <summary>
@@ -271,13 +163,21 @@ Public Class DynamicTableButton
             clearData()
             Exit Sub
         Else
-            Me.DataFormVisible = True
+            'Me.DataFormVisible = True
         End If
 
         ' Raise an event to signal the beginning of the process of filling in a form which will be recorded to the database.
         ' For example, when the user presses a species button it will bring up the form needed to fill in the information for the species.
         ' The video needs to be paused at this point, and restarted when the user presses OK on the form which is being worked on
-        RaiseEvent SignalVideoPause(Me, e)
+        'RaiseEvent SignalVideoPause(Me, e)
+    End Sub
+
+    ''' <summary>
+    ''' Bubbles the EndDataEntryEvent up.
+    ''' </summary>
+    Private Sub endDataEntryEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles m_frmTableView.EndDataEntryEvent
+        Dictionary = m_frmTableView.Dictionary
+        RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
     End Sub
 
 End Class

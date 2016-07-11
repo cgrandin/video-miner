@@ -1,7 +1,13 @@
 ﻿Public Class DynamicTextbox
     Inherits TextBox
 
-    Public Sub New(buttonFont As String, buttonTextSize As Integer)
+    Private m_button_font As String
+    Private m_button_text_size As String
+
+    Public Sub New(buttonFont As String, buttonTextSize As String)
+        m_button_font = buttonFont
+        m_button_text_size = buttonTextSize
+
         Dim strCharactersAllowed As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"
         Dim txtName As String = Name
         Dim Letter As String
@@ -16,14 +22,19 @@
         Me.ForeColor = Color.Red
         Me.TextAlign = HorizontalAlignment.Center
         Me.ReadOnly = True
-        Dim font_family As FontFamily = New FontFamily(buttonFont)
+        Dim font_family As FontFamily
+        Try
+            font_family = New FontFamily(buttonFont)
+        Catch ex As Exception
+            font_family = New FontFamily(DEFAULT_BUTTON_FONT)
+        End Try
         If font_family.IsStyleAvailable(FontStyle.Regular) Then
-            Me.Font = New Font(font_family, buttonTextSize, FontStyle.Regular)
+            Me.Font = New Font(font_family, Convert.ToSingle(m_button_text_size, Globalization.CultureInfo.InvariantCulture), FontStyle.Regular)
         ElseIf font_family.IsStyleAvailable(FontStyle.Bold) Then
-            Me.Font = New Font(font_family, buttonTextSize, FontStyle.Bold)
+            Me.Font = New Font(font_family, Convert.ToSingle(m_button_text_size, Globalization.CultureInfo.InvariantCulture), FontStyle.Bold)
         ElseIf font_family.IsStyleAvailable(FontStyle.Italic) Then
-            Me.Font = New Font(font_family, buttonTextSize, FontStyle.Italic)
+            Me.Font = New Font(font_family, Convert.ToSingle(m_button_text_size, Globalization.CultureInfo.InvariantCulture), FontStyle.Italic)
         End If
-        Me.Font = New Font(font_family, buttonTextSize, FontStyle.Bold)
+        'Me.Font = New Font(font_family, Convert.ToSingle(m_button_text_size, Globalization.CultureInfo.InvariantCulture), FontStyle.Bold)
     End Sub
 End Class
