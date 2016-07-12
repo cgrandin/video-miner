@@ -1902,60 +1902,24 @@ Public Class VideoMiner
     ''' saving to the database.
     ''' </summary>
     Private Sub buttonDataChanged(sender As System.Object, e As System.EventArgs) Handles pnlHabitatData.EndDataEntryEvent, pnlTransectData.EndDataEntryEvent, pnlSpeciesData.EndDataEntryEvent
-        Dim panel As Object
+        Dim pnl As Object
         If TypeOf sender Is DynamicSpeciesButtonPanel Then
-            panel = CType(sender, DynamicSpeciesButtonPanel)
+            pnl = CType(sender, DynamicSpeciesButtonPanel)
         ElseIf TypeOf sender Is DynamicTableButtonPanel Then
-            panel = CType(sender, DynamicTableButtonPanel)
+            pnl = CType(sender, DynamicTableButtonPanel)
         End If
-        Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = panel.Dictionary
-        Dim tuple As Tuple(Of String, String, Boolean)
-        ' If the calling panel is the species panel, check the setting of the
-        ' habitat And transect panels And If Set To record On every record,
-        ' merge the two dictionaries before running the insert query.
-        Select Case panel.Name
+        Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = pnl.Dictionary
+        Select Case pnl.Name
             Case PANEL_NAME_SPECIES
-                ' Merge the two dictionaries from HABITAT and TRANSECT panels
-                For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlTransectData.Dictionary
-                    dict.Add(kvp.Key, kvp.Value)
-                Next
-                For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlHabitatData.Dictionary
-                    dict.Add(kvp.Key, kvp.Value)
-                Next
-                If dict.ContainsKey("DataCode") Then
-                    dict.Remove("DataCode")
-                End If
-                ' Add the datacode information for a species event
-                tuple = New Tuple(Of String, String, Boolean)("4", "4", True)
-                dict.Add("DataCode", tuple)
+                ' If species panel, merge other two panel's dictionaries
+                dict = dict.Union(pnlHabitatData.Dictionary).Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
             Case PANEL_NAME_HABITAT
-                ' Merge the dictionary from TRANSECT panel
-                For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlTransectData.Dictionary
-                    dict.Add(kvp.Key, kvp.Value)
-                Next
-                ' Need to add the DataCode, based on which of the dictionary entries has it's key.item3 set to True, i.e. which button was pressed
-                ' before this dictionary was made.
-                For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In dict
-                    If kvp.Value.Item3 Then
-                        tuple = New Tuple(Of String, String, Boolean)(kvp.Value.Item1, kvp.Value.Item1, True)
-                    End If
-                Next
-                dict.Add("DataCode", tuple)
+                ' merge the transect panel dictionary
+                dict = dict.Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
             Case PANEL_NAME_TRANSECT
-                ' Merge the dictionary from TRANSECT panel
-                ' Need to add the DataCode, based on which of the dictionary entries has it's key.item3 set to True, i.e. which button was pressed
-                ' before this dictionary was made.
-                For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlHabitatData.Dictionary
-                    dict.Add(kvp.Key, kvp.Value)
-                Next
-                For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In dict
-                    If kvp.Value.Item3 Then
-                        tuple = New Tuple(Of String, String, Boolean)(kvp.Value.Item1, kvp.Value.Item1, True)
-                    End If
-                Next
-                dict.Add("DataCode", tuple)
+                ' merge the habitat panel dictionary
+                dict = dict.Union(pnlHabitatData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
         End Select
-
         runInsertQuery(dict)
         fetch_data()
     End Sub

@@ -13,15 +13,11 @@ Public Class DynamicTableButton
     ''' <summary>
     ''' The button used to issue a data changed event for the variable the button represents.
     ''' </summary>
-    Private m_btnButton As DynamicButton
+    Private WithEvents m_btnButton As DynamicButton
     ''' <summary>
     ''' A textbox attached below the button which shows the current value of the variable for the button.
     ''' </summary>
     Private m_txtStatus As DynamicTextbox
-    ''' <summary>
-    ''' The form showing the data table requested.
-    ''' </summary>
-    Private WithEvents m_frmTableView As frmTableView
 
     ''' <summary>
     ''' Distinguishes between the two types of data this button can represent, database table
@@ -51,11 +47,11 @@ Public Class DynamicTableButton
     Public Property DataFormVisible As Boolean
         Set(value As Boolean)
             If m_which_type = WhichTypeEnum.DataTable Then
-                m_frmTableView.Visible = True
+                m_btnButton.DataFormVisible = True
             End If
         End Set
         Get
-            Return m_frmTableView.Visible
+            Return m_btnButton.DataFormVisible
         End Get
     End Property
 
@@ -66,6 +62,12 @@ Public Class DynamicTableButton
         Set(value As Dictionary(Of String, Tuple(Of String, String, Boolean)))
             m_btnButton.Dictionary = value
         End Set
+    End Property
+
+    Public ReadOnly Property DictionaryHasItems As Boolean
+        Get
+            Return m_btnButton.DictionaryHasItems
+        End Get
     End Property
 
     ''' <summary>
@@ -111,49 +113,25 @@ Public Class DynamicTableButton
                    intHeight As Integer,
                    intWidth As Integer,
                    Optional whichType As WhichTypeEnum = WhichTypeEnum.DataTable)
-        SuspendLayout()
         m_which_type = whichType
         m_btnButton = New DynamicButton(row, intHeight, intWidth, DynamicButton.WhichEntryStyleEnum.Table)
         AddHandler m_btnButton.StartDataEntryEvent, AddressOf startDataEntryEventHandler
         AddHandler m_btnButton.EndDataEntryEvent, AddressOf endDataEntryEventHandler
         m_txtStatus = New DynamicTextbox(m_btnButton.ButtonFont, m_btnButton.ButtonTextSize)
-        Me.Orientation = Orientation.Horizontal
+        Orientation = Orientation.Horizontal
+        IsSplitterFixed = True
+        Panel1.AutoScroll = False
+        Panel2.AutoScroll = False
         Panel1.Controls.Add(m_btnButton)
         Panel2.Controls.Add(m_txtStatus)
         m_btnButton.Dock = DockStyle.Fill
         m_txtStatus.Dock = DockStyle.Fill
-        m_txtStatus.Text = m_btnButton.ButtonText
-        ResumeLayout()
+        m_txtStatus.setNoData(m_btnButton.ButtonText)
     End Sub
 
-    ''' <summary>
-    ''' Handle the clearing of the data field in the table by resetting the DataCode and DataComment to Nothing and
-    ''' firing an event to signal the parent.
-    ''' </summary>
-    Private Sub clearData() Handles m_frmTableView.ClearEvent
-        If Not IsNothing(m_frmTableView) Then
-            m_frmTableView.clearSelection()
-        End If
-        'RaiseEvent DataChanged(Me, EventArgs.Empty)
+    Private Sub clearEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles m_btnButton.ClearEvent
+        m_txtStatus.setNoData(m_btnButton.ButtonText)
     End Sub
-
-    ''' <summary>
-    ''' Show the associated data table form for this button.
-    ''' </summary>
-    Public Sub ShowForm(sender As Object, e As EventArgs)
-        If My.Computer.Keyboard.CtrlKeyDown Then
-            clearData()
-            Exit Sub
-        Else
-            'Me.DataFormVisible = True
-        End If
-
-        ' Raise an event to signal the beginning of the process of filling in a form which will be recorded to the database.
-        ' For example, when the user presses a species button it will bring up the form needed to fill in the information for the species.
-        ' The video needs to be paused at this point, and restarted when the user presses OK on the form which is being worked on
-        'RaiseEvent SignalVideoPause(Me, e)
-    End Sub
-
     ''' <summary>
     ''' Tell parent that data entry has started
     ''' </summary>
@@ -165,6 +143,8 @@ Public Class DynamicTableButton
     ''' Tell parent that data entry has ended
     ''' </summary>
     Private Sub endDataEntryEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        ' Change text to reflect the change in the data
+        m_txtStatus.setData(m_btnButton.DataDescription)
         RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
     End Sub
 End Class

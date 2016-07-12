@@ -37,4 +37,14 @@
         End If
         'Me.Font = New Font(font_family, Convert.ToSingle(m_button_text_size, Globalization.CultureInfo.InvariantCulture), FontStyle.Bold)
     End Sub
+    Public Sub setNoData(strText As String)
+        Me.Text = strText
+        Me.ForeColor = Color.Red
+    End Sub
+
+    Public Sub setData(text As String)
+        Me.Text = text
+        Me.ForeColor = Color.Green
+    End Sub
+
 End Class

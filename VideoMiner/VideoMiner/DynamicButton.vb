@@ -103,6 +103,15 @@ Public Class DynamicButton
 #End Region
 
 #Region "Properties"
+    Public Property DataFormVisible As Boolean
+        Set(value As Boolean)
+            m_frmTableView.Visible = True
+        End Set
+        Get
+            Return m_frmTableView.Visible
+        End Get
+    End Property
+
     Public Property ButtonText As String
         Get
             Return m_button_text
@@ -171,6 +180,12 @@ Public Class DynamicButton
             m_current_comment = value
         End Set
     End Property
+    Public ReadOnly Property DataDescription As String
+        Get
+            Return m_frmTableView.DataDescription
+        End Get
+    End Property
+
     Public Property Dictionary As Dictionary(Of String, Tuple(Of String, String, Boolean))
         Get
             Return m_dict
@@ -179,6 +194,12 @@ Public Class DynamicButton
             m_dict = value
         End Set
     End Property
+    Public ReadOnly Property DictionaryHasItems As Boolean
+        Get
+            Return m_frmTableView.DictionaryHasItems
+        End Get
+    End Property
+
     ''' <summary>
     ''' Enumeration type for style of entry for this panel. Only applies to species panels.
     ''' See WhichEntryStyleEnum for descriptions.
@@ -203,6 +224,12 @@ Public Class DynamicButton
     ''' It is sent to signal the end of the data entry, i.e. when the subforms mentioned are closed.
     ''' </summary>
     Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Fires when the frmTableView is cleared via its clear button or a ctrl-click of this button
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Public Event ClearEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
 #End Region
 
     ''' <summary>
@@ -356,6 +383,10 @@ Public Class DynamicButton
         ElseIf m_which_entry_style = WhichEntryStyleEnum.Abundance Then
             RecordAbundance()
         ElseIf m_which_entry_style = WhichEntryStyleEnum.Table Then
+            If My.Computer.Keyboard.CtrlKeyDown Then
+                m_frmTableView.clearData()
+                Exit Sub
+            End If
             RecordTable()
         End If
     End Sub
@@ -407,6 +438,18 @@ Public Class DynamicButton
             m_data_code = 4
             m_frmSpeciesEvent.Acknowledge(NULL_STRING, m_frmAbundanceTableView.SelectedCode, m_frmAbundanceTableView.Comment)
         End If
+    End Sub
+
+    ''' <summary>
+    ''' Handle the clearing of the data field in the table by resetting the DataCode and DataComment to Nothing and
+    ''' firing an event to signal the parent.
+    ''' </summary>
+    Public Sub clearData() Handles m_frmTableView.ClearEvent
+        If Not IsNothing(m_frmTableView) Then
+            m_frmTableView.clearSelection()
+        End If
+        RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
+        RaiseEvent ClearEvent(Me, EventArgs.Empty)
     End Sub
 
     ''' <summary>

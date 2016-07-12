@@ -372,6 +372,9 @@ Public Class frmSpeciesEvent
         m_tuple = New Tuple(Of String, String, Boolean)("4", DoubleQuote(Comments), False)
         m_dict.Add("Comment", m_tuple)
     End Sub
+    Public Sub clearDictionary()
+        m_dict.Clear()
+    End Sub
 
 
     Private Sub cmdScreenCapture_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdScreenCapture.Click

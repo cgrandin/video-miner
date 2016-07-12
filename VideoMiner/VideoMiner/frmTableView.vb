@@ -16,6 +16,10 @@ Public Class frmTableView
     ''' </summary>
     Private m_data_code As String
     ''' <summary>
+    ''' Data description for row selected by user
+    ''' </summary>
+    Private m_data_description As String
+    ''' <summary>
     ''' Data value as selected by the user (from the currently selected row)
     ''' </summary>
     Private m_data_value As String
@@ -30,11 +34,13 @@ Public Class frmTableView
     Private m_dict As Dictionary(Of String, Tuple(Of String, String, Boolean))
 
 #Region "Properties"
-    Public ReadOnly Property DataValue As String
+
+    Public ReadOnly Property DataDescription As String
         Get
-            Return m_data_value
+            Return m_data_description
         End Get
     End Property
+
     Public Property DataCode As String
         Get
             Return m_data_code
@@ -95,6 +101,11 @@ Public Class frmTableView
         End Get
     End Property
 
+    Public ReadOnly Property DictionaryHasItems As Boolean
+        Get
+            Return m_dict.Count > 0
+        End Get
+    End Property
 #End Region
 
 #Region "Events"
@@ -195,16 +206,16 @@ Public Class frmTableView
         End If
     End Sub
 
-
     ''' <summary>
     ''' Build the dictionary of key/value pairs for the data the user chose.
     ''' </summary>
     Private Sub buildDictionary()
         ' Clear the dictionary from the previous time if necessary
         m_dict.Clear()
-        ' The first parameter is the name of the field in the database table lu_data. The tuple is a triplet of data code (from lu_data_codes), which is 4 for a species entry,
+        ' The first parameter is the name of the field in the database table lu_data. The tuple is a triplet of data code (from lu_data_codes),
         ' the data value to be inserted, and a boolean for whether or not the item was the one pressed (in case there are more than one in the dictionary).
         m_data_value = DataGridView1.SelectedRows(0).Cells(0).Value.ToString()
+        m_data_description = DataGridView1.SelectedRows(0).Cells(1).Value.ToString()
         m_tuple = New Tuple(Of String, String, Boolean)(m_data_code, m_data_value, True)
         m_dict.Add(m_data_code_name, m_tuple)
     End Sub
@@ -218,14 +229,17 @@ Public Class frmTableView
     ''' If the clear button is pressed, clear the selected row so that there is no selection, and raise an event to the parent.
     ''' </summary>
     Private Sub btnClear_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnClear.Click
+        clearData()
+    End Sub
+
+    Public Sub clearData()
         clearSelection()
+        m_dict.Clear()
         RaiseEvent ClearEvent()
         Me.Hide()
-        'RaiseEvent SignalPlay(Me, EventArgs.Empty)
     End Sub
 
     Private Sub cmdScreenCapture_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdScreenCapture.Click
-        'TODO: Screen capture... not sure why though
     End Sub
 
     ''' <summary>

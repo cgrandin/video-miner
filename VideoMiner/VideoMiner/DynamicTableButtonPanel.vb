@@ -146,6 +146,7 @@ Public Class DynamicTableButtonPanel
             m_repeat_for_every_record.Top = 19
             m_y_offset = m_repeat_for_every_record.Bottom + m_gap
             m_repeat_for_every_record.Visible = False
+            AddHandler m_repeat_for_every_record.CheckedChanged, AddressOf repeatForEveryRecordHandler
             m_num_static_controls += 1
         Else
             m_repeat_for_every_record = Nothing
@@ -248,12 +249,16 @@ Public Class DynamicTableButtonPanel
     ''' The dictionaries for each button will be merged into one dictionary so that all items
     ''' will appear in a entry of the database.
     ''' </summary>
-    Public Sub buildDictionary(btn As DynamicTableButton)
+    Public Sub buildDictionary(Optional btn As DynamicTableButton = Nothing)
         m_dict.Clear()
         If IsNothing(m_repeat_for_every_record) Then
-            m_dict = btn.Dictionary
+            If Not IsNothing(btn) Then
+                m_dict = btn.Dictionary
+            End If
         ElseIf Not m_repeat_for_every_record.Checked Then
-            m_dict = btn.Dictionary
+            If Not IsNothing(btn) Then
+                m_dict = btn.Dictionary
+            End If
         Else
             For i As Integer = 0 To m_num_dynamic_buttons - 1
                 If Not IsNothing(m_dynamic_buttons(i).Dictionary) Then
@@ -284,28 +289,12 @@ Public Class DynamicTableButtonPanel
     ''' <summary>
     ''' When user clicks the 'DEFINE ALL' button, it is the same as if they clicked all the dynamic buttons in sequence.
     ''' This is a convinience button. The windows are opened in reverse order so that they will be in the correct order
-    ''' ' from top to bottom.
+    ''' from top to bottom.
     ''' </summary>
     Private Sub DefineAll(ByVal sender As System.Object, ByVal e As System.EventArgs)
         For i As Integer = m_num_dynamic_buttons - 1 To 0 Step -1
             m_dynamic_buttons(i).DataFormVisible = True
         Next
-    End Sub
-
-    ''' <summary>
-    ''' Tell the program to issue a pause video command
-    ''' </summary>
-    ''' <param name="sender">The DynamicButton that was pressed</param>
-    Private Sub signal_video_pause(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        'RaiseEvent SignalVideoPause(sender, e)
-    End Sub
-
-    ''' <summary>
-    ''' Tell the program to issue a play video command
-    ''' </summary>
-    ''' <param name="sender">The DynamicButton that was pressed</param>
-    Private Sub signal_video_play(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        'RaiseEvent SignalVideoPlay(sender, e)
     End Sub
 
     ''' <summary>
@@ -344,8 +333,16 @@ Public Class DynamicTableButtonPanel
     ''' </summary>
     ''' <param name="sender">The DynamicTableButton that was pressed</param>
     Private Sub endDataEntryEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        buildDictionary(sender)
+        buildDictionary(CType(sender, DynamicTableButton))
         RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
+    End Sub
+
+    ''' <summary>
+    ''' Handles the checking/unchecking of the repeat control. The dictionary will be built so that
+    ''' it is in the correct formation if the main form requests it for data entry.
+    ''' </summary>
+    Private Sub repeatForEveryRecordHandler()
+        buildDictionary()
     End Sub
 
 End Class
