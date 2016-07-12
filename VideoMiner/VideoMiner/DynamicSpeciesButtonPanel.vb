@@ -90,16 +90,19 @@ Public Class DynamicSpeciesButtonPanel
     ''' <summary>
     ''' Create the DynamicSpeciesButtonPanel object.
     ''' </summary>
+    ''' <param name="strName">Name of the panel. Required for distinction between panels</param>
     ''' <param name="intButtonWidth">The width of all the buttons on the panel.</param>
     ''' <param name="intButtonHeight">The height of all the buttons on the panel.</param>
     ''' <param name="strButtonFont">The font for all the buttons on the panel.</param>
     ''' <param name="intButtonTextSize">The font size (pts) for all the buttons on the panel.</param>
-    Public Sub New(Optional intButtonWidth As Integer = 170,
+    Public Sub New(strname As String,
+                   Optional intButtonWidth As Integer = 170,
                    Optional intButtonHeight As Integer = 44,
                    Optional strButtonFont As String = "Microsoft Sans Serif",
                    Optional intButtonTextSize As Integer = 8,
                    Optional whichEntryStyle As DynamicButton.WhichEntryStyleEnum = DynamicButton.WhichEntryStyleEnum.Detailed)
 
+        Name = strname
         m_y_offset = 0
         m_gap = 2
         m_tuple = New Tuple(Of String, String, Boolean)(Nothing, Nothing, False)
@@ -195,7 +198,8 @@ Public Class DynamicSpeciesButtonPanel
     ''' </summary>
     ''' <param name="sender">The DynamicSpeciesButton that was pressed</param>
     Private Sub startDataEntryEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        RaiseEvent StartDataEntryEvent(sender, e)
+        RaiseEvent StartDataEntryEvent(Me, EventArgs.Empty)
+        'RaiseEvent StartDataEntryEvent(sender, e)
     End Sub
 
     ''' <summary>
@@ -203,7 +207,9 @@ Public Class DynamicSpeciesButtonPanel
     ''' </summary>
     ''' <param name="sender">The DynamicSpeciesButton that was pressed</param>
     Private Sub endDataEntryEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        RaiseEvent EndDataEntryEvent(sender, e)
+        m_dict = sender.Dictionary
+        RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
+        'RaiseEvent EndDataEntryEvent(sender, e)
     End Sub
 
     ''' <summary>

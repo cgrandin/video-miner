@@ -332,10 +332,7 @@ Public Class frmSpeciesEvent
             ' This one is a bit different, this needs to be "" instead of NULL.
             Comments = ""
         End If
-        ' build the dictionary of data..
         buildDictionary()
-        ' Raise Event to tell parent form that we wish a record to be added to the database
-        'RaiseEvent NewSpeciesEntryEvent(Me, EventArgs.Empty)
         RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
         Me.Hide()
     End Sub
@@ -343,13 +340,6 @@ Public Class frmSpeciesEvent
     Private Sub ok_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles ok.Click
         acknowledge()
     End Sub
-
-    ''' <summary>
-    '''  Set the form to be shown where the mouse pointer is.
-    ''' </summary>
-    'Private Sub SpeciesEventForm_FormShown(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Shown
-    '    Me.Location = MousePosition()
-    'End Sub
 
     ''' <summary>
     ''' Build the dictionary of key/value pairs for the data the user chose.
@@ -385,10 +375,6 @@ Public Class frmSpeciesEvent
 
 
     Private Sub cmdScreenCapture_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdScreenCapture.Click
-        'CJG
-        'myFormLibrary.frmVideoMiner.blScreenCaptureCalled = True
-        'myFormLibrary.frmVideoMiner.mnuCapScr_Click(sender, e)
-        'myFormLibrary.frmVideoMiner.blScreenCaptureCalled = False
     End Sub
 
     ''' <summary>

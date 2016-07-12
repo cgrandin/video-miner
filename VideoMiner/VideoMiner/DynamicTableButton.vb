@@ -38,18 +38,6 @@ Public Class DynamicTableButton
     Private m_which_type As WhichTypeEnum
 #End Region
 
-#Region "Events"
-    ''' <summary>
-    ''' This event will be fired when the user clicks the button.
-    ''' </summary>
-    Public Event StartDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
-    ''' <summary>
-    ''' This event will propagate an event sent by either m_frmSpeciesEvent, m_frmAbundanceTableView, or m_frmTableView.
-    ''' It is sent to signal the end of the data entry, i.e. when the subforms mentioned are closed.
-    ''' </summary>
-    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
-#End Region
-
 #Region "Properties"
     Public Property ButtonCode As String
         Get
@@ -59,41 +47,18 @@ Public Class DynamicTableButton
             m_btnButton.ButtonCode = value
         End Set
     End Property
-    ''' <summary>
-    ''' Data code used for table-based data. e.g. table lu_survey_mode is associated with data code 9 in the lu_data_codes table
-    ''' </summary>
-    Public Property DataCode As Integer
-        Get
-            Return m_btnButton.DataCode
-        End Get
-        Set(value As Integer)
-            m_btnButton.DataCode = value
+
+    Public Property DataFormVisible As Boolean
+        Set(value As Boolean)
+            If m_which_type = WhichTypeEnum.DataTable Then
+                m_frmTableView.Visible = True
+            End If
         End Set
-    End Property
-    Public Property DataCodeName As String
         Get
-            Return m_btnButton.DataCodeName
+            Return m_frmTableView.Visible
         End Get
-        Set(value As String)
-            m_btnButton.DataCodeName = value
-        End Set
     End Property
-    Public Property DataValue As String
-        Get
-            Return m_btnButton.DataValue
-        End Get
-        Set(value As String)
-            m_btnButton.DataValue = value
-        End Set
-    End Property
-    Public Property DataComment As String
-        Get
-            Return m_btnButton.DataComment
-        End Get
-        Set(value As String)
-            m_btnButton.DataComment = value
-        End Set
-    End Property
+
     Public Property Dictionary As Dictionary(Of String, Tuple(Of String, String, Boolean))
         Get
             Return m_btnButton.Dictionary
@@ -123,6 +88,19 @@ Public Class DynamicTableButton
     End Property
 
 #End Region
+
+#Region "Events"
+    ''' <summary>
+    ''' This event will be fired when the user clicks the button.
+    ''' </summary>
+    Public Event StartDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' This event will propagate an event sent by either m_frmSpeciesEvent, m_frmAbundanceTableView, or m_frmTableView.
+    ''' It is sent to signal the end of the data entry, i.e. when the subforms mentioned are closed.
+    ''' </summary>
+    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+#End Region
+
     ''' <summary>
     ''' Creates the button, for the case in which the button refers to a database code table.
     ''' </summary>
@@ -133,8 +111,11 @@ Public Class DynamicTableButton
                    intHeight As Integer,
                    intWidth As Integer,
                    Optional whichType As WhichTypeEnum = WhichTypeEnum.DataTable)
+        SuspendLayout()
         m_which_type = whichType
         m_btnButton = New DynamicButton(row, intHeight, intWidth, DynamicButton.WhichEntryStyleEnum.Table)
+        AddHandler m_btnButton.StartDataEntryEvent, AddressOf startDataEntryEventHandler
+        AddHandler m_btnButton.EndDataEntryEvent, AddressOf endDataEntryEventHandler
         m_txtStatus = New DynamicTextbox(m_btnButton.ButtonFont, m_btnButton.ButtonTextSize)
         Me.Orientation = Orientation.Horizontal
         Panel1.Controls.Add(m_btnButton)
@@ -142,6 +123,7 @@ Public Class DynamicTableButton
         m_btnButton.Dock = DockStyle.Fill
         m_txtStatus.Dock = DockStyle.Fill
         m_txtStatus.Text = m_btnButton.ButtonText
+        ResumeLayout()
     End Sub
 
     ''' <summary>
@@ -173,11 +155,16 @@ Public Class DynamicTableButton
     End Sub
 
     ''' <summary>
-    ''' Bubbles the EndDataEntryEvent up.
+    ''' Tell parent that data entry has started
     ''' </summary>
-    Private Sub endDataEntryEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles m_frmTableView.EndDataEntryEvent
-        Dictionary = m_frmTableView.Dictionary
-        RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
+    Private Sub startDataEntryEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        RaiseEvent StartDataEntryEvent(Me, EventArgs.Empty)
     End Sub
 
+    ''' <summary>
+    ''' Tell parent that data entry has ended
+    ''' </summary>
+    Private Sub endDataEntryEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
+    End Sub
 End Class

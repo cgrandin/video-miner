@@ -323,6 +323,9 @@ Public Class DynamicButton
                 m_data_code = d.Rows(0).Item(0).ToString()
                 ' Create new Table view form, but don't show it yet.
                 m_frmTableView = New frmTableView(Me.Text, m_data_table)
+                ' Set up the correct datacode for the form
+                m_frmTableView.DataCode = m_data_code
+                m_frmTableView.DataCodeName = m_data_code_name
             End If
             If d.Rows.Count > 1 Then
                 ' There may be more than one row which have the same lookup table. e.g. substrate or substrate percent tables will do this
@@ -409,8 +412,8 @@ Public Class DynamicButton
     ''' <summary>
     ''' Bubbles the EndDataEntryEvent up.
     ''' </summary>
-    Private Sub endDataEntryEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles m_frmSpeciesEvent.EndDataEntryEvent
-        m_dict = m_frmSpeciesEvent.Dictionary
+    Private Sub endDataEntryEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles m_frmSpeciesEvent.EndDataEntryEvent, m_frmTableView.EndDataEntryEvent ', m_frmAbundanceTableView.EndDataEntryEvent
+        m_dict = sender.Dictionary
         RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
     End Sub
 

@@ -1084,15 +1084,15 @@ Public Class VideoMiner
         frmSetTime = New frmSetTime(m_tsUserTime)
 
         ' Add DynamicPanels to the SplitContainerPanels
-        pnlTransectData = New DynamicTableButtonPanel(True, Me.ButtonWidth, Me.ButtonHeight,
+        pnlTransectData = New DynamicTableButtonPanel(PANEL_NAME_TRANSECT, True, Me.ButtonWidth, Me.ButtonHeight,
                                                       Me.ButtonFont, Me.ButtonTextSize, True, True)
         SplitContainer7.Panel1.Controls.Add(pnlTransectData)
 
-        '     pnlHabitatData = New DynamicTableButtonPanel(True, Me.ButtonWidth, Me.ButtonHeight,
-        '    Me.ButtonFont, Me.ButtonTextSize, True, True)
-        '   SplitContainer7.Panel2.Controls.Add(pnlHabitatData)
+        pnlHabitatData = New DynamicTableButtonPanel(PANEL_NAME_HABITAT, True, Me.ButtonWidth, Me.ButtonHeight,
+            Me.ButtonFont, Me.ButtonTextSize, True, True)
+        SplitContainer7.Panel2.Controls.Add(pnlHabitatData)
 
-        pnlSpeciesData = New DynamicSpeciesButtonPanel(Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize)
+        pnlSpeciesData = New DynamicSpeciesButtonPanel(PANEL_NAME_SPECIES, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize)
         pnlSpeciesData.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         pnlSpeciesData.Dock = DockStyle.Fill
         'AddHandler pnlSpeciesData.NewSpeciesEntryEvent, AddressOf new_species_entry_handler
@@ -1856,8 +1856,6 @@ Public Class VideoMiner
     Private Sub runInsertQueryScreenshot(filename As String)
         Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = New Dictionary(Of String, Tuple(Of String, String, Boolean))
         Dim tuple As Tuple(Of String, String, Boolean)
-        pnlHabitatData.buildDictionary()
-        pnlTransectData.buildDictionary()
         ' Merge the two dictionaries from HABITAT and TRANSECT panels
         For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlTransectData.Dictionary
             dict.Add(kvp.Key, kvp.Value)
@@ -1881,7 +1879,7 @@ Public Class VideoMiner
         fetch_data()
     End Sub
 
-    Private Sub dataButtonNewEntry() Handles pnlSpeciesData.StartDataEntryEvent, pnlTransectData.StartDataEntryEvent ', pnlHabitatData.StartDataEntryEvent,  
+    Private Sub dataButtonNewEntry() Handles pnlSpeciesData.StartDataEntryEvent, pnlTransectData.StartDataEntryEvent, pnlHabitatData.StartDataEntryEvent
         ' First store whether or not the video is playing so we can do the appropriate thing after
         ' the data are inserted
         If Not frmVideoPlayer Is Nothing Then
@@ -1892,7 +1890,7 @@ Public Class VideoMiner
         End If
     End Sub
 
-    Private Sub dataButtonEntryFinished() Handles pnlSpeciesData.EndDataEntryEvent, pnlTransectData.EndDataEntryEvent ', pnlHabitatData.EndDataEntryEvent
+    Private Sub dataButtonEntryFinished() Handles pnlSpeciesData.EndDataEntryEvent, pnlTransectData.EndDataEntryEvent, pnlHabitatData.EndDataEntryEvent
         If Not frmVideoPlayer Is Nothing Then
             If m_blWasPlaying Then
                 frmVideoPlayer.playVideo()
@@ -1903,13 +1901,13 @@ Public Class VideoMiner
     ''' Handle the changing of button data by creating an insert query and
     ''' saving to the database.
     ''' </summary>
-    Private Sub buttonDataChanged(sender As System.Object, e As System.EventArgs) Handles pnlHabitatData.DataChanged, pnlTransectData.DataChanged, pnlSpeciesData.EndDataEntryEvent
-        Dim panel As Object = CType(sender, DynamicButton)
-        'If TypeOf sender Is DynamicSpeciesButtonPanel Then
-        '    panel = CType(sender, DynamicSpeciesButtonPanel)
-        'ElseIf TypeOf sender Is DynamicTableButtonPanel Then
-        '    panel = CType(sender, DynamicTableButtonPanel)
-        'End If
+    Private Sub buttonDataChanged(sender As System.Object, e As System.EventArgs) Handles pnlHabitatData.EndDataEntryEvent, pnlTransectData.EndDataEntryEvent, pnlSpeciesData.EndDataEntryEvent
+        Dim panel As Object
+        If TypeOf sender Is DynamicSpeciesButtonPanel Then
+            panel = CType(sender, DynamicSpeciesButtonPanel)
+        ElseIf TypeOf sender Is DynamicTableButtonPanel Then
+            panel = CType(sender, DynamicTableButtonPanel)
+        End If
         Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = panel.Dictionary
         Dim tuple As Tuple(Of String, String, Boolean)
         ' If the calling panel is the species panel, check the setting of the
@@ -1917,8 +1915,6 @@ Public Class VideoMiner
         ' merge the two dictionaries before running the insert query.
         Select Case panel.Name
             Case PANEL_NAME_SPECIES
-                pnlHabitatData.buildDictionary()
-                pnlTransectData.buildDictionary()
                 ' Merge the two dictionaries from HABITAT and TRANSECT panels
                 For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlTransectData.Dictionary
                     dict.Add(kvp.Key, kvp.Value)
@@ -1933,7 +1929,6 @@ Public Class VideoMiner
                 tuple = New Tuple(Of String, String, Boolean)("4", "4", True)
                 dict.Add("DataCode", tuple)
             Case PANEL_NAME_HABITAT
-                pnlTransectData.buildDictionary()
                 ' Merge the dictionary from TRANSECT panel
                 For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlTransectData.Dictionary
                     dict.Add(kvp.Key, kvp.Value)
@@ -1950,7 +1945,6 @@ Public Class VideoMiner
                 ' Merge the dictionary from TRANSECT panel
                 ' Need to add the DataCode, based on which of the dictionary entries has it's key.item3 set to True, i.e. which button was pressed
                 ' before this dictionary was made.
-                pnlHabitatData.buildDictionary()
                 For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlHabitatData.Dictionary
                     dict.Add(kvp.Key, kvp.Value)
                 Next
@@ -1975,12 +1969,10 @@ Public Class VideoMiner
         Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = frm.Dictionary
         Dim tuple As Tuple(Of String, String, Boolean)
         ' Need to merge the dictionaries from TRANSECT and HABITAT panels before adding
-        pnlTransectData.buildDictionary()
         ' Merge the dictionary from TRANSECT panel
         For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlTransectData.Dictionary
             dict.Add(kvp.Key, kvp.Value)
         Next
-        pnlHabitatData.buildDictionary()
         ' Merge the dictionary from TRANSECT panel
         For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlHabitatData.Dictionary
             dict.Add(kvp.Key, kvp.Value)
@@ -3604,7 +3596,7 @@ Public Class VideoMiner
         DataCodeAssignmentsToolStripMenuItem.Enabled = False
         KeyboardShortcutsToolStripMenuItem.Enabled = False
         pnlTransectData.removeAllDynamicControls()
-        'pnlHabitatData.removeAllDynamicControls()
+        pnlHabitatData.removeAllDynamicControls()
         pnlSpeciesData.removeAllDynamicControls()
     End Sub
 
@@ -3618,7 +3610,7 @@ Public Class VideoMiner
             m_db_filename = get_rel_filename(m_strDatabaseFilePath)
             m_db_file_open = True
             pnlTransectData.fillPanel(DB_TRANSECT_BUTTONS_TABLE)
-            'pnlHabitatData.fillPanel(DB_HABITAT_BUTTONS_TABLE)
+            pnlHabitatData.fillPanel(DB_HABITAT_BUTTONS_TABLE)
             pnlSpeciesData.fillPanel(DB_SPECIES_BUTTONS_TABLE)
             Me.lblDatabase.Text = DB_FILE_STATUS_LOADED & m_db_filename & " is open"
             mnuOpenDatabase.Enabled = False
@@ -3679,7 +3671,7 @@ Public Class VideoMiner
         Next
         ' If data was freshly fetched, no grid cells wil be dirty, so we can allow the 'Define All' buttons to be pressed
         pnlTransectData.EnableDefineAllButton()
-        'pnlHabitatData.EnableDefineAllButton()
+        pnlHabitatData.EnableDefineAllButton()
 
         ' Make the colun headers on the DataGridView non-clickable. If they are clickable, the coloring introduced when data is dirty will dissapear on the sort.
         ' TODO: Store the coloring data in a data structure and re-apply the coloring after the sort.

@@ -8,17 +8,50 @@ Public Class frmTableView
     Private prevWidth As Integer
     Private prevWindowState As FormWindowState
     ''' <summary>
-    ''' A tuple for the Dictionary object, m_dict.
+    ''' Data code name as seen in the database table 'data'
+    ''' </summary>
+    Private m_data_code_name As String
+    ''' <summary>
+    ''' Data code as seen in the database table 'lu_data_codes'
+    ''' </summary>
+    Private m_data_code As String
+    ''' <summary>
+    ''' Data value as selected by the user (from the currently selected row)
+    ''' </summary>
+    Private m_data_value As String
+    ''' <summary>
+    ''' A tuple which represents the data which were chosen
     ''' </summary>
     Private m_tuple As Tuple(Of String, String, Boolean)
     ''' <summary>
-    ''' Dictionary of key/value pairs that hold the currently selected data for this variable.
-    ''' The first parameter is the name of the field in the database table lu_data. The tuple is a triplet of data code (from lu_data_codes),
-    ''' the data value to be inserted, and a boolean for whether or not the item was the one pressed (in case there are more than one in the dictionary).
+    ''' Dictionary of key/value pairs that hold the currently selected data.
+    ''' The first parameter is the name of the field in the database table lu_data, the second is the tuple above.
     ''' </summary>
     Private m_dict As Dictionary(Of String, Tuple(Of String, String, Boolean))
 
 #Region "Properties"
+    Public ReadOnly Property DataValue As String
+        Get
+            Return m_data_value
+        End Get
+    End Property
+    Public Property DataCode As String
+        Get
+            Return m_data_code
+        End Get
+        Set(value As String)
+            m_data_code = value
+        End Set
+    End Property
+    Public Property DataCodeName As String
+        Get
+            Return m_data_code_name
+        End Get
+        Set(value As String)
+            m_data_code_name = value
+        End Set
+    End Property
+
     ''' <summary>
     ''' If a row is selected, return the first cell's value from that row.
     ''' If no row is selected, return the empty string.
@@ -88,6 +121,9 @@ Public Class frmTableView
         DataGridView1.ReadOnly = True
         Controls.Add(DataGridView1)
 
+        m_tuple = New Tuple(Of String, String, Boolean)(Nothing, Nothing, False)
+        m_dict = New Dictionary(Of String, Tuple(Of String, String, Boolean))
+
         'If intCurrentSpatialVariable <> 8888 Then
         ' m_strSelectedButtonName = strButtonNames(intCurrentSpatialVariable)
         ' End If
@@ -153,10 +189,24 @@ Public Class frmTableView
     ''' </summary>
     Private Sub DataGridView1_SelectionChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles DataGridView1.SelectionChanged
         If DataGridView1.SelectedRows.Count = 1 Then
-
+            buildDictionary()
             RaiseEvent EndDataEntryEvent(Me, e)
             Me.Hide()
         End If
+    End Sub
+
+
+    ''' <summary>
+    ''' Build the dictionary of key/value pairs for the data the user chose.
+    ''' </summary>
+    Private Sub buildDictionary()
+        ' Clear the dictionary from the previous time if necessary
+        m_dict.Clear()
+        ' The first parameter is the name of the field in the database table lu_data. The tuple is a triplet of data code (from lu_data_codes), which is 4 for a species entry,
+        ' the data value to be inserted, and a boolean for whether or not the item was the one pressed (in case there are more than one in the dictionary).
+        m_data_value = DataGridView1.SelectedRows(0).Cells(0).Value.ToString()
+        m_tuple = New Tuple(Of String, String, Boolean)(m_data_code, m_data_value, True)
+        m_dict.Add(m_data_code_name, m_tuple)
     End Sub
 
     Private Sub btnSkipSpatial_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSkipSpatial.Click
