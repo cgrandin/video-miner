@@ -100,6 +100,10 @@ Public Class DynamicButton
     ''' The first parameter is the name of the field in the database table lu_data, the second is the tuple above.
     ''' </summary>
     Private m_dict As Dictionary(Of String, Tuple(Of String, String, Boolean))
+    ''' <summary>
+    ''' The number to use for a quick species entry
+    ''' </summary>
+    Private m_quick_entry_num As Integer
 #End Region
 
 #Region "Properties"
@@ -212,6 +216,15 @@ Public Class DynamicButton
             m_which_entry_style = value
         End Set
     End Property
+
+    Public Property QuickEntryNum As Integer
+        Get
+            Return m_quick_entry_num
+        End Get
+        Set(value As Integer)
+            m_quick_entry_num = value
+        End Set
+    End Property
 #End Region
 
 #Region "Events"
@@ -240,7 +253,8 @@ Public Class DynamicButton
     Public Sub New(row As DataRow,
                    intHeight As Integer,
                    intWidth As Integer,
-                   Optional whichEntryStyle As WhichEntryStyleEnum = WhichEntryStyleEnum.Detailed)
+                   Optional whichEntryStyle As WhichEntryStyleEnum = WhichEntryStyleEnum.Detailed,
+                   Optional intQuickEntryNum As Integer = 1)
         ' The Try/Catch blocks are used so that if any columns are missing, at least the ones that
         ' are present will be used. This allows for data tables of several formats to have their
         ' rows used to creatte a new DynamicButton.
@@ -313,6 +327,8 @@ Public Class DynamicButton
         m_which_entry_style = whichEntryStyle
         m_data_value = UNINITIALIZED_DATA_VALUE
         m_dict = Nothing
+
+        m_quick_entry_num = intQuickEntryNum
 
         Me.Name = m_button_text
         Me.Text = m_button_text
@@ -402,9 +418,9 @@ Public Class DynamicButton
     ''' <summary>
     ''' Record count value to the frmSpeciesEvent.
     ''' </summary>
-    Public Sub RecordQuick(Optional count As String = NULL_STRING)
+    Public Sub RecordQuick()
         If Not IsNothing(m_frmSpeciesEvent) Then
-            m_frmSpeciesEvent.Acknowledge(count)
+            m_frmSpeciesEvent.Acknowledge(CType(m_quick_entry_num, String))
         End If
     End Sub
 

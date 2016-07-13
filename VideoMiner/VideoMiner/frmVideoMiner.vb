@@ -1832,7 +1832,7 @@ Public Class VideoMiner
                 If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
                     fetch_data() ' Cleans up the table first
                     If radQuickEntry.Checked Then
-                        btn.RecordQuick(txtQuickSpeciesCount.Text)
+                        btn.RecordQuick()
                     Else
                         btn.ShowForm(sender, e)
                     End If
@@ -4852,6 +4852,16 @@ Public Class VideoMiner
         ' Tell the species panel that the buttons should all be abundance entry type
         If Not IsNothing(pnlSpeciesData) Then
             pnlSpeciesData.WhichEntryStyle = DynamicButton.WhichEntryStyleEnum.Abundance
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' When the user changes the quick entry value, set all species buttons to have that value. This
+    ''' is done to avoid breaking the OO.
+    ''' </summary>
+    Private Sub txtQuickSpeciesCount_TextChanged(sender As Object, e As EventArgs) Handles txtQuickSpeciesCount.TextChanged
+        If Not IsNothing(pnlSpeciesData) Then
+            pnlSpeciesData.changeQuickEntryNum(CInt(txtQuickSpeciesCount.Text))
         End If
     End Sub
 End Class

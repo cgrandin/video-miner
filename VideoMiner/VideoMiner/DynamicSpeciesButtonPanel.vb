@@ -47,6 +47,10 @@ Public Class DynamicSpeciesButtonPanel
     ''' Holds the enumeration type for this instance
     ''' </summary>
     Private m_which_entry_style As DynamicButton.WhichEntryStyleEnum
+    ''' <summary>
+    ''' The number to use for a quick species entry
+    ''' </summary>
+    Private m_quick_entry_num As Integer
 #End Region
 
 #Region "Properties"
@@ -115,6 +119,7 @@ Public Class DynamicSpeciesButtonPanel
         m_button_text_size = intButtonTextSize
 
         m_which_entry_style = whichEntryStyle
+        m_quick_entry_num = 1
 
         Me.BorderStyle = Windows.Forms.BorderStyle.Fixed3D
         Me.Dock = DockStyle.Fill
@@ -135,7 +140,7 @@ Public Class DynamicSpeciesButtonPanel
         ReDim m_dynamic_buttons(m_num_dynamic_buttons)
         Dim i As Integer = 0
         For Each r As DataRow In d.Rows
-            m_dynamic_buttons(i) = New DynamicButton(r, m_button_height, m_button_width, m_which_entry_style)
+            m_dynamic_buttons(i) = New DynamicButton(r, m_button_height, m_button_width, m_which_entry_style, m_quick_entry_num)
             AddHandler m_dynamic_buttons(i).StartDataEntryEvent, AddressOf startDataEntryEventHandler
             AddHandler m_dynamic_buttons(i).EndDataEntryEvent, AddressOf endDataEntryEventHandler
             i += 1
@@ -232,6 +237,16 @@ Public Class DynamicSpeciesButtonPanel
             If m_dynamic_buttons(i).Text = strSpecies Then
                 m_dynamic_buttons(i).PerformClick()
             End If
+        Next
+    End Sub
+
+    ''' <summary>
+    ''' Change the quick entry number for all DynamicButtons on this panel
+    ''' </summary>
+    Public Sub changeQuickEntryNum(intQuickEntryNum As Integer)
+        m_quick_entry_num = intQuickEntryNum
+        For i As Integer = 0 To m_num_dynamic_buttons - 1
+            m_dynamic_buttons(i).QuickEntryNum = m_quick_entry_num
         Next
     End Sub
 End Class
