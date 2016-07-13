@@ -1691,7 +1691,7 @@ Public Class VideoMiner
             MessageBox.Show("Please open a video file before setting the time.", "Video File Not Open", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
-        pauseVideo()
+        dataEntryStarted()
         frmSetTime.Show()
     End Sub
 
@@ -1699,25 +1699,19 @@ Public Class VideoMiner
     ''' This handler is called when the user clicks on the "Transect Start" button.
     ''' Pauses video, prompts user for a transect name, inserts new record in the DataGridView1
     ''' database table, and plays the video again.
+    ''' Also inserts a record for On or Off bottom. If the transect is starting, On bottom will be recorded
+    ''' If the transect is ending, Off bottom will be recorded.
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub TransectStart_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdTransectStart.Click
-        frmVideoPlayer.pauseVideo()
         Dim start_or_end As String
-
-        ' Create the insert query for the transect start/stop button
-        ' Need to merge dictionaries for Habitat and Transect panels here to the Off Bottom/ On Bottom  KeyValuePair
-        Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = pnlHabitatData.Dictionary
+        ' Need to merge dictionaries for Habitat and Transect panels here to the Off Bottom/ On Bottom KeyValuePair
+        Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = New Dictionary(Of String, Tuple(Of String, String, Boolean))
         Dim tuple As Tuple(Of String, String, Boolean)
-
-        For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlTransectData.Dictionary
-            If dict.ContainsKey(kvp.Key) Then
-                dict.Remove(kvp.Key)
-            End If
-            dict.Add(kvp.Key, kvp.Value)
-        Next
+        dict = dict.Union(pnlHabitatData.Dictionary).Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
         If Not m_blInTransect Then
             ' Currently not in a transect, so we start it here
+            dataEntryStarted()
             m_transect_name = InputBox("Enter a name for this transect if you wish.", "Transect Name?")
             If m_transect_name = NULL_STRING Then
                 m_transect_name = UNNAMED_TRANSECT
@@ -1725,6 +1719,7 @@ Public Class VideoMiner
             Else
                 txtTransectTextbox.Text = "Transect '" & m_transect_name & "'"
             End If
+            dataEntryEnded()
             txtTransectTextbox.Text = "Transect '" & m_transect_name & "'"
             txtTransectTextbox.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
             txtTransectTextbox.BackColor = Color.LightGray
@@ -1733,13 +1728,19 @@ Public Class VideoMiner
             cmdTransectStart.Text = "Transect End"
             start_or_end = TRANSECT_START
             m_blInTransect = True
-            'tuple = New Tuple(Of String, String, Boolean)("3", is_on_bottom, True)
-            'dict.Add("OnBottom", tuple)
-            If dict.ContainsKey("DataCode") Then
-                dict.Remove("DataCode")
-            End If
             tuple = New Tuple(Of String, String, Boolean)("1", "1", False)
             dict.Add("DataCode", tuple)
+            runInsertQuery(dict)
+            fetch_data()
+            ' Set ON BOTTOM for transect start
+            txtOnOffBottomTextbox.Text = ON_BOTTOM_STRING
+            txtOnOffBottomTextbox.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+            txtOnOffBottomTextbox.BackColor = Color.LightGray
+            txtOnOffBottomTextbox.ForeColor = Color.LimeGreen
+            txtOnOffBottomTextbox.TextAlign = HorizontalAlignment.Center
+            cmdOffBottom.Text = OFF_BOTTOM_STRING
+            cmdOffBottom.Refresh()
+            is_on_bottom = 1
         Else
             ' Currently in a transect, so we end it here
             txtTransectTextbox.Text = NO_TRANSECT
@@ -1750,32 +1751,50 @@ Public Class VideoMiner
             cmdTransectStart.Text = "Transect Start"
             start_or_end = TRANSECT_END
             m_blInTransect = False
-            If dict.ContainsKey("DataCode") Then
-                dict.Remove("DataCode")
-            End If
             tuple = New Tuple(Of String, String, Boolean)("2", "2", False)
             dict.Add("DataCode", tuple)
             m_transect_name = NULL_STRING
+            runInsertQuery(dict)
+            fetch_data()
+            ' Set OFF BOTTOM for transect end
+            txtOnOffBottomTextbox.Text = OFF_BOTTOM_STRING
+            txtOnOffBottomTextbox.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+            txtOnOffBottomTextbox.BackColor = Color.LightGray
+            txtOnOffBottomTextbox.ForeColor = Color.Red
+            txtOnOffBottomTextbox.TextAlign = HorizontalAlignment.Center
+            cmdOffBottom.Text = ON_BOTTOM_STRING
+            cmdOffBottom.Refresh()
+            is_on_bottom = 0
         End If
+
+        If dict.ContainsKey("DataCode") Then
+            dict.Remove("DataCode")
+        End If
+
+        tuple = New Tuple(Of String, String, Boolean)("3", CType(is_on_bottom, String), True)
+        dict.Add("OnBottom", tuple)
+        tuple = New Tuple(Of String, String, Boolean)("3", "3", False)
+        dict.Add("DataCode", tuple)
         runInsertQuery(dict)
         fetch_data()
+
+        ' Need to remove the keys from the dictionary because the union operation is by reference and they will appear in
+        ' pnlHabitat.Dictionary as well. Removing them from dict removes them from pnlHabitat.Dictionary as well.
+        If dict.ContainsKey("DataCode") Then
+            dict.Remove("DataCode")
+        End If
+        If dict.ContainsKey("OnBottom") Then
+            dict.Remove("OnBottom")
+        End If
     End Sub
 
+    ''' <summary>
+    ''' This event is called when the user clicks on the "Off Bottom" button.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub OffBottom_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOffBottom.Click
-        ' ==========================================================================================================
-        ' Name: OffBottom_Click
-        ' Description: This event is called when the user clicks on the "Off Bottom" button.
-        ' 1.) Pause Video
-        ' 2.) Retrieve Time Code From Video Controler
-        ' 3.) toggle_bottom() which 
-        '           - Toggles button OffBottom and text box OnOffBottomTextbox between reading "On Bottom" and "Off Bottom"
-        '           - If time code is not null, a record is added to the database table with variables for the fields:
-        '           - id,TimeCode,DataCode,transect,OnBottom
-        ' 4.) Play Video
-        ' ==========================================================================================================
-
         Dim tc As TimeSpan
-
         Dim strX As String = NS
         Dim strY As String = NS
         Dim strZ As String = NS
@@ -1785,7 +1804,6 @@ Public Class VideoMiner
         Dim blAquiredFix As Boolean = False
         If booUseGPSTimeCodes Then
             'Otherwise get the time from the NMEA string.
-
             ' The GPRMC NMEA String does not contain elevation values. Enter null into database
             ' if GPRMC is the chosen string type.
             blAquiredFix = getGPSData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
@@ -1800,23 +1818,12 @@ Public Class VideoMiner
             Else
                 blVideoWasPlaying = False
             End If
-            pauseVideo()
-            tc = getTimeCode()
+            tc = m_tsUserTime
             strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
             'strVideoTime = GetVideoTime(tc, strVideoDecimalTime)
-
         End If
         strVideoTextTime = strVideoTime
-
-
         toggle_bottom()
-
-        If blVideoWasPlaying = True Then
-            frmVideoPlayer.playVideo()
-            blVideoWasPlaying = False
-        End If
-
-
     End Sub
 
     ''' <summary>
@@ -1881,40 +1888,37 @@ Public Class VideoMiner
         fetch_data()
     End Sub
 
-    Private Sub dataButtonNewEntry() Handles pnlSpeciesData.StartDataEntryEvent, pnlTransectData.StartDataEntryEvent, pnlHabitatData.StartDataEntryEvent
+    Private Sub dataButtonNewEntry() Handles pnlSpeciesData.StartDataEntryEvent,
+                                             pnlTransectData.StartDataEntryEvent,
+                                             pnlHabitatData.StartDataEntryEvent
         dataEntryStarted()
     End Sub
 
-    Private Sub dataButtonEntryFinished() Handles pnlSpeciesData.EndDataEntryEvent, pnlTransectData.EndDataEntryEvent, pnlHabitatData.EndDataEntryEvent, frmRareSpeciesLookup.EndDataEntryEvent
+    Private Sub dataButtonEntryFinished() Handles pnlSpeciesData.EndDataEntryEvent,
+                                                  pnlTransectData.EndDataEntryEvent,
+                                                  pnlHabitatData.EndDataEntryEvent,
+                                                  frmRareSpeciesLookup.EndDataEntryEvent
         dataEntryEnded()
     End Sub
     ''' <summary>
-    ''' Handle the changing of button data by creating an insert query and
+    ''' Handle the entry of data by creating an insert query and
     ''' saving to the database.
     ''' </summary>
-    Private Sub buttonDataChanged(sender As System.Object, e As System.EventArgs) Handles pnlHabitatData.EndDataEntryEvent, pnlTransectData.EndDataEntryEvent, pnlSpeciesData.EndDataEntryEvent
+    Private Sub dataChanged(sender As System.Object, e As System.EventArgs) Handles pnlHabitatData.EndDataEntryEvent,
+                                                                                    pnlTransectData.EndDataEntryEvent,
+                                                                                    pnlSpeciesData.EndDataEntryEvent,
+                                                                                    frmRareSpeciesLookup.EndDataEntryEvent
+
         If TypeOf sender Is DynamicSpeciesButtonPanel Then
             Dim pnl As DynamicSpeciesButtonPanel = CType(sender, DynamicSpeciesButtonPanel)
             Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = pnl.Dictionary
-            Select Case pnl.Name
-                Case PANEL_NAME_SPECIES
-                    ' If species panel, merge other two panel's dictionaries
-                    dict = dict.Union(pnlHabitatData.Dictionary).Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
-                Case PANEL_NAME_HABITAT
-                    ' merge the transect panel dictionary
-                    dict = dict.Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
-                Case PANEL_NAME_TRANSECT
-                    ' merge the habitat panel dictionary
-                    dict = dict.Union(pnlHabitatData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
-            End Select
+            ' If species panel, merge other two panel's dictionaries
+            dict = dict.Union(pnlHabitatData.Dictionary).Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
             runInsertQuery(dict)
         ElseIf TypeOf sender Is DynamicTableButtonPanel Then
             Dim pnl As DynamicTableButtonPanel = CType(sender, DynamicTableButtonPanel)
             Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = pnl.Dictionary
             Select Case pnl.Name
-                Case PANEL_NAME_SPECIES
-                    ' If species panel, merge other two panel's dictionaries
-                    dict = dict.Union(pnlHabitatData.Dictionary).Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
                 Case PANEL_NAME_HABITAT
                     ' merge the transect panel dictionary
                     dict = dict.Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
@@ -1923,32 +1927,14 @@ Public Class VideoMiner
                     dict = dict.Union(pnlHabitatData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
             End Select
             runInsertQuery(dict)
+        ElseIf TypeOf sender Is frmRareSpeciesLookup Then
+            Dim frm As frmRareSpeciesLookup = CType(sender, frmRareSpeciesLookup)
+            Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = frm.Dictionary
+            dict = dict.Union(pnlHabitatData.Dictionary).Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+            runInsertQuery(dict)
         End If
         fetch_data()
-    End Sub
 
-    ''' <summary>
-    ''' Handles the storage of a record from when the user chooses a species from the Rare species form.
-    ''' </summary>
-    ''' <param name="sender">Instance of the frmRareSpeciesForm</param>
-    Private Sub rareSpeciesDataChanged(sender As System.Object, e As System.EventArgs) Handles frmRareSpeciesLookup.EndDataEntryEvent
-        Dim frm As frmSpeciesEvent = CType(sender, frmSpeciesEvent)
-        Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = frm.Dictionary
-        Dim tuple As Tuple(Of String, String, Boolean)
-        ' Need to merge the dictionaries from TRANSECT and HABITAT panels before adding
-        ' Merge the dictionary from TRANSECT panel
-        For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlTransectData.Dictionary
-            dict.Add(kvp.Key, kvp.Value)
-        Next
-        ' Merge the dictionary from TRANSECT panel
-        For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlHabitatData.Dictionary
-            dict.Add(kvp.Key, kvp.Value)
-        Next
-        tuple = New Tuple(Of String, String, Boolean)("4", "4", True)
-        dict.Add("DataCode", tuple)
-
-        runInsertQuery(dict)
-        fetch_data()
     End Sub
 
     ''' <summary>
@@ -2090,7 +2076,7 @@ Public Class VideoMiner
         Try
             If m_video_file_open Then
                 'pauseVideo()
-                tc = getTimeCode()
+                tc = m_tsUserTime
                 strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
                 strVideoTextTime = strVideoTime
 
@@ -2157,114 +2143,6 @@ Public Class VideoMiner
                 MsgBox(ex.Message & vbCrLf & ex.StackTrace)
             End If
         End Try
-
-    End Sub
-
-    'Private Sub tmrPlayForSeconds_Tick1(ByVal sender As Object, ByVal e As System.EventArgs) Handles tmrPlayForSeconds.Tick
-
-    '    Dim dblCurrentSeconds As Double
-
-    '    Dim strSeconds As String()
-
-    '    If frmVideoPlayer Is Nothing Then
-    '        tmrPlayForSeconds.Stop()
-    '        Exit Sub
-    '    End If
-    '    dblCurrentSeconds = frmVideoPlayer.dblCurrentVideoTime
-
-    '    strSeconds = dblCurrentSeconds.ToString.Split(".")
-    '    intCurrentPlaySeconds = CInt(strSeconds(0))
-    '    Dim strVideoTextTime As String = VIDEO_TIME_LABEL
-    '    Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL 
-    '    strPlaySecondsVideoTime = GetVideoTime(dblCurrentSeconds, strVideoDecimalTime)
-    '    strVideoTextTime = strPlaySecondsVideoTime
-
-    '    ' Check to see if the end play time string is equal to the current video time string
-    '    ' If so the pause the video and stop the timer
-    '    If intCurrentPlaySeconds = intEndPlaySeconds Then
-
-    '        pauseVideo()
-    '        Me.tmrPlayForSeconds.Stop()
-    '        frmVideoPlayer.blIsPlaying = False
-    '        Me.tmrPlayForSeconds.Enabled = False
-    '        If Me.chkDefineAll.Checked = True Then
-    '            Me.cmdDefineAllTransectVariables_Click(sender, e)
-    '            Me.cmdDefineAllSpatialVariables_Click(sender, e)
-    '        End If
-    '    End If
-    '    If Me.chkRecordEachSecond.Checked = True Then
-    '        Dim query As String = NULL_STRING
-    '        Dim strX As String = NS
-    '        Dim strY As String = NS
-    '        Dim strZ As String = NS
-
-    '        If blFirstTime Then
-    '            intPreviousVideoSeconds = intCurrentPlaySeconds
-    '            blFirstTime = False
-    '        End If
-
-    '        If intCurrentPlaySeconds <> intPreviousVideoSeconds Then
-    '            Try
-    '                intPreviousVideoSeconds = intCurrentPlaySeconds
-
-    '                strSpeciesCode = NS
-    '                strSpeciesCount = NS
-    '                strSide = NS
-    '                strRange = NS
-    '                strLength = NS
-    '                strHeight = NS
-    '                strWidth = NS
-    '                strAbundance = NS
-    '                strIdConfidence = NS
-    '                strComment = NS
-
-    '                query = createInsertQuery(transect_date, transect_name, strPlaySecondsVideoTime, strVideoTextTime, strVideoDecimalTime, NS, NS, strX, strY, strZ, strSpeciesCode, strSpeciesCount, strSide, strRange, strLength, strHeight, strWidth, strAbundance, strIdConfidence, strComment)
-
-    '                Dim numrows As Integer
-    '                Dim oComm As OleDbCommand
-    '                oComm = New OleDbCommand(query, conn)
-    '                numrows = oComm.ExecuteNonQuery()
-    '                fetch_data()
-    '            Catch ex As Exception
-    '                If ex.Message.StartsWith("Syntax") Then
-    '                    MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-    '                Else
-    '                    MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-    '                End If
-    '            End Try
-
-    '        End If
-    '    End If
-
-
-
-    'End Sub
-
-    Private Sub chkRepeatVariables_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        Dim i As Integer
-        If True Then
-            'If Me.chkRepeatVariables.Checked = True Then
-            ' If the user checks the repeat box, set all original variables to temporary variables
-            If Not dictHabitatFieldValues Is Nothing Or Not dictTempHabitatFieldValues Is Nothing Then
-                For i = 0 To intNumHabitatButtons - 1
-                    dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString)
-
-                    ' and clear all the temporary values.
-                    dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = "-9999"
-                Next
-            End If
-        Else
-            ' If the user unchecks the repeat box, save the original variables in the temporary variables
-            ' so that they are still available in the event the box is checked back on.
-            If Not dictHabitatFieldValues Is Nothing Or Not dictTempHabitatFieldValues Is Nothing Then
-                For i = 0 To intNumHabitatButtons - 1
-                    dictTempHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString)
-
-                    ' Clear all original variables so that the values are not repeated on consecutive records.
-                    dictHabitatFieldValues(strHabitatButtonCodeNames(i).ToString) = "-9999"
-                Next
-            End If
-        End If
 
     End Sub
 
@@ -2339,7 +2217,7 @@ Public Class VideoMiner
             If Not frmVideoPlayer Is Nothing Then
                 'If frmVideoPlayer.blIsPlaying Then
 
-                tc = getTimeCode()
+                tc = m_tsUserTime
                 strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
                 strVideoTextTime = strVideoTime
                 intPreviousVideoSeconds = CInt(Mid(strVideoTime, 7, 2))
@@ -2357,16 +2235,12 @@ Public Class VideoMiner
     End Sub
 
     Private Sub cmdAddComment_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdAddComment.Click
-
         Dim tc As TimeSpan = New TimeSpan(CLng(VIDEO_TIME_LABEL))
-
-
         Dim strX As String = NS
         Dim strY As String = NS
         Dim strZ As String = NS
         Dim query As String
         Dim blAquiredFix As Boolean = False
-
         strComment = InputBox("Enter a comment to be inserted as a record", "Enter Comment")
         If strComment = NULL_STRING Then
             If m_video_file_open Then
@@ -2385,7 +2259,7 @@ Public Class VideoMiner
         ' video stream, and there is no need to get the TimeCode.
         If m_video_file_open Then
             pauseVideo()
-            tc = getTimeCode()
+            tc = m_tsUserTime
             strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
 
         End If
@@ -2755,8 +2629,6 @@ Public Class VideoMiner
                 strDatabaseFileName = NS
                 strNumberRecordsShown = NS
             End If
-
-
             SaveConfiguration("SessionConfiguration/Video/Open", CType(blVideoOpen, String))
             SaveConfiguration("SessionConfiguration/Video/FileName", strVideoFileName)
             SaveConfiguration("SessionConfiguration/Video/Position", strVideoTime)
@@ -2767,7 +2639,6 @@ Public Class VideoMiner
             SaveConfiguration("SessionConfiguration/Database/Open", CType(blDatabaseOpen, String))
             SaveConfiguration("SessionConfiguration/Database/FileName", strDatabaseFileName)
             SaveConfiguration("SessionConfiguration/Database/NumberRecordsShown", strNumberRecordsShown)
-
         Catch ex As Exception
             MessageBox.Show("the following error occurred while saving the file: " & ex.Message & ".  Please try again.", "Error Saving Session", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -2855,8 +2726,6 @@ Public Class VideoMiner
             MessageBox.Show("The following error occured while saving the file: " & ex.Message & ".  Please try again.", "Error Saving Session", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
-
-
         'SaveConfiguration(strFileName, "SaveSessionConfiguration/Video/Open", blVideoOpen)
         'SaveConfiguration(strFileName, "SaveSessionConfiguration/Video/FileName", strVideoFileName)
         'SaveConfiguration(strFileName, "SaveSessionConfiguration/Video/Position", strVideoTime)
@@ -2867,8 +2736,6 @@ Public Class VideoMiner
         'SaveConfiguration(strFileName, "SaveSessionConfiguration/Database/Open", blDatabaseOpen)
         'SaveConfiguration(strFileName, "SaveSessionConfiguration/Database/FileName", strDatabaseFileName)
         'SaveConfiguration(strFileName, "SaveSessionConfiguration/Database/NumberRecordsShown", strNumberRecordsShown)
-
-
     End Sub
 
     Private Function createXMLSessionFile(ByVal strFileName As String, ByVal blVideoOpen As Boolean, ByVal strVideo As String, ByVal strTime As String,
@@ -2973,7 +2840,6 @@ Public Class VideoMiner
     ' 2.) If a database file is loaded already, run the files_loaded() function to Enable Buttons on main form (eg: set transect)
     ' ==========================================================================================================
     Private Function openDV() As Integer
-
         'Dim retval As Integer = c.Invoke(New InvokeOpenFile(AddressOf d.OpenDV))
         'If retval Then
         '    video_file_open = True
@@ -2983,14 +2849,6 @@ Public Class VideoMiner
         '    End If
         'End If
         'Return retval
-    End Function
-
-    ''' <summary>
-    ''' Return the current timecode.
-    ''' </summary>
-    ''' <remarks></remarks>
-    Private Function getTimeCode() As TimeSpan
-        Return m_tsUserTime
     End Function
 
     ''' <summary>
@@ -3005,16 +2863,10 @@ Public Class VideoMiner
         Return arr(arr.Length - 1)
     End Function
 
-    ' ==========================================================================================================
-    ' Name: no_files_loaded()
-    ' Description: Disables buttons on main form when no file is loaded to prevent users from launching
-    '  functions while no database file is open.
-    ' 1.) Disable Set Time Code Button
-    ' 2.) Disable Transect Start Button
-    ' 3.) Enable Transect End Button
-    ' 4.) Disable Off Bottom Buttom
-    ' 5.) Disable Resume Video Button
-    ' ==========================================================================================================
+    ''' <summary>
+    ''' Disables buttons on main form when no file is loaded to prevent users from launching
+    '''  functions while no database file is open.
+    ''' </summary>
     Private Sub no_files_loaded()
         cmdShowSetTimecode.Enabled = False
         cmdTransectStart.Enabled = False
@@ -3030,26 +2882,25 @@ Public Class VideoMiner
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub database_is_open_toggle_visibility()
-        Me.radQuickEntry.Visible = True
-        Me.radDetailedEntry.Visible = True
-        Me.radAbundanceEntry.Visible = True
-        Me.cmdEdit.Visible = True
-        Me.cmdUpdateDatabase.Visible = True
-        Me.cmdRevertDatabase.Visible = True
-        Me.lblDirtyData.Visible = True
-        Me.cmdRareSpeciesLookup.Visible = True
-
+        radQuickEntry.Visible = True
+        radDetailedEntry.Visible = True
+        radAbundanceEntry.Visible = True
+        cmdEdit.Visible = True
+        cmdUpdateDatabase.Visible = True
+        cmdRevertDatabase.Visible = True
+        lblDirtyData.Visible = True
+        cmdRareSpeciesLookup.Visible = True
         If m_video_file_open Then
-            Me.txtTransectDate.Enabled = True
-            Me.txtProjectName.Enabled = True
-            Me.chkRecordEachSecond.Enabled = True
-            Me.mnuConfigureTools.Enabled = True
-            Me.mnuRefreshForm.Enabled = True
-            Me.KeyboardShortcutsToolStripMenuItem.Enabled = True
-            Me.DataCodeAssignmentsToolStripMenuItem.Enabled = True
-            Me.cmdShowSetTimecode.Enabled = True
-            Me.cmdTransectStart.Enabled = True
-            Me.cmdOffBottom.Enabled = True
+            txtTransectDate.Enabled = True
+            txtProjectName.Enabled = True
+            chkRecordEachSecond.Enabled = True
+            mnuConfigureTools.Enabled = True
+            mnuRefreshForm.Enabled = True
+            KeyboardShortcutsToolStripMenuItem.Enabled = True
+            DataCodeAssignmentsToolStripMenuItem.Enabled = True
+            cmdShowSetTimecode.Enabled = True
+            cmdTransectStart.Enabled = True
+            cmdOffBottom.Enabled = True
         End If
     End Sub
 
@@ -3061,27 +2912,27 @@ Public Class VideoMiner
         cmdTransectStart.Enabled = True
         cmdOffBottom.Enabled = True
         'ResumeVideo.Enabled = True
-        Me.radQuickEntry.Visible = True
-        Me.radDetailedEntry.Visible = True
-        Me.radAbundanceEntry.Visible = True
-        Me.cmdEdit.Visible = True
-        Me.cmdUpdateDatabase.Visible = True
-        Me.cmdRevertDatabase.Visible = True
-        Me.lblDirtyData.Visible = True
-        Me.cmdRareSpeciesLookup.Visible = True
+        radQuickEntry.Visible = True
+        radDetailedEntry.Visible = True
+        radAbundanceEntry.Visible = True
+        cmdEdit.Visible = True
+        cmdUpdateDatabase.Visible = True
+        cmdRevertDatabase.Visible = True
+        lblDirtyData.Visible = True
+        cmdRareSpeciesLookup.Visible = True
 
-        Me.txtTransectDate.Enabled = True
-        Me.txtProjectName.Enabled = True
-        Me.chkRecordEachSecond.Enabled = True
-        Me.mnuConfigureTools.Enabled = True
-        Me.mnuRefreshForm.Enabled = True
-        Me.KeyboardShortcutsToolStripMenuItem.Enabled = True
-        Me.DataCodeAssignmentsToolStripMenuItem.Enabled = True
-
+        txtTransectDate.Enabled = True
+        txtProjectName.Enabled = True
+        chkRecordEachSecond.Enabled = True
+        mnuConfigureTools.Enabled = True
+        mnuRefreshForm.Enabled = True
+        KeyboardShortcutsToolStripMenuItem.Enabled = True
+        DataCodeAssignmentsToolStripMenuItem.Enabled = True
     End Sub
 
     ''' <summary>
-    ''' Change text in OnOffBottomTextbox and on OffBottom button between "Off Bottom" and "On Bottom", and insert a record in the database to reflect this change
+    ''' Change text in OnOffBottomTextbox and on OffBottom button between "Off Bottom" and "On Bottom", and
+    ''' insert a record in the database to reflect this change.
     ''' </summary>
     Private Sub toggle_bottom()
         If IsNothing(pnlHabitatData) Or IsNothing(pnlTransectData) Then
@@ -3106,29 +2957,27 @@ Public Class VideoMiner
             cmdOffBottom.Refresh()
             is_on_bottom = 1
         End If
-        ' Need to merge dictionaries for Habitat and Transect panels here to the Off Bottom/ On Bottom  KeyValuePair
-        Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = pnlHabitatData.Dictionary
+        ' Need to merge dictionaries for Habitat and Transect panels here to the Off Bottom/ On Bottom KeyValuePair
+        Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = New Dictionary(Of String, Tuple(Of String, String, Boolean))
         Dim tuple As Tuple(Of String, String, Boolean)
+        dict = dict.Union(pnlHabitatData.Dictionary).Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
 
-        For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlTransectData.Dictionary
-            If dict.ContainsKey(kvp.Key) Then
-                dict.Remove(kvp.Key)
-            End If
-            dict.Add(kvp.Key, kvp.Value)
-        Next
-        If dict.ContainsKey("OnBottom") Then
-            dict.Remove("OnBottom")
-        End If
         tuple = New Tuple(Of String, String, Boolean)("3", CType(is_on_bottom, String), True)
         dict.Add("OnBottom", tuple)
-        If dict.ContainsKey("DataCode") Then
-            dict.Remove("DataCode")
-        End If
         tuple = New Tuple(Of String, String, Boolean)("3", "3", False)
         dict.Add("DataCode", tuple)
 
         runInsertQuery(dict)
         fetch_data()
+        ' Need to remove the keys from the dictionary because the union operation is by reference and they will appear in
+        ' pnlHabitat.Dictionary as well. Removing them from dict removes them from pnlHabitat.Dictionary as well.
+        If dict.ContainsKey("OnBottom") Then
+            dict.Remove("OnBottom")
+        End If
+        If dict.ContainsKey("DataCode") Then
+            dict.Remove("DataCode")
+        End If
+
     End Sub
 
     Private Function AddZeros(ByVal strNumber As String, ByVal intPlaces As Integer) As String
@@ -4653,15 +4502,15 @@ Public Class VideoMiner
         End With
     End Sub
 
-    Private Sub species_code_changed() Handles frmRareSpeciesLookup.EndDataEntryEvent
-        SpeciesCode = frmRareSpeciesLookup.lblSpeciesCodeValue.Text
-        If frmRareSpeciesLookup.lblCommonNameValue.Text = NULL_STRING Then
-            SpeciesName = frmRareSpeciesLookup.lblScientificNameValue.Text
-        Else
-            SpeciesName = frmRareSpeciesLookup.lblCommonNameValue.Text
-        End If
-        'SpeciesVariableButtonHandler(Me, Nothing)
-    End Sub
+    'Private Sub species_code_changed() Handles frmRareSpeciesLookup.EndDataEntryEvent
+    '    SpeciesCode = frmRareSpeciesLookup.lblSpeciesCodeValue.Text
+    '    If frmRareSpeciesLookup.lblCommonNameValue.Text = NULL_STRING Then
+    '        SpeciesName = frmRareSpeciesLookup.lblScientificNameValue.Text
+    '    Else
+    '        SpeciesName = frmRareSpeciesLookup.lblCommonNameValue.Text
+    '    End If
+    '    'SpeciesVariableButtonHandler(Me, Nothing)
+    'End Sub
 
     Private Sub relay_configuration_changed() Handles frmRelayConfiguration.RelayConfigurationChangedEvent
         ConfigurationSet = frmRelayConfiguration.ConfigurationSet
@@ -4887,8 +4736,8 @@ Public Class VideoMiner
                                                                                                pnlTransectData.DataEntryCanceled,
                                                                                                pnlSpeciesData.DataEntryCanceled,
                                                                                                frmRareSpeciesLookup.DataEntryCanceled,
-                                                                                               frmEditSpecies.DataEntryCanceled,
-                                                                                               frmSpeciesList.DataEntryCanceled
+                                                                                               frmSpeciesList.DataEntryCanceled,
+                                                                                               frmSetTime.DataEntryCanceled
         dataEntryEnded()
     End Sub
 

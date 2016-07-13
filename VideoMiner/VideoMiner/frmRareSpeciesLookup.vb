@@ -65,6 +65,13 @@
             m_speciesCode = value
         End Set
     End Property
+
+    Public ReadOnly Property Dictionary As Dictionary(Of String, Tuple(Of String, String, Boolean))
+        Get
+            Return frmSpeciesEvent.Dictionary
+        End Get
+    End Property
+
 #End Region
 
     Public Sub New()
@@ -208,7 +215,7 @@
     ''' Tell Videominer that the user wishes to submit a database record addition for the species listed.
     ''' </summary>
     Private Sub endDataEntryHandler(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles frmSpeciesEvent.EndDataEntryEvent
-        RaiseEvent EndDataEntryEvent(sender, e)
+        RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
         Hide()
     End Sub
 

@@ -77,6 +77,13 @@ Public Class frmSetTime
     ''' When the user clicks the 'Continue from Last Clip' radiobutton this event is raised
     ''' </summary>
     Event RequestContinueTime()
+    ''' <summary>
+    ''' Fires when user presses Cancel or 'X' button.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Public Event DataEntryCanceled(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
 
     ''' <summary>
     ''' Default constructor
@@ -242,12 +249,14 @@ Public Class frmSetTime
                 ' Store the TextBox time into private member variable
                 getTextTime()
                 RaiseEvent TimeChanged()
-                Me.Hide()
+                RaiseEvent DataEntryCanceled(Me, EventArgs.Empty)
+                Hide()
             End If
         Else
             getTextTime()
             RaiseEvent TimeChanged()
-            Me.Hide()
+            RaiseEvent DataEntryCanceled(Me, EventArgs.Empty)
+            Hide()
         End If
     End Sub
 
