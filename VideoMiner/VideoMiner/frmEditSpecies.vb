@@ -40,6 +40,12 @@ Public Class frmEditSpecies
     Private m_keyboard_shortcut As String
 
     Public Event SpeciesButtonsModified()
+    ''' <summary>
+    ''' Fires when user presses Cancel or 'X' button.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Public Event DataEntryCanceled(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
 #Region "Properties"
     ''' <summary>
@@ -117,7 +123,8 @@ Public Class frmEditSpecies
     End Sub
 
     Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-        Me.Hide()
+        RaiseEvent DataEntryCanceled(Me, EventArgs.Empty)
+        Hide()
     End Sub
 
     Private Sub added_new_shortcut() Handles frmCreateKeyboardShortcut.AddedNewShortcut

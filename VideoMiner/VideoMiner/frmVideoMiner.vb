@@ -1956,6 +1956,7 @@ Public Class VideoMiner
     ''' and to delete them, edit them, or add new ones.
     ''' </summary>
     Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEdit.Click
+        dataEntryStarted()
         frmSpeciesList.Show()
     End Sub
 
@@ -4882,7 +4883,12 @@ Public Class VideoMiner
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub dataEntryCanceledHandler(ByVal sender As Object, ByVal e As EventArgs) Handles pnlHabitatData.DataEntryCanceled, pnlTransectData.DataEntryCanceled, pnlSpeciesData.DataEntryCanceled, frmRareSpeciesLookup.DataEntryCanceled
+    Private Sub dataEntryCanceledHandler(ByVal sender As Object, ByVal e As EventArgs) Handles pnlHabitatData.DataEntryCanceled,
+                                                                                               pnlTransectData.DataEntryCanceled,
+                                                                                               pnlSpeciesData.DataEntryCanceled,
+                                                                                               frmRareSpeciesLookup.DataEntryCanceled,
+                                                                                               frmEditSpecies.DataEntryCanceled,
+                                                                                               frmSpeciesList.DataEntryCanceled
         dataEntryEnded()
     End Sub
 

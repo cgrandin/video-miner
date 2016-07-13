@@ -8,7 +8,14 @@ Public Class frmSpeciesList
 
     Dim WithEvents frmEditSpecies As frmEditSpecies
 
-    Event SpeciesButtonsChangedEvent()
+    Public Event SpeciesButtonsChangedEvent()
+
+    ''' <summary>
+    ''' Fires when user presses Cancel or 'X' button.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Public Event DataEntryCanceled(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
     Public Sub New()
         InitializeComponent()
@@ -262,7 +269,8 @@ Public Class frmSpeciesList
     Private Sub me_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If e.CloseReason = CloseReason.UserClosing Then
             e.Cancel = True
-            Me.Hide()
+            RaiseEvent DataEntryCanceled(Me, EventArgs.Empty)
+            Hide()
         End If
     End Sub
 End Class
