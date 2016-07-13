@@ -1,4 +1,5 @@
-Option Strict Off
+Option Explicit On
+Option Strict On
 ' The following 3 imports are necessary for using ADO.NET, which permits database access.
 ' All times are stored as TimeSpan objects
 Imports System.TimeSpan
@@ -100,7 +101,7 @@ Public Class VideoMiner
     Public Const DB_FILE_STATUS_UNLOADED As String = "No database open"
     Public Const VIDEO_FILE_STATUS_UNLOADED As String = "No video file open"
     Public Const STATUS_FONT_SIZE As Integer = 10
-    Public Const DIR_SEP As String = "\"
+    Public Const DIR_SEP As Char = "\"c
     Public Const NULL_STRING As String = ""
     Public Const NS As String = "NULL"
     Public Const UNNAMED_TRANSECT As String = "Unnamed Transect"
@@ -266,7 +267,7 @@ Public Class VideoMiner
     ''' Are we in a transect currently or not?
     ''' </summary>
     ''' <remarks></remarks>
-    Private m_blInTransect As Boolean = vbFalse
+    Private m_blInTransect As Boolean = False
     ''' <summary>
     ''' Holds the data table for the actual project data being recorded
     ''' </summary>
@@ -754,28 +755,28 @@ Public Class VideoMiner
 
     Public Property GPS_X() As Double
         Get
-            Return m_GPS_X
+            Return CDbl(m_GPS_X)
         End Get
         Set(ByVal value As Double)
-            m_GPS_X = value
+            m_GPS_X = CStr(value)
         End Set
     End Property
 
     Public Property GPS_Y() As Double
         Get
-            Return m_GPS_Y
+            Return CDbl(m_GPS_Y)
         End Get
         Set(ByVal value As Double)
-            m_GPS_Y = value
+            m_GPS_Y = CStr(value)
         End Set
     End Property
 
     Public Property GPS_Z() As Double
         Get
-            Return m_GPS_Z
+            Return CDbl(m_GPS_Z)
         End Get
         Set(ByVal value As Double)
-            m_GPS_Z = value
+            m_GPS_Z = CStr(value)
         End Set
     End Property
 
@@ -1005,7 +1006,7 @@ Public Class VideoMiner
 
         Dim aPoint As System.Drawing.Point
         aPoint.X = intX
-        aPoint.Y = intY / 2
+        aPoint.Y = CInt(intY / 2)
 
         m_strWorkingPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
         m_strConfigFilePath = Path.Combine(m_strWorkingPath, "Config")
@@ -1022,7 +1023,7 @@ Public Class VideoMiner
         video_file_unload()
         no_files_loaded()
         m_transect_name = UNNAMED_TRANSECT
-        curr_code = BAD_ID
+        curr_code = CStr(BAD_ID)
         is_on_bottom = 0
         toggle_bottom()
 
@@ -1085,11 +1086,11 @@ Public Class VideoMiner
 
         ' Add DynamicPanels to the SplitContainerPanels
         pnlTransectData = New DynamicTableButtonPanel(PANEL_NAME_TRANSECT, True, Me.ButtonWidth, Me.ButtonHeight,
-                                                      Me.ButtonFont, Me.ButtonTextSize, True, True)
+                                                      Me.ButtonFont, CStr(ButtonTextSize), True, True)
         SplitContainer7.Panel1.Controls.Add(pnlTransectData)
 
         pnlHabitatData = New DynamicTableButtonPanel(PANEL_NAME_HABITAT, True, Me.ButtonWidth, Me.ButtonHeight,
-            Me.ButtonFont, Me.ButtonTextSize, True, True)
+            Me.ButtonFont, CStr(ButtonTextSize), True, True)
         SplitContainer7.Panel2.Controls.Add(pnlHabitatData)
 
         pnlSpeciesData = New DynamicSpeciesButtonPanel(PANEL_NAME_SPECIES, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize)
@@ -1341,12 +1342,12 @@ Public Class VideoMiner
         If docNode Is Nothing Or xPath Is Nothing Or xPath = NULL_STRING Or strValue Is Nothing Then
             Exit Sub
         End If
-
-        Dim trimChars() As Char = {"/"}
+        ' The weird c below signifies that this is a char and not a string. Strange syntax but required with Option Strict On.
+        Dim trimChars() As Char = {"/"c}
         xPath = xPath.TrimStart(trimChars)
 
         Dim newNode, currNode As XmlElement
-        Dim names() As String = xPath.Split("/")
+        Dim names() As String = xPath.Split("/"c)
         Dim currentPath As String = names(0)
         Dim rightPath(names.Length - 2) As String
         Dim nextPath As String
@@ -1374,7 +1375,7 @@ Public Class VideoMiner
             nextPath = String.Join("/", rightPath)
             ' Check to see if the currName node exists. If not, create it then recurse either way
             leftPath = leftPath & "/" & currName
-            currNode = docNode.SelectSingleNode(VMCD & "/" & leftPath)
+            currNode = CType(docNode.SelectSingleNode(VMCD & "/" & leftPath), XmlElement)
             If currNode Is Nothing Then
                 newNode = docNode.CreateElement(currName)
                 If node IsNot Nothing Then
@@ -1506,7 +1507,7 @@ Public Class VideoMiner
             ' The idea here is to cause a click of the button that corresponds to the shortcut, because the
             ' code to build the query is complex and already implemented in buttonDataChanged()
             'If Not grdVideoMinerDatabase.Focused Then
-            pnlSpeciesData.ClickButton(d.Rows(0).Item(1))
+            pnlSpeciesData.ClickButton(CType(d.Rows(0).Item(1), String))
             'End If
         End If
     End Sub
@@ -1731,13 +1732,13 @@ Public Class VideoMiner
             txtTransectTextbox.TextAlign = HorizontalAlignment.Center
             cmdTransectStart.Text = "Transect End"
             start_or_end = TRANSECT_START
-            m_blInTransect = vbTrue
+            m_blInTransect = True
             'tuple = New Tuple(Of String, String, Boolean)("3", is_on_bottom, True)
             'dict.Add("OnBottom", tuple)
             If dict.ContainsKey("DataCode") Then
                 dict.Remove("DataCode")
             End If
-            tuple = New Tuple(Of String, String, Boolean)(1, "1", False)
+            tuple = New Tuple(Of String, String, Boolean)("1", "1", False)
             dict.Add("DataCode", tuple)
         Else
             ' Currently in a transect, so we end it here
@@ -1748,11 +1749,11 @@ Public Class VideoMiner
             txtTransectTextbox.TextAlign = HorizontalAlignment.Center
             cmdTransectStart.Text = "Transect Start"
             start_or_end = TRANSECT_END
-            m_blInTransect = vbFalse
+            m_blInTransect = False
             If dict.ContainsKey("DataCode") Then
                 dict.Remove("DataCode")
             End If
-            tuple = New Tuple(Of String, String, Boolean)(2, "2", False)
+            tuple = New Tuple(Of String, String, Boolean)("2", "2", False)
             dict.Add("DataCode", tuple)
             m_transect_name = NULL_STRING
         End If
@@ -1823,27 +1824,28 @@ Public Class VideoMiner
     ''' the appropriate thing will happen for data recording (species event form will be shown or data table form be shown, or quick entry will happen).
     ''' </summary>
     Private Sub button_CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pnlHabitatData.CheckForDirtyDataEvent, pnlTransectData.CheckForDirtyDataEvent, pnlSpeciesData.CheckForDirtyDataEvent
-        Dim btn As Object
         If TypeOf sender Is DynamicButton Then
-            btn = CType(sender, DynamicButton)
-        ElseIf TypeOf sender Is DynamicTableButton Then
-            btn = CType(sender, DynamicTableButton)
-        End If
-
-        ' If the data table is not dirty...
-        If IsNothing(m_data_table.GetChanges()) Then
-            btn.ShowForm(sender, e)
-        Else
-            If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
-                fetch_data() ' Cleans up the table first
-                If TypeOf btn Is DynamicButton Then
+            Dim btn As DynamicButton = CType(sender, DynamicButton)
+            If IsNothing(m_data_table.GetChanges()) Then
+                btn.ShowForm(sender, e)
+            Else
+                If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
+                    fetch_data() ' Cleans up the table first
                     If radQuickEntry.Checked Then
                         btn.RecordQuick(txtQuickSpeciesCount.Text)
                     Else
-                        btn.ShowDataForm(sender, e)
+                        btn.ShowForm(sender, e)
                     End If
-                Else
-                    btn.ShowDataForm(sender, e)
+                End If
+            End If
+        ElseIf TypeOf sender Is DynamicTableButton Then
+            Dim btn As DynamicTableButton = CType(sender, DynamicTableButton)
+            If IsNothing(m_data_table.GetChanges()) Then
+                btn.ShowForm(sender, e)
+            Else
+                If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
+                    fetch_data() ' Cleans up the table first
+                    btn.ShowForm(sender, e)
                 End If
             End If
         End If
@@ -1902,25 +1904,37 @@ Public Class VideoMiner
     ''' saving to the database.
     ''' </summary>
     Private Sub buttonDataChanged(sender As System.Object, e As System.EventArgs) Handles pnlHabitatData.EndDataEntryEvent, pnlTransectData.EndDataEntryEvent, pnlSpeciesData.EndDataEntryEvent
-        Dim pnl As Object
         If TypeOf sender Is DynamicSpeciesButtonPanel Then
-            pnl = CType(sender, DynamicSpeciesButtonPanel)
+            Dim pnl As DynamicSpeciesButtonPanel = CType(sender, DynamicSpeciesButtonPanel)
+            Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = pnl.Dictionary
+            Select Case pnl.Name
+                Case PANEL_NAME_SPECIES
+                    ' If species panel, merge other two panel's dictionaries
+                    dict = dict.Union(pnlHabitatData.Dictionary).Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+                Case PANEL_NAME_HABITAT
+                    ' merge the transect panel dictionary
+                    dict = dict.Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+                Case PANEL_NAME_TRANSECT
+                    ' merge the habitat panel dictionary
+                    dict = dict.Union(pnlHabitatData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+            End Select
+            runInsertQuery(dict)
         ElseIf TypeOf sender Is DynamicTableButtonPanel Then
-            pnl = CType(sender, DynamicTableButtonPanel)
+            Dim pnl As DynamicTableButtonPanel = CType(sender, DynamicTableButtonPanel)
+            Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = pnl.Dictionary
+            Select Case pnl.Name
+                Case PANEL_NAME_SPECIES
+                    ' If species panel, merge other two panel's dictionaries
+                    dict = dict.Union(pnlHabitatData.Dictionary).Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+                Case PANEL_NAME_HABITAT
+                    ' merge the transect panel dictionary
+                    dict = dict.Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+                Case PANEL_NAME_TRANSECT
+                    ' merge the habitat panel dictionary
+                    dict = dict.Union(pnlHabitatData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+            End Select
+            runInsertQuery(dict)
         End If
-        Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = pnl.Dictionary
-        Select Case pnl.Name
-            Case PANEL_NAME_SPECIES
-                ' If species panel, merge other two panel's dictionaries
-                dict = dict.Union(pnlHabitatData.Dictionary).Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
-            Case PANEL_NAME_HABITAT
-                ' merge the transect panel dictionary
-                dict = dict.Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
-            Case PANEL_NAME_TRANSECT
-                ' merge the habitat panel dictionary
-                dict = dict.Union(pnlHabitatData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
-        End Select
-        runInsertQuery(dict)
         fetch_data()
     End Sub
 
@@ -2017,7 +2031,7 @@ Public Class VideoMiner
         ' Add the new item to the current collection of items and also write it into the XML file
         Dim name As String = frmProjectNames.getProjectName()
         m_PreviousProjects.Add(name, name) ' Key and value are identical, needed for removing from the collection which needs the key
-        SaveConfiguration("/PreviousProjects/ProjectName", frmProjectNames.getProjectName(), vbTrue)
+        SaveConfiguration("/PreviousProjects/ProjectName", frmProjectNames.getProjectName(), True)
     End Sub
 
     ''' <summary>
@@ -2058,8 +2072,8 @@ Public Class VideoMiner
     End Sub
 
     Private Sub mnthCalendar_DateSelected(ByVal sender As Object, ByVal e As System.Windows.Forms.DateRangeEventArgs) Handles mnthCalendar.DateSelected
-        Me.txtTransectDate.Text = AddZeros(Me.mnthCalendar.SelectionStart.Day, 2) & "/" & AddZeros(Me.mnthCalendar.SelectionStart.Month, 2) & "/" & Me.mnthCalendar.SelectionStart.Year
-        m_transect_date = Me.txtTransectDate.Text
+        Me.txtTransectDate.Text = AddZeros(CType(mnthCalendar.SelectionStart.Day, String), 2) & "/" & AddZeros(CType(mnthCalendar.SelectionStart.Month, String), 2) & "/" & Me.mnthCalendar.SelectionStart.Year
+        m_transect_date = CDate(txtTransectDate.Text)
         Me.mnthCalendar.Visible = False
         Me.cmdCloseCalendar.Visible = False
     End Sub
@@ -2073,7 +2087,7 @@ Public Class VideoMiner
         'Insert A record into the database every second that video is played.
         ' This will include all continuous variables.
 
-        Dim tc As TimeSpan = New TimeSpan(VIDEO_TIME_LABEL)
+        Dim tc As TimeSpan = New TimeSpan(CLng(VIDEO_TIME_LABEL))
 
         Dim strVideoTime As String = VIDEO_TIME_LABEL
         Dim strVideoTextTime As String = VIDEO_TIME_LABEL
@@ -2323,7 +2337,7 @@ Public Class VideoMiner
         If Me.chkRecordEachSecond.Checked = False Then
             Me.tmrRecordPerSecond.Stop()
         Else
-            Dim tc As TimeSpan = New TimeSpan(VIDEO_TIME_LABEL)
+            Dim tc As TimeSpan = New TimeSpan(CLng(VIDEO_TIME_LABEL))
 
             Dim strVideoTime As String = VIDEO_TIME_LABEL
             Dim strVideoTextTime As String = VIDEO_TIME_LABEL
@@ -2354,7 +2368,7 @@ Public Class VideoMiner
 
     Private Sub cmdAddComment_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdAddComment.Click
 
-        Dim tc As TimeSpan = New TimeSpan(VIDEO_TIME_LABEL)
+        Dim tc As TimeSpan = New TimeSpan(CLng(VIDEO_TIME_LABEL))
 
 
         Dim strX As String = NS
@@ -2562,14 +2576,14 @@ Public Class VideoMiner
             Dim strNumberRecordsShown As String
 
             'CJG need to fix getconfiguration to take a config filename for this
-            blVideoOpen = GetConfiguration("SessionConfiguration/Video/Open")
+            blVideoOpen = CBool(GetConfiguration("SessionConfiguration/Video/Open"))
             strVideoFileName = GetConfiguration("SessionConfiguration/Video/FileName")
             strVideoTime = GetConfiguration("SessionConfiguration/Video/Position")
 
-            blImageOpen = GetConfiguration("SessionConfiguration/Image/Open")
+            blImageOpen = CBool(GetConfiguration("SessionConfiguration/Image/Open"))
             strImageFileName = GetConfiguration("SessionConfiguration/Image/FileName")
 
-            blDatabaseOpen = GetConfiguration("SessionConfiguration/Database/Open")
+            blDatabaseOpen = CBool(GetConfiguration("SessionConfiguration/Database/Open"))
             strDatabaseFileName = GetConfiguration("SessionConfiguration/Database/FileName")
             strNumberRecordsShown = GetConfiguration("SessionConfiguration/Database/NumberRecordsShown")
 
@@ -2609,12 +2623,12 @@ Public Class VideoMiner
 
                     If intMonitorCount = 1 Then
                         aPoint.X = intX
-                        aPoint.Y = intY / 2
+                        aPoint.Y = CInt(intY / 2)
                         frmImage.Location = aPoint
                         frmImage.WindowState = FormWindowState.Normal
                     Else
                         aPoint.X = intX + priMon.Bounds.Width
-                        aPoint.Y = intY / 2
+                        aPoint.Y = CInt(intY / 2)
                         frmImage.Location = aPoint
                         frmImage.WindowState = FormWindowState.Maximized
                     End If
@@ -2681,13 +2695,13 @@ Public Class VideoMiner
                     Dim aPoint As System.Drawing.Point
                     If intMonitorCount = 1 Then
                         aPoint.X = intX
-                        aPoint.Y = intY / 2
+                        aPoint.Y = CInt(intY / 2)
                         frmVideoPlayer.Location = aPoint
                         frmVideoPlayer.WindowState = FormWindowState.Normal
                         'frmVideoPlayer.TopMost = True
                     Else
                         aPoint.X = intX + priMon.Bounds.Width
-                        aPoint.Y = intY / 2
+                        aPoint.Y = CInt(intY / 2)
                         frmVideoPlayer.Location = aPoint
                         frmVideoPlayer.WindowState = FormWindowState.Maximized
                         'frmVideoPlayer.TopMost = True
@@ -2753,14 +2767,14 @@ Public Class VideoMiner
             End If
 
 
-            SaveConfiguration("SessionConfiguration/Video/Open", blVideoOpen)
+            SaveConfiguration("SessionConfiguration/Video/Open", CType(blVideoOpen, String))
             SaveConfiguration("SessionConfiguration/Video/FileName", strVideoFileName)
             SaveConfiguration("SessionConfiguration/Video/Position", strVideoTime)
 
-            SaveConfiguration("SessionConfiguration/Image/Open", blImageOpen)
+            SaveConfiguration("SessionConfiguration/Image/Open", CType(blImageOpen, String))
             SaveConfiguration("SessionConfiguration/Image/FileName", strImageFileName)
 
-            SaveConfiguration("SessionConfiguration/Database/Open", blDatabaseOpen)
+            SaveConfiguration("SessionConfiguration/Database/Open", CType(blDatabaseOpen, String))
             SaveConfiguration("SessionConfiguration/Database/FileName", strDatabaseFileName)
             SaveConfiguration("SessionConfiguration/Database/NumberRecordsShown", strNumberRecordsShown)
 
@@ -2880,7 +2894,7 @@ Public Class VideoMiner
 
             XMLWriter.WriteStartElement("Video")
             XMLWriter.WriteStartElement("Open")
-            XMLWriter.WriteString(blVideoOpen)
+            XMLWriter.WriteString(CType(blVideoOpen, String))
             XMLWriter.WriteEndElement()
             XMLWriter.WriteStartElement("FileName")
             XMLWriter.WriteString(strVideo)
@@ -2892,7 +2906,7 @@ Public Class VideoMiner
 
             XMLWriter.WriteStartElement("Image")
             XMLWriter.WriteStartElement("Open")
-            XMLWriter.WriteString(blImageOpen)
+            XMLWriter.WriteString(CType(blImageOpen, String))
             XMLWriter.WriteEndElement()
             XMLWriter.WriteStartElement("FileName")
             XMLWriter.WriteString(strImage)
@@ -2901,7 +2915,7 @@ Public Class VideoMiner
 
             XMLWriter.WriteStartElement("Database")
             XMLWriter.WriteStartElement("Open")
-            XMLWriter.WriteString(blDatabaseOpen)
+            XMLWriter.WriteString(CType(blDatabaseOpen, String))
             XMLWriter.WriteEndElement()
             XMLWriter.WriteStartElement("FileName")
             XMLWriter.WriteString(strDatabase)
@@ -3083,7 +3097,7 @@ Public Class VideoMiner
         If IsNothing(pnlHabitatData) Or IsNothing(pnlTransectData) Then
             Exit Sub
         End If
-        If is_on_bottom Then
+        If CBool(is_on_bottom) Then
             txtOnOffBottomTextbox.Text = OFF_BOTTOM_STRING
             txtOnOffBottomTextbox.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
             txtOnOffBottomTextbox.BackColor = Color.LightGray
@@ -3115,12 +3129,12 @@ Public Class VideoMiner
         If dict.ContainsKey("OnBottom") Then
             dict.Remove("OnBottom")
         End If
-        tuple = New Tuple(Of String, String, Boolean)("3", is_on_bottom, True)
+        tuple = New Tuple(Of String, String, Boolean)("3", CType(is_on_bottom, String), True)
         dict.Add("OnBottom", tuple)
         If dict.ContainsKey("DataCode") Then
             dict.Remove("DataCode")
         End If
-        tuple = New Tuple(Of String, String, Boolean)(3, "3", False)
+        tuple = New Tuple(Of String, String, Boolean)("3", "3", False)
         dict.Add("DataCode", tuple)
 
         runInsertQuery(dict)
@@ -3206,12 +3220,12 @@ Public Class VideoMiner
                 Dim aPoint As System.Drawing.Point
                 If intMonitorCount = 1 Then
                     aPoint.X = intX
-                    aPoint.Y = intY / 2
+                    aPoint.Y = CInt(intY / 2)
                     frmImage.Location = aPoint
                     frmImage.WindowState = FormWindowState.Normal
                 Else
                     aPoint.X = intX + priMon.Bounds.Width
-                    aPoint.Y = intY / 2
+                    aPoint.Y = CInt(intY / 2)
                     frmImage.Location = aPoint
                     frmImage.WindowState = FormWindowState.Maximized
                 End If
@@ -3230,7 +3244,7 @@ Public Class VideoMiner
             txtTime.BackColor = Color.LightGray
             txtTime.ForeColor = Color.LimeGreen
             txtTime.TextAlign = HorizontalAlignment.Center
-            txtTransectDate.Text = m_transect_date
+            txtTransectDate.Text = CType(m_transect_date, String)
             txtDateSource.Text = "EXIF"
             txtDateSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
             txtDateSource.BackColor = Color.LightGray
@@ -3307,7 +3321,7 @@ Public Class VideoMiner
             Dim aPoint As System.Drawing.Point
             If secMon Is Nothing Then
                 aPoint.X = intX
-                aPoint.Y = intY / 2
+                aPoint.Y = CInt(intY / 2)
                 frmVideoPlayer.Location = aPoint
                 frmVideoPlayer.WindowState = FormWindowState.Normal
                 frmVideoPlayer.TopMost = True
@@ -3315,8 +3329,8 @@ Public Class VideoMiner
                 'aPoint.X = intX + priMon.Bounds.Width
                 'aPoint.Y = intY / 2
                 ' Use these settings when debugging, and comment out the windowstate and topmost lines below
-                aPoint.X = intX + priMon.Bounds.Width / 3
-                aPoint.Y = intY / 4
+                aPoint.X = CInt(intX + priMon.Bounds.Width / 3)
+                aPoint.Y = CInt(intY / 4)
                 frmVideoPlayer.Location = aPoint
                 'frmVideoPlayer.WindowState = FormWindowState.Maximized
                 'frmVideoPlayer.TopMost = True
@@ -3361,7 +3375,7 @@ Public Class VideoMiner
                 Dim strSeconds As String()
                 Dim intCurrentSeconds As Integer
                 dblCurrentSeconds = frmVideoPlayer.Position
-                strSeconds = dblCurrentSeconds.ToString.Split(".")
+                strSeconds = dblCurrentSeconds.ToString.Split("."c)
                 intCurrentSeconds = CInt(strSeconds(0))
                 'intPlayForSeconds = CInt(Me.txtPlaySeconds.Text)
                 Me.tmrPlayForSeconds.Interval = 100
@@ -3607,7 +3621,7 @@ Public Class VideoMiner
 
         Dim intIDColumn As Integer = 0
         If m_data_table.Rows.Count > 0 Then
-            m_db_id_num = m_data_table.Rows(0).Item(intIDColumn) + 1 ' m_db_id_num is the next unique primary key to use in inserting data into database (assumes decending order)
+            m_db_id_num = CLng(m_data_table.Rows(0).Item(intIDColumn)) + 1 ' m_db_id_num is the next unique primary key to use in inserting data into database (assumes decending order)
         Else
             m_db_id_num = 1
         End If
@@ -3672,7 +3686,7 @@ Public Class VideoMiner
 
         If Not IsNothing(m_transect_date) Then
             names = names & "TransectDate,"
-            values = values & SingleQuote(m_transect_date) & ","
+            values = values & SingleQuote(CType(m_transect_date, String)) & ","
         End If
 
         If Not IsNothing(m_tsUserTime) Then
@@ -4038,7 +4052,7 @@ Public Class VideoMiner
             ReDim arrColoring(grdVideoMinerDatabase.RowCount - 1)
             For row As Integer = 0 To grdVideoMinerDatabase.RowCount - 1
                 arrColoring(row) = New stcRowColoring
-                arrColoring(row).id = grdVideoMinerDatabase.Rows(row).Cells(0).Value
+                arrColoring(row).id = CType(grdVideoMinerDatabase.Rows(row).Cells(0).Value, String)
                 arrColoring(row).rowCol = grdVideoMinerDatabase.Rows(row).DefaultCellStyle.BackColor
                 ReDim arrColoring(row).cellForegroundCols(grdVideoMinerDatabase.ColumnCount - 1)
                 ReDim arrColoring(row).cellBackgroundCols(grdVideoMinerDatabase.ColumnCount - 1)
@@ -4061,7 +4075,7 @@ Public Class VideoMiner
         Dim id As String
         For row As Integer = 0 To grdVideoMinerDatabase.RowCount - 1
             ' Get the ID found in the current row
-            id = grdVideoMinerDatabase.Rows(row).Cells(0).Value
+            id = CType(grdVideoMinerDatabase.Rows(row).Cells(0).Value, String)
             ' Find the id in the coloring array
             For i As Integer = 0 To arrColoring.Length - 1
                 If arrColoring(i).id = id Then
@@ -4120,7 +4134,7 @@ Public Class VideoMiner
             grdVideoMinerDatabase.CurrentCell.Style.ForeColor = Color.Black
         End If
         ' Get ID number and use that as row since the user can see it labelled on the row headers
-        Dim row As Integer = grdVideoMinerDatabase.Rows(e.RowIndex).Cells(0).Value.ToString()
+        Dim row As Integer = CInt(grdVideoMinerDatabase.Rows(e.RowIndex).Cells(0).Value.ToString())
         Select Case strFieldName
             Case "ID"
                 MessageBox.Show("Error in column 'ID', row " & row & ": Value must be a non-null integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -4188,7 +4202,8 @@ Public Class VideoMiner
     ''' and move to the next cell down or, if it is currently the last row, the next cell on the right, or if neither of those,
     ''' the top left-most cell. Pressing the 'delete' key will delete rows from the grid view and the database.
     ''' </summary>
-    Private Sub grdVideoMinerDatabase_KeyDown(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.KeyEventArgs) Handles grdVideoMinerDatabase.KeyDown
+    Private Sub grdVideoMinerDatabase_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles grdVideoMinerDatabase.KeyDown
+        'Private Sub grdVideoMinerDatabase_KeyDown(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.KeyEventArgs) Handles grdVideoMinerDatabase.KeyDown
         Select Case e.KeyCode
             Case Keys.Delete
                 deleteSelectedRows(sender, e)
@@ -4204,7 +4219,8 @@ Public Class VideoMiner
     ''' <summary>
     ''' Allow keys to be captured while the editor is focussed on an individual cell
     ''' </summary>
-    Private Sub grdVideoMinerDatabase_EditingControlShowing(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.DataGridViewEditingControlShowingEventArgs) Handles grdVideoMinerDatabase.EditingControlShowing
+    Private Sub grdVideoMinerDatabase_EditingControlShowing(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewEditingControlShowingEventArgs) Handles grdVideoMinerDatabase.EditingControlShowing
+        'Private Sub grdVideoMinerDatabase_EditingControlShowing(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.DataGridViewEditingControlShowingEventArgs) Handles grdVideoMinerDatabase.EditingControlShowing
         Dim tb As TextBox = CType(e.Control, TextBox)
         AddHandler tb.PreviewKeyDown, AddressOf TextBox_PreviewKeyDown
     End Sub
@@ -4258,7 +4274,8 @@ Public Class VideoMiner
     ''' Captures right click in the DataGridView. This will delete rows from the grid view and the database.
     ''' </summary>
     ''' <remarks>If no rows are selected, a message will tell you to select rows and then press delete</remarks>
-    Private Sub grdVideoMinerDatabase_RightClick(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.MouseEventArgs) Handles grdVideoMinerDatabase.MouseClick
+    Private Sub grdVideoMinerDatabase_RightClick(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles grdVideoMinerDatabase.MouseClick
+        'Private Sub grdVideoMinerDatabase_RightClick(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.MouseEventArgs) Handles grdVideoMinerDatabase.MouseClick
         If e.Button = Windows.Forms.MouseButtons.Right Then
             Dim cms As ContextMenuStrip = New ContextMenuStrip
             Dim item1 As ToolStripItem
@@ -4280,7 +4297,7 @@ Public Class VideoMiner
     Private Sub grdVideoMinerDatabase_CellValidating(ByVal sender As Object, ByVal e As DataGridViewCellValidatingEventArgs) Handles grdVideoMinerDatabase.CellValidating
         ' Get column name from cell that was changed
         Dim strFieldName As String = grdVideoMinerDatabase.Columns(e.ColumnIndex).HeaderText
-        Dim s = e.FormattedValue.ToString()
+        Dim s As String = e.FormattedValue.ToString()
         Select Case strFieldName
             Case "ID"
                 If s = String.Empty Then
@@ -4377,15 +4394,15 @@ Public Class VideoMiner
             strDate = strDate & "/0" & CStr(Now.Year)
         End If
 
-        m_transect_date = strDate
-        Me.txtTransectDate.Text = m_transect_date
+        m_transect_date = CDate(strDate)
+        Me.txtTransectDate.Text = CType(m_transect_date, String)
 
     End Sub
 
     Private Sub txtTime_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtTime.TextChanged
         If Me.txtTimeSource.Text = "VIDEO" Then
             If Me.txtTime.Text = VIDEO_TIME_LABEL Then
-                Dim strDate = Me.txtTransectDate.Text.Split("/")
+                Dim strDate As String() = txtTransectDate.Text.Split("/"c)
                 Dim dtDate As New Date(CInt(strDate(2)), CInt(strDate(1)), CInt(strDate(0)))
                 Dim dtNewDate As Date
                 dtNewDate = dtDate.AddDays(1)
@@ -4406,8 +4423,8 @@ Public Class VideoMiner
                     strNewDate = strNewDate & "/0" & CStr(dtNewDate.Year)
                 End If
 
-                m_transect_date = strNewDate
-                Me.txtTransectDate.Text = m_transect_date
+                m_transect_date = CDate(strNewDate)
+                Me.txtTransectDate.Text = CType(m_transect_date, String)
             End If
         End If
     End Sub

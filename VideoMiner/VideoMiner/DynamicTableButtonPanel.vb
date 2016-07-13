@@ -116,7 +116,6 @@ Public Class DynamicTableButtonPanel
                    Optional blRepeatIsChecked As Boolean = True,
                    Optional intRepeatWidth As Integer = 210,
                    Optional intRepeatHeight As Integer = 17)
-
         Name = strname
         m_repeat_for_every_record = Nothing
         m_define_all_button = Nothing

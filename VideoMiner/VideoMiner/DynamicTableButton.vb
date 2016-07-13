@@ -114,17 +114,20 @@ Public Class DynamicTableButton
                    intWidth As Integer,
                    Optional whichType As WhichTypeEnum = WhichTypeEnum.DataTable)
         m_which_type = whichType
-        m_btnButton = New DynamicButton(row, intHeight, intWidth, DynamicButton.WhichEntryStyleEnum.Table)
-        AddHandler m_btnButton.StartDataEntryEvent, AddressOf startDataEntryEventHandler
-        AddHandler m_btnButton.EndDataEntryEvent, AddressOf endDataEntryEventHandler
-        m_txtStatus = New DynamicTextbox(m_btnButton.ButtonFont, m_btnButton.ButtonTextSize)
+
         Orientation = Orientation.Horizontal
         IsSplitterFixed = True
         Panel1.AutoScroll = False
         Panel2.AutoScroll = False
-        Panel1.Controls.Add(m_btnButton)
-        Panel2.Controls.Add(m_txtStatus)
+
+        m_btnButton = New DynamicButton(row, intHeight, intWidth, DynamicButton.WhichEntryStyleEnum.Table)
+        AddHandler m_btnButton.StartDataEntryEvent, AddressOf startDataEntryEventHandler
+        AddHandler m_btnButton.EndDataEntryEvent, AddressOf endDataEntryEventHandler
         m_btnButton.Dock = DockStyle.Fill
+        Panel1.Controls.Add(m_btnButton)
+
+        m_txtStatus = New DynamicTextbox(m_btnButton.ButtonFont, m_btnButton.ButtonTextSize)
+        Panel2.Controls.Add(m_txtStatus)
         m_txtStatus.Dock = DockStyle.Fill
         m_txtStatus.setNoData(m_btnButton.ButtonText)
     End Sub
@@ -146,5 +149,9 @@ Public Class DynamicTableButton
         ' Change text to reflect the change in the data
         m_txtStatus.setData(m_btnButton.DataDescription)
         RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
+    End Sub
+
+    Friend Sub ShowForm(sender As Object, e As EventArgs)
+        Throw New NotImplementedException()
     End Sub
 End Class
