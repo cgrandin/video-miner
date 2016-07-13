@@ -59,6 +59,19 @@ Public Class frmSpeciesEvent
     Private m_dict As Dictionary(Of String, Tuple(Of String, String, Boolean))
 #End Region
 
+#Region "Events"
+    ''' <summary>
+    ''' Fires when the OK button is pressed.
+    ''' </summary>
+    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Fires when user presses Cancel or 'X' button.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Public Event DataEntryCanceled(ByVal sender As System.Object, ByVal e As System.EventArgs)
+#End Region
+
 #Region "Properties"
     Public Property SpeciesName() As String
         Get
@@ -174,14 +187,6 @@ Public Class frmSpeciesEvent
             Return m_tuple
         End Get
     End Property
-
-#End Region
-
-#Region "Events"
-    ''' <summary>
-    ''' Fires when the OK button is pressed.
-    ''' </summary>
-    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
 #End Region
 
@@ -433,6 +438,7 @@ Public Class frmSpeciesEvent
     ''' When user presses cancel, hide the form instead of closing it. It is created only once and needs to remain persistent.
     ''' </summary>
     Private Sub btnCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCancel.Click
+        RaiseEvent DataEntryCanceled(sender, e)
         Hide()
     End Sub
 
@@ -442,7 +448,8 @@ Public Class frmSpeciesEvent
     Private Sub me_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If e.CloseReason = CloseReason.UserClosing Then
             e.Cancel = True
-            Me.Hide()
+            RaiseEvent DataEntryCanceled(sender, e)
+            Hide()
         End If
     End Sub
 

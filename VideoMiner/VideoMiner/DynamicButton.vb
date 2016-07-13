@@ -106,6 +106,30 @@ Public Class DynamicButton
     Private m_quick_entry_num As Integer
 #End Region
 
+#Region "Events"
+    ''' <summary>
+    ''' This event will be fired when the user clicks the button.
+    ''' </summary>
+    Public Event StartDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' This event will propagate an event sent by either m_frmSpeciesEvent, m_frmAbundanceTableView, or m_frmTableView.
+    ''' It is sent to signal the end of the data entry, i.e. when the subforms mentioned are closed.
+    ''' </summary>
+    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Fires when user presses Cancel or 'X' button.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Public Event DataEntryCanceled(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Fires when the frmTableView is cleared via its clear button or a ctrl-click of this button
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Public Event ClearEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+#End Region
+
 #Region "Properties"
     Public Property DataFormVisible As Boolean
         Set(value As Boolean)
@@ -225,24 +249,6 @@ Public Class DynamicButton
             m_quick_entry_num = value
         End Set
     End Property
-#End Region
-
-#Region "Events"
-    ''' <summary>
-    ''' This event will be fired when the user clicks the button.
-    ''' </summary>
-    Public Event StartDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
-    ''' <summary>
-    ''' This event will propagate an event sent by either m_frmSpeciesEvent, m_frmAbundanceTableView, or m_frmTableView.
-    ''' It is sent to signal the end of the data entry, i.e. when the subforms mentioned are closed.
-    ''' </summary>
-    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
-    ''' <summary>
-    ''' Fires when the frmTableView is cleared via its clear button or a ctrl-click of this button
-    ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
-    Public Event ClearEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
 #End Region
 
     ''' <summary>
@@ -476,4 +482,12 @@ Public Class DynamicButton
         RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
     End Sub
 
+    ''' <summary>
+    ''' Bubbles the DataEntrytCanceledEvent up so that video can be set to play again when the user decides to cancel data entry.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub dataEntryCanceledHandler(ByVal sender As Object, ByVal e As EventArgs) Handles m_frmSpeciesEvent.DataEntryCanceled, m_frmTableView.DataEntryCanceled
+        RaiseEvent DataEntryCanceled(Me, EventArgs.Empty)
+    End Sub
 End Class

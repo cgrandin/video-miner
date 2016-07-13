@@ -33,6 +33,24 @@ Public Class frmTableView
     ''' </summary>
     Private m_dict As Dictionary(Of String, Tuple(Of String, String, Boolean))
 
+#Region "Events"
+    ''' <summary>
+    ''' If user presses Clear button, this will fire so that the main form can update its dynamic buttons and textboxes
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Event ClearEvent()
+    ''' <summary>
+    ''' Fires when a new row is selected.
+    ''' </summary>
+    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Fires when user presses Cancel or 'X' button.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Public Event DataEntryCanceled(ByVal sender As System.Object, ByVal e As System.EventArgs)
+#End Region
+
 #Region "Properties"
 
     Public ReadOnly Property DataDescription As String
@@ -108,18 +126,6 @@ Public Class frmTableView
     End Property
 #End Region
 
-#Region "Events"
-    ''' <summary>
-    ''' If user presses Clear button, this will fire so that the main form can update its dynamic buttons and textboxes
-    ''' </summary>
-    ''' <remarks></remarks>
-    Public Event ClearEvent()
-    ''' <summary>
-    ''' Fires when a new row is selected.
-    ''' </summary>
-    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
-#End Region
-
     Public Sub New(titleText As String, dataTable As DataTable)
         InitializeComponent()
         Me.Text = titleText
@@ -140,16 +146,13 @@ Public Class frmTableView
         ' End If
     End Sub
 
-    Private Sub TableViewForm_FormClosed(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
-        'Me.UserClosedForm = True
-    End Sub
-
     ''' <summary>
     ''' Capture the press of the 'X' button and hide instead of closing to avoid an exception on re-opening
     ''' </summary>
     Private Sub frmTableView_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If e.CloseReason = CloseReason.UserClosing Then
             e.Cancel = True
+            RaiseEvent DataEntryCanceled(sender, e)
             Me.Hide()
         End If
     End Sub
@@ -202,7 +205,7 @@ Public Class frmTableView
         If DataGridView1.SelectedRows.Count = 1 Then
             buildDictionary()
             RaiseEvent EndDataEntryEvent(Me, e)
-            Me.Hide()
+            Hide()
         End If
     End Sub
 
@@ -221,8 +224,8 @@ Public Class frmTableView
     End Sub
 
     Private Sub btnSkipSpatial_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSkipSpatial.Click
-        Me.Hide()
-        'RaiseEvent SignalPlay(Me, EventArgs.Empty)
+        RaiseEvent EndDataEntryEvent(Me, e)
+        Hide()
     End Sub
 
     ''' <summary>

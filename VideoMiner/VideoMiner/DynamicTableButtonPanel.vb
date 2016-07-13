@@ -62,6 +62,28 @@ Public Class DynamicTableButtonPanel
     Private m_data_code As Integer
 #End Region
 
+#Region "Events"
+    Public Event DataChanged(sender As System.Object, e As System.EventArgs)
+    ''' <summary>
+    ''' Signals the parent that a button has been pressed on this panel and data entry has started.
+    ''' </summary>
+    Public Event StartDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Signals the parent that data entry has ended.
+    ''' </summary>
+    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Fires when user presses Cancel or 'X' button.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Public Event DataEntryCanceled(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Fire event to have parent form check for dirty data or anything else prior to launching the button code.
+    ''' </summary>
+    Public Event CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+#End Region
+
 #Region "Properties"
     ''' Dictionary of key/value pairs that hold the currently set data for this panel.
     ''' If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
@@ -76,22 +98,6 @@ Public Class DynamicTableButtonPanel
             Return m_repeat_for_every_record.Checked
         End Get
     End Property
-#End Region
-
-#Region "Events"
-    Public Event DataChanged(sender As System.Object, e As System.EventArgs)
-    ''' <summary>
-    ''' Signals the parent that a button has been pressed on this panel and data entry has started.
-    ''' </summary>
-    Public Event StartDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
-    ''' <summary>
-    ''' Signals the parent that data entry has ended.
-    ''' </summary>
-    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
-    ''' <summary>
-    ''' Fire event to have parent form check for dirty data or anything else prior to launching the button code.
-    ''' </summary>
-    Public Event CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
 #End Region
 
     ''' <summary>
@@ -141,7 +147,7 @@ Public Class DynamicTableButtonPanel
             m_repeat_for_every_record.Width = intRepeatWidth
             m_repeat_for_every_record.Height = intRepeatHeight
             m_repeat_for_every_record.ThreeState = False
-            m_repeat_for_every_record.Left = 6
+            m_repeat_for_every_record.Left = 1
             m_repeat_for_every_record.Top = 19
             m_y_offset = m_repeat_for_every_record.Bottom + m_gap
             m_repeat_for_every_record.Visible = False
@@ -157,10 +163,10 @@ Public Class DynamicTableButtonPanel
             m_define_all_button.TextAlign = ContentAlignment.MiddleCenter
             m_define_all_button.ForeColor = Color.Blue
             m_define_all_button.Font = New Font(m_button_font, m_button_text_size, FontStyle.Bold)
-            m_define_all_button.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
+            'm_define_all_button.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
             m_define_all_button.Width = m_button_width
             m_define_all_button.Height = m_button_height
-            m_define_all_button.Left = 6
+            m_define_all_button.Left = 1
             If blIncludeRepeatCheckbox Then
                 m_define_all_button.Top = 36
             Else
@@ -202,6 +208,7 @@ Public Class DynamicTableButtonPanel
             m_dynamic_buttons(i) = New DynamicTableButton(r, m_button_height, m_button_width, DynamicTableButton.WhichTypeEnum.DataTable)
             AddHandler m_dynamic_buttons(i).StartDataEntryEvent, AddressOf startDataEntryEventHandler
             AddHandler m_dynamic_buttons(i).EndDataEntryEvent, AddressOf endDataEntryEventHandler
+            AddHandler m_dynamic_buttons(i).DataEntryCanceled, AddressOf dataEntryCanceledHandler
             i += 1
         Next
         placeControls()
@@ -342,6 +349,15 @@ Public Class DynamicTableButtonPanel
     ''' </summary>
     Private Sub repeatForEveryRecordHandler()
         buildDictionary()
+    End Sub
+
+    ''' <summary>
+    ''' Bubbles the DataEntrytCanceledEvent up so that video can be set to play again when the user decides to cancel data entry.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub dataEntryCanceledHandler(ByVal sender As Object, ByVal e As EventArgs)
+        RaiseEvent DataEntryCanceled(Me, EventArgs.Empty)
     End Sub
 
 End Class

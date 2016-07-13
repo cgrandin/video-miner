@@ -101,6 +101,12 @@ Public Class DynamicTableButton
     ''' It is sent to signal the end of the data entry, i.e. when the subforms mentioned are closed.
     ''' </summary>
     Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Fires when user presses Cancel or 'X' button.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Public Event DataEntryCanceled(ByVal sender As System.Object, ByVal e As System.EventArgs)
 #End Region
 
     ''' <summary>
@@ -154,4 +160,14 @@ Public Class DynamicTableButton
     Friend Sub ShowForm(sender As Object, e As EventArgs)
         Throw New NotImplementedException()
     End Sub
+
+    ''' <summary>
+    ''' Bubbles the DataEntrytCanceledEvent up so that video can be set to play again when the user decides to cancel data entry.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub dataEntryCanceledHandler(ByVal sender As Object, ByVal e As EventArgs) Handles m_btnButton.DataEntryCanceled
+        RaiseEvent DataEntryCanceled(Me, EventArgs.Empty)
+    End Sub
+
 End Class

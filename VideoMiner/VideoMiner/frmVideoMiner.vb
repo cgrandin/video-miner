@@ -1882,22 +1882,11 @@ Public Class VideoMiner
     End Sub
 
     Private Sub dataButtonNewEntry() Handles pnlSpeciesData.StartDataEntryEvent, pnlTransectData.StartDataEntryEvent, pnlHabitatData.StartDataEntryEvent
-        ' First store whether or not the video is playing so we can do the appropriate thing after
-        ' the data are inserted
-        If Not frmVideoPlayer Is Nothing Then
-            m_blWasPlaying = frmVideoPlayer.IsPlaying
-            If m_blWasPlaying Then
-                frmVideoPlayer.pauseVideo()
-            End If
-        End If
+        dataEntryStarted()
     End Sub
 
-    Private Sub dataButtonEntryFinished() Handles pnlSpeciesData.EndDataEntryEvent, pnlTransectData.EndDataEntryEvent, pnlHabitatData.EndDataEntryEvent
-        If Not frmVideoPlayer Is Nothing Then
-            If m_blWasPlaying Then
-                frmVideoPlayer.playVideo()
-            End If
-        End If
+    Private Sub dataButtonEntryFinished() Handles pnlSpeciesData.EndDataEntryEvent, pnlTransectData.EndDataEntryEvent, pnlHabitatData.EndDataEntryEvent, frmRareSpeciesLookup.EndDataEntryEvent
+        dataEntryEnded()
     End Sub
     ''' <summary>
     ''' Handle the changing of button data by creating an insert query and
@@ -3763,10 +3752,34 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
+    ''' Used to pause the video if data entry has started.
+    ''' </summary>
+    Private Sub dataEntryStarted()
+        If Not frmVideoPlayer Is Nothing Then
+            m_blWasPlaying = frmVideoPlayer.IsPlaying
+            If m_blWasPlaying Then
+                frmVideoPlayer.pauseVideo()
+            End If
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Used to play the video if data entry has ended.
+    ''' </summary>
+    Private Sub dataEntryEnded()
+        If Not frmVideoPlayer Is Nothing Then
+            If m_blWasPlaying Then
+                frmVideoPlayer.playVideo()
+            End If
+        End If
+    End Sub
+
+    ''' <summary>
     ''' For looking up and saving to the database a rare species (one not on the species buttons).
     ''' </summary>
     Private Sub cmdRareSpeciesLookup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdRareSpeciesLookup.Click
         If IsNothing(m_data_table.GetChanges()) Then
+            dataEntryStarted()
             frmRareSpeciesLookup.Show()
         Else
             If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
@@ -4856,12 +4869,21 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
-    ''' When the user changes the quick entry value, set all species buttons to have that value. This
-    ''' is done to avoid breaking the OO.
+    ''' When the user changes the quick entry value, set all species buttons to have that value.
     ''' </summary>
     Private Sub txtQuickSpeciesCount_TextChanged(sender As Object, e As EventArgs) Handles txtQuickSpeciesCount.TextChanged
         If Not IsNothing(pnlSpeciesData) Then
             pnlSpeciesData.changeQuickEntryNum(CInt(txtQuickSpeciesCount.Text))
         End If
     End Sub
+
+    ''' <summary>
+    ''' Handles the DataEntrytCanceledEvent up so that video can be set to play again when the user decides to cancel data entry.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub dataEntryCanceledHandler(ByVal sender As Object, ByVal e As EventArgs) Handles pnlHabitatData.DataEntryCanceled, pnlTransectData.DataEntryCanceled, pnlSpeciesData.DataEntryCanceled, frmRareSpeciesLookup.DataEntryCanceled
+        dataEntryEnded()
+    End Sub
+
 End Class

@@ -20,8 +20,20 @@
     ''' </summary>
     Private m_speciesTaxCode As String
     Private WithEvents frmSpeciesEvent As frmSpeciesEvent
-
+#Region "Events"
+    ''' <summary>
+    ''' Fires when the data entry has completed.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Public Event EndDataEntryEvent(sender As System.Object, e As System.EventArgs)
+    ''' <summary>
+    ''' Fires when user presses Cancel or 'X' button.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Public Event DataEntryCanceled(ByVal sender As System.Object, ByVal e As System.EventArgs)
+#End Region
 
 #Region "Properties"
     ''' <summary>
@@ -110,7 +122,7 @@
         Dim item As DataRowView = TryCast(Me.cboCommonName.SelectedItem, DataRowView)
         If item IsNot Nothing Then
             m_speciesName = item.Row.Item(0).ToString()
-            Dim strQuery As String = "SELECT DISTINCT ScientificName, SpeciesCode, TaxonomyClassLevelCode FROM " & DB_SPECIES_CODE_TABLE & _
+            Dim strQuery As String = "SELECT DISTINCT ScientificName, SpeciesCode, TaxonomyClassLevelCode FROM " & DB_SPECIES_CODE_TABLE &
                                      " WHERE CommonName = " & DoubleQuote(m_speciesName) & " ORDER BY SpeciesCode;"
             Dim selected_table As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_CODE_TABLE)
 
@@ -134,7 +146,7 @@
         Dim item As DataRowView = TryCast(Me.cboScientificName.SelectedItem, DataRowView)
         If item IsNot Nothing Then
             m_speciesScienceName = item.Row.Item(0).ToString()
-            Dim strQuery As String = "SELECT DISTINCT CommonName, SpeciesCode, TaxonomyClassLevelCode FROM " & DB_SPECIES_CODE_TABLE & _
+            Dim strQuery As String = "SELECT DISTINCT CommonName, SpeciesCode, TaxonomyClassLevelCode FROM " & DB_SPECIES_CODE_TABLE &
                                      " WHERE ScientificName = " & DoubleQuote(m_speciesScienceName) & " ORDER BY SpeciesCode;"
             Dim selected_table As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_CODE_TABLE)
 
@@ -177,7 +189,8 @@
     ''' If user presses the cancel button, just hide the form since it is modeless.
     ''' </summary>
     Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-        Me.Hide()
+        RaiseEvent DataEntryCanceled(Me, EventArgs.Empty)
+        Hide()
     End Sub
 
     ''' <summary>
@@ -186,15 +199,25 @@
     Private Sub me_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If e.CloseReason = CloseReason.UserClosing Then
             e.Cancel = True
-            Me.Hide()
+            RaiseEvent DataEntryCanceled(Me, EventArgs.Empty)
+            Hide()
         End If
     End Sub
 
     ''' <summary>
     ''' Tell Videominer that the user wishes to submit a database record addition for the species listed.
     ''' </summary>
-    Private Sub species_entry_event(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles frmSpeciesEvent.EndDataEntryEvent
+    Private Sub endDataEntryHandler(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles frmSpeciesEvent.EndDataEntryEvent
         RaiseEvent EndDataEntryEvent(sender, e)
         Hide()
+    End Sub
+
+    ''' <summary>
+    ''' Bubbles the DataEntrytCanceledEvent up so that video can be set to play again when the user decides to cancel data entry.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub dataEntryCanceledHandler(ByVal sender As Object, ByVal e As EventArgs) Handles frmSpeciesEvent.DataEntryCanceled
+        RaiseEvent DataEntryCanceled(Me, EventArgs.Empty)
     End Sub
 End Class

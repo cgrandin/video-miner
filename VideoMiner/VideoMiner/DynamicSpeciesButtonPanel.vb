@@ -53,6 +53,27 @@ Public Class DynamicSpeciesButtonPanel
     Private m_quick_entry_num As Integer
 #End Region
 
+#Region "Events"
+    ''' <summary>
+    ''' Signals the parent that a button has been pressed on this panel and data entry has started.
+    ''' </summary>
+    Public Event StartDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Signals the parent that data entry has ended.
+    ''' </summary>
+    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Fires when user presses Cancel or 'X' button.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Public Event DataEntryCanceled(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    ''' <summary>
+    ''' Fire event to have parent form check for dirty data or anything else prior to launching the button code.
+    ''' </summary>
+    Public Event CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+#End Region
+
 #Region "Properties"
     ''' Dictionary of key/value pairs that hold the currently set data for this panel.
     ''' If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
@@ -73,22 +94,6 @@ Public Class DynamicSpeciesButtonPanel
             Next
         End Set
     End Property
-#End Region
-
-#Region "Events"
-    ''' <summary>
-    ''' Signals the parent that a button has been pressed on this panel and data entry has started.
-    ''' </summary>
-    Public Event StartDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
-    ''' <summary>
-    ''' Signals the parent that data entry has ended.
-    ''' </summary>
-    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
-    ''' <summary>
-    ''' Fire event to have parent form check for dirty data or anything else prior to launching the button code.
-    ''' </summary>
-    Public Event CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
-
 #End Region
 
     ''' <summary>
@@ -143,6 +148,7 @@ Public Class DynamicSpeciesButtonPanel
             m_dynamic_buttons(i) = New DynamicButton(r, m_button_height, m_button_width, m_which_entry_style, m_quick_entry_num)
             AddHandler m_dynamic_buttons(i).StartDataEntryEvent, AddressOf startDataEntryEventHandler
             AddHandler m_dynamic_buttons(i).EndDataEntryEvent, AddressOf endDataEntryEventHandler
+            AddHandler m_dynamic_buttons(i).DataEntryCanceled, AddressOf dataEntryCanceledHandler
             i += 1
         Next
         placeControls()
@@ -248,5 +254,14 @@ Public Class DynamicSpeciesButtonPanel
         For i As Integer = 0 To m_num_dynamic_buttons - 1
             m_dynamic_buttons(i).QuickEntryNum = m_quick_entry_num
         Next
+    End Sub
+
+    ''' <summary>
+    ''' Bubbles the DataEntrytCanceledEvent up so that video can be set to play again when the user decides to cancel data entry.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub dataEntryCanceledHandler(ByVal sender As Object, ByVal e As EventArgs)
+        RaiseEvent DataEntryCanceled(Me, EventArgs.Empty)
     End Sub
 End Class
