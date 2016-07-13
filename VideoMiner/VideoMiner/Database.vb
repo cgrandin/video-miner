@@ -184,20 +184,49 @@ Public Module Database
     End Function
 
     ''' <summary>
-    ''' Runs an update query on the data adapter with the given data_table. Used to save changes to the database table from outside.
+    ''' Runs an update query on the data adapter with the given data_table for the main data recording table.
     ''' </summary>
     ''' <returns>True if successful, false otherwise</returns>
     ''' <remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and False will be returned.</remarks>
     Public Function Update(data_table As DataTable, tableName As String) As Boolean
         Try
-            ' THIS IS THE PROBLEM!! THIS ADAPTER HAS BEEN RESET ON EVERY CALL TO GETDATATABLE
             If tableName = DB_DATA_TABLE Then
                 m_data_adapter_data.Update(data_table)
             End If
         Catch ex As Exception
-            MessageBox.Show("Error executing update on database table." & vbCrLf & vbCrLf & "Exception:" & _
-                            vbCrLf & ex.Message, "Error loading data from query", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error executing update on database table." & vbCrLf & vbCrLf & "Exception:" &
+                            vbCrLf & ex.Message, "Error updating table", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
+        End Try
+        Return True
+    End Function
+
+    ''' <summary>
+    ''' Runs an update query on the data adapter with the given lookup table (named pattern lu_*).
+    ''' Used to save changes to the database table from outside.
+    ''' </summary>
+    ''' <returns>True if successful, false otherwise</returns>
+    ''' <remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and False will be returned.</remarks>
+    Public Function UpdateLookup(data_table As DataTable, tableName As String) As Boolean
+        If Not IsOpen Then
+            MessageBox.Show("The database has not been opened yet.", "Database not open", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return Nothing
+        End If
+
+        Try
+            Dim query As String = "select * from " & tableName & ";"
+            Dim data_cmd As OleDbCommand = New OleDbCommand(query, m_conn)
+            Dim data_adapter As OleDbDataAdapter = New OleDbDataAdapter(data_cmd)
+            Dim data_cb As OleDbCommandBuilder = New OleDbCommandBuilder(data_adapter)
+            Dim data_set As DataSet = New DataSet()
+            data_adapter.Fill(data_set, tableName)
+            data_adapter.InsertCommand = data_cb.GetInsertCommand()
+            data_adapter.DeleteCommand = data_cb.GetDeleteCommand
+            data_adapter.UpdateCommand = data_cb.GetUpdateCommand()
+            data_adapter.Update(data_table)
+        Catch ex As Exception
+            MessageBox.Show("Error executing update on database table." & vbCrLf & vbCrLf & "Exception:" &
+                            vbCrLf & ex.Message, "Error updating table", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
         Return True
     End Function

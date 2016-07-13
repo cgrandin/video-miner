@@ -7,11 +7,9 @@ Public Class frmEditLookupTable
     Private m_data_table As DataTable
     Private m_IDField As String
     Private m_DescriptionField As String
-    Private intRecordCount As Integer = 0
 #End Region
 
 #Region "Properties"
-
     Public Property TableName() As String
         Get
             Return m_table_name
@@ -38,16 +36,26 @@ Public Class frmEditLookupTable
             m_DescriptionField = value
         End Set
     End Property
-
 #End Region
 
     Public Sub New()
         InitializeComponent()
     End Sub
 
+    Private Sub frmEditLookupTable_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Dim tblSchema As DataTable = Database.GetDataTableSchema()
+        Dim strTableName As String
+        For i As Integer = 0 To tblSchema.Rows.Count - 1
+            strTableName = tblSchema.Rows(i).Item("TABLE_NAME").ToString
+            If Strings.Left(strTableName, 3) = "lu_" Then
+                cboLookupTable.Items.Add(strTableName)
+            End If
+        Next
+    End Sub
+
     Private Sub cboLookupTable_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboLookupTable.SelectedIndexChanged
         Dim strCharactersAllowed As String = "abcdefghijklmnopqrstuvwxyz_"
-        Dim txtName As String = cboLookupTable.SelectedItem
+        Dim txtName As String = cboLookupTable.SelectedItem.ToString()
         If txtName <> "" Then
             cmdEdit.Enabled = True
         Else
@@ -56,8 +64,8 @@ Public Class frmEditLookupTable
     End Sub
 
     Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEdit.Click
-        m_table_name = cboLookupTable.SelectedItem
-        m_data_table = Database.GetDataTable("select * from " & m_table_name & " order by Code Asc;", m_table_name)
+        m_table_name = cboLookupTable.SelectedItem.ToString()
+        m_data_table = Database.GetDataTable("select * from " & m_table_name & ";", m_table_name)
         grdEditTable.DataSource = m_data_table
         cmdAddRecord.Enabled = True
         grdEditTable.Enabled = True
@@ -66,27 +74,25 @@ Public Class frmEditLookupTable
 
     Private Sub cmdAddRecord_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdAddRecord.Click
         Dim dr As DataRow = m_data_table.NewRow()
-        Dim i As Integer = grdEditTable.Rows(grdEditTable.Rows.Count - 1).Cells(0).Value
-        dr.Item(0) = i + 1
+        Dim i As Integer = grdEditTable.Rows.Count
         m_data_table.Rows.Add(dr)
-        grdEditTable.Rows.Item(i).Cells(0).Value = intRecordCount
-        intRecordCount += 1
     End Sub
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
-        '''TODO: Fix the table name here. It will break the code for the update because I used DB_DATA_TABLE here temporarily
-        Database.Update(m_data_table, DB_DATA_TABLE)
-        Me.Hide()
+        Database.UpdateLookup(m_data_table, m_table_name)
+        Hide()
     End Sub
 
     Private Sub Cancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Cancel.Click
-        Me.Hide()
+        Hide()
     End Sub
 
     Private Sub cmdDeleteRecord_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDeleteRecord.Click
+        Dim dr As DataRow
         For Each r As DataGridViewRow In grdEditTable.Rows
             If r.Selected = True Then
-                grdEditTable.Rows.Remove(r)
+                dr = m_data_table.Rows(r.Index)
+                m_data_table.Rows.Remove(dr)
             End If
         Next
     End Sub
@@ -103,16 +109,4 @@ Public Class frmEditLookupTable
         End If
     End Sub
 
-    Private Sub frmEditLookupTable_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Dim tblSchema As DataTable = Database.GetDataTableSchema()
-        For i As Integer = 0 To tblSchema.Rows.Count - 1
-            If tblSchema.Rows(i)!TABLE_TYPE.ToString = "TABLE" Then
-                Dim strTableName As String
-                strTableName = tblSchema.Rows(i)!TABLE_NAToString
-                If strTableName.Contains("lu_") Then
-                    cboLookupTable.Items.Add(strTableName)
-                End If
-            End If
-        Next
-    End Sub
 End Class

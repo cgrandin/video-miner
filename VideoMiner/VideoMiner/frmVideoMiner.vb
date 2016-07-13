@@ -1629,10 +1629,10 @@ Public Class VideoMiner
         Me.txtTransectDate.Enabled = False
         Me.txtProjectName.Enabled = False
         Me.chkRecordEachSecond.Enabled = False
-        Me.mnuConfigureTools.Enabled = False
-        Me.mnuRefreshForm.Enabled = False
-        Me.KeyboardShortcutsToolStripMenuItem.Enabled = False
-        Me.DataCodeAssignmentsToolStripMenuItem.Enabled = False
+        'mnuConfigureTools.Enabled = False
+        mnuRefreshForm.Enabled = False
+        KeyboardShortcutsToolStripMenuItem.Enabled = False
+        DataCodeAssignmentsToolStripMenuItem.Enabled = False
         dictHabitatFieldValues = Nothing
         dictTempHabitatFieldValues = Nothing
         dictTransectFieldValues = Nothing
