@@ -21,7 +21,7 @@
     Private m_speciesTaxCode As String
     Private WithEvents frmSpeciesEvent As frmSpeciesEvent
 
-    Public Event SpeciesCodeChangedEvent(sender As System.Object, e As System.EventArgs)
+    Public Event EndDataEntryEvent(sender As System.Object, e As System.EventArgs)
 
 #Region "Properties"
     ''' <summary>
@@ -115,9 +115,9 @@
             Dim selected_table As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_CODE_TABLE)
 
             ' Set the scientific name, species code, and taxonomic name to match the selected common name
-            m_speciesScienceName = selected_table.Rows(0)("ScientificName")
-            m_speciesCode = selected_table.Rows(0)("SpeciesCode")
-            m_speciesTaxCode = selected_table.Rows(0)("TaxonomyClassLevelCode")
+            m_speciesScienceName = CType(selected_table.Rows(0)("ScientificName"), String)
+            m_speciesCode = CType(selected_table.Rows(0)("SpeciesCode"), String)
+            m_speciesTaxCode = CType(selected_table.Rows(0)("TaxonomyClassLevelCode"), String)
 
             ' Set fields on the form to reflect the change
             Dim index As Integer = cboScientificName.FindStringExact(m_speciesScienceName)
@@ -141,17 +141,17 @@
             ' Set the scientific name, species code, and taxonomic name to match the selected common name
             If IsDBNull(selected_table.Rows(0)("CommonName")) Then
                 m_speciesName = ""
-                m_speciesCode = selected_table.Rows(0)("SpeciesCode")
-                m_speciesTaxCode = selected_table.Rows(0)("TaxonomyClassLevelCode")
+                m_speciesCode = CType(selected_table.Rows(0)("SpeciesCode"), String)
+                m_speciesTaxCode = CType(selected_table.Rows(0)("TaxonomyClassLevelCode"), String)
                 txtSpeciesCode.Text = m_speciesCode
                 txtTaxonomicLevel.Text = m_speciesTaxCode
                 cboCommonName.SelectedIndex = -1
                 cboCommonName.Text = "No common name available"
                 Exit Sub
             End If
-            m_speciesName = selected_table.Rows(0)("CommonName")
-            m_speciesCode = selected_table.Rows(0)("SpeciesCode")
-            m_speciesTaxCode = selected_table.Rows(0)("TaxonomyClassLevelCode")
+            m_speciesName = CType(selected_table.Rows(0)("CommonName"), String)
+            m_speciesCode = CType(selected_table.Rows(0)("SpeciesCode"), String)
+            m_speciesTaxCode = CType(selected_table.Rows(0)("TaxonomyClassLevelCode"), String)
 
             ' Set fields on the form to reflect the change
             Dim index As Integer = cboCommonName.FindStringExact(m_speciesName)
@@ -166,9 +166,9 @@
     ''' </summary>
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOk.Click
         If SpeciesName = "" Then
-            frmSpeciesEvent = New frmSpeciesEvent(Me.SpeciesScienceName, Me.SpeciesCode)
+            frmSpeciesEvent = New frmSpeciesEvent(SpeciesScienceName, SpeciesCode)
         Else
-            frmSpeciesEvent = New frmSpeciesEvent(Me.SpeciesName, Me.SpeciesCode)
+            frmSpeciesEvent = New frmSpeciesEvent(SpeciesName, SpeciesCode)
         End If
         frmSpeciesEvent.Show()
     End Sub
@@ -193,8 +193,8 @@
     ''' <summary>
     ''' Tell Videominer that the user wishes to submit a database record addition for the species listed.
     ''' </summary>
-    'Private Sub species_entry_event(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles frmSpeciesEvent.NewSpeciesEntryEvent
-    '    RaiseEvent SpeciesCodeChangedEvent(sender, e)
-    '    Me.Hide()
-    'End Sub
+    Private Sub species_entry_event(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles frmSpeciesEvent.EndDataEntryEvent
+        RaiseEvent EndDataEntryEvent(sender, e)
+        Hide()
+    End Sub
 End Class

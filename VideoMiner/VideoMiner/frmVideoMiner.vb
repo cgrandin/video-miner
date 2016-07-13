@@ -1942,7 +1942,7 @@ Public Class VideoMiner
     ''' Handles the storage of a record from when the user chooses a species from the Rare species form.
     ''' </summary>
     ''' <param name="sender">Instance of the frmRareSpeciesForm</param>
-    Private Sub rareSpeciesDataChanged(sender As System.Object, e As System.EventArgs) Handles frmRareSpeciesLookup.SpeciesCodeChangedEvent
+    Private Sub rareSpeciesDataChanged(sender As System.Object, e As System.EventArgs) Handles frmRareSpeciesLookup.EndDataEntryEvent
         Dim frm As frmSpeciesEvent = CType(sender, frmSpeciesEvent)
         Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = frm.Dictionary
         Dim tuple As Tuple(Of String, String, Boolean)
@@ -4639,7 +4639,7 @@ Public Class VideoMiner
         End With
     End Sub
 
-    Private Sub species_code_changed() Handles frmRareSpeciesLookup.SpeciesCodeChangedEvent
+    Private Sub species_code_changed() Handles frmRareSpeciesLookup.EndDataEntryEvent
         SpeciesCode = frmRareSpeciesLookup.lblSpeciesCodeValue.Text
         If frmRareSpeciesLookup.lblCommonNameValue.Text = NULL_STRING Then
             SpeciesName = frmRareSpeciesLookup.lblScientificNameValue.Text
