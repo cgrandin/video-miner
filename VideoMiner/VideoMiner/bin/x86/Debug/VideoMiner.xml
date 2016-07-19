@@ -113,7 +113,7 @@ VideoMiner
 </member>
 <member name="M:VideoMiner.Database.DeleteRow(System.Int32,System.String)">
  <summary>
- Runs a delete query to delete the row which had the primary key value given by intPrimaryKey
+ Runs a delete query to delete the row which has the primary key value given by intPrimaryKey
  from the table given by tableName.
  </summary>
  <returns>True if successful, False is the primary key was not found in the table or if an exception is thrown</returns>

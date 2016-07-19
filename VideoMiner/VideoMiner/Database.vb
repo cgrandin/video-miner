@@ -194,12 +194,12 @@ Public Module Database
                 ' Use 'data' table adapter which is kept open
                 m_data_adapter_data.Update(data_table)
             Else
-                ' Use tenporary data adapter for a table other than 'data'
+                ' Use temporary data adapter for a table other than 'data'
                 Dim query As String = "select * from " & tableName & ";"
                 Dim data_cmd As OleDbCommand = New OleDbCommand(query, m_conn)
                 Dim data_adapter As OleDbDataAdapter = New OleDbDataAdapter(data_cmd)
                 Dim data_cb As OleDbCommandBuilder = New OleDbCommandBuilder(data_adapter)
-                Dim data_set As DataSet = New DataSet()
+                'Dim data_set As DataSet = New DataSet()
                 'data_adapter.Fill(data_set, tableName)
                 data_adapter.Update(data_table)
             End If
@@ -229,7 +229,6 @@ Public Module Database
 
             ' Loop through the table to get the column names, and add the new values to the query
             For i As Integer = 0 To data_table.Columns.Count - 1
-                'data_cmd.Parameters.AddWithValue(col.ColumnName, data_row(i))
                 names = names & data_table.Columns(i).ColumnName
                 values = values & SingleQuote(data_row(i).ToString())
                 If i <> data_table.Columns.Count - 1 Then
@@ -252,7 +251,7 @@ Public Module Database
     End Function
 
     ''' <summary>
-    ''' Runs a delete query to delete the row which had the primary key value given by intPrimaryKey
+    ''' Runs a delete query to delete the row which has the primary key value given by intPrimaryKey
     ''' from the table given by tableName.
     ''' </summary>
     ''' <returns>True if successful, False is the primary key was not found in the table or if an exception is thrown</returns>

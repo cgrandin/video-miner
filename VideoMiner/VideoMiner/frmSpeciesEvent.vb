@@ -219,8 +219,8 @@ Public Class frmSpeciesEvent
         Dim dtSide As DataTable = Database.GetDataTable(strQuery, DB_OBSERVED_SIDE_TABLE)
         With cboSide
             .DataSource = dtSide
-            .DisplayMember = dtSide.Columns(0).ColumnName
-            .ValueMember = dtSide.Columns(1).ColumnName
+            .ValueMember = dtSide.Columns(0).ColumnName
+            .DisplayMember = dtSide.Columns(1).ColumnName
             .SelectedIndex = 0
         End With
         ' Populate the 'ID Confidence' combobox
@@ -285,7 +285,7 @@ Public Class frmSpeciesEvent
     ''' <param name="ackComment">Optional comment sent for the abundance case only.</param>
     Public Sub Acknowledge(Optional speciesCount As String = NULL_STRING, Optional speciesAbundance As String = NULL_STRING, Optional ackComment As String = NULL_STRING)
         ' The codes 1 and 2 below reflect Port and Starboard. The commented out if statement shows what is really going on here.
-        ' If cboSide.SelectedItem = "Port" Or cboSide.SelectedItem = "Starboard" Then
+        'If cboSide.SelectedItem.ToString() = "Port" Or cboSide.SelectedItem.ToString() = "Starboard" Then
         If CInt(cboSide.SelectedValue) = 1 Or CInt(cboSide.SelectedValue) = 2 Then
             If txtRange.Text = "" Then
                 MessageBox.Show("You must enter a value in the Range textbox when you choose 'Port' or 'Starboard' for 'Side'.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
