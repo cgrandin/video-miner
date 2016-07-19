@@ -191,7 +191,17 @@ Public Module Database
     Public Function Update(data_table As DataTable, tableName As String) As Boolean
         Try
             If tableName = DB_DATA_TABLE Then
+                ' Use 'data' table adapter which is kept open
                 m_data_adapter_data.Update(data_table)
+            Else
+                ' Use tenporary data adapter for a table other than 'data'
+                Dim query As String = "select * from " & tableName & ";"
+                Dim data_cmd As OleDbCommand = New OleDbCommand(query, m_conn)
+                Dim data_adapter As OleDbDataAdapter = New OleDbDataAdapter(data_cmd)
+                Dim data_cb As OleDbCommandBuilder = New OleDbCommandBuilder(data_adapter)
+                Dim data_set As DataSet = New DataSet()
+                'data_adapter.Fill(data_set, tableName)
+                data_adapter.Update(data_table)
             End If
         Catch ex As Exception
             MessageBox.Show("Error executing update on database table." & vbCrLf & vbCrLf & "Exception:" &
@@ -202,33 +212,121 @@ Public Module Database
     End Function
 
     ''' <summary>
-    ''' Runs an update query on the data adapter with the given lookup table (named pattern lu_*).
-    ''' Used to save changes to the database table from outside.
+    ''' Runs an insert query to insert a new row of data in the table given by tableName.
+    ''' It is up to the caller to make sure the data match the table being inserted into.
     ''' </summary>
     ''' <returns>True if successful, false otherwise</returns>
     ''' <remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and False will be returned.</remarks>
-    Public Function UpdateLookup(data_table As DataTable, tableName As String) As Boolean
+    Public Function InsertRow(data_row As DataRow, tableName As String) As Boolean
+        If Not IsOpen Then
+            MessageBox.Show("The database has not been opened yet.", "Database not open", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return False
+        End If
+        Try
+            Dim data_table As DataTable = GetDataTable("select * from " & tableName, tableName)
+            Dim names As String = "insert into " & tableName & " ("
+            Dim values As String = "values("
+
+            ' Loop through the table to get the column names, and add the new values to the query
+            For i As Integer = 0 To data_table.Columns.Count - 1
+                'data_cmd.Parameters.AddWithValue(col.ColumnName, data_row(i))
+                names = names & data_table.Columns(i).ColumnName
+                values = values & SingleQuote(data_row(i).ToString())
+                If i <> data_table.Columns.Count - 1 Then
+                    names = names & ","
+                    values = values & ","
+                End If
+            Next
+            names = names & ") "
+            values = values & ")"
+            Dim query As String = names & values
+            Dim data_cmd As OleDbCommand = New OleDbCommand(query, m_conn)
+            data_cmd.ExecuteNonQuery()
+            Return True
+        Catch ex As Exception
+            MessageBox.Show("Error executing update on database table." & vbCrLf & vbCrLf & "Exception:" &
+                            vbCrLf & ex.Message, "Error updating table", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return False
+        End Try
+        Return True
+    End Function
+
+    ''' <summary>
+    ''' Runs a delete query to delete the row which had the primary key value given by intPrimaryKey
+    ''' from the table given by tableName.
+    ''' </summary>
+    ''' <returns>True if successful, False is the primary key was not found in the table or if an exception is thrown</returns>
+    Public Function DeleteRow(intPrimaryKey As Integer, tableName As String) As Boolean
+        Try
+            Dim strKeyField As String = Database.GetPrimaryKeyFieldName(tableName)
+            Dim query As String = "delete from " & tableName & " where " & strKeyField & " = " & intPrimaryKey
+            Dim data_cmd As OleDbCommand = New OleDbCommand(query, m_conn)
+            data_cmd.ExecuteNonQuery()
+            Return True
+        Catch ex As Exception
+            MessageBox.Show("Error executing delete on database table." & vbCrLf & vbCrLf & "Exception:" &
+                            vbCrLf & ex.Message, "Error deleting row from table", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return False
+        End Try
+    End Function
+
+    ''' Returns the name of the primary key field in the table given by tableName.
+    ''' If the table does not contain a primary key column or the database is not open,
+    ''' 'Nothing' will be returned.
+    ''' Assumes the primary key is made up of one column only. If there is more than one, only the first
+    ''' will be returned.
+    Public Function GetPrimaryKeyFieldName(tablename As String) As String
         If Not IsOpen Then
             MessageBox.Show("The database has not been opened yet.", "Database not open", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return Nothing
         End If
 
         Try
-            Dim query As String = "select * from " & tableName & ";"
-            Dim data_cmd As OleDbCommand = New OleDbCommand(query, m_conn)
-            Dim data_adapter As OleDbDataAdapter = New OleDbDataAdapter(data_cmd)
-            Dim data_cb As OleDbCommandBuilder = New OleDbCommandBuilder(data_adapter)
-            Dim data_set As DataSet = New DataSet()
-            data_adapter.Fill(data_set, tableName)
-            data_adapter.InsertCommand = data_cb.GetInsertCommand()
-            data_adapter.DeleteCommand = data_cb.GetDeleteCommand
-            data_adapter.UpdateCommand = data_cb.GetUpdateCommand()
-            data_adapter.Update(data_table)
+            Dim schema As DataTable
+            schema = m_conn.GetOleDbSchemaTable(OleDbSchemaGuid.Primary_Keys, New Object() {Nothing, Nothing, tablename})
+            Dim intColOrdinalForName As Integer = schema.Columns("COLUMN_NAME").Ordinal
+            Dim r As DataRow = schema.Rows(0)
+            Return (r.ItemArray(intColOrdinalForName).ToString())
         Catch ex As Exception
-            MessageBox.Show("Error executing update on database table." & vbCrLf & vbCrLf & "Exception:" &
-                            vbCrLf & ex.Message, "Error updating table", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error getting Primary key field name on database table." & vbCrLf & vbCrLf & "Exception:" &
+                            vbCrLf & ex.Message, "Error extracting field name", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return Nothing
         End Try
-        Return True
     End Function
 
+    ''' <summary>
+    ''' Returns the next primary key value that should be used in the table given by tableName.
+    ''' If the table does not contain a primary key column or the database is not open, -1 will be returned.
+    ''' Assumes the primary key is made up of one column only. If there is more than one, only the first
+    ''' will be used. This will cause an error with tables that have more than one primary key field.
+    ''' </summary>
+    ''' <param name="tableName">Name of the table to get the next key value for</param>
+    ''' <returns></returns>
+    Public Function GetNextPrimaryKeyValue(tableName As String) As Integer
+        If Not IsOpen Then
+            MessageBox.Show("The database has not been opened yet.", "Database not open", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return -1
+        End If
+
+        Try
+            Dim strPrimaryKeyName As String = GetPrimaryKeyFieldName(tableName)
+            If Not IsNothing(strPrimaryKeyName) Then
+                Dim query As String = "select " & strPrimaryKeyName & " from " & tableName & " order by 1"
+                Dim data_cmd As OleDbCommand = New OleDbCommand(query, m_conn)
+                Dim data_adapter As OleDbDataAdapter = New OleDbDataAdapter(data_cmd)
+                Dim data_cb As OleDbCommandBuilder = New OleDbCommandBuilder(data_adapter)
+                Dim data_set As DataSet = New DataSet()
+                data_adapter.Fill(data_set, tableName)
+                Dim dt As DataTable = data_set.Tables(0)
+                Dim intNewPrimaryKey As Integer = CInt(dt.Rows(dt.Rows.Count - 1).Item(0)) + 1
+                Return intNewPrimaryKey
+            Else
+                Return -1
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Error getting next Primary key value on database table." & vbCrLf & vbCrLf & "Exception:" &
+                            vbCrLf & ex.Message, "Error extracting value", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return -1
+        End Try
+    End Function
 End Module
