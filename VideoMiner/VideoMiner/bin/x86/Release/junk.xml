@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<SessionConfiguration>
+  <Video>
+    <Open>False</Open>
+    <FileName>NULL</FileName>
+    <Position>NULL</Position>
+  </Video>
+  <Image>
+    <Open>False</Open>
+    <FileName>NULL</FileName>
+  </Image>
+  <Database>
+    <Open>True</Open>
+    <FileName>C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug\VideoMiner_Version_3_1_0_0.mdb</FileName>
+    <NumberRecordsShown>15</NumberRecordsShown>
+  </Database>
+</SessionConfiguration>

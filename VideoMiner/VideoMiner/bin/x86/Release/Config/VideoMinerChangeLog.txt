@@ -1,0 +1,66 @@
+Chris Grandin
+October 2014 - December 2015
+Changes to VideoMiner code
+
+1. Vlc.DotNet Player control:
+
+  A. Added the Vlc.DotNet player control, downloaded from http://vlcdotnet.codeplex.com/
+     This was a major rewrite, as the control has completely different methods and behaviours
+     than the Windows Media Player control. The player itself is also a work in progress, so
+     some workarounds had to be made to make sure the video time is always available.
+     NOTE: As of July 14, 2015, there is a newer (beta) version of the Vlc.DotNet control which is
+           completely different in the way it works. Another rewrite needs to happen to address this.
+
+  B. Encapsulated all video player code into the frmVideoPlayer class to remove many sources of bugs.
+
+  C. Added some new features, like frame stepping forward (Vlc.DotNet does not support reverse frame-stepping), and
+     the ability to toggle Play/Pause by clicking on the video, and make both the main VideoMiner form and the player
+     form accept Space bar (toggle Play/Pause) and Right Arrow keypress (forward frame stepping).
+
+  D. Added and linked the number of decimal digits for rounding of video times. This means that all video
+     timestamp data are guaranteed to have the same number of digits, regardless of the video source.
+
+2. Major revision of the way forms are processed. The way it was, all forms were global which
+   means there was no longer encapsulation in classes. The code was very easy to break and
+   really just not logical in any OO sense. This included:
+
+  A. Removal of the 'myformslibrary' class which was a placeholder for a collection of form classes.
+     There were over 6000 instances of this in the code.
+
+  B. Re-integration of OOD by moving form instantiation around and making new events to be raised
+     by classes, to preserve encapsulation.
+
+3. Complete rewrite of the GPS connection form code, which involves a serial port object. This was
+   a lot of work, as there are many situations which can arise such as the user unplugging
+   the serial port, turning off the device, switching settings on the device, and data suddenly
+   being corrupted. This means many different exceptions are thrown, all of which have to be handled
+   or the application will crash or freeze. Other additions:
+
+  A. A threaded timer which does a realtime check of the data using data arrival timestamps
+     to ensure the current data are the most recent. The 'timeout' is continuously subtracted
+     from the previous timestamp to ensure data correctness.
+
+  B. Proper raising of events GPSVariablesChanged, GPSConnected and GPSDisconnected so that this
+     class does not rely on any others. This could be added to any project at this point and
+     used again.
+
+  C. A user-launchable window to show the current data if the port is connected. There is also a
+     Pause button so that values can be cut from the NMEA strings if necessary.
+
+  D. User can now change timeout manually in the form.
+
+4. Made the XML reading/writing code much more robust so that new items can be added arbitrarily
+   and nesting can be to any depth. Now, if a string such as "x/y/z" is supplied to the SaveConfiguration()
+   function, the node 'z' and all nodes required ('x' and subnode 'y') will be created recursively.
+   See CreateXMLNode() in frmVideoMiner.vb. Also made constants for common XML strings to avoid having
+   long strings in the code.
+
+July 2015 - Present
+
+5. Added new classes DynamicButton, DynamicTextbox, and DynamicPanel which each extend the base control
+   classes. These classes improve encapsulation dramatically, allowing for the removal of thousands
+   of lines of redundant spaghetti code. The new classes form the following parent/child relationships:
+   Videominer -> DynamicPanel -> DynamicButton and DynamicTextbox -> frmTableView. The DynamicPanel
+   also allows for two types, one for buttons linked to database tables, and one with sinigular values
+   (species buttons).
+
