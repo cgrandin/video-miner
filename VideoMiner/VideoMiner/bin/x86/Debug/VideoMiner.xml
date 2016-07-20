@@ -36,12 +36,6 @@ VideoMiner
  </summary>
  <remarks>A seperate data adapter is needed for each table which may be modified by the Update function</remarks>
 </member>
-<member name="F:VideoMiner.Database.m_data_adapter_species_buttons">
- <summary>
- The data adapter for the 'species_buttons' table in the database
- </summary>
- <remarks>A seperate data adapter is needed for each table which may be modified by the Update function</remarks>
-</member>
 <member name="P:VideoMiner.Database.Name">
  <summary>
  The full path name of the MS Access database file (.mdb file)
@@ -90,7 +84,7 @@ VideoMiner
 <member name="M:VideoMiner.Database.ExecuteNonQuery(System.String)">
  <summary>
  Executes a query on the database which does not return data. Examples are UPDATE, DELETE, or INSERT queries.
- Also create table queries are allowed.
+ Create table queries are also allowed.
  </summary>
  <param name="query">The query to execute on the MS Access database</param>
  <returns>True if the query was successful, false otherwise and false if an exception was thrown</returns>

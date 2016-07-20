@@ -24,11 +24,6 @@ Public Module Database
     ''' </summary>
     ''' <remarks>A seperate data adapter is needed for each table which may be modified by the Update function</remarks>
     Private m_data_adapter_data As OleDbDataAdapter
-    ''' <summary>
-    ''' The data adapter for the 'species_buttons' table in the database
-    ''' </summary>
-    ''' <remarks>A seperate data adapter is needed for each table which may be modified by the Update function</remarks>
-    Private m_data_adapter_species_buttons As OleDbDataAdapter
     Private m_data_command_builder As OleDbCommandBuilder
     Private m_data_set As DataSet
     Private m_data_binding As BindingSource
@@ -162,7 +157,7 @@ Public Module Database
 
     ''' <summary>
     ''' Executes a query on the database which does not return data. Examples are UPDATE, DELETE, or INSERT queries.
-    ''' Also create table queries are allowed.
+    ''' Create table queries are also allowed.
     ''' </summary>
     ''' <param name="query">The query to execute on the MS Access database</param>
     ''' <returns>True if the query was successful, false otherwise and false if an exception was thrown</returns>
@@ -199,8 +194,8 @@ Public Module Database
                 Dim data_cmd As OleDbCommand = New OleDbCommand(query, m_conn)
                 Dim data_adapter As OleDbDataAdapter = New OleDbDataAdapter(data_cmd)
                 Dim data_cb As OleDbCommandBuilder = New OleDbCommandBuilder(data_adapter)
-                'Dim data_set As DataSet = New DataSet()
-                'data_adapter.Fill(data_set, tableName)
+                data_cb.QuotePrefix = "["
+                data_cb.QuoteSuffix = "]"
                 data_adapter.Update(data_table)
             End If
         Catch ex As Exception
