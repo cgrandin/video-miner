@@ -129,6 +129,19 @@ VideoMiner
  <param name="tableName">Name of the table to get the next key value for</param>
  <returns></returns>
 </member>
+<member name="M:VideoMiner.Database.SwapTwoRecords(System.Int32,System.Int32,System.String)">
+ <summary>
+ Swap two records in the database table given by tableName. The two records with the primary keys
+ intKey1 and intKey2 will be deleted, and reinserted with their primary keys swapped.
+ </summary>
+</member>
+<member name="M:VideoMiner.Database.GetDataRow(System.Int32,System.String)">
+ <summary>
+ Returns the DataRow for the given key intKey in table tableName.
+ Returns Nothing if the key is not in the table.
+ </summary>
+ <param name="intKey"></param>
+</member>
 <member name="T:VideoMiner.DynamicButton">
  <summary>
  A Videominer dynamic button. This button extends a regular button by holding 
@@ -797,30 +810,48 @@ VideoMiner
  Capture the press of the 'X' button and hide instead of closing to avoid an exception on re-opening
  </summary>
 </member>
-<member name="M:VideoMiner.frmConfigureButtons.#ctor">
+<member name="T:VideoMiner.frmConfigureButtons.MoveDirection">
+ <summary>
+ Enumeration describing which way to move the button definition in the list
+ </summary>
+</member>
+<member name="M:VideoMiner.frmConfigureButtons.#ctor(System.String)">
  <summary>
  Initialize the query, and extract the data that query defines into a DataSet with corresponding DataTable.
  Populate the list and set up list attributes.
  </summary>
 </member>
+<member name="M:VideoMiner.frmConfigureButtons.populateTableList">
+ <summary>
+ Fill the listbox with the current m_table_name table.
+ </summary>
+</member>
+<member name="M:VideoMiner.frmConfigureButtons.grdButtons_DataBindingComplete(System.Object,System.EventArgs)">
+ <summary>
+ Remove the Primary Key column from the view, so that users cannot change it
+ </summary>
+</member>
 <member name="M:VideoMiner.frmConfigureButtons.cmdMoveUp_Click(System.Object,System.EventArgs)">
  <summary>
- Clicking this button calls the function that moves the first selected item up in the list, and raises the event to the main form so that the buttons can
- be redrawn to correspond to the new order.
+ Clicking this button causes the currently selected item to move up one in the list.
+ The database will be modified; the primary keys for the item selected and the one above it
+ will be swapped.
  </summary>
 </member>
 <member name="M:VideoMiner.frmConfigureButtons.cmdMoveDown_Click(System.Object,System.EventArgs)">
  <summary>
- Clicking this button calls the function that moves the first selected item down in the list, and raises the event to the main form so that the buttons can
- be redrawn to correspond to the new order.
+ Clicking this button causes the currently selected item to move down one in the list.
+ The database will be modified; the primary keys for the item selected and the one below it
+ will be swapped.
  </summary>
 </member>
-<member name="M:VideoMiner.frmConfigureButtons.MoveListViewItem(System.Boolean)">
+<member name="M:VideoMiner.frmConfigureButtons.moveRecord">
  <summary>
- Move the first selected item up in the list, and raise the event to the main form so that the buttons can
+ Move the first selected item up or down in order, and raise the event to the main form so that the buttons can
  be redrawn to correspond to the new order.
+ The variable m_move_direction is used to determine move direction Up or Down.
+ This is accomplished by swapping the primary keys for the two records in the database.
  </summary>
- <param name="moveUp">If true, the item will be moved up the list (when possible). If false, it will be moved down (when possible)</param>
 </member>
 <member name="M:VideoMiner.frmConfigureButtons.cmdCreateNewButton_Click(System.Object,System.EventArgs)">
  <summary>
@@ -835,11 +866,6 @@ VideoMiner
 <member name="M:VideoMiner.frmConfigureButtons.cmdDone_Click(System.Object,System.EventArgs)">
  <summary>
  Pressing this button will Hide the dialog
- </summary>
-</member>
-<member name="M:VideoMiner.frmConfigureButtons.UpdateDrawingOrder(System.String)">
- <summary>
- Changes the database values for the 'DrawingOrder' field to reflect the change in drawing order.
  </summary>
 </member>
 <member name="M:VideoMiner.frmConfigureButtons.cmdDeleteButton_Click(System.Object,System.EventArgs)">

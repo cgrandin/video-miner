@@ -323,4 +323,48 @@ Public Module Database
             Return -1
         End Try
     End Function
+
+    ''' <summary>
+    ''' Swap two records in the database table given by tableName. The two records with the primary keys
+    ''' intKey1 and intKey2 will be deleted, and reinserted with their primary keys swapped.
+    ''' </summary>
+    Public Function SwapTwoRecords(intKey1 As Integer, intKey2 As Integer, tableName As String) As Boolean
+        Try
+            Dim strKeyName As String = GetPrimaryKeyFieldName(tableName)
+            Dim r1 As DataRow = GetDataRow(intKey1, tableName)
+            Dim r2 As DataRow = GetDataRow(intKey2, tableName)
+            ' Delete both records from the table
+            Database.DeleteRow(intKey1, tableName)
+            Database.DeleteRow(intKey2, tableName)
+            ' Swap the keys
+            r1.Item(strKeyName) = intKey2
+            r2.Item(strKeyName) = intKey1
+            ' Insert the swapped records into the database
+            Database.InsertRow(r1, tableName)
+            Database.InsertRow(r2, tableName)
+            Return True
+        Catch ex As Exception
+            MessageBox.Show("Error swapping two records." & vbCrLf & vbCrLf & "Exception:" &
+        vbCrLf & ex.Message, "Error swapping", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return False
+        End Try
+    End Function
+
+    ''' <summary>
+    ''' Returns the DataRow for the given key intKey in table tableName.
+    ''' Returns Nothing if the key is not in the table.
+    ''' </summary>
+    ''' <param name="intKey"></param>
+    Public Function GetDataRow(intKey As Integer, tableName As String) As DataRow
+        Dim strKeyName As String = GetPrimaryKeyFieldName(tableName)
+        Dim d As DataTable = GetDataTable("select * from " & tableName, tableName)
+        Dim r As DataRow
+        For i As Integer = 0 To d.Rows.Count - 1
+            r = d.Rows(i)
+            If CInt(r.Item(strKeyName)) = intKey Then
+                Return r
+            End If
+        Next
+        Return Nothing
+    End Function
 End Module

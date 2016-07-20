@@ -75,7 +75,6 @@ Module modGlobals
     Public strHabitatButtonNames() As String
     Public strTransectButtonNames() As String
     Public strRareSpeciesCode As String = ""
-    Public strConfigureTable As String = ""
     Public blButtonEdit As Boolean = False
 
     'Public strDatabaseFilePath As String

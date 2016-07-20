@@ -9,6 +9,14 @@
     Private m_DataCode As Integer
     Private m_FieldName As String
     Private m_DrawingOrder As String
+    ''' <summary>
+    ''' Enumeration describing which way to move the button definition in the list
+    ''' </summary>
+    Private Enum MoveDirection
+        Up
+        Down
+    End Enum
+    Private m_move_direction As MoveDirection
 #End Region
 
 #Region "Events"
@@ -68,121 +76,124 @@
     ''' Initialize the query, and extract the data that query defines into a DataSet with corresponding DataTable.
     ''' Populate the list and set up list attributes.
     ''' </summary>
-    Public Sub New()
+    Public Sub New(strConfigureTable As String)
         InitializeComponent()
         m_table_name = strConfigureTable
-        m_data_table = Database.GetDataTable("select * from " & m_table_name & " order by DrawingOrder Asc;", m_table_name)
-        'grdEditTable.DataSource = m_data_table
-        Dim itm As ListViewItem
-        For Each r As DataRow In m_data_table.Rows
-            itm = New ListViewItem
-            itm.Text = ""
-            itm.SubItems.Add(r.Item("ButtonText").ToString())
-            itm.SubItems.Add(r.Item("TableName").ToString())
-            Me.lstButtons.Items.Add(itm)
-        Next
-        With Me.lstButtons
-            .Visible = True
-            .FullRowSelect = True
-            .View = View.Details
-            .HeaderStyle = ColumnHeaderStyle.Nonclickable
-            .HideSelection = False
-            .Focus()
-            .Columns.Add("", 0, HorizontalAlignment.Left)
-            .Columns.Add("Button Text", 150, HorizontalAlignment.Left)
-            .Columns.Add("Referenced Table", 150, HorizontalAlignment.Left)
-        End With
+    End Sub
+
+    Private Sub frmConfigureButtons_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        populateTableList()
     End Sub
 
     ''' <summary>
-    ''' Clicking this button calls the function that moves the first selected item up in the list, and raises the event to the main form so that the buttons can
-    ''' be redrawn to correspond to the new order.
+    ''' Fill the listbox with the current m_table_name table.
+    ''' </summary>
+    Private Sub populateTableList()
+        Dim strKeyName As String = Database.GetPrimaryKeyFieldName(m_table_name)
+        m_data_table = Database.GetDataTable("select * from " & m_table_name & " order by " & strKeyName & " Asc", m_table_name)
+        grdButtons.DataSource = m_data_table
+        ' See grdButtons_DataBindingComplete function for hiding the primary key field
+    End Sub
+
+    ''' <summary>
+    ''' Remove the Primary Key column from the view, so that users cannot change it
+    ''' </summary>
+    Private Sub grdButtons_DataBindingComplete(sender As Object, e As EventArgs) Handles grdButtons.DataBindingComplete
+        ' Remove primary key field from the table which is shown
+        Dim strPrimaryKeyName = Database.GetPrimaryKeyFieldName(m_table_name)
+        grdButtons.Columns(strPrimaryKeyName).Visible = False
+        grdButtons.Enabled = True
+    End Sub
+
+
+    ''' <summary>
+    ''' Clicking this button causes the currently selected item to move up one in the list.
+    ''' The database will be modified; the primary keys for the item selected and the one above it
+    ''' will be swapped.
     ''' </summary>
     Private Sub cmdMoveUp_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveUp.Click
-        If Me.lstButtons.SelectedItems.Count > 0 Then
-            Dim intSelectedIndex As Integer
-            intSelectedIndex = Me.lstButtons.SelectedItems(0).Index
-            MoveListViewItem(True)
-        Else
-            MessageBox.Show("Please select a button from the list", "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        End If
+        m_move_direction = MoveDirection.Up
+        moveRecord()
     End Sub
 
     ''' <summary>
-    ''' Clicking this button calls the function that moves the first selected item down in the list, and raises the event to the main form so that the buttons can
-    ''' be redrawn to correspond to the new order.
+    ''' Clicking this button causes the currently selected item to move down one in the list.
+    ''' The database will be modified; the primary keys for the item selected and the one below it
+    ''' will be swapped.
     ''' </summary>
     Private Sub cmdMoveDown_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveDown.Click
-        If Me.lstButtons.SelectedItems.Count > 0 Then
-            Dim intSelectedIndex As Integer
-            intSelectedIndex = Me.lstButtons.SelectedItems(0).Index
-            MoveListViewItem(False)
-        Else
-            MessageBox.Show("Please select a button from the list", "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        End If
+        m_move_direction = MoveDirection.Down
+        moveRecord()
     End Sub
 
     ''' <summary>
-    ''' Move the first selected item up in the list, and raise the event to the main form so that the buttons can
+    ''' Move the first selected item up or down in order, and raise the event to the main form so that the buttons can
     ''' be redrawn to correspond to the new order.
+    ''' The variable m_move_direction is used to determine move direction Up or Down.
+    ''' This is accomplished by swapping the primary keys for the two records in the database.
     ''' </summary>
-    ''' <param name="moveUp">If true, the item will be moved up the list (when possible). If false, it will be moved down (when possible)</param>
-    Private Sub MoveListViewItem(ByVal moveUp As Boolean)
+    Private Sub moveRecord()
         Dim i As Integer
-        Dim cache As String
-        Dim selIdx As Integer
-        With Me.lstButtons
-            If .SelectedIndices.Count = 0 Then
+        Dim d As DataTable
+        Dim r As DataGridViewRow
+        Dim dr As DataRow
+        Dim intSelectedIndex As Integer
+        Dim intCurrKey As Integer
+        Dim intOtherKey As Integer
+
+        If grdButtons.SelectedRows.Count = 0 Then
+            MessageBox.Show("Please select a button from the table",
+                            "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End If
+
+        intSelectedIndex = grdButtons.SelectedRows(0).Index
+        Dim strKeyField As String = Database.GetPrimaryKeyFieldName(m_table_name)
+        Dim intStart, intEnd, intStep As Integer
+
+        If m_move_direction = MoveDirection.Up Then
+            If intSelectedIndex <= 0 Then
+                ' Only move up if the item is not at the top
                 Exit Sub
-            Else
-                selIdx = .SelectedIndices.Item(0)
             End If
-            If moveUp Then
-                ' ignore moveup of row(0)
-                If selIdx = 0 Then
-                    Exit Sub
-                End If
-                ' move the subitems for the previous row
-                ' to cache so we can move the selected row up
-                Dim strFields As String = ""
-                For i = 0 To .Items(selIdx).SubItems.Count - 1
-                    cache = .Items(selIdx - 1).SubItems(i).Text
-                    .Items(selIdx - 1).SubItems(i).Text = .Items(selIdx).SubItems(i).Text
-                    .Items(selIdx).SubItems(i).Text = cache
-                Next
-                .Items(selIdx - 1).Selected = True
-                .Items(selIdx - 1).Focused = True
-                .EnsureVisible(selIdx - 1)
-                .Refresh()
-                .Focus()
-            Else
-                ' ignore move down of last row
-                If selIdx = .Items.Count - 1 Then
-                    Exit Sub
-                End If
-                ' move the subitems for the next row
-                ' to cache so we can move the selected row down
-                For i = 0 To .Items(selIdx).SubItems.Count - 1
-                    cache = .Items(selIdx + 1).SubItems(i).Text
-                    .Items(selIdx + 1).SubItems(i).Text = .Items(selIdx).SubItems(i).Text
-                    .Items(selIdx).SubItems(i).Text = cache
-                Next
-                .Items(selIdx + 1).Selected = True
-                .Items(selIdx + 1).Focused = True
-                .EnsureVisible(selIdx)
-                .Refresh()
-                .Focus()
+            intStart = 0
+            intEnd = grdButtons.Rows.Count - 1
+            intStep = 1
+            intSelectedIndex -= 1
+        Else
+            If intSelectedIndex >= grdButtons.Rows.Count - 1 Then
+                ' Only move down if the item is not at the bottom
+                Exit Sub
             End If
-        End With
-        UpdateDrawingOrder(m_table_name)
+            intStart = grdButtons.Rows.Count - 1
+            intEnd = 0
+            intStep = -1
+            intSelectedIndex += 1
+        End If
+
+        ' Get the primary keys for the selected item and the one above or below it
+        For i = intStart To intEnd Step intStep
+            r = grdButtons.Rows(i)
+            dr = m_data_table.Rows(r.Index)
+            If r.Selected Then
+                intCurrKey = CInt(dr.Item(strKeyField))
+                Exit For
+            Else
+                intOtherKey = CInt(dr.Item(strKeyField))
+            End If
+        Next
+        Database.SwapTwoRecords(intCurrKey, intOtherKey, m_table_name)
+        populateTableList()
+        ' Set the selected row to be the same one that has just moved
+        ' This allows user to move one item down or up quickly
+        grdButtons.ClearSelection()
+        grdButtons.Rows(intSelectedIndex).Selected = True
     End Sub
 
     ''' <summary>
     ''' Clicking this button will bring up the 'add button' dialog which allows the definition of a new button.
     ''' </summary>
     Private Sub cmdCreateNewButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCreateNewButton.Click
-        Me.UpdateDrawingOrder(m_table_name)
-        frmAddButton = New frmAddButton
+        frmAddButton = New frmAddButton(m_table_name)
         frmAddButton.ShowDialog()
     End Sub
 
@@ -190,16 +201,16 @@
     ''' Clicking this button will bring up the 'add button' dialog which will allow the editing of the current button's attributes.
     ''' </summary>
     Private Sub cmdEditButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEditButton.Click
-        If Me.lstButtons.SelectedItems.Count = 0 Then
+        If grdButtons.SelectedRows.Count = 0 Then
             MessageBox.Show("Please select a button from the list", "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         blButtonEdit = True
-        frmAddButton = New frmAddButton
-        frmAddButton.Text = "Edit " & Me.lstButtons.SelectedItems.Item(0).SubItems(1).Text.ToString & " Button"
-        frmAddButton.txtButtonName.Text = Me.lstButtons.SelectedItems.Item(0).SubItems(1).Text.ToString
-        'Me.UpdateDrawingOrder(m_table_name)
+        frmAddButton = New frmAddButton(m_table_name)
+        'frmAddButton.Text = "Edit " & Me.lstButtons.SelectedItems.Item(0).SubItems(1).Text.ToString & " Button"
+        'frmAddButton.txtButtonName.Text = Me.lstButtons.SelectedItems.Item(0).SubItems(1).Text.ToString
         frmAddButton.ShowDialog()
+        populateTableList()
     End Sub
 
     ''' <summary>
@@ -211,61 +222,36 @@
     End Sub
 
     ''' <summary>
-    ''' Changes the database values for the 'DrawingOrder' field to reflect the change in drawing order.
-    ''' </summary>
-    Private Sub UpdateDrawingOrder(ByVal strTable As String)
-        Dim strButtonName As String
-        Dim d As DataTable
-        Database.ExecuteNonQuery("UPDATE " & strTable & " SET DrawingOrder = DrawingOrder + 1000")
-        If strTable = m_table_name Then
-            For i As Integer = 0 To Me.lstButtons.Items.Count - 1
-                strButtonName = Me.lstButtons.Items(i).SubItems(1).Text
-                Database.ExecuteNonQuery("UPDATE " & strTable & " SET DrawingOrder = " & i + 1 & " WHERE ButtonText = " & SingleQuote(strButtonName))
-            Next
-        Else
-            d = Database.GetDataTable("SELECT ButtonText FROM " & strTable & " ORDER BY DrawingOrder ASC", strTable)
-            Dim i As Integer = 0
-            For Each r As DataRow In d.Rows
-                strButtonName = r.Item("ButtonText")
-                Database.ExecuteNonQuery("UPDATE " & strTable & " SET DrawingOrder = " & i + 1 & " WHERE ButtonText = " & SingleQuote(strButtonName))
-                i += 1
-            Next
-        End If
-        RaiseEvent RefreshDatabaseEvent()
-        RaiseEvent UpdateButtons()
-    End Sub
-
-    ''' <summary>
     ''' Clicking this button will remove the selected button from the project, including from the database.
     ''' </summary>
     Private Sub cmdDeleteButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDeleteButton.Click
         Dim d As DataTable
+        Dim r As DataRow
         Dim selIdx As Integer
-        Try
-            selIdx = Me.lstButtons.SelectedIndices.Item(0)
-        Catch ex As Exception
-            selIdx = 0
-        End Try
-
-        If Me.lstButtons.SelectedItems.Count = 0 Then
+        If grdButtons.SelectedRows.Count = 0 Then
             MessageBox.Show("Please select a button from the list", "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
-        Me.ButtonName = Me.lstButtons.Items(selIdx).SubItems(1).Text
+
+        'selIdx = Me.lstButtons.SelectedIndices.Item(0)
+
+        'm_ButtonName = Me.lstButtons.Items(selIdx).SubItems(1).Text
         d = Database.GetDataTable("select * from " & m_table_name, m_table_name)
-        For Each r As DataRow In d.Rows
-            If r.Item("ButtonText") = Me.ButtonName Then
-                Me.FieldName = r.Item("DataCodeName")
-                Me.DataCode = r.Item("DataCode")
+        For Each r In d.Rows
+            If r.Item("ButtonText").ToString() = m_ButtonName Then
                 Exit For
             End If
         Next
-        If MessageBox.Show("By deleting this button the field '" & Me.FieldName & "' will be removed from the '" & DB_DATA_TABLE & "' table in the database.  Are you sure you want to delete this button?", "Delete Button", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.No Then
+        If MessageBox.Show("Are you sure you want to delete this button?",
+                           "Delete Button", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+                           MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.No Then
             Exit Sub
         End If
-        Database.ExecuteNonQuery("DELETE * FROM " & m_table_name & " WHERE ButtonText = " & SingleQuote(Me.ButtonName))
-        Me.UpdateDrawingOrder(m_table_name)
-        'RefreshDatabase(Me, New EventArgs)
+
+        Dim strKeyName As String = Database.GetPrimaryKeyFieldName(m_table_name)
+        Dim intLastKey As Integer = CInt(r.Item(strKeyName))
+        Database.DeleteRow(intLastKey, m_table_name)
+        populateTableList()
     End Sub
 
     ''' <summary>
@@ -287,50 +273,41 @@
         End If
         Dim selIdx As Integer
         Try
-            selIdx = Me.lstButtons.SelectedIndices.Item(0)
+            ' selIdx = Me.lstButtons.SelectedIndices.Item(0)
         Catch ex As Exception
             selIdx = 0
         End Try
-        If Me.lstButtons.SelectedItems.Count = 0 Then
-            MessageBox.Show("Please select a button from the list", "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        If grdButtons.SelectedRows.Count = 0 Then
+            MessageBox.Show("Please select a button from the list", "No selection",
+                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         Else
-            If MessageBox.Show("Are you sure you want to move the " & Me.lstButtons.Items(selIdx).SubItems(1).Text & " button to " & strMoveToPanel & "?", "Move Button", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = vbNo Then
-                Exit Sub
-            End If
+            'If MessageBox.Show("Are you sure you want to move the " & Me.lstButtons.Items(selIdx).SubItems(1).Text &
+            '                   " button to " & strMoveToPanel & "?", "Move Button", MessageBoxButtons.YesNo,
+            'MessageBoxIcon.Question) = vbNo Then
+            'Exit Sub
         End If
-        Me.ButtonName = Me.lstButtons.Items(selIdx).SubItems(1).Text
+        'End If
+        'm_ButtonName = Me.lstButtons.Items(selIdx).SubItems(1).Text
+        Dim strKeyName As String = Database.GetPrimaryKeyFieldName(m_table_name)
+
+        ' Get the source table's information
         d = Database.GetDataTable("select * from " & m_table_name, m_table_name)
-        Dim strQuery As String = "select * from " & m_table_name
         For Each r In d.Rows
-            If r.Item("ButtonText") = Me.ButtonName Then
-                Me.FieldName = r.Item("DataCodeName")
-                Me.DataCode = r.Item("DataCode")
-                Me.TableName = r.Item("TableName")
+            If r.Item("ButtonText").ToString() = m_ButtonName Then
                 Exit For
             End If
         Next
-        d = Database.GetDataTable("SELECT * FROM " & strMoveToTable & ";", strMoveToTable)
-        Dim intValue As Integer = 0
-        For i As Integer = 0 To d.Rows.Count - 1
-            r = m_data_table.Rows.Item(i)
-            If CInt(r.Item("DrawingOrder")) > intValue Then
-                intValue = CInt(r.Item("DrawingOrder"))
-            End If
-        Next
-        Me.DrawingOrder = intValue + 1
-        Database.ExecuteNonQuery("INSERT INTO " & strMoveToTable & "(DrawingOrder, ButtonText, TableName, DataCode, DataCodeName, ButtonColor) " & _
-                    "VALUES (" & Me.DrawingOrder & ", " & SingleQuote(Me.ButtonName) & ", " & SingleQuote(Me.TableName) & ", " & Me.DataCode & ", " & SingleQuote(Me.FieldName) & ", 'DarkBlue')")
-        Database.ExecuteNonQuery("DELETE * FROM " & m_table_name & " " & _
-                "WHERE ButtonText = " & SingleQuote(Me.ButtonName))
-        Me.UpdateDrawingOrder(strMoveToTable)
-        If strMoveToTable = DB_TRANSECT_BUTTONS_TABLE Then
-            dictTransectFieldValues.Add(Me.ButtonName, Me.DataCode)
-            dictHabitatFieldValues.Remove(Me.ButtonName)
-        Else
-            dictTransectFieldValues.Remove(Me.ButtonName)
-            dictHabitatFieldValues.Add(Me.ButtonName, Me.DataCode)
-        End If
+        ' At this point, r is a DataRow holding the button's record. The primary key needs to be changed
+        ' to fit into the other table.
+        Dim intLastKey As Integer = CInt(r.Item(strKeyName))
+        Dim intNextKey As Integer = Database.GetNextPrimaryKeyValue(strMoveToTable)
+        r.Item(strKeyName) = intNextKey
+        d = Database.GetDataTable("select * from " & strMoveToTable, strMoveToTable)
+        Database.InsertRow(r, strMoveToTable)
+        Database.DeleteRow(intLastKey, m_table_name)
+        populateTableList()
         RaiseEvent RefreshDatabaseEvent()
     End Sub
+
 End Class

@@ -112,7 +112,7 @@ Public Class frmAddButton
     Event RefreshDatabaseEvent()
     Event AddNewTableEvent()
 
-    Public Sub New()
+    Public Sub New(strConfigureTable As String)
         InitializeComponent()
         m_table_name = strConfigureTable
     End Sub
