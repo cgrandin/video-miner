@@ -1,7 +1,7 @@
 ﻿Public Class frmConfigureButtons
 
 #Region "Member variables"
-    Private frmAddButton As frmAddButton
+    Private WithEvents m_frmAddButton As frmAddButton
     Private m_table_name As String
     Private m_data_table As DataTable
     Private m_ButtonName As String
@@ -134,22 +134,18 @@
     ''' </summary>
     Private Sub moveRecord()
         Dim i As Integer
-        Dim d As DataTable
         Dim r As DataGridViewRow
         Dim dr As DataRow
         Dim intSelectedIndex As Integer
         Dim intCurrKey As Integer
         Dim intOtherKey As Integer
-
         If grdButtons.SelectedRows.Count = 0 Then
             MessageBox.Show("Please select a button from the table",
                             "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
-
         intSelectedIndex = grdButtons.SelectedRows(0).Index
         Dim strKeyField As String = Database.GetPrimaryKeyFieldName(m_table_name)
         Dim intStart, intEnd, intStep As Integer
-
         If m_move_direction = MoveDirection.Up Then
             If intSelectedIndex <= 0 Then
                 ' Only move up if the item is not at the top
@@ -169,7 +165,6 @@
             intStep = -1
             intSelectedIndex += 1
         End If
-
         ' Get the primary keys for the selected item and the one above or below it
         For i = intStart To intEnd Step intStep
             r = grdButtons.Rows(i)
@@ -193,8 +188,8 @@
     ''' Clicking this button will bring up the 'add button' dialog which allows the definition of a new button.
     ''' </summary>
     Private Sub cmdCreateNewButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCreateNewButton.Click
-        frmAddButton = New frmAddButton(m_table_name)
-        frmAddButton.ShowDialog()
+        m_frmAddButton = New frmAddButton(m_table_name)
+        m_frmAddButton.ShowDialog()
     End Sub
 
     ''' <summary>
@@ -205,11 +200,11 @@
             MessageBox.Show("Please select a button from the list", "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
-        blButtonEdit = True
-        frmAddButton = New frmAddButton(m_table_name)
+        'blButtonEdit = True
+        m_frmAddButton = New frmAddButton(m_table_name)
         'frmAddButton.Text = "Edit " & Me.lstButtons.SelectedItems.Item(0).SubItems(1).Text.ToString & " Button"
         'frmAddButton.txtButtonName.Text = Me.lstButtons.SelectedItems.Item(0).SubItems(1).Text.ToString
-        frmAddButton.ShowDialog()
+        m_frmAddButton.ShowDialog()
         populateTableList()
     End Sub
 
@@ -222,36 +217,43 @@
     End Sub
 
     ''' <summary>
+    ''' When the database has been modified by a child form, this will refresh the DataGridView
+    ''' </summary>
+    Private Sub frmAddButton_DatabaseModifiedHandler() Handles m_frmAddButton.DatabaseModifedEvent
+        populateTableList()
+    End Sub
+
+    ''' <summary>
     ''' Clicking this button will remove the selected button from the project, including from the database.
     ''' </summary>
     Private Sub cmdDeleteButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDeleteButton.Click
-        Dim d As DataTable
-        Dim r As DataRow
-        Dim selIdx As Integer
+        Dim r As DataGridViewRow
+        Dim dr As DataRow
+        Dim intSelectedIndex As Integer
+        Dim intKey As Integer
         If grdButtons.SelectedRows.Count = 0 Then
-            MessageBox.Show("Please select a button from the list", "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Exit Sub
+            MessageBox.Show("Please select a button from the table",
+                            "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
-
-        'selIdx = Me.lstButtons.SelectedIndices.Item(0)
-
-        'm_ButtonName = Me.lstButtons.Items(selIdx).SubItems(1).Text
-        d = Database.GetDataTable("select * from " & m_table_name, m_table_name)
-        For Each r In d.Rows
-            If r.Item("ButtonText").ToString() = m_ButtonName Then
-                Exit For
-            End If
-        Next
+        intSelectedIndex = grdButtons.SelectedRows(0).Index
+        Dim strKeyField As String = Database.GetPrimaryKeyFieldName(m_table_name)
         If MessageBox.Show("Are you sure you want to delete this button?",
                            "Delete Button", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                            MessageBoxDefaultButton.Button2) = Windows.Forms.DialogResult.No Then
             Exit Sub
         End If
-
-        Dim strKeyName As String = Database.GetPrimaryKeyFieldName(m_table_name)
-        Dim intLastKey As Integer = CInt(r.Item(strKeyName))
-        Database.DeleteRow(intLastKey, m_table_name)
+        ' Get the primary keys for the selected item and the one above or below it
+        For i As Integer = 0 To grdButtons.Rows.Count - 1
+            r = grdButtons.Rows(i)
+            dr = m_data_table.Rows(r.Index)
+            If r.Selected Then
+                intKey = CInt(dr.Item(strKeyField))
+                Exit For
+            End If
+        Next
+        Database.DeleteRow(intKey, m_table_name)
         populateTableList()
+        grdButtons.ClearSelection()
     End Sub
 
     ''' <summary>

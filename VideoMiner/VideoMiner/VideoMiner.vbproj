@@ -369,6 +369,12 @@
     <Compile Include="frmVideoPlayer.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmViewDataTable.Designer.vb">
+      <DependentUpon>frmViewDataTable.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmViewDataTable.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="modGlobals.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -497,6 +503,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmVideoPlayer.resx">
       <DependentUpon>frmVideoPlayer.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmViewDataTable.resx">
+      <DependentUpon>frmViewDataTable.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>

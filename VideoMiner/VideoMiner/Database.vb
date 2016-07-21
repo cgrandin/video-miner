@@ -207,6 +207,21 @@ Public Module Database
     End Function
 
     ''' <summary>
+    ''' Add a column strColumnName to the table given by tableName.
+    ''' </summary>
+    ''' <returns></returns>
+    Public Function AddColumn(strTableName As String, strColumnName As String) As Boolean
+        Try
+            ExecuteNonQuery("alter table " & strTableName & " add column " & strColumnName & " text(50)")
+        Catch ex As Exception
+            MessageBox.Show("Error adding column '" & strColumnName & "' to database table '" & strTableName & "'." & vbCrLf & vbCrLf & "Exception:" &
+                            vbCrLf & ex.Message, "Error adding column to table", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return False
+        End Try
+        Return True
+    End Function
+
+    ''' <summary>
     ''' Runs an insert query to insert a new row of data in the table given by tableName.
     ''' It is up to the caller to make sure the data match the table being inserted into.
     ''' </summary>

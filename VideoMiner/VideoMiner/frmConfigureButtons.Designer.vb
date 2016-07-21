@@ -70,7 +70,7 @@ Partial Class frmConfigureButtons
         Me.cmdCreateNewButton.Name = "cmdCreateNewButton"
         Me.cmdCreateNewButton.Size = New System.Drawing.Size(118, 38)
         Me.cmdCreateNewButton.TabIndex = 14
-        Me.cmdCreateNewButton.Text = "Create New"
+        Me.cmdCreateNewButton.Text = "Add Button"
         Me.cmdCreateNewButton.UseVisualStyleBackColor = True
         '
         'cmdMoveDown
