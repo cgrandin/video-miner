@@ -3041,6 +3041,11 @@ Public Class VideoMiner
             SaveConfiguration(XPATH_IMAGE_PATH, m_strImagePath)
             If frmImage Is Nothing Then
                 frmImage = New frmImage(m_strImagePath, GetFileName(ofd.FileName))
+                If frmImage.ImageDirectoryEmpty Then
+                    frmImage.ImageDirectoryEmptyMessage()
+                    frmImage = Nothing
+                    Exit Sub
+                End If
                 pnlVideoControls.Visible = False
                 Dim intX As Integer = 0
                 Dim intY As Integer = 0

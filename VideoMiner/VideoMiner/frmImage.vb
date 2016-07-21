@@ -26,6 +26,10 @@ Public Class frmImage
     ''' </summary>
     Private m_intImageIndex As Integer = 0
     ''' <summary>
+    ''' True if the directory sselected contains no valid images
+    ''' </summary>
+    Private m_imageDirectoryEmpty As Boolean
+    ''' <summary>
     ''' The dictionary of the EXIF metadata for the currently loaded image.
     ''' </summary>
     Private m_dictEXIF As Dictionary(Of String, String)
@@ -46,6 +50,12 @@ Public Class frmImage
         End Get
     End Property
 
+    Public ReadOnly Property ImageDirectoryEmpty As Boolean
+        Get
+            Return m_imageDirectoryEmpty
+        End Get
+    End Property
+
     ''' <summary>
     ''' Set up the image file to start with and it's path.
     ''' Sets up the indexing so that when LoadImage() is called
@@ -56,6 +66,7 @@ Public Class frmImage
     Public Sub New(strFilePath As String, strFileName As String)
         InitializeComponent()
 
+        m_imageDirectoryEmpty = False
         m_strImagePath = strFilePath
         m_strImageFile = Combine(m_strImagePath, strFileName)
         Dim allFiles As String() = Directory.GetFiles(m_strImagePath)
@@ -75,6 +86,9 @@ Public Class frmImage
                 End If
             End If
         Next
+        If m_lstImageFiles.Count = 0 Then
+            m_imageDirectoryEmpty = True
+        End If
     End Sub
 
     ''' <summary>
@@ -85,12 +99,27 @@ Public Class frmImage
     End Sub
 
     ''' <summary>
+    ''' Issues a message stating that the image directory chosen is empty
+    ''' </summary>
+    Public Sub ImageDirectoryEmptyMessage()
+        If m_imageDirectoryEmpty Then
+            MessageBox.Show("Error - No images found in directory.",
+                            "Error loading image", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End If
+    End Sub
+
+    ''' <summary>
     ''' Loads the image found in the m_strImagePath with the name m_strImageFile.
     ''' The previous and next buttons will be greyed out if the first or last
     ''' files respectively are being shown.
     ''' The filename will be placed on the title bar with the index number of the image.
     ''' </summary>
     Private Sub LoadImage()
+        If m_imageDirectoryEmpty Then
+            ImageDirectoryEmptyMessage()
+            Exit Sub
+        End If
+
         m_strImageFile = m_lstImageFiles.Item(m_intImageIndex)
         Try
             ZoomPictureBox1.Image = Image.FromFile(m_strImageFile)

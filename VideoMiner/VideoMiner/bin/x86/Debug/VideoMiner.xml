@@ -2317,6 +2317,11 @@ VideoMiner
  The index of the current image file in the current m_lstImageFiles list.
  </summary>
 </member>
+<member name="F:VideoMiner.frmImage.m_imageDirectoryEmpty">
+ <summary>
+ True if the directory sselected contains no valid images
+ </summary>
+</member>
 <member name="F:VideoMiner.frmImage.m_dictEXIF">
  <summary>
  The dictionary of the EXIF metadata for the currently loaded image.
@@ -2345,6 +2350,11 @@ VideoMiner
 <member name="M:VideoMiner.frmImage.frmImage_Load(System.Object,System.EventArgs)">
  <summary>
  Load the image which was set up in the constructor.
+ </summary>
+</member>
+<member name="M:VideoMiner.frmImage.ImageDirectoryEmptyMessage">
+ <summary>
+ Issues a message stating that the image directory chosen is empty
  </summary>
 </member>
 <member name="M:VideoMiner.frmImage.LoadImage">
