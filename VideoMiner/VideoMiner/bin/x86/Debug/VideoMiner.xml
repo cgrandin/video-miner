@@ -856,11 +856,6 @@ VideoMiner
  Fill the listbox with the current m_table_name table.
  </summary>
 </member>
-<member name="M:VideoMiner.frmConfigureButtons.grdButtons_DataBindingComplete(System.Object,System.EventArgs)">
- <summary>
- Remove the Primary Key column from the view, so that users cannot change it
- </summary>
-</member>
 <member name="M:VideoMiner.frmConfigureButtons.cmdMoveUp_Click(System.Object,System.EventArgs)">
  <summary>
  Clicking this button causes the currently selected item to move up one in the list.
@@ -3458,6 +3453,161 @@ VideoMiner
  <summary>
  This Class was added To allow a transparent panel To lay over the video player control, 
  so that mouse click events can be captured On the video itself.
+ </summary>
+</member>
+<member name="F:VideoMiner.VideoMinerDataGridView.m_table_name">
+ <summary>
+ Name of the table that is bound to the DataGridView
+ </summary>
+</member>
+<member name="F:VideoMiner.VideoMinerDataGridView.m_data_table">
+ <summary>
+ DataTable of the data found in the table given by m_table_name
+ </summary>
+</member>
+<member name="F:VideoMiner.VideoMinerDataGridView.m_primary_key_field">
+ <summary>
+ Name of the primary key field in the table
+ </summary>
+</member>
+<member name="F:VideoMiner.VideoMinerDataGridView.m_next_primary_key">
+ <summary>
+ The next available primary key in the table
+ </summary>
+</member>
+<member name="F:VideoMiner.VideoMinerDataGridView.m_show_primary_key_field">
+ <summary>
+ Show the column which holds the Primary Keys?
+ </summary>
+</member>
+<member name="F:VideoMiner.VideoMinerDataGridView.m_curr_row">
+ <summary>
+ The current row that is being displayed. This is used so that after a data entry event,
+ the view won't jump back to the beginning of the grid.
+ </summary>
+</member>
+<member name="F:VideoMiner.VideoMinerDataGridView.m_curr_col">
+ <summary>
+ The current column that is being displayed. This is used so that after a data entry event,
+ the view won't jump back to the beginning of the grid.
+ </summary>
+</member>
+<member name="T:VideoMiner.VideoMinerDataGridView.stcRowColoring">
+ <summary>
+ Coloring of a row in the data grid. When a field is sorted by clicking the column header, the coloring is recorded, then the grid is sorted,
+ then the coloring is re-applied by using the key field 'ID'. This structure represents a single row in the grid. The two cell arrays hold the
+ background and foreground colors for the cells in the row.
+ </summary>
+</member>
+<member name="F:VideoMiner.VideoMinerDataGridView.m_arr_coloring">
+ <summary>
+ An array of row colorings to keep track of dirty cells when the columns are sorted.
+ </summary>
+</member>
+<member name="F:VideoMiner.VideoMinerDataGridView.m_row_was_good">
+ <summary>
+ Whether or not the row is synced properly with the database. Used when the user edits a cell value. The cell's row
+ will immediately be colored since the data are now 'dirty' but if the value is of the wrong type (not validated)
+ then this is required to put the row back into the condition it was in before the current edit attempt.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.fetchData">
+ <summary>
+ Fetch the data from the database, and enable/disble buttons accordig to what was retreived.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.grd_DataBindingComplete(System.Object,System.EventArgs)">
+ <summary>
+ Hide the primary key column in the DataGridView
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.setSynced">
+ <summary>
+ Set the control to reflect that the DataGridView is synced with the database
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.setUnsynced">
+ <summary>
+ Set the control to reflect that the DataGridView is not synced with the database
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.writePrimaryKeysInRowHeaders">
+ <summary>
+ Set the row headers to be the Primary key values, and make sure the header is wide enough
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.grd_CellMouseDown(System.Object,System.Windows.Forms.DataGridViewCellMouseEventArgs)">
+ <summary>
+ When the user clicks a column header, record the cell color data so that any that are dirty
+ will remain so after the sort takes place.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.updateColoring">
+ <summary>
+ Marshalled sub used to re-apply the coloring of the dirty data cells in the data grid. This must be marshalled to ensure it happens after the
+ DataBinding Event has taken place.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.grd_Sorted(System.Object,System.Windows.Forms.DataGridViewBindingCompleteEventArgs)">
+ <summary>
+ Apply coloring to the data grid after it has been sorted
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.grd_CurrentCellDirtyStateChanged(System.Object,System.EventArgs)">
+ <summary>
+ Triggered when any cell value is changed in the grid. Will update a label telling the user that
+ the data is no longer synced with the database, and color the row of cells salmon.
+ If the user just types the same value that was in the cell to begin with, the row will be unchanged.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.grd_DataError(System.Object,System.Windows.Forms.DataGridViewDataErrorEventArgs)">
+ <summary>
+ Give column and row-specific error message to user. Avoids errors/exceptions during the update to the database.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.updateDatabaseWithGridValues">
+ <summary>
+ Update the MS Access database table 'data' with values from the DataGridView object.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.deleteSelectedRows(System.Object,System.EventArgs)">
+ <summary>
+ Deletes selected rows from the MS access database as well as in the grid view. A confirmation box will verify this.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.grd_KeyDown(System.Object,System.Windows.Forms.KeyEventArgs)">
+ <summary>
+ Key events for the data grid. The arrow keys will move to adjacent cells, the Enter key will submit the edit (if applicable)
+ and move to the next cell down or, if it is currently the last row, the next cell on the right, or if neither of those,
+ the top left-most cell. Pressing the 'delete' key will delete rows from the grid view and the database.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.grdVideoMinerDatabase_EditingControlShowing(System.Object,System.Windows.Forms.DataGridViewEditingControlShowingEventArgs)">
+ <summary>
+ Allow keys to be captured while the editor is focussed on an individual cell
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.TextBox_PreviewKeyDown(System.Object,System.Windows.Forms.PreviewKeyDownEventArgs)">
+ <summary>
+ Sets up the Enter or Return key to be captured by the TextBox, which is a cell in the DataGridView.
+ This is the only way that the Enter key can be used to submit a value when editing a cell.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.grd_RightClick(System.Object,System.Windows.Forms.MouseEventArgs)">
+ <summary>
+ Captures right click in the DataGridView. This will delete rows from the grid view and the database.
+ </summary>
+ <remarks>If no rows are selected, a message will tell you to select rows and then press delete</remarks>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.grd_CellValidating(System.Object,System.Windows.Forms.DataGridViewCellValidatingEventArgs)">
+ <summary>
+ Validate the cell values if user makes them NULL. Avoids errors/exceptions during the update to the database.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.cmdRevertDatabase_Click(System.Object,System.EventArgs)">
+ <summary>
+ Reload the grid from the access database. A confirmation box will be displayed and if the user aggrees then any changes in the grid will
+ be discarded and the database will be reloaded from scratch
  </summary>
 </member>
 </members>

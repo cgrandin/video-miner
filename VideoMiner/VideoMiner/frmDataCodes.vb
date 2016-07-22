@@ -1,7 +1,6 @@
 ﻿Imports System.Data.OleDb
 
 Public Class frmDataCodes
-    ' Data, table, and query objects
     Private m_table_name As String
     Private m_data_table As DataTable
 

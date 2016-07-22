@@ -3477,10 +3477,6 @@ Public Class VideoMiner
         End If
         blupdateColumns = True
 
-        ' Restore the scrollbar positions. Only retore the vertical one if the check box is checked in the configure menu.
-        If Not AlwaysShowNewestRecordToolStripMenuItem.Checked And saveRow <> 0 And saveRow < grdVideoMinerDatabase.Rows.Count Then
-            grdVideoMinerDatabase.FirstDisplayedScrollingRowIndex = saveRow
-        End If
         If saveColumn <> 0 And saveColumn < grdVideoMinerDatabase.ColumnCount Then
             grdVideoMinerDatabase.FirstDisplayedScrollingColumnIndex = saveColumn
         End If

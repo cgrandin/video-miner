@@ -32,13 +32,12 @@ Partial Class frmConfigureButtons
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Panel2 = New System.Windows.Forms.Panel()
-        Me.grdButtons = New System.Windows.Forms.DataGridView()
-        Me.btnOK = New System.Windows.Forms.Button()
         Me.Panel3 = New System.Windows.Forms.Panel()
+        Me.btnOK = New System.Windows.Forms.Button()
+        Me.Panel4 = New System.Windows.Forms.Panel()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
-        CType(Me.grdButtons, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel3.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -117,8 +116,8 @@ Partial Class frmConfigureButtons
         Me.TableLayoutPanel1.Controls.Add(Me.cmdMoveToPanel, 0, 0)
         Me.TableLayoutPanel1.Controls.Add(Me.Panel1, 1, 1)
         Me.TableLayoutPanel1.Controls.Add(Me.Panel2, 0, 2)
-        Me.TableLayoutPanel1.Controls.Add(Me.grdButtons, 0, 1)
         Me.TableLayoutPanel1.Controls.Add(Me.Panel3, 0, 3)
+        Me.TableLayoutPanel1.Controls.Add(Me.Panel4, 0, 1)
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
@@ -151,19 +150,15 @@ Partial Class frmConfigureButtons
         Me.Panel2.Size = New System.Drawing.Size(357, 38)
         Me.Panel2.TabIndex = 16
         '
-        'grdButtons
+        'Panel3
         '
-        Me.grdButtons.AllowUserToAddRows = False
-        Me.grdButtons.AllowUserToDeleteRows = False
-        Me.grdButtons.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grdButtons.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdButtons.Location = New System.Drawing.Point(3, 47)
-        Me.grdButtons.MultiSelect = False
-        Me.grdButtons.Name = "grdButtons"
-        Me.grdButtons.ReadOnly = True
-        Me.grdButtons.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.grdButtons.Size = New System.Drawing.Size(357, 412)
-        Me.grdButtons.TabIndex = 17
+        Me.TableLayoutPanel1.SetColumnSpan(Me.Panel3, 2)
+        Me.Panel3.Controls.Add(Me.btnOK)
+        Me.Panel3.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel3.Location = New System.Drawing.Point(3, 509)
+        Me.Panel3.Name = "Panel3"
+        Me.Panel3.Size = New System.Drawing.Size(466, 39)
+        Me.Panel3.TabIndex = 18
         '
         'btnOK
         '
@@ -178,15 +173,13 @@ Partial Class frmConfigureButtons
         Me.btnOK.Text = "DONE"
         Me.btnOK.UseVisualStyleBackColor = True
         '
-        'Panel3
+        'Panel4
         '
-        Me.TableLayoutPanel1.SetColumnSpan(Me.Panel3, 2)
-        Me.Panel3.Controls.Add(Me.btnOK)
-        Me.Panel3.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Panel3.Location = New System.Drawing.Point(3, 509)
-        Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(466, 39)
-        Me.Panel3.TabIndex = 18
+        Me.Panel4.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel4.Location = New System.Drawing.Point(3, 47)
+        Me.Panel4.Name = "Panel4"
+        Me.Panel4.Size = New System.Drawing.Size(357, 412)
+        Me.Panel4.TabIndex = 19
         '
         'frmConfigureButtons
         '
@@ -202,7 +195,6 @@ Partial Class frmConfigureButtons
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.Panel1.ResumeLayout(False)
         Me.Panel2.ResumeLayout(False)
-        CType(Me.grdButtons, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel3.ResumeLayout(False)
         Me.ResumeLayout(False)
 
@@ -216,7 +208,7 @@ Partial Class frmConfigureButtons
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents Panel1 As Panel
     Friend WithEvents Panel2 As Panel
-    Friend WithEvents grdButtons As DataGridView
     Friend WithEvents btnOK As Button
     Friend WithEvents Panel3 As Panel
+    Friend WithEvents Panel4 As Panel
 End Class

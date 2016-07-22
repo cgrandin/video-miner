@@ -408,6 +408,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ValueDescriptionPair.vb" />
+    <Compile Include="VideoMinerDataGridView.Designer.vb">
+      <DependentUpon>VideoMinerDataGridView.vb</DependentUpon>
+    </Compile>
+    <Compile Include="VideoMinerDataGridView.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="WaterMarkTextBox.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -520,6 +526,9 @@
     <EmbeddedResource Include="frmTableView.resx">
       <SubType>Designer</SubType>
       <DependentUpon>frmTableView.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VideoMinerDataGridView.resx">
+      <DependentUpon>VideoMinerDataGridView.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 
 #Region "Member variables"
     Private WithEvents m_frmAddButton As frmAddButton
+    Private WithEvents m_grd As VideoMinerDataGridView
     ''' <summary>
     ''' The name of the table which this form represents, either
     ''' videominer_habitat_buttons or videominer_transect_buttons
@@ -36,10 +37,12 @@
     Public Sub New(strConfigureTable As String)
         InitializeComponent()
         m_table_name = strConfigureTable
+        m_grd = New VideoMinerDataGridView(m_table_name, False)
+        Panel4.Controls.Add(m_grd)
     End Sub
 
     Private Sub frmConfigureButtons_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        populateTableList()
+        '        populateTableList()
         m_has_modifications = False
     End Sub
 
@@ -47,21 +50,21 @@
     ''' Fill the listbox with the current m_table_name table.
     ''' </summary>
     Private Sub populateTableList()
-        Dim strKeyName As String = Database.GetPrimaryKeyFieldName(m_table_name)
-        m_data_table = Database.GetDataTable("select * from " & m_table_name & " order by " & strKeyName & " Asc", m_table_name)
-        grdButtons.DataSource = m_data_table
-        ' See grdButtons_DataBindingComplete function for hiding the primary key field
+        'Dim strKeyName As String = Database.GetPrimaryKeyFieldName(m_table_name)
+        'm_data_table = Database.GetDataTable("select * from " & m_table_name & " order by " & strKeyName & " Asc", m_table_name)
+        'm_grd.DataSource = m_data_table
+        '' See m_grd_DataBindingComplete function for hiding the primary key field
     End Sub
 
     ''' <summary>
     ''' Remove the Primary Key column from the view, so that users cannot change it
     ''' </summary>
-    Private Sub grdButtons_DataBindingComplete(sender As Object, e As EventArgs) Handles grdButtons.DataBindingComplete
-        ' Remove primary key field from the table which is shown
-        Dim strPrimaryKeyName = Database.GetPrimaryKeyFieldName(m_table_name)
-        grdButtons.Columns(strPrimaryKeyName).Visible = False
-        grdButtons.Enabled = True
-    End Sub
+    'Private Sub m_grd_DataBindingComplete(sender As Object, e As EventArgs) Handles m_grd.DataBindingComplete
+    ' Remove primary key field from the table which is shown
+    'Dim strPrimaryKeyName = Database.GetPrimaryKeyFieldName(m_table_name)
+    'm_grd.Columns(strPrimaryKeyName).Visible = False
+    'm_grd.Enabled = True
+    'End Sub
 
     ''' <summary>
     ''' Clicking this button causes the currently selected item to move up one in the list.
@@ -96,11 +99,11 @@
         Dim intSelectedIndex As Integer
         Dim intCurrKey As Integer
         Dim intOtherKey As Integer
-        If grdButtons.SelectedRows.Count = 0 Then
-            MessageBox.Show("Please select a button from the table",
-                            "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        End If
-        intSelectedIndex = grdButtons.SelectedRows(0).Index
+        'If m_grd.SelectedRows.Count = 0 Then
+        'MessageBox.Show("Please select a button from the table",
+        '                   "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        'End If
+        intSelectedIndex = m_grd.FirstSelectedRowIndex
         Dim strKeyField As String = Database.GetPrimaryKeyFieldName(m_table_name)
         Dim intStart, intEnd, intStep As Integer
         If m_move_direction = MoveDirection.Up Then
@@ -109,22 +112,22 @@
                 Exit Sub
             End If
             intStart = 0
-            intEnd = grdButtons.Rows.Count - 1
+            intEnd = m_grd.RowCount - 1
             intStep = 1
             intSelectedIndex -= 1
         Else
-            If intSelectedIndex >= grdButtons.Rows.Count - 1 Then
+            If intSelectedIndex >= m_grd.RowCount - 1 Then
                 ' Only move down if the item is not at the bottom
                 Exit Sub
             End If
-            intStart = grdButtons.Rows.Count - 1
+            intStart = m_grd.RowCount - 1
             intEnd = 0
             intStep = -1
             intSelectedIndex += 1
         End If
         ' Get the primary keys for the selected item and the one above or below it
         For i = intStart To intEnd Step intStep
-            r = grdButtons.Rows(i)
+            r = m_grd.Rows(i)
             dr = m_data_table.Rows(r.Index)
             If r.Selected Then
                 intCurrKey = CInt(dr.Item(strKeyField))
@@ -137,8 +140,8 @@
         populateTableList()
         ' Set the selected row to be the same one that has just moved
         ' This allows user to move one item down or up quickly
-        grdButtons.ClearSelection()
-        grdButtons.Rows(intSelectedIndex).Selected = True
+        'm_grd.ClearSelection()
+        'm_grd.Rows(intSelectedIndex).Selected = True
         m_has_modifications = True
     End Sub
 
@@ -166,11 +169,11 @@
         Dim dr As DataRow
         Dim intSelectedIndex As Integer
         Dim intKey As Integer
-        If grdButtons.SelectedRows.Count = 0 Then
+        If m_grd.SelectedRowCount = 0 Then
             MessageBox.Show("Please select a button from the table",
                             "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
-        intSelectedIndex = grdButtons.SelectedRows(0).Index
+        intSelectedIndex = m_grd.FirstSelectedRowIndex
         Dim strKeyField As String = Database.GetPrimaryKeyFieldName(m_table_name)
         If MessageBox.Show("Are you sure you want to delete this button?",
                            "Delete Button", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
@@ -178,8 +181,8 @@
             Exit Sub
         End If
         ' Get the primary keys for the selected item and the one above or below it
-        For i As Integer = 0 To grdButtons.Rows.Count - 1
-            r = grdButtons.Rows(i)
+        For i As Integer = 0 To m_grd.RowCount - 1
+            r = m_grd.Rows(i)
             dr = m_data_table.Rows(r.Index)
             If r.Selected Then
                 intKey = CInt(dr.Item(strKeyField))
@@ -188,7 +191,7 @@
         Next
         Database.DeleteRow(intKey, m_table_name)
         populateTableList()
-        grdButtons.ClearSelection()
+        m_grd.ClearSelection()
         m_has_modifications = True
     End Sub
 
