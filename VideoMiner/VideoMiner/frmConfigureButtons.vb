@@ -296,7 +296,7 @@
         ' Get the source table's information
         d = Database.GetDataTable("select * from " & m_table_name, m_table_name)
         For Each r In d.Rows
-            If r.Item("ButtonText").ToString() = m_ButtonName Then
+            If r.Item(BUTTON_TEXT).ToString() = m_ButtonName Then
                 Exit For
             End If
         Next

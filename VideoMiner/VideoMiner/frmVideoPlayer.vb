@@ -303,7 +303,7 @@ Public Class frmVideoPlayer
         Dim bAns As Boolean = False
         Dim strNewFileName As String
         Dim strNewFilePath As String
-        Dim strNewFile As String = NULL_STRING
+        Dim strNewFile As String = String.Empty
         'Try
         Using bmp1 As New Bitmap(BMPFullPath)
             'Dim jgpEncoder As ImageCodecInfo = GetEncoder(ImageFormat.Jpeg)
@@ -324,7 +324,7 @@ Public Class frmVideoPlayer
             If imgFormat.Equals(ImageFormat.Jpeg) Then
                 strNewFile = Combine(strNewFilePath, strNewFileName & ".jpg")
             End If
-            If strNewFile <> NULL_STRING Then
+            If strNewFile <> String.Empty Then
                 bmp1.Save(strNewFile, encoder, myEncoderParameters)
                 bAns = True
             End If
@@ -365,7 +365,7 @@ Public Class frmVideoPlayer
         svDlgFileDialogScrCap.FileName = strDefaultFilename
         ' Open a save as dialog to specify the path and name for the bitmap.
         If svDlgFileDialogScrCap.ShowDialog() = Windows.Forms.DialogResult.Cancel Then
-            Return NULL_STRING
+            Return String.Empty
         End If
         Dim strFilename As String = svDlgFileDialogScrCap.FileName.ToString()
         Dim baseFilename As String = Combine(GetDirectoryName(strFilename), GetFileNameWithoutExtension(strFilename))

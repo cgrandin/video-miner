@@ -201,16 +201,16 @@ Public Class frmAddButton
         'Dim d As DataTable = Database.GetDataTable(strQuery, m_table_name)
         'Dim r As DataRow = d.Rows.Item(0)
         'If Not IsNothing(r) Then
-        '    If r.Item("TableName") = "UserEntered" Then
+        '    If r.Item(TABLE_NAME) = USER_ENTERED Then
         '        rdInputValue.Checked = True
         '        cboTables.Enabled = False
         '        'Me.cmdCreateNewTable.Enabled = False
         '    Else
         '        rdUseTable.Checked = True
-        '        cboTables.SelectedItem = r.Item("TableName")
+        '        cboTables.SelectedItem = r.Item(TABLE_NAME)
         '    End If
-        '    txtDataCode.Text = r.Item("DataCode")
-        '    txtFieldName.Text = r.Item("DataCodeName")
+        '    txtDataCode.Text = r.Item(DATA_CODE)
+        '    txtFieldName.Text = r.Item(DATA_CODE_NAME)
         '    OldButtonName = Me.txtButtonName.Text
         '    OldTableName = Me.cboTables.SelectedItem
         '    OldDataCode = CInt(Me.txtDataCode.Text)
@@ -245,22 +245,23 @@ Public Class frmAddButton
         Dim dtButtons As DataTable
         Dim dtDataCodes As DataTable
         Dim strKeyName As String = Database.GetPrimaryKeyFieldName(m_table_name)
+        Dim strKeyNameDataCodeTable As String = Database.GetPrimaryKeyFieldName(DB_DATA_CODES_TABLE)
         Dim intNextKey As Integer = Database.GetNextPrimaryKeyValue(m_table_name)
 
         dtButtons = Database.GetDataTable("select * from " & m_table_name, m_table_name)
         For i As Integer = 0 To dtButtons.Rows.Count - 1
             drButtons = dtButtons.Rows.Item(i)
-            If drButtons.Item("ButtonText").ToString = ButtonName Then
+            If drButtons.Item(BUTTON_TEXT).ToString = m_ButtonName Then
                 MessageBox.Show("The button name entered is already in use, please change the name and try again.",
                                 "Button Name In Use", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If
-            If CInt(drButtons.Item("DataCode")) = DataCode Then
+            If CInt(drButtons.Item(DATA_CODE)) = m_DataCode Then
                 MessageBox.Show("The data code entered is already in use, please change the code and try again.",
                                 "Data Code In Use", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If
-            If drButtons.Item("DataCodeName").ToString = FieldName Then
+            If drButtons.Item(DATA_CODE_NAME).ToString = m_FieldName Then
                 MessageBox.Show("The field name entered is already in use, please change the name and try again.",
                                 "Field Name In Use", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
@@ -269,7 +270,7 @@ Public Class frmAddButton
         dtDataCodes = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE, DB_DATA_CODES_TABLE)
         For i As Integer = 0 To dtDataCodes.Rows.Count - 1
             drDataCodes = dtDataCodes.Rows.Item(i)
-            If CInt(drDataCodes.Item("Code")) = Me.DataCode Then
+            If CInt(drDataCodes.Item(strKeyNameDataCodeTable)) = m_DataCode Then
                 MessageBox.Show("The data code entered is already used for '" &
                                 drDataCodes.Item("Description").ToString() & "' , please change the code and try again.",
                                 "Data Code In Use", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -278,16 +279,16 @@ Public Class frmAddButton
         Next
         Dim strTableName As String
         If rdInputValue.Checked = True Then
-            strTableName = "UserEntered"
+            strTableName = USER_ENTERED
         Else
             strTableName = m_table_name
         End If
         ' Modify the last DataRow for buttons table so that is has the values we want for the new data code record
         drButtons.Item(strKeyName) = intNextKey
-        drButtons.Item("ButtonText") = m_ButtonName
-        drButtons.Item("TableName") = strTableName
-        drButtons.Item("DataCode") = m_DataCode
-        drButtons.Item("DataCodeName") = m_ButtonName & "ID"
+        drButtons.Item(BUTTON_TEXT) = m_ButtonName
+        drButtons.Item(TABLE_NAME) = strTableName
+        drButtons.Item(DATA_CODE) = m_DataCode
+        drButtons.Item(DATA_CODE_NAME) = m_ButtonName & "ID"
         Database.InsertRow(drButtons, m_table_name)
         ' Modify the last DataRow for data codes table so that is has the values we want for the new data code record
         drDataCodes.Item("Code") = m_DataCode
@@ -312,7 +313,7 @@ Public Class frmAddButton
         '    End If
         '    Dim strTableName As String
         '    If Me.rdInputValue.Checked = True Then
-        '        strTableName = "UserEntered"
+        '        strTableName = USER_ENTERED
         '    Else
         '        strTableName = Me.Table_Name
         '    End If

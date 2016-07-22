@@ -139,17 +139,17 @@ Public Class frmImage
         '        txtTimeSource.Text = strTimeDateSource
         '        'txtTimeSource.ForeColor = Color.LimeGreen
         '        'txtTime.ForeColor = Color.LimeGreen
-        '        txtTimeSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+        '        txtTimeSource.Font = New Font(String.Empty, STATUS_FONT_SIZE, FontStyle.Bold)
         '        txtTimeSource.BackColor = Color.LightGray
         '        txtTimeSource.ForeColor = Color.LimeGreen
         '        txtTimeSource.TextAlign = HorizontalAlignment.Center
-        '        txtTime.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+        '        txtTime.Font = New Font(String.Empty, STATUS_FONT_SIZE, FontStyle.Bold)
         '        txtTime.BackColor = Color.LightGray
         '        txtTime.ForeColor = Color.LimeGreen
         '        txtTime.TextAlign = HorizontalAlignment.Center
         '        txtTransectDate.Text = m_transect_date
         '        txtDateSource.Text = strTimeDateSource
-        '        txtDateSource.Font = New Font(NULL_STRING, STATUS_FONT_SIZE, FontStyle.Bold)
+        '        txtDateSource.Font = New Font(String.Empty, STATUS_FONT_SIZE, FontStyle.Bold)
         '        txtDateSource.BackColor = Color.LightGray
         '        txtDateSource.ForeColor = Color.LimeGreen
         '        txtDateSource.TextAlign = HorizontalAlignment.Center
@@ -261,7 +261,7 @@ Public Class frmImage
         ' on newlines, and then clean out those newlines from the resulting list of strings.
         Dim strEXIFOutputRaw As List(Of String) = New List(Of String)(sOutput.Split(vbCrLf))
         Dim strEXIFOutput As List(Of String) = strEXIFOutputRaw.Select(Function(str) str.Replace(vbLf, "")).ToList()
-        ' The next line removes any extraneous list items that are either null or the NULL_STRING
+        ' The next line removes any extraneous list items that are either null or the String.Empty
         strEXIFOutput.RemoveAll(Function(str) String.IsNullOrEmpty(str))
         ' Now a dictionary is created with the keys being the string before the colon
         ' and the value being what is after the colon. All whitespace is removed.
@@ -279,7 +279,7 @@ Public Class frmImage
                 m_dictEXIF.Add(key, value)
             End If
         Next
-        'Dim strDate As String = NULL_STRING
+        'Dim strDate As String = String.Empty
         'Dim strLine As String
         'Dim strItems() As String
         'Dim dblDegrees As Double
@@ -294,8 +294,8 @@ Public Class frmImage
         'Dim blY As Boolean = False
         'Dim blZ As Boolean = False
         'Dim blFlag As Boolean = False
-        'Dim strFileDate As String = NULL_STRING
-        'Dim strFileTime As String = NULL_STRING
+        'Dim strFileDate As String = String.Empty
+        'Dim strFileTime As String = String.Empty
         '' Read the line that has "DateTimeOriginal".
         '' TODO: Go over this whole algorithm. It is a big mess.
         'Dim strPhotoDecimalTime As String
@@ -334,13 +334,13 @@ Public Class frmImage
         '    ElseIf strEXIFOutput(i).Contains("GPSLatitude") And Not strEXIFOutput(i).Contains("Ref") Then
         '        strLine = strEXIFOutput(i)
         '        strItems = strLine.Split(":")
-        '        strGPS = strItems(1).Replace(" ", NULL_STRING)
+        '        strGPS = strItems(1).Replace(" ", String.Empty)
         '        If strGPS.Contains("N") Then
         '            intNegative = 1
-        '            strGPS = strGPS.Replace("N", NULL_STRING)
+        '            strGPS = strGPS.Replace("N", String.Empty)
         '        ElseIf strGPS.Contains("S") Then
         '            intNegative = -1
-        '            strGPS = strGPS.Replace("S", NULL_STRING)
+        '            strGPS = strGPS.Replace("S", String.Empty)
         '        End If
         '        strGPS = strGPS.Replace("deg", "/")
         '        strGPS = strGPS.Replace("'", "/")
@@ -358,17 +358,17 @@ Public Class frmImage
         '    ElseIf strEXIFOutput(i).Contains("GPSLongitude") And Not strEXIFOutput(i).Contains("Ref") Then
         '        strLine = strEXIFOutput(i)
         '        strItems = strLine.Split(":")
-        '        strGPS = strItems(1).Replace(" ", NULL_STRING)
+        '        strGPS = strItems(1).Replace(" ", String.Empty)
         '        If strGPS.Contains("E") Then
         '            intNegative = 1
-        '            strGPS = strGPS.Replace("E", NULL_STRING)
+        '            strGPS = strGPS.Replace("E", String.Empty)
         '        ElseIf strGPS.Contains("W") Then
         '            intNegative = -1
-        '            strGPS = strGPS.Replace("W", NULL_STRING)
+        '            strGPS = strGPS.Replace("W", String.Empty)
         '        End If
         '        strGPS = strGPS.Replace("deg", "/")
         '        strGPS = strGPS.Replace("'", "/")
-        '        strGPS = strGPS.Replace("W", NULL_STRING)
+        '        strGPS = strGPS.Replace("W", String.Empty)
         '        strGPSSplit = strGPS.Split("/")
         '        dblDegrees = CDbl(strGPSSplit(0))
         '        dblMinutes = CDbl(strGPSSplit(1))
@@ -382,15 +382,15 @@ Public Class frmImage
         '    ElseIf strEXIFOutput(i).Contains("GPSAltitude") And Not strEXIFOutput(i).Contains("Ref") Then
         '        strLine = strEXIFOutput(i)
         '        strItems = strLine.Split(":")
-        '        strGPS = strItems(1).Replace(" ", NULL_STRING)
+        '        strGPS = strItems(1).Replace(" ", String.Empty)
         '        If strGPS.Contains("AboveSeaLevel") Then
         '            intNegative = 1
-        '            strGPS = strGPS.Replace("AboveSeaLevel", NULL_STRING)
+        '            strGPS = strGPS.Replace("AboveSeaLevel", String.Empty)
         '        ElseIf strGPS.Contains("BelowSeaLevel") Then
         '            intNegative = -1
-        '            strGPS = strGPS.Replace("BelowSeaLevel", NULL_STRING)
+        '            strGPS = strGPS.Replace("BelowSeaLevel", String.Empty)
         '        End If
-        '        strGPS = strGPS.Replace("m", NULL_STRING)
+        '        strGPS = strGPS.Replace("m", String.Empty)
         '        ' TODO: See what this does
         '        'strZ = FormatNumber(CDbl(strGPS) * intNegative, 2)
         '        blZ = True
@@ -408,8 +408,8 @@ Public Class frmImage
         '    If blDateTime = False Then
         '        If blFileDateTime = False Then
         '            strMessage = strMessage & vbCrLf & "Date and Time"
-        '            m_transect_date = NULL_STRING
-        '            'strPhotoTime = NULL_STRING
+        '            m_transect_date = String.Empty
+        '            'strPhotoTime = String.Empty
         '        Else
         '            m_transect_date = strFileDate
         '            'strPhotoTime = strFileTime
@@ -421,11 +421,11 @@ Public Class frmImage
         '        End If
         '       If blY = False Then
         '          strMessage = strMessage & vbCrLf & "Y"
-        '         strY = NULL_STRING
+        '         strY = String.Empty
         '    End If
         '            If blZ = False Then
         'strMessage = strMessage & vbCrLf & "Z"
-        'strZ = NULL_STRING
+        'strZ = String.Empty
         'End If
         'strMessage = strMessage & vbCrLf & vbCrLf & "Do you wish to disable this warning for future images?"
         'If Not blDateTime Or Not blX Or Not blY Or Not blZ Then
@@ -500,11 +500,11 @@ Public Class frmImage
     '        Case "Menu"
     '            e.SuppressKeyPress = True
     '        Case Else
-    '            If strKeyboardShortcut <> NULL_STRING Then
+    '            If strKeyboardShortcut <> String.Empty Then
     '                Dim d As DataTable = Database.GetDataTable("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor, KeyboardShortcut from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;", DB_SPECIES_BUTTONS_TABLE)
     '                For Each r As DataRow In d.Rows
-    '                    If r.Item("KeyboardShortcut").ToString = strKeyboardShortcut Then
-    '                        intIndex = CInt(r.Item("DrawingOrder")) - 1
+    '                    If r.Item(KEYBOARD_SHORTCUT).ToString = strKeyboardShortcut Then
+    '                        intIndex = CInt(r.Item(DRAWING_ORDER)) - 1
     '                        If Not speciesButtons(intIndex) Is Nothing Then
     '                            'SpeciesVariableButtonHandler(speciesButtons(intIndex), Nothing)
     '                        End If
@@ -513,8 +513,8 @@ Public Class frmImage
     '                Next
     '            End If
     '    End Select
-    '    strKeyboardShortcut = NULL_STRING
-    '    strCurrentKey = NULL_STRING
+    '    strKeyboardShortcut = String.Empty
+    '    strCurrentKey = String.Empty
     'End Sub
 
     ''' <summary>

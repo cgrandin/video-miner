@@ -121,7 +121,7 @@ Public Module Database
     ''' Runs a query on a given table and returns the resulting data.
     ''' </summary>
     ''' <param name="query">A legal SQL query for an MS Access database</param>
-    ''' <param name="tableName">The name of the table used in the query</param>
+    ''' <param name=TABLE_NAME>The name of the table used in the query</param>
     ''' <returns>A DataTable which holds the data queried for or Nothing</returns>
     ''' <remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and Nothing will be returned.</remarks>
     Public Function GetDataTable(query As String, tableName As String) As DataTable
@@ -309,7 +309,7 @@ Public Module Database
     ''' Assumes the primary key is made up of one column only. If there is more than one, only the first
     ''' will be used. This will cause an error with tables that have more than one primary key field.
     ''' </summary>
-    ''' <param name="tableName">Name of the table to get the next key value for</param>
+    ''' <param name=TABLE_NAME>Name of the table to get the next key value for</param>
     ''' <returns></returns>
     Public Function GetNextPrimaryKeyValue(tableName As String) As Integer
         If Not IsOpen Then

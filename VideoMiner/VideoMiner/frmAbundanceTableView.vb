@@ -22,7 +22,7 @@
             If grdAbundance.SelectedRows.Count = 1 Then
                 Return grdAbundance.SelectedRows(0).Cells(0).Value.ToString()
             Else
-                Return NULL_STRING
+                Return String.Empty
             End If
         End Get
     End Property
@@ -36,7 +36,7 @@
             If grdAbundance.SelectedRows.Count = 1 Then
                 Return grdAbundance.SelectedRows(0).Cells(1).Value.ToString()
             Else
-                Return NULL_STRING
+                Return String.Empty
             End If
         End Get
     End Property

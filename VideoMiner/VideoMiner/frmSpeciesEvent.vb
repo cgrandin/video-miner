@@ -199,13 +199,15 @@ Public Class frmSpeciesEvent
         m_dict = New Dictionary(Of String, Tuple(Of String, String, Boolean))
 
         ' Populate the species combobox
-        Dim strQuery As String = "select DrawingOrder, ButtonText, ButtonCode from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY DrawingOrder;"
+        Dim strKeyButtons As String = Database.GetPrimaryKeyFieldName(DB_SPECIES_BUTTONS_TABLE)
+        Dim strQuery As String = "select " & strKeyButtons & ", " & BUTTON_TEXT & ", " & BUTTON_CODE &
+            " from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY " & strKeyButtons
         Dim data_table As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_BUTTONS_TABLE)
         ' If the SpeciesName is not in the table, add the Common name of the species into the list
         Dim dr As DataRow = data_table.NewRow()
-        dr("DrawingOrder") = GetNextSequenceId()
-        dr("ButtonText") = SpeciesName
-        dr("ButtonCode") = SpeciesCode
+        dr(strKeyButtons) = Database.GetNextPrimaryKeyValue(DB_SPECIES_BUTTONS_TABLE)
+        dr(BUTTON_TEXT) = SpeciesName
+        dr(BUTTON_CODE) = SpeciesCode
         data_table.Rows.Add(dr)
 
         With cboSpecies
@@ -215,7 +217,8 @@ Public Class frmSpeciesEvent
             .SelectedIndex = -1 ' If 0, the first item will be preselected, if -1, no items will be selected (default fresh loaded condition).
         End With
         ' Populate the 'Side' combobox. Uses the table lu_observed_side from the database
-        strQuery = "select * from " & DB_OBSERVED_SIDE_TABLE & " order by Code;"
+        Dim strKeySide As String = Database.GetPrimaryKeyFieldName(DB_OBSERVED_SIDE_TABLE)
+        strQuery = "select * from " & DB_OBSERVED_SIDE_TABLE & " order by " & strKeySide
         Dim dtSide As DataTable = Database.GetDataTable(strQuery, DB_OBSERVED_SIDE_TABLE)
         With cboSide
             .DataSource = dtSide
@@ -224,7 +227,8 @@ Public Class frmSpeciesEvent
             .SelectedIndex = 0
         End With
         ' Populate the 'ID Confidence' combobox
-        strQuery = "select * from " & DB_CONFIDENCE_IDS_TABLE & " order by ConfidenceId;"
+        Dim strKeyConf As String = Database.GetPrimaryKeyFieldName(DB_CONFIDENCE_IDS_TABLE)
+        strQuery = "select * from " & DB_CONFIDENCE_IDS_TABLE & " order by " & strKeyConf
         Dim dtIDConfidence As DataTable = Database.GetDataTable(strQuery, DB_CONFIDENCE_IDS_TABLE)
         With cboIDConfidence
             .DataSource = dtIDConfidence
@@ -233,7 +237,8 @@ Public Class frmSpeciesEvent
             .SelectedIndex = 0
         End With
         ' Populate the 'Abundance' combobox
-        strQuery = "select * from " & DB_ABUNDANCE_TABLE & " order by ACFORScaleID;"
+        Dim strKeyAbun As String = Database.GetPrimaryKeyFieldName(DB_ABUNDANCE_TABLE)
+        strQuery = "Select * from " & DB_ABUNDANCE_TABLE & " order by " & strKeyAbun
         Dim dtAbundance As DataTable = Database.GetDataTable(strQuery, DB_ABUNDANCE_TABLE)
         With cboAbundance
             .DataSource = dtAbundance
@@ -247,16 +252,6 @@ Public Class frmSpeciesEvent
         txtRange.Enabled = False
         selectSpeciesInCombobox()
     End Sub
-
-    ''' <summary>
-    ''' Get the next unique ID from the species buttons table so that the new button can be inserted properly into the database table.
-    ''' </summary>
-    Private Function GetNextSequenceId() As Integer
-        Dim strQuery As String = "select Max(DrawingOrder) from " & DB_SPECIES_BUTTONS_TABLE & ";"
-        Dim idTable As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_BUTTONS_TABLE)
-        Dim intId = idTable.Rows(0).Item(0) ' The query will only return 1 result because it is a MAX query.
-        Return CInt(intId) + 1
-    End Function
 
     ''' <summary>
     '''  When the SpeciesEventForm is displayed, draw a red arc at the bottom of the form with an
@@ -288,14 +283,14 @@ Public Class frmSpeciesEvent
         'If cboSide.SelectedItem.ToString() = "Port" Or cboSide.SelectedItem.ToString() = "Starboard" Then
         If CInt(cboSide.SelectedValue) = 1 Or CInt(cboSide.SelectedValue) = 2 Then
             If txtRange.Text = "" Then
-                MessageBox.Show("You must enter a value in the Range textbox when you choose 'Port' or 'Starboard' for 'Side'.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+                MessageBox.Show("You must enter a value In the Range textbox When you choose 'Port' or 'Starboard' for 'Side'.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
                 Exit Sub
             ElseIf CType(txtRange.Text, Integer) = 0 Then
                 MessageBox.Show("You must enter a value greater than zero in the Range textbox when you choose 'Port' or 'Starboard' for 'Side'.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
                 Exit Sub
             End If
         End If
-        ' Record all member variables to reflect all the changes which have been validated. Also check for empty strings and change them to "NULL"
+        ' Record all member variables to reflect all the changes which have been validated. Also check for empty strings and change them to UNINITIALIZED_DATA_VALUE
         ' so the query won't break later.
         SpeciesName = cboSpecies.Text
         SpeciesCode = cboSpecies.SelectedValue.ToString()

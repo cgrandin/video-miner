@@ -72,15 +72,6 @@ VideoMiner
  <returns>A DataTable which holds the database schema or Nothing</returns>
  <remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and Nothing will be returned.</remarks>
 </member>
-<member name="M:VideoMiner.Database.GetDataTable(System.String,System.String)">
- <summary>
- Runs a query on a given table and returns the resulting data.
- </summary>
- <param name="query">A legal SQL query for an MS Access database</param>
- <param name="tableName">The name of the table used in the query</param>
- <returns>A DataTable which holds the data queried for or Nothing</returns>
- <remarks>If an exception is thrown or the database connection is not open, a messagebox will appear and Nothing will be returned.</remarks>
-</member>
 <member name="M:VideoMiner.Database.ExecuteNonQuery(System.String)">
  <summary>
  Executes a query on the database which does not return data. Examples are UPDATE, DELETE, or INSERT queries.
@@ -124,16 +115,6 @@ VideoMiner
  'Nothing' will be returned.
  Assumes the primary key is made up of one column only. If there is more than one, only the first
  will be returned.
-</member>
-<member name="M:VideoMiner.Database.GetNextPrimaryKeyValue(System.String)">
- <summary>
- Returns the next primary key value that should be used in the table given by tableName.
- If the table does not contain a primary key column or the database is not open, -1 will be returned.
- Assumes the primary key is made up of one column only. If there is more than one, only the first
- will be used. This will cause an error with tables that have more than one primary key field.
- </summary>
- <param name="tableName">Name of the table to get the next key value for</param>
- <returns></returns>
 </member>
 <member name="M:VideoMiner.Database.SwapTwoRecords(System.Int32,System.Int32,System.String)">
  <summary>
@@ -249,7 +230,7 @@ VideoMiner
 <member name="F:VideoMiner.DynamicButton.m_data_value">
  <summary>
  The value of the chosen data from clicking the button and submitting the forms which appear.
- It must be a string so that "NULL" can be passed to the SQL query if it was not chosen to be part of the query.
+ It must be a string so that UNINITIALIZED_DATA_VALUE can be passed to the SQL query if it was not chosen to be part of the query.
  </summary>
 </member>
 <member name="F:VideoMiner.DynamicButton.m_current_comment">
@@ -3059,7 +3040,7 @@ VideoMiner
  <param name="anAction"></param>
  <param name="Arg"></param>
  <param name="ThrowMainFormMissingError"></param>
- <remarks>Used to raise events from a side-thread to the UI thread by marshaling the call
+ <remarks>Used to raise events from a side-thread to the UI thread by marshalling the call
  Example:
  Write a subroutine to raise the event
  Protected Overridable Sub GPSConnected()
@@ -3283,11 +3264,6 @@ VideoMiner
  Return the key value data for the current value
  </summary>
  <returns></returns>
-</member>
-<member name="M:VideoMiner.frmSpeciesEvent.GetNextSequenceId">
- <summary>
- Get the next unique ID from the species buttons table so that the new button can be inserted properly into the database table.
- </summary>
 </member>
 <member name="M:VideoMiner.frmSpeciesEvent.pnlSpeciesEvent_Paint(System.Object,System.Windows.Forms.PaintEventArgs)">
  <summary>

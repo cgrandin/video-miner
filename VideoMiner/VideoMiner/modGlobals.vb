@@ -34,7 +34,6 @@ Module modGlobals
     Public Const DB_SPECIES_BUTTONS_TABLE As String = "videominer_species_buttons"
     Public Const DB_TRANSECT_BUTTONS_TABLE As String = "videominer_transect_buttons"
 
-
     Public Const DB_CONN_STRING As String = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source="
 
     Public Const GITHUB_URL As String = "https://github.com/cgrandin/video-miner"
@@ -77,21 +76,7 @@ Module modGlobals
     Public strRareSpeciesCode As String = ""
     Public blButtonEdit As Boolean = False
 
-    'Public strDatabaseFilePath As String
     Public strVideoFilePath As String
-
-    Public blCleared As Boolean = False
-    Public blRefresh As Boolean = False
-    Public blNewButton As Boolean = False
-    Public strUserTime As String = ""
-
-    Public filePath As String = ""
-    Public strConfigFilePath As String = ""
-
-    Public strEditTextBoxOldName As String = ""
-    Public strEditTextBoxNewName As String = ""
-
-    Public m_PublicSerialPort As New IO.Ports.SerialPort
 
     ' Library function to perform an image capture
     Public Declare Auto Function BitBlt Lib "gdi32.dll" (ByVal hdcDest As IntPtr, ByVal nXDest As Integer, ByVal nYDest As Integer, _
@@ -151,7 +136,7 @@ Module modGlobals
         If dtRealTime.Hour <= 9 Then
             strHour = "0" & dtRealTime.Hour.ToString
         Else
-            strHour = dtRealTime.Hour
+            strHour = dtRealTime.Hour.ToString()
         End If
         Return strHour & strTime.Substring(2, 6)
     End Function
@@ -176,7 +161,7 @@ Module modGlobals
     ''' <param name="anAction"></param>
     ''' <param name="Arg"></param>
     ''' <param name="ThrowMainFormMissingError"></param>
-    ''' <remarks>Used to raise events from a side-thread to the UI thread by marshaling the call
+    ''' <remarks>Used to raise events from a side-thread to the UI thread by marshalling the call
     ''' Example:
     ''' Write a subroutine to raise the event
     ''' Protected Overridable Sub GPSConnected()

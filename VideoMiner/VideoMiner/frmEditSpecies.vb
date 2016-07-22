@@ -328,14 +328,14 @@ Public Class frmEditSpecies
                                           " WHERE SpeciesCode = " & DoubleQuote(SpeciesCode) & ";"
             Dim selected_table_extra As DataTable = Database.GetDataTable(strQueryExtra, DB_SPECIES_CODE_TABLE)
 
-            m_button_text = selected_table.Rows(0)("ButtonText")
-            m_buttonColor = selected_table.Rows(0)("ButtonColor")
+            m_button_text = selected_table.Rows(0)(BUTTON_TEXT)
+            m_buttonColor = selected_table.Rows(0)(BUTTON_COLOR)
 
             ' Set the keyboard shortcut, if one exists
-            If IsDBNull(selected_table.Rows(0)("KeyboardShortcut")) Then
+            If IsDBNull(selected_table.Rows(0)(KEYBOARD_SHORTCUT)) Then
                 m_keyboard_shortcut = ""
             Else
-                m_keyboard_shortcut = selected_table.Rows(0)("KeyboardShortcut")
+                m_keyboard_shortcut = selected_table.Rows(0)(KEYBOARD_SHORTCUT)
             End If
 
             m_speciesScienceName = selected_table_extra.Rows(0)("ScientificName")

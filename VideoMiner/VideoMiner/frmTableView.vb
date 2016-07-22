@@ -85,7 +85,7 @@ Public Class frmTableView
             If DataGridView1.SelectedRows.Count = 1 Then
                 Return DataGridView1.SelectedRows(0).Cells(0).Value.ToString()
             Else
-                Return NULL_STRING
+                Return String.Empty
             End If
         End Get
     End Property
@@ -99,7 +99,7 @@ Public Class frmTableView
             If DataGridView1.SelectedRows.Count = 1 Then
                 Return DataGridView1.SelectedRows(0).Cells(1).Value.ToString()
             Else
-                Return NULL_STRING
+                Return String.Empty
             End If
         End Get
     End Property

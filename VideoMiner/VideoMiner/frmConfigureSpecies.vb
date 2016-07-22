@@ -273,8 +273,8 @@ Public Class frmConfigureSpecies
 
     Private Function checkString(ByVal strValue As String) As String
         If strValue = "" Then
-            strValue = "NULL"
-        ElseIf strValue = "NULL" Then
+            strValue = UNINITIALIZED_DATA_VALUE
+        ElseIf strValue = UNINITIALIZED_DATA_VALUE Then
             strValue = ""
         End If
         Return strValue

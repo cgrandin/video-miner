@@ -88,7 +88,7 @@ Public Class DynamicButton
     Private m_which_entry_style As WhichEntryStyleEnum
     ''' <summary>
     ''' The value of the chosen data from clicking the button and submitting the forms which appear.
-    ''' It must be a string so that "NULL" can be passed to the SQL query if it was not chosen to be part of the query.
+    ''' It must be a string so that UNINITIALIZED_DATA_VALUE can be passed to the SQL query if it was not chosen to be part of the query.
     ''' </summary>
     Private m_data_value As String
     ''' <summary>
@@ -254,7 +254,7 @@ Public Class DynamicButton
     ''' <summary>
     ''' Creates a new dynamic button with the defaults supplied.
     ''' </summary>
-    ''' <params row>A data row which holds a single row of data from a database table</params>
+    ''' <params row>A data row which holds a single row of data from a database 'button' table</params>
     ''' <remarks></remarks>
     Public Sub New(row As DataRow,
                    intHeight As Integer,
@@ -309,7 +309,7 @@ Public Class DynamicButton
         Catch ex As Exception
             m_button_font = DEFAULT_BUTTON_FONT
         End Try
-        If m_button_font = NULL_STRING Then
+        If m_button_font = String.Empty Then
             m_button_font = DEFAULT_BUTTON_FONT
         End If
         Try
@@ -317,7 +317,7 @@ Public Class DynamicButton
         Catch ex As Exception
             m_button_text_size = DEFAULT_BUTTON_TEXT_SIZE
         End Try
-        If m_button_text_size = NULL_STRING Then
+        If m_button_text_size = String.Empty Then
             m_button_text_size = DEFAULT_BUTTON_TEXT_SIZE
         End If
         Try
@@ -456,9 +456,9 @@ Public Class DynamicButton
             m_data_value = m_frmAbundanceTableView.SelectedCode
             'm_data_code_description = m_frmAbundanceTableView.SelectedCodeName
             m_current_comment = m_frmAbundanceTableView.Comment
-            m_data_code_name = "DataCode"
+            m_data_code_name = DATA_CODE
             m_data_code = 4
-            m_frmSpeciesEvent.Acknowledge(NULL_STRING, m_frmAbundanceTableView.SelectedCode, m_frmAbundanceTableView.Comment)
+            m_frmSpeciesEvent.Acknowledge(String.Empty, m_frmAbundanceTableView.SelectedCode, m_frmAbundanceTableView.Comment)
         End If
     End Sub
 

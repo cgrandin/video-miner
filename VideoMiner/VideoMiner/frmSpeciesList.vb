@@ -54,12 +54,12 @@ Public Class frmSpeciesList
         For Each r As DataRow In d.Rows
             itm = New ListViewItem
             itm.Text = ""
-            itm.SubItems.Add(r.Item("ButtonText").ToString())
-            itm.SubItems.Add(r.Item("ButtonCode").ToString())
-            taxData = Database.GetDataTable("Select SpeciesCode, TaxonomyClassLevelCode from " & DB_SPECIES_CODE_TABLE & " WHERE SpeciesCode = " & SingleQuote(r.Item("ButtonCode")) & ";", DB_SPECIES_CODE_TABLE)
+            itm.SubItems.Add(r.Item(BUTTON_TEXT).ToString())
+            itm.SubItems.Add(r.Item(BUTTON_CODE).ToString())
+            taxData = Database.GetDataTable("Select SpeciesCode, TaxonomyClassLevelCode from " & DB_SPECIES_CODE_TABLE & " WHERE SpeciesCode = " & SingleQuote(r.Item(BUTTON_CODE)) & ";", DB_SPECIES_CODE_TABLE)
             taxRow = taxData.Rows.Item(0)
             itm.SubItems.Add(taxRow.Item("TaxonomyClassLevelCode").ToString())
-            itm.SubItems.Add(r.Item("KeyboardShortcut").ToString())
+            itm.SubItems.Add(r.Item(KEYBOARD_SHORTCUT).ToString())
             Me.lstSpecies.Items.Add(itm)
         Next
     End Sub

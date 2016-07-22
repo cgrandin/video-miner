@@ -34,8 +34,8 @@
         For Each r As DataRow In d.Rows
             itm = New ListViewItem
             itm.Text = ""
-            itm.SubItems.Add(r.Item("ButtonText").ToString())
-            itm.SubItems.Add(r.Item("KeyboardShortcut").ToString())
+            itm.SubItems.Add(r.Item(BUTTON_TEXT).ToString())
+            itm.SubItems.Add(r.Item(KEYBOARD_SHORTCUT).ToString())
             Me.lstSpecies.Items.Add(itm)
         Next
     End Sub
@@ -71,7 +71,7 @@
         Dim strKeyboardShortcut As String = Me.lstSpecies.Items(selIdx).SubItems(2).Text
         Dim strQuery As String
         strQuery = "UPDATE " & DB_SPECIES_BUTTONS_TABLE &
-                   " SET KeyboardShortCut = " & DoubleQuote(NULL_STRING) &
+                   " SET KeyboardShortCut = " & DoubleQuote(String.Empty) &
                    " WHERE ButtonText = " & DoubleQuote(strSpecies)
         Database.ExecuteNonQuery(strQuery)
         populateTable()
