@@ -3659,6 +3659,16 @@ Public Class VideoMiner
         frmConfigureButtons.ShowDialog()
     End Sub
 
+    ''' <summary>
+    ''' The habitat and/or transect buttons in the database have been modified and need to be redrawn.
+    ''' </summary>
+    Private Sub frmConfigureButtons_DatabaseModifiedHandler() Handles frmConfigureButtons.DatabaseModifiedEvent
+        pnlHabitatData.removeAllDynamicControls()
+        pnlHabitatData.fillPanel(DB_HABITAT_BUTTONS_TABLE)
+        pnlTransectData.removeAllDynamicControls()
+        pnlTransectData.fillPanel(DB_TRANSECT_BUTTONS_TABLE)
+    End Sub
+
     Public Sub cmdStop_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdStop.Click
         stopVideo()
     End Sub
@@ -4298,34 +4308,6 @@ Public Class VideoMiner
         frmEditLookupTable.ShowDialog()
     End Sub
 
-    Private Sub update_buttons() Handles frmConfigureButtons.UpdateButtons
-        'Dim txt As TextBox
-
-        'For Each txt In textboxes
-        '    If Not txt Is Nothing Then
-        '        If Not txt.Text.StartsWith("No ") Then
-        '            With txt
-        '                .BackColor = Color.LightGray
-        '                .ForeColor = Color.LimeGreen
-        '                .TextAlign = HorizontalAlignment.Center
-        '            End With
-        '        End If
-        '    End If
-        'Next
-
-        'For Each txt In Transect_Textboxes
-        '    If Not txt Is Nothing Then
-        '        If Not txt.Text.StartsWith("No ") Then
-        '            With txt
-        '                .BackColor = Color.LightGray
-        '                .ForeColor = Color.LimeGreen
-        '                .TextAlign = HorizontalAlignment.Center
-        '            End With
-        '        End If
-        '    End If
-        'Next
-    End Sub
-
     Private Sub grdVideoMinerDatabase_ColumnDisplayIndexChanged(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewColumnEventArgs) Handles grdVideoMinerDatabase.ColumnDisplayIndexChanged
         If blupdateColumns Then
             If Not blOpenDatabase And Not blCloseDatabase Then
@@ -4697,7 +4679,7 @@ Public Class VideoMiner
     ''' <summary>
     ''' If user changes the selection, just refresh the data so that the new selection is reflected.
     ''' </summary>
-    Private Sub AlwaysShowNewestRecordToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlwaysShowNewestRecordToolStripMenuItem.Click
+    Private Sub AlwaysShowNewestRecordToolStripMenuItem_Click(sender As Object, e As EventArgs)
         fetch_data()
     End Sub
 

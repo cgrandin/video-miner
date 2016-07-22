@@ -28,16 +28,18 @@ Partial Class frmConfigureButtons
         Me.cmdCreateNewButton = New System.Windows.Forms.Button()
         Me.cmdMoveDown = New System.Windows.Forms.Button()
         Me.cmdMoveUp = New System.Windows.Forms.Button()
-        Me.cmdDone = New System.Windows.Forms.Button()
         Me.cmdMoveToPanel = New System.Windows.Forms.Button()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.grdButtons = New System.Windows.Forms.DataGridView()
+        Me.btnOK = New System.Windows.Forms.Button()
+        Me.Panel3 = New System.Windows.Forms.Panel()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         CType(Me.grdButtons, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.Panel3.SuspendLayout()
         Me.SuspendLayout()
         '
         'cmdDeleteButton
@@ -97,17 +99,6 @@ Partial Class frmConfigureButtons
         Me.cmdMoveUp.Text = "Move Up"
         Me.cmdMoveUp.UseVisualStyleBackColor = True
         '
-        'cmdDone
-        '
-        Me.cmdDone.Dock = System.Windows.Forms.DockStyle.Left
-        Me.cmdDone.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdDone.Location = New System.Drawing.Point(3, 509)
-        Me.cmdDone.Name = "cmdDone"
-        Me.cmdDone.Size = New System.Drawing.Size(118, 39)
-        Me.cmdDone.TabIndex = 11
-        Me.cmdDone.Text = "Done"
-        Me.cmdDone.UseVisualStyleBackColor = True
-        '
         'cmdMoveToPanel
         '
         Me.cmdMoveToPanel.Dock = System.Windows.Forms.DockStyle.Fill
@@ -124,10 +115,10 @@ Partial Class frmConfigureButtons
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 77.0!))
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 23.0!))
         Me.TableLayoutPanel1.Controls.Add(Me.cmdMoveToPanel, 0, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.cmdDone, 0, 3)
         Me.TableLayoutPanel1.Controls.Add(Me.Panel1, 1, 1)
         Me.TableLayoutPanel1.Controls.Add(Me.Panel2, 0, 2)
         Me.TableLayoutPanel1.Controls.Add(Me.grdButtons, 0, 1)
+        Me.TableLayoutPanel1.Controls.Add(Me.Panel3, 0, 3)
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
@@ -174,6 +165,29 @@ Partial Class frmConfigureButtons
         Me.grdButtons.Size = New System.Drawing.Size(357, 412)
         Me.grdButtons.TabIndex = 17
         '
+        'btnOK
+        '
+        Me.btnOK.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnOK.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnOK.Location = New System.Drawing.Point(161, 3)
+        Me.btnOK.Name = "btnOK"
+        Me.btnOK.Size = New System.Drawing.Size(149, 33)
+        Me.btnOK.TabIndex = 19
+        Me.btnOK.Text = "DONE"
+        Me.btnOK.UseVisualStyleBackColor = True
+        '
+        'Panel3
+        '
+        Me.TableLayoutPanel1.SetColumnSpan(Me.Panel3, 2)
+        Me.Panel3.Controls.Add(Me.btnOK)
+        Me.Panel3.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Panel3.Location = New System.Drawing.Point(3, 509)
+        Me.Panel3.Name = "Panel3"
+        Me.Panel3.Size = New System.Drawing.Size(466, 39)
+        Me.Panel3.TabIndex = 18
+        '
         'frmConfigureButtons
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -189,6 +203,7 @@ Partial Class frmConfigureButtons
         Me.Panel1.ResumeLayout(False)
         Me.Panel2.ResumeLayout(False)
         CType(Me.grdButtons, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.Panel3.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -197,10 +212,11 @@ Partial Class frmConfigureButtons
     Friend WithEvents cmdCreateNewButton As System.Windows.Forms.Button
     Friend WithEvents cmdMoveDown As System.Windows.Forms.Button
     Friend WithEvents cmdMoveUp As System.Windows.Forms.Button
-    Friend WithEvents cmdDone As System.Windows.Forms.Button
     Friend WithEvents cmdMoveToPanel As System.Windows.Forms.Button
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents Panel1 As Panel
     Friend WithEvents Panel2 As Panel
     Friend WithEvents grdButtons As DataGridView
+    Friend WithEvents btnOK As Button
+    Friend WithEvents Panel3 As Panel
 End Class

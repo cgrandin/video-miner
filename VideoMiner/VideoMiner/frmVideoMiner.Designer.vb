@@ -52,7 +52,6 @@ Partial Class VideoMiner
         Me.ConfigureButtonFormatToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DisableHabitatButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EditLookupTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.AlwaysShowNewestRecordToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.GPSToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuGPSSettings = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeviceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -345,7 +344,7 @@ Partial Class VideoMiner
         '
         'mnuConfigureTools
         '
-        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ConfigureSpeciesEventToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureButtonFormatToolStripMenuItem, Me.DisableHabitatButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem, Me.AlwaysShowNewestRecordToolStripMenuItem})
+        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ConfigureSpeciesEventToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureButtonFormatToolStripMenuItem, Me.DisableHabitatButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem})
         Me.mnuConfigureTools.Name = "mnuConfigureTools"
         Me.mnuConfigureTools.Size = New System.Drawing.Size(72, 20)
         Me.mnuConfigureTools.Text = "Configure"
@@ -385,15 +384,6 @@ Partial Class VideoMiner
         Me.EditLookupTableToolStripMenuItem.Name = "EditLookupTableToolStripMenuItem"
         Me.EditLookupTableToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
         Me.EditLookupTableToolStripMenuItem.Text = "Edit Lookup Table"
-        '
-        'AlwaysShowNewestRecordToolStripMenuItem
-        '
-        Me.AlwaysShowNewestRecordToolStripMenuItem.Checked = True
-        Me.AlwaysShowNewestRecordToolStripMenuItem.CheckOnClick = True
-        Me.AlwaysShowNewestRecordToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.AlwaysShowNewestRecordToolStripMenuItem.Name = "AlwaysShowNewestRecordToolStripMenuItem"
-        Me.AlwaysShowNewestRecordToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
-        Me.AlwaysShowNewestRecordToolStripMenuItem.Text = "Always show newest record"
         '
         'GPSToolStripMenuItem
         '
@@ -1476,6 +1466,5 @@ Partial Class VideoMiner
     Friend WithEvents cmdAddComment As System.Windows.Forms.Button
     Friend WithEvents cmdRevertDatabase As System.Windows.Forms.Button
     Friend WithEvents SplitContainer8 As System.Windows.Forms.SplitContainer
-    Friend WithEvents AlwaysShowNewestRecordToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents cmdOffBottom As Button
 End Class

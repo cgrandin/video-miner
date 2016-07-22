@@ -797,15 +797,47 @@ VideoMiner
  Capture the press of the 'X' button and hide instead of closing to avoid an exception on re-opening
  </summary>
 </member>
+<member name="F:VideoMiner.frmAddButton.m_table_name">
+ <summary>
+ The name of the table which this form represents, either
+ videominer_habitat_buttons or videominer_transect_buttons
+ </summary>
+</member>
+<member name="F:VideoMiner.frmAddButton.m_data_table">
+ <summary>
+ The data table containing the contents of the table given by m_table_name
+ </summary>
+</member>
+<member name="F:VideoMiner.frmAddButton.m_lookup_table_name">
+ <summary>
+ The name of the table that was selected in the combobox by the user
+ </summary>
+</member>
 <member name="M:VideoMiner.frmAddButton.cboTables_DrawItem(System.Object,System.Windows.Forms.DrawItemEventArgs)">
  <summary>
  Allows the drawing of each item in the combobox to be controlled.
  This is to make the 'Create New' item italicized and green.
  </summary>
 </member>
+<member name="M:VideoMiner.frmAddButton.addButton">
+ <summary>
+ Make several queries to the database to add the button according to the specs on the form.
+ </summary>
+</member>
 <member name="M:VideoMiner.frmAddButton.cmdCreateNewTable">
  <summary>
  Handles the user's click of the Create New... selection in the combobox
+ </summary>
+</member>
+<member name="F:VideoMiner.frmConfigureButtons.m_table_name">
+ <summary>
+ The name of the table which this form represents, either
+ videominer_habitat_buttons or videominer_transect_buttons
+ </summary>
+</member>
+<member name="F:VideoMiner.frmConfigureButtons.m_data_table">
+ <summary>
+ The data table containing the contents of the table given by m_table_name
  </summary>
 </member>
 <member name="T:VideoMiner.frmConfigureButtons.MoveDirection">
@@ -854,16 +886,6 @@ VideoMiner
 <member name="M:VideoMiner.frmConfigureButtons.cmdCreateNewButton_Click(System.Object,System.EventArgs)">
  <summary>
  Clicking this button will bring up the 'add button' dialog which allows the definition of a new button.
- </summary>
-</member>
-<member name="M:VideoMiner.frmConfigureButtons.cmdEditButton_Click(System.Object,System.EventArgs)">
- <summary>
- Clicking this button will bring up the 'add button' dialog which will allow the editing of the current button's attributes.
- </summary>
-</member>
-<member name="M:VideoMiner.frmConfigureButtons.cmdDone_Click(System.Object,System.EventArgs)">
- <summary>
- Pressing this button will Hide the dialog
  </summary>
 </member>
 <member name="M:VideoMiner.frmConfigureButtons.frmAddButton_DatabaseModifiedHandler">
@@ -1606,6 +1628,11 @@ VideoMiner
 <member name="M:VideoMiner.VideoMiner.cmdRareSpeciesLookup_Click(System.Object,System.EventArgs)">
  <summary>
  For looking up and saving to the database a rare species (one not on the species buttons).
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMiner.frmConfigureButtons_DatabaseModifiedHandler">
+ <summary>
+ The habitat and/or transect buttons in the database have been modified and need to be redrawn.
  </summary>
 </member>
 <member name="F:VideoMiner.VideoMiner.rowWasGood">

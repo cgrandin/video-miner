@@ -1,24 +1,30 @@
-﻿Imports System.Data.OleDb
-Imports ADOX
-Imports ADODB
-
-Public Class frmAddButton
+﻿Public Class frmAddButton
 
 #Region "Member variables"
     Private Const CREATE_NEW_TEXT = "Create New..."
+    ''' <summary>
+    ''' The name of the table which this form represents, either
+    ''' videominer_habitat_buttons or videominer_transect_buttons
+    ''' </summary>
     Private m_table_name As String
+    ''' <summary>
+    ''' The data table containing the contents of the table given by m_table_name
+    ''' </summary>
     Private m_data_table As DataTable
-    Private m_data_set As DataSet
+    ''' <summary>
+    ''' The name of the table that was selected in the combobox by the user
+    ''' </summary>
+    Private m_lookup_table_name As String
 
-    Private m_ButtonName As String
-    Private m_DataCode As Integer
-    Private m_FieldName As String
-    Private m_DrawingOrder As String
+    Private m_button_name As String
+    Private m_data_code As Integer
+    Private m_field_name As String
+    Private m_drawing_order As String
 
-    Private m_OldButtonName As String
-    Private m_OldTableName As String
-    Private m_OldDataCode As Integer
-    Private m_OldFieldName As String
+    'Private m_OldButtonName As String
+    'Private m_OldTableName As String
+    'Private m_OldDataCode As Integer
+    'Private m_OldFieldName As String
 
     Private WithEvents m_frmAddNewTable As frmAddNewTable
     Private WithEvents m_frmViewDataTable As frmViewDataTable
@@ -26,86 +32,89 @@ Public Class frmAddButton
 
 #Region "Properties"
 
-    Public Property ButtonName() As String
-        Get
-            Return m_ButtonName
-        End Get
-        Set(ByVal value As String)
-            m_ButtonName = value
-        End Set
-    End Property
+    'Public Property ButtonName() As String
+    '    Get
+    '        Return m_button_name
+    '    End Get
+    '    Set(ByVal value As String)
+    '        m_button_name = value
+    '    End Set
+    'End Property
 
-    Public Property DataCode() As Integer
-        Get
-            Return m_DataCode
-        End Get
-        Set(ByVal value As Integer)
-            m_DataCode = value
-        End Set
-    End Property
+    'Public Property DataCode() As Integer
+    '    Get
+    '        Return m_data_code
+    '    End Get
+    '    Set(ByVal value As Integer)
+    '        m_data_code = value
+    '    End Set
+    'End Property
 
-    Public Property FieldName() As String
-        Get
-            Return m_FieldName
-        End Get
-        Set(ByVal value As String)
-            m_FieldName = value
-        End Set
-    End Property
+    'Public Property FieldName() As String
+    '    Get
+    '        Return m_field_name
+    '    End Get
+    '    Set(ByVal value As String)
+    '        m_field_name = value
+    '    End Set
+    'End Property
 
-    Public Property DrawingOrder() As Integer
-        Get
-            Return m_DrawingOrder
-        End Get
-        Set(ByVal value As Integer)
-            m_DrawingOrder = value
-        End Set
-    End Property
+    'Public Property DrawingOrder() As Integer
+    '    Get
+    '        Return m_drawing_order
+    '    End Get
+    '    Set(ByVal value As Integer)
+    '        m_drawing_order = value
+    '    End Set
+    'End Property
 
-    Public Property OldButtonName() As String
-        Get
-            Return m_OldButtonName
-        End Get
-        Set(ByVal value As String)
-            m_OldButtonName = value
-        End Set
-    End Property
+    'Public Property OldButtonName() As String
+    '    Get
+    '        Return m_OldButtonName
+    '    End Get
+    '    Set(ByVal value As String)
+    '        m_OldButtonName = value
+    '    End Set
+    'End Property
 
-    Public Property OldTableName() As String
-        Get
-            Return m_OldTableName
-        End Get
-        Set(ByVal value As String)
-            m_OldTableName = value
-        End Set
-    End Property
+    'Public Property OldTableName() As String
+    '    Get
+    '        Return m_OldTableName
+    '    End Get
+    '    Set(ByVal value As String)
+    '        m_OldTableName = value
+    '    End Set
+    'End Property
 
-    Public Property OldDataCode() As Integer
-        Get
-            Return m_OldDataCode
-        End Get
-        Set(ByVal value As Integer)
-            m_OldDataCode = value
-        End Set
-    End Property
+    'Public Property OldDataCode() As Integer
+    '    Get
+    '        Return m_OldDataCode
+    '    End Get
+    '    Set(ByVal value As Integer)
+    '        m_OldDataCode = value
+    '    End Set
+    'End Property
 
-    Public Property OldFieldName() As String
-        Get
-            Return m_OldFieldName
-        End Get
-        Set(ByVal value As String)
-            m_OldFieldName = value
-        End Set
-    End Property
+    'Public Property OldFieldName() As String
+    '    Get
+    '        Return m_OldFieldName
+    '    End Get
+    '    Set(ByVal value As String)
+    '        m_OldFieldName = value
+    '    End Set
+    'End Property
 
 #End Region
 
+#Region "Events"
     Public Event AddNewTableEvent()
     Public Event DatabaseModifedEvent()
+#End Region
 
     Public Sub New(strConfigureTable As String)
         InitializeComponent()
         m_table_name = strConfigureTable
+        m_lookup_table_name = Nothing
         m_frmViewDataTable = New frmViewDataTable(DB_DATA_CODES_TABLE)
     End Sub
 
@@ -126,15 +135,15 @@ Public Class frmAddButton
                 did_change = True
             End If
         Next
-        If Me.txtFieldName.Text.Length = 1 Then
-            Me.txtFieldName.Text = txtName.ToUpper
+        If txtFieldName.Text.Length = 1 Then
+            txtFieldName.Text = txtName.ToUpper
         Else
-            Me.txtFieldName.Text = txtName
+            txtFieldName.Text = txtName
         End If
         If did_change = False Then
-            Me.txtFieldName.Select(sel_s, 0)
+            txtFieldName.Select(sel_s, 0)
         Else
-            Me.txtFieldName.Select(sel_s - 1, 0)
+            txtFieldName.Select(sel_s - 1, 0)
         End If
     End Sub
 
@@ -166,6 +175,8 @@ Public Class frmAddButton
         Dim cbo As ComboBox = CType(sender, ComboBox)
         If cbo.SelectedItem.ToString() = CREATE_NEW_TEXT Then
             cmdCreateNewTable()
+        Else
+            m_lookup_table_name = cboTables.SelectedItem.ToString()
         End If
     End Sub
 
@@ -177,8 +188,7 @@ Public Class frmAddButton
     Private Sub frmAddButton_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Dim tblSchema As DataTable = Database.GetDataTableSchema()
         Dim strTableName As String
-        'Dim strQuery As String
-        ' Need the next line to make sure the DrawItem event is fired
+        ' Need this to make sure the DrawItem event is fired
         cboTables.DrawMode = DrawMode.OwnerDrawFixed
         ' Add a choice to 'Create new table...' to the combobox
         cboTables.Items.Add(CREATE_NEW_TEXT)
@@ -234,11 +244,14 @@ Public Class frmAddButton
         Hide()
     End Sub
 
-    Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
-        m_ButtonName = txtButtonName.Text
-        m_table_name = cboTables.SelectedItem.ToString()
-        m_DataCode = CInt(txtDataCode.Text)
-        m_FieldName = txtFieldName.Text
+    ''' <summary>
+    ''' Make several queries to the database to add the button according to the specs on the form.
+    ''' </summary>
+    Private Sub addButton()
+        If IsNothing(m_lookup_table_name) And Not rdInputValue.Checked Then Exit Sub
+        m_button_name = txtButtonName.Text
+        m_data_code = CInt(txtDataCode.Text)
+        m_field_name = txtFieldName.Text
 
         Dim drButtons As DataRow
         Dim drDataCodes As DataRow
@@ -251,17 +264,17 @@ Public Class frmAddButton
         dtButtons = Database.GetDataTable("select * from " & m_table_name, m_table_name)
         For i As Integer = 0 To dtButtons.Rows.Count - 1
             drButtons = dtButtons.Rows.Item(i)
-            If drButtons.Item(BUTTON_TEXT).ToString = m_ButtonName Then
+            If drButtons.Item(BUTTON_TEXT).ToString = m_button_name Then
                 MessageBox.Show("The button name entered is already in use, please change the name and try again.",
                                 "Button Name In Use", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If
-            If CInt(drButtons.Item(DATA_CODE)) = m_DataCode Then
+            If CInt(drButtons.Item(DATA_CODE)) = m_data_code Then
                 MessageBox.Show("The data code entered is already in use, please change the code and try again.",
                                 "Data Code In Use", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If
-            If drButtons.Item(DATA_CODE_NAME).ToString = m_FieldName Then
+            If drButtons.Item(DATA_CODE_NAME).ToString = m_field_name Then
                 MessageBox.Show("The field name entered is already in use, please change the name and try again.",
                                 "Field Name In Use", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
@@ -270,7 +283,7 @@ Public Class frmAddButton
         dtDataCodes = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE, DB_DATA_CODES_TABLE)
         For i As Integer = 0 To dtDataCodes.Rows.Count - 1
             drDataCodes = dtDataCodes.Rows.Item(i)
-            If CInt(drDataCodes.Item(strKeyNameDataCodeTable)) = m_DataCode Then
+            If CInt(drDataCodes.Item(strKeyNameDataCodeTable)) = m_data_code Then
                 MessageBox.Show("The data code entered is already used for '" &
                                 drDataCodes.Item("Description").ToString() & "' , please change the code and try again.",
                                 "Data Code In Use", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -281,22 +294,22 @@ Public Class frmAddButton
         If rdInputValue.Checked = True Then
             strTableName = USER_ENTERED
         Else
-            strTableName = m_table_name
+            strTableName = m_lookup_table_name
         End If
         ' Modify the last DataRow for buttons table so that is has the values we want for the new data code record
         drButtons.Item(strKeyName) = intNextKey
-        drButtons.Item(BUTTON_TEXT) = m_ButtonName
+        drButtons.Item(BUTTON_TEXT) = m_button_name
         drButtons.Item(TABLE_NAME) = strTableName
-        drButtons.Item(DATA_CODE) = m_DataCode
-        drButtons.Item(DATA_CODE_NAME) = m_ButtonName & "ID"
+        drButtons.Item(DATA_CODE) = m_data_code
+        drButtons.Item(DATA_CODE_NAME) = m_button_name & "ID"
         Database.InsertRow(drButtons, m_table_name)
         ' Modify the last DataRow for data codes table so that is has the values we want for the new data code record
-        drDataCodes.Item("Code") = m_DataCode
-        drDataCodes.Item("Description") = m_ButtonName
+        drDataCodes.Item("Code") = m_data_code
+        drDataCodes.Item("Description") = m_button_name
         drDataCodes.Item("LookupTable") = m_table_name
         Database.InsertRow(drDataCodes, DB_DATA_CODES_TABLE)
 
-        Database.AddColumn(DB_DATA_TABLE, m_FieldName)
+        Database.AddColumn(DB_DATA_TABLE, m_field_name)
         ' Need to fire event to tell configurebuttons form that the database has changed
         RaiseEvent DatabaseModifedEvent()
 
@@ -346,6 +359,10 @@ Public Class frmAddButton
         '                             " WHERE Code = " & Me.OldDataCode & " AND Description = " & SingleQuote(Me.OldButtonName))
         'End If
         Hide()
+    End Sub
+
+    Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
+        addButton()
     End Sub
 
     ''' <summary>

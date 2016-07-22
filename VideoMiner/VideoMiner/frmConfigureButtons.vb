@@ -2,13 +2,19 @@
 
 #Region "Member variables"
     Private WithEvents m_frmAddButton As frmAddButton
+    ''' <summary>
+    ''' The name of the table which this form represents, either
+    ''' videominer_habitat_buttons or videominer_transect_buttons
+    ''' </summary>
     Private m_table_name As String
+    ''' <summary>
+    ''' The data table containing the contents of the table given by m_table_name
+    ''' </summary>
     Private m_data_table As DataTable
-    Private m_ButtonName As String
-    Private m_TableName As String
-    Private m_DataCode As Integer
-    Private m_FieldName As String
-    Private m_DrawingOrder As String
+    Private m_button_name As String
+    Private m_data_code As Integer
+    Private m_field_name As String
+    Private m_has_modifications As Boolean
     ''' <summary>
     ''' Enumeration describing which way to move the button definition in the list
     ''' </summary>
@@ -20,56 +26,7 @@
 #End Region
 
 #Region "Events"
-    Public Event UpdateButtonDrawingOrder()
-    Public Event UpdateButtons()
-    Public Event RefreshDatabaseEvent()
-#End Region
-
-#Region "Properties"
-    Public Property ButtonName() As String
-        Get
-            Return m_ButtonName
-        End Get
-        Set(ByVal value As String)
-            m_ButtonName = value
-        End Set
-    End Property
-
-    Public Property TableName() As String
-        Get
-            Return m_TableName
-        End Get
-        Set(ByVal value As String)
-            m_TableName = value
-        End Set
-    End Property
-
-    Public Property DataCode() As Integer
-        Get
-            Return m_DataCode
-        End Get
-        Set(ByVal value As Integer)
-            m_DataCode = value
-        End Set
-    End Property
-
-    Public Property FieldName() As String
-        Get
-            Return m_FieldName
-        End Get
-        Set(ByVal value As String)
-            m_FieldName = value
-        End Set
-    End Property
-
-    Public Property DrawingOrder() As Integer
-        Get
-            Return m_DrawingOrder
-        End Get
-        Set(ByVal value As Integer)
-            m_DrawingOrder = value
-        End Set
-    End Property
+    Public Event DatabaseModifiedEvent()
 #End Region
 
     ''' <summary>
@@ -83,6 +40,7 @@
 
     Private Sub frmConfigureButtons_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         populateTableList()
+        m_has_modifications = False
     End Sub
 
     ''' <summary>
@@ -104,7 +62,6 @@
         grdButtons.Columns(strPrimaryKeyName).Visible = False
         grdButtons.Enabled = True
     End Sub
-
 
     ''' <summary>
     ''' Clicking this button causes the currently selected item to move up one in the list.
@@ -182,6 +139,7 @@
         ' This allows user to move one item down or up quickly
         grdButtons.ClearSelection()
         grdButtons.Rows(intSelectedIndex).Selected = True
+        m_has_modifications = True
     End Sub
 
     ''' <summary>
@@ -193,34 +151,11 @@
     End Sub
 
     ''' <summary>
-    ''' Clicking this button will bring up the 'add button' dialog which will allow the editing of the current button's attributes.
-    ''' </summary>
-    Private Sub cmdEditButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEditButton.Click
-        If grdButtons.SelectedRows.Count = 0 Then
-            MessageBox.Show("Please select a button from the list", "No selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Exit Sub
-        End If
-        'blButtonEdit = True
-        m_frmAddButton = New frmAddButton(m_table_name)
-        'frmAddButton.Text = "Edit " & Me.lstButtons.SelectedItems.Item(0).SubItems(1).Text.ToString & " Button"
-        'frmAddButton.txtButtonName.Text = Me.lstButtons.SelectedItems.Item(0).SubItems(1).Text.ToString
-        m_frmAddButton.ShowDialog()
-        populateTableList()
-    End Sub
-
-    ''' <summary>
-    ''' Pressing this button will Hide the dialog
-    ''' </summary>
-    Private Sub cmdDone_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDone.Click
-        'Me.UpdateDrawingOrder()
-        Me.Hide()
-    End Sub
-
-    ''' <summary>
     ''' When the database has been modified by a child form, this will refresh the DataGridView
     ''' </summary>
     Private Sub frmAddButton_DatabaseModifiedHandler() Handles m_frmAddButton.DatabaseModifedEvent
         populateTableList()
+        m_has_modifications = True
     End Sub
 
     ''' <summary>
@@ -254,6 +189,7 @@
         Database.DeleteRow(intKey, m_table_name)
         populateTableList()
         grdButtons.ClearSelection()
+        m_has_modifications = True
     End Sub
 
     ''' <summary>
@@ -273,30 +209,12 @@
             strMoveToTable = DB_HABITAT_BUTTONS_TABLE
             strMoveToPanel = "HABITAT DATA"
         End If
-        Dim selIdx As Integer
-        Try
-            ' selIdx = Me.lstButtons.SelectedIndices.Item(0)
-        Catch ex As Exception
-            selIdx = 0
-        End Try
-        If grdButtons.SelectedRows.Count = 0 Then
-            MessageBox.Show("Please select a button from the list", "No selection",
-                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Exit Sub
-        Else
-            'If MessageBox.Show("Are you sure you want to move the " & Me.lstButtons.Items(selIdx).SubItems(1).Text &
-            '                   " button to " & strMoveToPanel & "?", "Move Button", MessageBoxButtons.YesNo,
-            'MessageBoxIcon.Question) = vbNo Then
-            'Exit Sub
-        End If
-        'End If
-        'm_ButtonName = Me.lstButtons.Items(selIdx).SubItems(1).Text
         Dim strKeyName As String = Database.GetPrimaryKeyFieldName(m_table_name)
 
         ' Get the source table's information
         d = Database.GetDataTable("select * from " & m_table_name, m_table_name)
         For Each r In d.Rows
-            If r.Item(BUTTON_TEXT).ToString() = m_ButtonName Then
+            If r.Item(BUTTON_TEXT).ToString() = m_button_name Then
                 Exit For
             End If
         Next
@@ -309,7 +227,24 @@
         Database.InsertRow(r, strMoveToTable)
         Database.DeleteRow(intLastKey, m_table_name)
         populateTableList()
-        RaiseEvent RefreshDatabaseEvent()
+        m_has_modifications = True
+    End Sub
+
+    Private Sub btnOK_Click(sender As Object, e As EventArgs) Handles btnOK.Click
+        If m_has_modifications Then
+            RaiseEvent DatabaseModifiedEvent()
+        End If
+        Hide()
+    End Sub
+
+    Private Sub me_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If e.CloseReason = CloseReason.UserClosing Then
+            e.Cancel = True
+            If m_has_modifications Then
+                RaiseEvent DatabaseModifiedEvent()
+            End If
+            Hide()
+        End If
     End Sub
 
 End Class
