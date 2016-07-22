@@ -38,6 +38,8 @@ Partial Class frmRareSpeciesLookup
         Me.lblTaxonomicLevel = New System.Windows.Forms.Label()
         Me.cmdCancel = New System.Windows.Forms.Button()
         Me.cmdOk = New System.Windows.Forms.Button()
+        Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
+        Me.TableLayoutPanel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'lblCommonNameValue
@@ -85,71 +87,80 @@ Partial Class frmRareSpeciesLookup
         'lblSpeciesCommonName
         '
         Me.lblSpeciesCommonName.AutoSize = True
+        Me.lblSpeciesCommonName.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.lblSpeciesCommonName.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold)
-        Me.lblSpeciesCommonName.Location = New System.Drawing.Point(12, 9)
+        Me.lblSpeciesCommonName.Location = New System.Drawing.Point(3, 7)
         Me.lblSpeciesCommonName.Name = "lblSpeciesCommonName"
-        Me.lblSpeciesCommonName.Size = New System.Drawing.Size(138, 13)
+        Me.lblSpeciesCommonName.Size = New System.Drawing.Size(155, 13)
         Me.lblSpeciesCommonName.TabIndex = 24
         Me.lblSpeciesCommonName.Text = "Species Common Name"
         '
         'cboCommonName
         '
+        Me.TableLayoutPanel1.SetColumnSpan(Me.cboCommonName, 2)
+        Me.cboCommonName.Dock = System.Windows.Forms.DockStyle.Fill
         Me.cboCommonName.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cboCommonName.FormattingEnabled = True
-        Me.cboCommonName.Location = New System.Drawing.Point(12, 25)
+        Me.cboCommonName.Location = New System.Drawing.Point(3, 23)
         Me.cboCommonName.Name = "cboCommonName"
-        Me.cboCommonName.Size = New System.Drawing.Size(411, 21)
+        Me.cboCommonName.Size = New System.Drawing.Size(317, 21)
         Me.cboCommonName.TabIndex = 25
         '
         'lblSpeciesScientificName
         '
         Me.lblSpeciesScientificName.AutoSize = True
+        Me.lblSpeciesScientificName.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.lblSpeciesScientificName.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold)
-        Me.lblSpeciesScientificName.Location = New System.Drawing.Point(11, 61)
+        Me.lblSpeciesScientificName.Location = New System.Drawing.Point(3, 59)
         Me.lblSpeciesScientificName.Name = "lblSpeciesScientificName"
-        Me.lblSpeciesScientificName.Size = New System.Drawing.Size(139, 13)
+        Me.lblSpeciesScientificName.Size = New System.Drawing.Size(155, 13)
         Me.lblSpeciesScientificName.TabIndex = 26
         Me.lblSpeciesScientificName.Text = "Species Scientific Name"
         '
         'cboScientificName
         '
+        Me.TableLayoutPanel1.SetColumnSpan(Me.cboScientificName, 2)
+        Me.cboScientificName.Dock = System.Windows.Forms.DockStyle.Fill
         Me.cboScientificName.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cboScientificName.FormattingEnabled = True
-        Me.cboScientificName.Location = New System.Drawing.Point(12, 77)
+        Me.cboScientificName.Location = New System.Drawing.Point(3, 75)
         Me.cboScientificName.Name = "cboScientificName"
-        Me.cboScientificName.Size = New System.Drawing.Size(411, 21)
+        Me.cboScientificName.Size = New System.Drawing.Size(317, 21)
         Me.cboScientificName.TabIndex = 27
         '
         'Label2
         '
         Me.Label2.AutoSize = True
+        Me.Label2.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.Label2.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(12, 101)
+        Me.Label2.Location = New System.Drawing.Point(3, 111)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(84, 13)
+        Me.Label2.Size = New System.Drawing.Size(155, 13)
         Me.Label2.TabIndex = 28
         Me.Label2.Text = "Species Code:"
         '
         'txtSpeciesCode
         '
+        Me.txtSpeciesCode.Dock = System.Windows.Forms.DockStyle.Fill
         Me.txtSpeciesCode.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtSpeciesCode.Location = New System.Drawing.Point(15, 120)
+        Me.txtSpeciesCode.Location = New System.Drawing.Point(3, 127)
         Me.txtSpeciesCode.MaxLength = 50
         Me.txtSpeciesCode.Name = "txtSpeciesCode"
         Me.txtSpeciesCode.ReadOnly = True
-        Me.txtSpeciesCode.Size = New System.Drawing.Size(111, 21)
+        Me.txtSpeciesCode.Size = New System.Drawing.Size(155, 21)
         Me.txtSpeciesCode.TabIndex = 29
         Me.txtSpeciesCode.TabStop = False
         Me.txtSpeciesCode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'txtTaxonomicLevel
         '
+        Me.txtTaxonomicLevel.Dock = System.Windows.Forms.DockStyle.Fill
         Me.txtTaxonomicLevel.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtTaxonomicLevel.Location = New System.Drawing.Point(136, 120)
+        Me.txtTaxonomicLevel.Location = New System.Drawing.Point(164, 127)
         Me.txtTaxonomicLevel.MaxLength = 50
         Me.txtTaxonomicLevel.Name = "txtTaxonomicLevel"
         Me.txtTaxonomicLevel.ReadOnly = True
-        Me.txtTaxonomicLevel.Size = New System.Drawing.Size(136, 21)
+        Me.txtTaxonomicLevel.Size = New System.Drawing.Size(156, 21)
         Me.txtTaxonomicLevel.TabIndex = 31
         Me.txtTaxonomicLevel.TabStop = False
         Me.txtTaxonomicLevel.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
@@ -157,48 +168,71 @@ Partial Class frmRareSpeciesLookup
         'lblTaxonomicLevel
         '
         Me.lblTaxonomicLevel.AutoSize = True
+        Me.lblTaxonomicLevel.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.lblTaxonomicLevel.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTaxonomicLevel.Location = New System.Drawing.Point(134, 103)
+        Me.lblTaxonomicLevel.Location = New System.Drawing.Point(164, 111)
         Me.lblTaxonomicLevel.Name = "lblTaxonomicLevel"
-        Me.lblTaxonomicLevel.Size = New System.Drawing.Size(105, 13)
+        Me.lblTaxonomicLevel.Size = New System.Drawing.Size(156, 13)
         Me.lblTaxonomicLevel.TabIndex = 30
         Me.lblTaxonomicLevel.Text = "Taxonomic Level:"
         '
         'cmdCancel
         '
+        Me.cmdCancel.Dock = System.Windows.Forms.DockStyle.Left
         Me.cmdCancel.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdCancel.Location = New System.Drawing.Point(215, 152)
+        Me.cmdCancel.Location = New System.Drawing.Point(164, 159)
         Me.cmdCancel.Name = "cmdCancel"
-        Me.cmdCancel.Size = New System.Drawing.Size(87, 23)
+        Me.cmdCancel.Size = New System.Drawing.Size(140, 40)
         Me.cmdCancel.TabIndex = 33
         Me.cmdCancel.Text = "Cancel"
         Me.cmdCancel.UseVisualStyleBackColor = True
         '
         'cmdOk
         '
+        Me.cmdOk.Dock = System.Windows.Forms.DockStyle.Right
         Me.cmdOk.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdOk.Location = New System.Drawing.Point(122, 152)
+        Me.cmdOk.Location = New System.Drawing.Point(18, 159)
         Me.cmdOk.Name = "cmdOk"
-        Me.cmdOk.Size = New System.Drawing.Size(87, 23)
+        Me.cmdOk.Size = New System.Drawing.Size(140, 40)
         Me.cmdOk.TabIndex = 32
         Me.cmdOk.Text = "OK"
         Me.cmdOk.UseVisualStyleBackColor = True
+        '
+        'TableLayoutPanel1
+        '
+        Me.TableLayoutPanel1.ColumnCount = 2
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.Controls.Add(Me.lblSpeciesCommonName, 0, 0)
+        Me.TableLayoutPanel1.Controls.Add(Me.cmdCancel, 1, 6)
+        Me.TableLayoutPanel1.Controls.Add(Me.cboCommonName, 0, 1)
+        Me.TableLayoutPanel1.Controls.Add(Me.cmdOk, 0, 6)
+        Me.TableLayoutPanel1.Controls.Add(Me.lblSpeciesScientificName, 0, 2)
+        Me.TableLayoutPanel1.Controls.Add(Me.txtTaxonomicLevel, 1, 5)
+        Me.TableLayoutPanel1.Controls.Add(Me.cboScientificName, 0, 3)
+        Me.TableLayoutPanel1.Controls.Add(Me.txtSpeciesCode, 0, 5)
+        Me.TableLayoutPanel1.Controls.Add(Me.lblTaxonomicLevel, 1, 4)
+        Me.TableLayoutPanel1.Controls.Add(Me.Label2, 0, 4)
+        Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
+        Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
+        Me.TableLayoutPanel1.RowCount = 7
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.20408!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.32653!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.20408!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.32653!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.20408!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.32653!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20.40816!))
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(323, 202)
+        Me.TableLayoutPanel1.TabIndex = 34
         '
         'frmRareSpeciesLookup
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(440, 187)
-        Me.Controls.Add(Me.cmdCancel)
-        Me.Controls.Add(Me.cmdOk)
-        Me.Controls.Add(Me.txtTaxonomicLevel)
-        Me.Controls.Add(Me.lblTaxonomicLevel)
-        Me.Controls.Add(Me.txtSpeciesCode)
-        Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.cboScientificName)
-        Me.Controls.Add(Me.lblSpeciesScientificName)
-        Me.Controls.Add(Me.cboCommonName)
-        Me.Controls.Add(Me.lblSpeciesCommonName)
+        Me.ClientSize = New System.Drawing.Size(323, 202)
+        Me.Controls.Add(Me.TableLayoutPanel1)
         Me.Controls.Add(Me.lblTaxonomicCodeValue)
         Me.Controls.Add(Me.lblSpeciesCodeValue)
         Me.Controls.Add(Me.lblLatinNameValue)
@@ -207,6 +241,8 @@ Partial Class frmRareSpeciesLookup
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "frmRareSpeciesLookup"
         Me.Text = "Rare Species Lookup"
+        Me.TableLayoutPanel1.ResumeLayout(False)
+        Me.TableLayoutPanel1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -226,4 +262,5 @@ Partial Class frmRareSpeciesLookup
     Friend WithEvents lblTaxonomicLevel As System.Windows.Forms.Label
     Friend WithEvents cmdCancel As System.Windows.Forms.Button
     Friend WithEvents cmdOk As System.Windows.Forms.Button
+    Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
 End Class
