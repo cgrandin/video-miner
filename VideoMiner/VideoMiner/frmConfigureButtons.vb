@@ -39,6 +39,7 @@
         m_table_name = strConfigureTable
         m_grd = New VideoMinerDataGridView(m_table_name, False)
         Panel4.Controls.Add(m_grd)
+        m_grd.Dock = DockStyle.Fill
     End Sub
 
     Private Sub frmConfigureButtons_Load(sender As Object, e As EventArgs) Handles MyBase.Load
