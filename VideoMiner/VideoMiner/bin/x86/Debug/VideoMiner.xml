@@ -840,57 +840,10 @@ VideoMiner
  The data table containing the contents of the table given by m_table_name
  </summary>
 </member>
-<member name="T:VideoMiner.frmConfigureButtons.MoveDirection">
- <summary>
- Enumeration describing which way to move the button definition in the list
- </summary>
-</member>
 <member name="M:VideoMiner.frmConfigureButtons.#ctor(System.String)">
  <summary>
  Initialize the query, and extract the data that query defines into a DataSet with corresponding DataTable.
  Populate the list and set up list attributes.
- </summary>
-</member>
-<member name="M:VideoMiner.frmConfigureButtons.populateTableList">
- <summary>
- Fill the listbox with the current m_table_name table.
- </summary>
-</member>
-<member name="M:VideoMiner.frmConfigureButtons.cmdMoveUp_Click(System.Object,System.EventArgs)">
- <summary>
- Clicking this button causes the currently selected item to move up one in the list.
- The database will be modified; the primary keys for the item selected and the one above it
- will be swapped.
- </summary>
-</member>
-<member name="M:VideoMiner.frmConfigureButtons.cmdMoveDown_Click(System.Object,System.EventArgs)">
- <summary>
- Clicking this button causes the currently selected item to move down one in the list.
- The database will be modified; the primary keys for the item selected and the one below it
- will be swapped.
- </summary>
-</member>
-<member name="M:VideoMiner.frmConfigureButtons.moveRecord">
- <summary>
- Move the first selected item up or down in order, and raise the event to the main form so that the buttons can
- be redrawn to correspond to the new order.
- The variable m_move_direction is used to determine move direction Up or Down.
- This is accomplished by swapping the primary keys for the two records in the database.
- </summary>
-</member>
-<member name="M:VideoMiner.frmConfigureButtons.cmdCreateNewButton_Click(System.Object,System.EventArgs)">
- <summary>
- Clicking this button will bring up the 'add button' dialog which allows the definition of a new button.
- </summary>
-</member>
-<member name="M:VideoMiner.frmConfigureButtons.frmAddButton_DatabaseModifiedHandler">
- <summary>
- When the database has been modified by a child form, this will refresh the DataGridView
- </summary>
-</member>
-<member name="M:VideoMiner.frmConfigureButtons.cmdDeleteButton_Click(System.Object,System.EventArgs)">
- <summary>
- Clicking this button will remove the selected button from the project, including from the database.
  </summary>
 </member>
 <member name="M:VideoMiner.frmConfigureButtons.cmdMoveToPanel_Click(System.Object,System.EventArgs)">
@@ -3470,11 +3423,6 @@ VideoMiner
  Name of the primary key field in the table
  </summary>
 </member>
-<member name="F:VideoMiner.VideoMinerDataGridView.m_next_primary_key">
- <summary>
- The next available primary key in the table
- </summary>
-</member>
 <member name="F:VideoMiner.VideoMinerDataGridView.m_show_primary_key_field">
  <summary>
  Show the column which holds the Primary Keys?
@@ -3511,9 +3459,19 @@ VideoMiner
  then this is required to put the row back into the condition it was in before the current edit attempt.
  </summary>
 </member>
+<member name="F:VideoMiner.VideoMinerDataGridView._m_frmViewDataTable">
+ <summary>
+ A form showing the data code table so user can see all the currently-assigned data codes
+ </summary>
+</member>
+<member name="T:VideoMiner.VideoMinerDataGridView.MoveDirection">
+ <summary>
+ Enumeration describing which way to move the button definition in the list
+ </summary>
+</member>
 <member name="M:VideoMiner.VideoMinerDataGridView.fetchData">
  <summary>
- Fetch the data from the database, and enable/disble buttons accordig to what was retreived.
+ Fetch the data from the database, and enable/disble buttons according to what was retreived.
  </summary>
 </member>
 <member name="M:VideoMiner.VideoMinerDataGridView.grd_DataBindingComplete(System.Object,System.EventArgs)">
@@ -3523,7 +3481,8 @@ VideoMiner
 </member>
 <member name="M:VideoMiner.VideoMinerDataGridView.setSynced">
  <summary>
- Set the control to reflect that the DataGridView is synced with the database
+ Set the control to reflect that the DataGridView is synced with the database.
+ Set up the color array information to be all clean.
  </summary>
 </member>
 <member name="M:VideoMiner.VideoMinerDataGridView.setUnsynced">
@@ -3536,34 +3495,30 @@ VideoMiner
  Set the row headers to be the Primary key values, and make sure the header is wide enough
  </summary>
 </member>
-<member name="M:VideoMiner.VideoMinerDataGridView.grd_CellMouseDown(System.Object,System.Windows.Forms.DataGridViewCellMouseEventArgs)">
+<member name="M:VideoMiner.VideoMinerDataGridView.disableColumnSorting">
  <summary>
- When the user clicks a column header, record the cell color data so that any that are dirty
- will remain so after the sort takes place.
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMinerDataGridView.updateColoring">
- <summary>
- Marshalled sub used to re-apply the coloring of the dirty data cells in the data grid. This must be marshalled to ensure it happens after the
- DataBinding Event has taken place.
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMinerDataGridView.grd_Sorted(System.Object,System.Windows.Forms.DataGridViewBindingCompleteEventArgs)">
- <summary>
- Apply coloring to the data grid after it has been sorted
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMinerDataGridView.grd_CurrentCellDirtyStateChanged(System.Object,System.EventArgs)">
- <summary>
- Triggered when any cell value is changed in the grid. Will update a label telling the user that
- the data is no longer synced with the database, and color the row of cells salmon.
- If the user just types the same value that was in the cell to begin with, the row will be unchanged.
+ Disable the ColumnSort feature in the DataGridView
  </summary>
 </member>
 <member name="M:VideoMiner.VideoMinerDataGridView.grd_DataError(System.Object,System.Windows.Forms.DataGridViewDataErrorEventArgs)">
  <summary>
  Give column and row-specific error message to user. Avoids errors/exceptions during the update to the database.
  </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.compareGridAndDatabaseRows(System.Int32,System.Data.DataRow)">
+ <summary>
+ Returns true if the row in the database for the supplied Primary Key 'intKey'
+ has exactly the same data as the row in the DataRow variable dr.
+ </summary>
+ <returns></returns>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.grd_CellValueChanged(System.Object,System.Windows.Forms.DataGridViewCellEventArgs)">
+ <summary>
+ Compare the row's data to what is in the database table. If they are the same,
+ set the control to be synced with the database.
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param>
 </member>
 <member name="M:VideoMiner.VideoMinerDataGridView.updateDatabaseWithGridValues">
  <summary>
@@ -3608,6 +3563,24 @@ VideoMiner
  <summary>
  Reload the grid from the access database. A confirmation box will be displayed and if the user aggrees then any changes in the grid will
  be discarded and the database will be reloaded from scratch
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.btnAddRow_Click(System.Object,System.EventArgs)">
+ <summary>
+ Add a new empty row to the database and the DataGridView.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.moveRecord(VideoMiner.VideoMinerDataGridView.MoveDirection)">
+ <summary>
+ Move the selected item up or down in the table, and raise the event to the parent.
+ The implmentation effectively swaps the two primary keys for the two records.
+ If there is more than one selected row, a messagebox will be issued and the event cancelled.
+ The variable direction is used to determine move direction Up or Down.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.parentHiding">
+ <summary>
+ If the parent is being hidden, this will close the child datacodes form.
  </summary>
 </member>
 </members>
