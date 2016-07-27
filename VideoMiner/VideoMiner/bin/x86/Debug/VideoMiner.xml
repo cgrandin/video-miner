@@ -3442,9 +3442,10 @@ VideoMiner
 </member>
 <member name="T:VideoMiner.VideoMinerDataGridView.stcRowColoring">
  <summary>
- Coloring of a row in the data grid. When a field is sorted by clicking the column header, the coloring is recorded, then the grid is sorted,
- then the coloring is re-applied by using the key field 'ID'. This structure represents a single row in the grid. The two cell arrays hold the
- background and foreground colors for the cells in the row.
+ Coloring of a row in the data grid. This structure represents a single row in the grid.
+ The two cell arrays hold the background and foreground colors for the cells in the row.
+ If the columns are allowed to be sorted, this would be required to recolor the cells
+ after the sort.
  </summary>
 </member>
 <member name="F:VideoMiner.VideoMinerDataGridView.m_arr_coloring">
@@ -3492,7 +3493,7 @@ VideoMiner
 </member>
 <member name="M:VideoMiner.VideoMinerDataGridView.writePrimaryKeysInRowHeaders">
  <summary>
- Set the row headers to be the Primary key values, and make sure the header is wide enough
+ Set the row headers to be the Primary key values, and make sure the header is wide enough.
  </summary>
 </member>
 <member name="M:VideoMiner.VideoMinerDataGridView.disableColumnSorting">
@@ -3516,6 +3517,14 @@ VideoMiner
  <summary>
  Compare the row's data to what is in the database table. If they are the same,
  set the control to be synced with the database.
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.grd_CellLeave(System.Object,System.Windows.Forms.DataGridViewCellEventArgs)">
+ <summary>
+ When a cell is left, do a quick check to see if the values were left the same as what's in the
+ database. If they all are, make the row clean again.
  </summary>
  <param name="sender"></param>
  <param name="e"></param>
