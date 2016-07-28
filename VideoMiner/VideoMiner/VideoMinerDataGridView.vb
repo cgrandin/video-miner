@@ -163,6 +163,7 @@ Public Class VideoMinerDataGridView
         lblSync.Text = "Data Synced"
         btnSync.Enabled = False
         btnRevert.Enabled = False
+        btnAddRow.Enabled = True
     End Sub
 
     ''' <summary>
@@ -173,6 +174,7 @@ Public Class VideoMinerDataGridView
         lblSync.Text = "Data Unsynced"
         btnSync.Enabled = True
         btnRevert.Enabled = True
+        btnAddRow.Enabled = False
     End Sub
 
     ''' <summary>
@@ -368,7 +370,8 @@ Public Class VideoMinerDataGridView
     ''' </summary>
     Private Sub deleteSelectedRows(sender As System.Object, e As System.EventArgs)
         If grd.SelectedRows.Count > 0 Then
-            If MessageBox.Show("Are you sure you want to delete all selected rows from the database? They will be gone forever.", "Delete rows?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = vbYes Then
+            If MessageBox.Show("Are you sure you want to delete all selected rows from the database and save all changes to the database?",
+                               "Delete rows and sync changes?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = vbYes Then
                 For Each row As DataGridViewRow In grd.SelectedRows
                     grd.Rows.Remove(row)
                 Next
