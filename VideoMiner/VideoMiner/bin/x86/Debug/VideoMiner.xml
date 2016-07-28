@@ -3443,21 +3443,14 @@ VideoMiner
 <member name="T:VideoMiner.VideoMinerDataGridView.stcRowColoring">
  <summary>
  Coloring of a row in the data grid. This structure represents a single row in the grid.
- The two cell arrays hold the background and foreground colors for the cells in the row.
+ The two cell lists hold the background and foreground colors for the cells in the row.
  If the columns are allowed to be sorted, this would be required to recolor the cells
  after the sort.
  </summary>
 </member>
 <member name="F:VideoMiner.VideoMinerDataGridView.m_arr_coloring">
  <summary>
- An array of row colorings to keep track of dirty cells when the columns are sorted.
- </summary>
-</member>
-<member name="F:VideoMiner.VideoMinerDataGridView.m_row_was_good">
- <summary>
- Whether or not the row is synced properly with the database. Used when the user edits a cell value. The cell's row
- will immediately be colored since the data are now 'dirty' but if the value is of the wrong type (not validated)
- then this is required to put the row back into the condition it was in before the current edit attempt.
+ A list of row colorings to keep track of dirty cells when the columns are sorted.
  </summary>
 </member>
 <member name="F:VideoMiner.VideoMinerDataGridView._m_frmViewDataTable">
@@ -3513,6 +3506,37 @@ VideoMiner
  </summary>
  <returns></returns>
 </member>
+<member name="M:VideoMiner.VideoMinerDataGridView.applyColoring">
+ <summary>
+ Apply the coloring to the DataGridView as laid out in the m_arr_coloring list
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.setCell(System.Int32,System.Int32,VideoMiner.VideoMinerDataGridView.CellStatus)">
+ <summary>
+ Set the coloring on the grid to reflect the status of the cell given by the
+ row and col coordinates in the DataGridView.
+ The background color for the whole row is also changed here.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.setPrimaryKey(System.Int32,System.Int32)">
+ <summary>
+ Sets the coloring array to hold the primary key that is found in the database.
+ Only sets it if the row is not dirty, which means the database key was in the cell
+ before the edit happened.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.getPrimaryKey(System.Int32)">
+ <summary>
+ Gets the primary key from the coloring array. This will be the one that is actually in the
+ database, not the one currently appearing in the grid.
+ </summary>
+ <param name="row"></param>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.grd_CellBeginEdit(System.Object,System.Windows.Forms.DataGridViewCellCancelEventArgs)">
+ <summary>
+ Store the database primary key for the cell being edited if it is a primary key cell.
+ </summary>
+</member>
 <member name="M:VideoMiner.VideoMinerDataGridView.grd_CellValueChanged(System.Object,System.Windows.Forms.DataGridViewCellEventArgs)">
  <summary>
  Compare the row's data to what is in the database table. If they are the same,
@@ -3520,6 +3544,11 @@ VideoMiner
  </summary>
  <param name="sender"></param>
  <param name="e"></param>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.grd_CellFormatting(System.Object,System.Windows.Forms.DataGridViewCellFormattingEventArgs)">
+ <summary>
+ Apply coloring to the grid whenever formatting takes place.
+ </summary>
 </member>
 <member name="M:VideoMiner.VideoMinerDataGridView.grd_CellLeave(System.Object,System.Windows.Forms.DataGridViewCellEventArgs)">
  <summary>
