@@ -28,10 +28,10 @@ Partial Class VideoMinerDataGridView
         Me.btnRevert = New System.Windows.Forms.Button()
         Me.lblSync = New System.Windows.Forms.Label()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.btnDataCodes = New System.Windows.Forms.Button()
         Me.btnAddRow = New System.Windows.Forms.Button()
         Me.btnMoveDown = New System.Windows.Forms.Button()
         Me.btnMoveUp = New System.Windows.Forms.Button()
-        Me.btnDataCodes = New System.Windows.Forms.Button()
         CType(Me.grd, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.Panel1.SuspendLayout()
@@ -114,6 +114,15 @@ Partial Class VideoMinerDataGridView
         Me.Panel1.Size = New System.Drawing.Size(94, 180)
         Me.Panel1.TabIndex = 5
         '
+        'btnDataCodes
+        '
+        Me.btnDataCodes.Location = New System.Drawing.Point(0, 106)
+        Me.btnDataCodes.Name = "btnDataCodes"
+        Me.btnDataCodes.Size = New System.Drawing.Size(94, 23)
+        Me.btnDataCodes.TabIndex = 7
+        Me.btnDataCodes.Text = "Data Codes..."
+        Me.btnDataCodes.UseVisualStyleBackColor = True
+        '
         'btnAddRow
         '
         Me.btnAddRow.Location = New System.Drawing.Point(0, 59)
@@ -140,15 +149,6 @@ Partial Class VideoMinerDataGridView
         Me.btnMoveUp.TabIndex = 4
         Me.btnMoveUp.Text = "Move Up"
         Me.btnMoveUp.UseVisualStyleBackColor = True
-        '
-        'btnDataCodes
-        '
-        Me.btnDataCodes.Location = New System.Drawing.Point(0, 87)
-        Me.btnDataCodes.Name = "btnDataCodes"
-        Me.btnDataCodes.Size = New System.Drawing.Size(94, 23)
-        Me.btnDataCodes.TabIndex = 7
-        Me.btnDataCodes.Text = "Data Codes..."
-        Me.btnDataCodes.UseVisualStyleBackColor = True
         '
         'VideoMinerDataGridView
         '

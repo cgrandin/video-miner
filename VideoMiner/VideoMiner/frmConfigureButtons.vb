@@ -37,41 +37,49 @@
         m_has_modifications = False
     End Sub
 
+    Private Sub m_grd_DataChanged() Handles m_grd.DataChanged
+        m_has_modifications = True
+    End Sub
     ''' <summary>
-    ''' Clicking this button results in the first selected button being moved to the other panel.
-    ''' The database will also have the entry moved from one button table to the other.
+    ''' Clicking this button results in the selected rows being moved to the other panel.
+    ''' The database will also have the entries moved from one button table to the other.
     ''' </summary>
     Private Sub cmdMoveToPanel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdMoveToPanel.Click
+
         Dim strMoveToTable As String
-        Dim strMoveToPanel As String
+        'Dim strMoveToPanel As String
         Dim d As DataTable
         Dim r As DataRow
 
         If m_table_name = DB_HABITAT_BUTTONS_TABLE Then
             strMoveToTable = DB_TRANSECT_BUTTONS_TABLE
-            strMoveToPanel = "TRANSECT DATA"
+            'strMoveToPanel = "TRANSECT DATA"
         Else
             strMoveToTable = DB_HABITAT_BUTTONS_TABLE
-            strMoveToPanel = "HABITAT DATA"
+            'strMoveToPanel = "HABITAT DATA"
         End If
         Dim strKeyName As String = Database.GetPrimaryKeyFieldName(m_table_name)
 
+        Dim lstSelectedKeys As List(Of DataRow) = m_grd.getSelectedRowsPrimaryKeys()
+        If IsNothing(lstSelectedKeys) Then
+            MessageBox.Show("A row must be selected for a move operation.",
+                            "No rows selected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
+        End If
         ' Get the source table's information
         d = Database.GetDataTable("select * from " & m_table_name, m_table_name)
-        For Each r In d.Rows
-            If r.Item(BUTTON_TEXT).ToString() = m_button_name Then
-                Exit For
-            End If
+        Dim intLastKey As Integer
+        Dim intNextKey As Integer
+        For i As Integer = 0 To lstSelectedKeys.Count - 1
+            r = lstSelectedKeys(i)
+            intLastKey = CInt(r.Item(strKeyName))
+            intNextKey = Database.GetNextPrimaryKeyValue(strMoveToTable)
+            r.Item(strKeyName) = intNextKey
+            Database.InsertRow(r, strMoveToTable)
+            Database.DeleteRow(intLastKey, m_table_name)
         Next
-        ' At this point, r is a DataRow holding the button's record. The primary key needs to be changed
-        ' to fit into the other table.
-        Dim intLastKey As Integer = CInt(r.Item(strKeyName))
-        Dim intNextKey As Integer = Database.GetNextPrimaryKeyValue(strMoveToTable)
-        r.Item(strKeyName) = intNextKey
-        d = Database.GetDataTable("select * from " & strMoveToTable, strMoveToTable)
-        Database.InsertRow(r, strMoveToTable)
-        Database.DeleteRow(intLastKey, m_table_name)
         m_has_modifications = True
+        m_grd.fetchData()
     End Sub
 
     Private Sub btnOK_Click(sender As Object, e As EventArgs) Handles btnOK.Click

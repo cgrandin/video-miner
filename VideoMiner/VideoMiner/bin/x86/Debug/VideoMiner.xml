@@ -848,8 +848,8 @@ VideoMiner
 </member>
 <member name="M:VideoMiner.frmConfigureButtons.cmdMoveToPanel_Click(System.Object,System.EventArgs)">
  <summary>
- Clicking this button results in the first selected button being moved to the other panel.
- The database will also have the entry moved from one button table to the other.
+ Clicking this button results in the selected rows being moved to the other panel.
+ The database will also have the entries moved from one button table to the other.
  </summary>
 </member>
 <member name="M:VideoMiner.frmCreateKeyboardShortcut.ProcessCmdKey(System.Windows.Forms.Message@,System.Windows.Forms.Keys)">
@@ -3563,7 +3563,7 @@ VideoMiner
  Update the MS Access database table 'data' with values from the DataGridView object.
  </summary>
 </member>
-<member name="M:VideoMiner.VideoMinerDataGridView.deleteSelectedRows(System.Object,System.EventArgs)">
+<member name="M:VideoMiner.VideoMinerDataGridView.deleteSelectedRows(System.Boolean)">
  <summary>
  Deletes selected rows from the MS access database as well as in the grid view. A confirmation box will verify this.
  </summary>
@@ -3615,6 +3615,12 @@ VideoMiner
  If there is more than one selected row, a messagebox will be issued and the event cancelled.
  The variable direction is used to determine move direction Up or Down.
  </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.getSelectedRowsPrimaryKeys">
+ <summary>
+ Returns a list of the currently selected rows.
+ </summary>
+ <returns>A list of DataRows. Nothing if there are no selected rows.</returns>
 </member>
 <member name="M:VideoMiner.VideoMinerDataGridView.parentHiding">
  <summary>

@@ -4,6 +4,9 @@ Public Class VideoMinerDataGridView
 
 #Region "Constants and Pseudo-Constants"
     Private Const ROW_HEADER_WIDTH As Integer = 60
+    Private Const SYNCED_TEXT As String = "Data Table Synced"
+    Private Const UNSYNCED_TEXT As String = "Data Table Unsynced"
+
     Private CLEAN_BACKCOLOR As Color = Color.White
     Private CLEAN_SELECTION_BACKCOLOR As Color = SystemColors.Highlight
     Private CLEAN_FORECOLOR As Color = Color.Black
@@ -85,6 +88,10 @@ Public Class VideoMinerDataGridView
 #Region "Properties"
 #End Region
 
+#Region "Events"
+    Public Event DataChanged()
+#End Region
+
     Public Sub New(tableName As String, Optional showPrimaryKeyField As Boolean = True)
         InitializeComponent()
         m_table_name = tableName
@@ -123,7 +130,6 @@ Public Class VideoMinerDataGridView
         If m_curr_col <> 0 And m_curr_col < grd.ColumnCount Then
             grd.FirstDisplayedScrollingColumnIndex = m_curr_col
         End If
-        writePrimaryKeysInRowHeaders()
         setSynced()
     End Sub
 
@@ -135,6 +141,7 @@ Public Class VideoMinerDataGridView
             grd.Columns(m_primary_key_field).Visible = False
         End If
         grd.Enabled = True
+        writePrimaryKeysInRowHeaders()
     End Sub
 
     ''' <summary>
@@ -160,7 +167,7 @@ Public Class VideoMinerDataGridView
             m_arr_coloring.Add(tmpStruct)
         Next
         lblSync.ForeColor = Color.LimeGreen
-        lblSync.Text = "Data Synced"
+        lblSync.Text = SYNCED_TEXT
         btnSync.Enabled = False
         btnRevert.Enabled = False
         btnAddRow.Enabled = True
@@ -171,7 +178,7 @@ Public Class VideoMinerDataGridView
     ''' </summary>
     Private Sub setUnsynced()
         lblSync.ForeColor = Color.Red
-        lblSync.Text = "Data Unsynced"
+        lblSync.Text = UNSYNCED_TEXT
         btnSync.Enabled = True
         btnRevert.Enabled = True
         btnAddRow.Enabled = False
@@ -362,16 +369,23 @@ Public Class VideoMinerDataGridView
         fetchData()
     End Sub
 
-    '    Delegate Sub DeleteRowsDelegate(sender As System.Object, e As System.EventArgs)
-    '    Private marshalDeleteRows As DeleteRowsDelegate = New DeleteRowsDelegate(AddressOf deleteSelectedRows)
+    Private Sub deleteSelectedRowsHandler(sender As Object, e As EventArgs)
+        deleteSelectedRows()
+    End Sub
 
     ''' <summary>
     ''' Deletes selected rows from the MS access database as well as in the grid view. A confirmation box will verify this.
     ''' </summary>
-    Private Sub deleteSelectedRows(sender As System.Object, e As System.EventArgs)
+    Public Sub deleteSelectedRows(Optional showWarning As Boolean = True)
+        Dim blDoDelete As Boolean = False
         If grd.SelectedRows.Count > 0 Then
-            If MessageBox.Show("Are you sure you want to delete all selected rows from the database and save all changes to the database?",
-                               "Delete rows and sync changes?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = vbYes Then
+            If showWarning Then
+                If MessageBox.Show("Are you sure you want to delete all selected rows from the database and save all changes to the database?",
+                                   "Delete rows and sync changes?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = vbYes Then
+                    blDoDelete = True
+                End If
+            End If
+            If blDoDelete Then
                 For Each row As DataGridViewRow In grd.SelectedRows
                     grd.Rows.Remove(row)
                 Next
@@ -388,7 +402,7 @@ Public Class VideoMinerDataGridView
     Private Sub grd_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles grd.KeyDown
         Select Case e.KeyCode
             Case Keys.Delete
-                deleteSelectedRows(sender, e)
+                deleteSelectedRows()
         End Select
     End Sub
 
@@ -427,7 +441,7 @@ Public Class VideoMinerDataGridView
             If grd.SelectedRows.Count > 0 Then
                 item1 = cms.Items.Add("Delete selected rows (or use delete key)")
                 item1.Tag = 1
-                AddHandler item1.Click, AddressOf deleteSelectedRows
+                AddHandler item1.Click, AddressOf deleteSelectedRowsHandler
             Else
                 item1 = cms.Items.Add("Delete rows by selecting them and pressing delete.")
                 item1.Tag = 1
@@ -492,6 +506,7 @@ Public Class VideoMinerDataGridView
 
     Private Sub btnSync_Click(sender As Object, e As EventArgs) Handles btnSync.Click
         updateDatabaseWithGridValues()
+        RaiseEvent DataChanged()
     End Sub
 
     ''' <summary>
@@ -580,6 +595,26 @@ Public Class VideoMinerDataGridView
     Private Sub btnMoveDown_Click(sender As Object, e As EventArgs) Handles btnMoveDown.Click
         moveRecord(MoveDirection.Down)
     End Sub
+
+    ''' <summary>
+    ''' Returns a list of the currently selected rows.
+    ''' </summary>
+    ''' <returns>A list of DataRows. Nothing if there are no selected rows.</returns>
+    Public Function getSelectedRowsPrimaryKeys() As List(Of DataRow)
+        If grd.SelectedRows.Count = 0 Then
+            Return Nothing
+        End If
+        Dim retList As List(Of DataRow) = New List(Of DataRow)()
+        Dim tmp As DataGridViewSelectedRowCollection = grd.SelectedRows
+        Dim dgvRow As DataRowView
+        Dim dr As DataRow
+        For i As Integer = 0 To tmp.Count - 1
+            dgvRow = CType(tmp(i).DataBoundItem, DataRowView)
+            dr = dgvRow.Row
+            retList.Add(dr)
+        Next
+        Return retList
+    End Function
 
     ''' <summary>
     ''' If the parent is being hidden, this will close the child datacodes form.
