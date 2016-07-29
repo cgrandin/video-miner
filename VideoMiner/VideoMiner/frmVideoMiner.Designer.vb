@@ -1,9 +1,9 @@
-<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class VideoMiner
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,7 +17,7 @@ Partial Class VideoMiner
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(VideoMiner))
@@ -126,17 +126,12 @@ Partial Class VideoMiner
         Me.txtQuickSpeciesCount = New System.Windows.Forms.TextBox()
         Me.cmdAddComment = New System.Windows.Forms.Button()
         Me.cmdNothingInPhoto = New System.Windows.Forms.Button()
-        Me.Panel1 = New System.Windows.Forms.Panel()
-        Me.cmdRevertDatabase = New System.Windows.Forms.Button()
-        Me.cmdUpdateDatabase = New System.Windows.Forms.Button()
-        Me.lblDirtyData = New System.Windows.Forms.Label()
         Me.fldlgOpenFD = New System.Windows.Forms.OpenFileDialog()
         Me.tmrRecordPerSecond = New System.Windows.Forms.Timer(Me.components)
         Me.tmrPlayForSeconds = New System.Windows.Forms.Timer(Me.components)
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
-        Me.grdVideoMinerDatabase = New System.Windows.Forms.DataGridView()
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -149,7 +144,6 @@ Partial Class VideoMiner
         Me.SplitContainer4.SuspendLayout()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
-        Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
         CType(Me.SplitContainer3, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer3.Panel1.SuspendLayout()
@@ -170,8 +164,6 @@ Partial Class VideoMiner
         Me.SplitContainer8.Panel1.SuspendLayout()
         Me.SplitContainer8.SuspendLayout()
         Me.pnlSpeciesEntryControls.SuspendLayout()
-        Me.Panel1.SuspendLayout()
-        CType(Me.grdVideoMinerDatabase, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'mnStrVideoMinerMenu
@@ -660,10 +652,6 @@ Partial Class VideoMiner
         'SplitContainer1.Panel1
         '
         Me.SplitContainer1.Panel1.Controls.Add(Me.SplitContainer3)
-        '
-        'SplitContainer1.Panel2
-        '
-        Me.SplitContainer1.Panel2.Controls.Add(Me.grdVideoMinerDatabase)
         Me.SplitContainer1.Size = New System.Drawing.Size(1098, 626)
         Me.SplitContainer1.SplitterDistance = 497
         Me.SplitContainer1.TabIndex = 22
@@ -1053,7 +1041,6 @@ Partial Class VideoMiner
         '
         Me.SplitContainer2.Panel2.Controls.Add(Me.cmdAddComment)
         Me.SplitContainer2.Panel2.Controls.Add(Me.cmdNothingInPhoto)
-        Me.SplitContainer2.Panel2.Controls.Add(Me.Panel1)
         Me.SplitContainer2.Size = New System.Drawing.Size(886, 497)
         Me.SplitContainer2.SplitterDistance = 423
         Me.SplitContainer2.TabIndex = 0
@@ -1219,49 +1206,6 @@ Partial Class VideoMiner
         Me.cmdNothingInPhoto.UseVisualStyleBackColor = True
         Me.cmdNothingInPhoto.Visible = False
         '
-        'Panel1
-        '
-        Me.Panel1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Panel1.Controls.Add(Me.cmdRevertDatabase)
-        Me.Panel1.Controls.Add(Me.cmdUpdateDatabase)
-        Me.Panel1.Controls.Add(Me.lblDirtyData)
-        Me.Panel1.Location = New System.Drawing.Point(503, 0)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(380, 67)
-        Me.Panel1.TabIndex = 60
-        '
-        'cmdRevertDatabase
-        '
-        Me.cmdRevertDatabase.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdRevertDatabase.Location = New System.Drawing.Point(196, 34)
-        Me.cmdRevertDatabase.Name = "cmdRevertDatabase"
-        Me.cmdRevertDatabase.Size = New System.Drawing.Size(184, 31)
-        Me.cmdRevertDatabase.TabIndex = 60
-        Me.cmdRevertDatabase.Text = "Revert data (reload database)"
-        Me.cmdRevertDatabase.UseVisualStyleBackColor = True
-        Me.cmdRevertDatabase.Visible = False
-        '
-        'cmdUpdateDatabase
-        '
-        Me.cmdUpdateDatabase.Location = New System.Drawing.Point(196, 1)
-        Me.cmdUpdateDatabase.Name = "cmdUpdateDatabase"
-        Me.cmdUpdateDatabase.Size = New System.Drawing.Size(184, 31)
-        Me.cmdUpdateDatabase.TabIndex = 58
-        Me.cmdUpdateDatabase.Text = "Sync data (save to database)"
-        Me.cmdUpdateDatabase.UseVisualStyleBackColor = True
-        Me.cmdUpdateDatabase.Visible = False
-        '
-        'lblDirtyData
-        '
-        Me.lblDirtyData.AutoSize = True
-        Me.lblDirtyData.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblDirtyData.ForeColor = System.Drawing.Color.LimeGreen
-        Me.lblDirtyData.Location = New System.Drawing.Point(54, 41)
-        Me.lblDirtyData.Name = "lblDirtyData"
-        Me.lblDirtyData.Size = New System.Drawing.Size(124, 24)
-        Me.lblDirtyData.TabIndex = 59
-        Me.lblDirtyData.Text = "Data synced"
-        '
         'tmrRecordPerSecond
         '
         Me.tmrRecordPerSecond.Interval = 200
@@ -1273,20 +1217,6 @@ Partial Class VideoMiner
         'tmrComputerTime
         '
         Me.tmrComputerTime.Interval = 500
-        '
-        'grdVideoMinerDatabase
-        '
-        Me.grdVideoMinerDatabase.AllowUserToAddRows = False
-        Me.grdVideoMinerDatabase.AllowUserToDeleteRows = False
-        Me.grdVideoMinerDatabase.AllowUserToOrderColumns = True
-        Me.grdVideoMinerDatabase.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grdVideoMinerDatabase.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grdVideoMinerDatabase.Location = New System.Drawing.Point(0, 0)
-        Me.grdVideoMinerDatabase.Margin = New System.Windows.Forms.Padding(2)
-        Me.grdVideoMinerDatabase.Name = "grdVideoMinerDatabase"
-        Me.grdVideoMinerDatabase.RowTemplate.Height = 24
-        Me.grdVideoMinerDatabase.Size = New System.Drawing.Size(1098, 125)
-        Me.grdVideoMinerDatabase.TabIndex = 0
         '
         'VideoMiner
         '
@@ -1318,7 +1248,6 @@ Partial Class VideoMiner
         CType(Me.SplitContainer4, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer4.ResumeLayout(False)
         Me.SplitContainer1.Panel1.ResumeLayout(False)
-        Me.SplitContainer1.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer1.ResumeLayout(False)
         Me.SplitContainer3.Panel1.ResumeLayout(False)
@@ -1343,9 +1272,6 @@ Partial Class VideoMiner
         Me.SplitContainer8.ResumeLayout(False)
         Me.pnlSpeciesEntryControls.ResumeLayout(False)
         Me.pnlSpeciesEntryControls.PerformLayout()
-        Me.Panel1.ResumeLayout(False)
-        Me.Panel1.PerformLayout()
-        CType(Me.grdVideoMinerDatabase, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1437,7 +1363,6 @@ Partial Class VideoMiner
     Friend WithEvents RelayConfigurationToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents txtNMEA As System.Windows.Forms.TextBox
     Friend WithEvents DisableHabitatButtonsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents cmdUpdateDatabase As System.Windows.Forms.Button
     Friend WithEvents ConfigureButtonFormatToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents cmdScreenCapture As System.Windows.Forms.Button
     Friend WithEvents chkDefineAll As System.Windows.Forms.CheckBox
@@ -1460,11 +1385,7 @@ Partial Class VideoMiner
     Friend WithEvents pnlSpeciesEntryControls As System.Windows.Forms.Panel
     Friend WithEvents InformationToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents txtFramesToSkip As System.Windows.Forms.TextBox
-    Friend WithEvents lblDirtyData As System.Windows.Forms.Label
-    Friend WithEvents Panel1 As System.Windows.Forms.Panel
     Friend WithEvents cmdAddComment As System.Windows.Forms.Button
-    Friend WithEvents cmdRevertDatabase As System.Windows.Forms.Button
     Friend WithEvents SplitContainer8 As System.Windows.Forms.SplitContainer
     Friend WithEvents cmdOffBottom As Button
-    Friend WithEvents grdVideoMinerDatabase As DataGridView
 End Class

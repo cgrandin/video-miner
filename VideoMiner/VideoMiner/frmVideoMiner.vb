@@ -440,8 +440,9 @@ Public Class VideoMiner
     Private Delegate Sub myDelegate()
 #End Region
 
-#Region "Fields"
-#Region "VideoMiner Fields"
+#Region "Member variables"
+#Region "VideoMiner members"
+    Private WithEvents m_grdDatabase As VideoMinerDataGridView
     Private m_strVersion As String
     Private m_RangeChecked As Boolean
     Private m_IDConfidenceChecked As Boolean
@@ -1025,7 +1026,7 @@ Public Class VideoMiner
         is_on_bottom = 0
         toggle_bottom()
 
-        lblDirtyData.Visible = False
+        'lblDirtyData.Visible = False
 
         intNumberDisplayRecords = intDefaultNumberDisplayRecords
 
@@ -1602,15 +1603,13 @@ Public Class VideoMiner
     ''' <remarks></remarks>
     Public Sub CloseDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuCloseDatabase.Click
         blCloseDatabase = True
-        grdVideoMinerDatabase.DataSource = Nothing
+        m_grdDatabase.Hide()
         m_db_file_open = False
         'db_file_unload()
         closeDatabase()
         no_files_loaded()
         'Me.cmdDefineAllTransectVariables.Visible = False
         Me.cmdAddComment.Visible = False
-        Me.cmdUpdateDatabase.Visible = False
-        Me.cmdRevertDatabase.Visible = False
         cmdShowSetTimecode.Enabled = False
         cmdTransectStart.Enabled = False
         cmdOffBottom.Enabled = False
@@ -1729,7 +1728,8 @@ Public Class VideoMiner
             tuple = New Tuple(Of String, String, Boolean)("1", "1", False)
             dict.Add(DATA_CODE, tuple)
             runInsertQuery(dict)
-            fetch_data()
+            m_grdDatabase.fetchData()
+            m_grdDatabase.fetchData()
             ' Set ON BOTTOM for transect start
             txtOnOffBottomTextbox.Text = ON_BOTTOM_STRING
             txtOnOffBottomTextbox.Font = New Font(String.Empty, STATUS_FONT_SIZE, FontStyle.Bold)
@@ -1753,7 +1753,7 @@ Public Class VideoMiner
             dict.Add(DATA_CODE, tuple)
             m_transect_name = String.Empty
             runInsertQuery(dict)
-            fetch_data()
+            m_grdDatabase.fetchData()
             ' Set OFF BOTTOM for transect end
             txtOnOffBottomTextbox.Text = OFF_BOTTOM_STRING
             txtOnOffBottomTextbox.Font = New Font(String.Empty, STATUS_FONT_SIZE, FontStyle.Bold)
@@ -1774,7 +1774,7 @@ Public Class VideoMiner
         tuple = New Tuple(Of String, String, Boolean)("3", "3", False)
         dict.Add(DATA_CODE, tuple)
         runInsertQuery(dict)
-        fetch_data()
+        m_grdDatabase.fetchData()
 
         ' Need to remove the keys from the dictionary because the union operation is by reference and they will appear in
         ' pnlHabitat.Dictionary as well. Removing them from dict removes them from pnlHabitat.Dictionary as well.
@@ -1835,7 +1835,7 @@ Public Class VideoMiner
                 btn.ShowForm(sender, e)
             Else
                 If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
-                    fetch_data() ' Cleans up the table first
+                    m_grdDatabase.fetchData() ' Cleans up the table first
                     If radQuickEntry.Checked Then
                         btn.RecordQuick()
                     Else
@@ -1849,7 +1849,7 @@ Public Class VideoMiner
                 btn.ShowForm(sender, e)
             Else
                 If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
-                    fetch_data() ' Cleans up the table first
+                    m_grdDatabase.fetchData() ' Cleans up the table first
                     btn.ShowForm(sender, e)
                 End If
             End If
@@ -1883,7 +1883,7 @@ Public Class VideoMiner
         tuple = New Tuple(Of String, String, Boolean)(DoubleQuote(filename), DoubleQuote(filename), False)
         dict.Add("ScreenCaptureName", tuple)
         runInsertQuery(dict)
-        fetch_data()
+        m_grdDatabase.fetchData()
     End Sub
 
     Private Sub dataButtonNewEntry() Handles pnlSpeciesData.StartDataEntryEvent,
@@ -1931,7 +1931,7 @@ Public Class VideoMiner
             dict = dict.Union(pnlHabitatData.Dictionary).Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
             runInsertQuery(dict)
         End If
-        fetch_data()
+        m_grdDatabase.fetchData()
 
     End Sub
 
@@ -2107,7 +2107,7 @@ Public Class VideoMiner
 
                     'query = createInsertQuery(NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING)
                     'Database.ExecuteNonQuery(query)
-                    fetch_data()
+                    m_grdDatabase.fetchData()
                     Exit Sub
                 End If
             End If
@@ -2131,7 +2131,7 @@ Public Class VideoMiner
                     intPreviousGPSSeconds = intGPSSeconds
                     'query = createInsertQuery(NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING)
                     ' Database.ExecuteNonQuery(query)
-                    fetch_data()
+                    m_grdDatabase.fetchData()
                 End If
             End If
         Catch ex As Exception
@@ -2300,7 +2300,7 @@ Public Class VideoMiner
 
                 'query = createInsertQuery(COMMENT_ADDED, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING)
                 'Database.ExecuteNonQuery(query)
-                fetch_data()
+                m_grdDatabase.fetchData()
             Else
                 MessageBox.Show("There is no GPS data being recieved at this time, therefore the record was not entered into the database", "No GPS Data Recieved", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             End If
@@ -2370,7 +2370,7 @@ Public Class VideoMiner
 
                     'query = createInsertQuery(NOTHING_IN_PHOTO, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING)
                     'Database.ExecuteNonQuery(query)
-                    fetch_data()
+                    m_grdDatabase.fetchData()
                 Else
                     MessageBox.Show("There is no GPS data being recieved at this time, therefore the record was not entered into the database", "No GPS Data Recieved", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 End If
@@ -2449,14 +2449,14 @@ Public Class VideoMiner
             strDatabaseFileName = GetConfiguration("SessionConfiguration/Database/FileName")
             strNumberRecordsShown = GetConfiguration("SessionConfiguration/Database/NumberRecordsShown")
 
-            If blDatabaseOpen = True Then
-                If Not Me.grdVideoMinerDatabase.DataSource Is Nothing Then
-                    CloseDatabase_Click(Nothing, Nothing)
-                End If
-                openDatabase()
-                files_loaded()
-                m_strDatabaseFilePath = strDatabaseFileName
-            End If
+            'If blDatabaseOpen = True Then
+            '    If Not Me.grdVideoMinerDatabase.DataSource Is Nothing Then
+            '        CloseDatabase_Click(Nothing, Nothing)
+            '    End If
+            '    openDatabase()
+            '    files_loaded()
+            '    m_strDatabaseFilePath = strDatabaseFileName
+            'End If
 
             If blImageOpen = True Then
                 If Not frmImage Is Nothing Then
@@ -2618,15 +2618,15 @@ Public Class VideoMiner
                 strImageFileName = NULL_STRING
             End If
 
-            If Not Me.grdVideoMinerDatabase.DataSource Is Nothing Then
-                blDatabaseOpen = True
-                strDatabaseFileName = m_strDatabaseFilePath
-                strNumberRecordsShown = CStr(intNumberDisplayRecords)
-            Else
-                blDatabaseOpen = False
-                strDatabaseFileName = NULL_STRING
-                strNumberRecordsShown = NULL_STRING
-            End If
+            'If Not Me.grdVideoMinerDatabase.DataSource Is Nothing Then
+            '    blDatabaseOpen = True
+            '    strDatabaseFileName = m_strDatabaseFilePath
+            '    strNumberRecordsShown = CStr(intNumberDisplayRecords)
+            'Else
+            '    blDatabaseOpen = False
+            '    strDatabaseFileName = NULL_STRING
+            '    strNumberRecordsShown = NULL_STRING
+            'End If
             SaveConfiguration("SessionConfiguration/Video/Open", CType(blVideoOpen, String))
             SaveConfiguration("SessionConfiguration/Video/FileName", strVideoFileName)
             SaveConfiguration("SessionConfiguration/Video/Position", strVideoTime)
@@ -2698,15 +2698,15 @@ Public Class VideoMiner
             strImageFileName = NULL_STRING
         End If
 
-        If Not Me.grdVideoMinerDatabase.DataSource Is Nothing Then
-            blDatabaseOpen = True
-            strDatabaseFileName = m_strDatabaseFilePath
-            strNumberRecordsShown = CStr(intNumberDisplayRecords)
-        Else
-            blDatabaseOpen = False
-            strDatabaseFileName = NULL_STRING
-            strNumberRecordsShown = "15"
-        End If
+        'If Not Me.grdVideoMinerDatabase.DataSource Is Nothing Then
+        '    blDatabaseOpen = True
+        '    strDatabaseFileName = m_strDatabaseFilePath
+        '    strNumberRecordsShown = CStr(intNumberDisplayRecords)
+        'Else
+        '    blDatabaseOpen = False
+        '    strDatabaseFileName = NULL_STRING
+        '    strNumberRecordsShown = "15"
+        'End If
 
         Dim path As String
 
@@ -2869,9 +2869,6 @@ Public Class VideoMiner
         cmdShowSetTimecode.Enabled = False
         cmdTransectStart.Enabled = False
         cmdOffBottom.Enabled = False
-        cmdUpdateDatabase.Visible = False
-        cmdRevertDatabase.Visible = False
-        lblDirtyData.Visible = False
         'Me.cmdEdit.Enabled = False
     End Sub
 
@@ -2884,9 +2881,6 @@ Public Class VideoMiner
         radDetailedEntry.Visible = True
         radAbundanceEntry.Visible = True
         cmdEdit.Visible = True
-        cmdUpdateDatabase.Visible = True
-        cmdRevertDatabase.Visible = True
-        lblDirtyData.Visible = True
         cmdRareSpeciesLookup.Visible = True
         If m_video_file_open Then
             txtTransectDate.Enabled = True
@@ -2914,9 +2908,6 @@ Public Class VideoMiner
         radDetailedEntry.Visible = True
         radAbundanceEntry.Visible = True
         cmdEdit.Visible = True
-        cmdUpdateDatabase.Visible = True
-        cmdRevertDatabase.Visible = True
-        lblDirtyData.Visible = True
         cmdRareSpeciesLookup.Visible = True
 
         txtTransectDate.Enabled = True
@@ -2966,7 +2957,7 @@ Public Class VideoMiner
         dict.Add(DATA_CODE, tuple)
 
         runInsertQuery(dict)
-        fetch_data()
+        m_grdDatabase.fetchData()
         ' Need to remove the keys from the dictionary because the union operation is by reference and they will appear in
         ' pnlHabitat.Dictionary as well. Removing them from dict removes them from pnlHabitat.Dictionary as well.
         If dict.ContainsKey("OnBottom") Then
@@ -3437,64 +3428,12 @@ Public Class VideoMiner
             mnuCloseDatabase.Enabled = True
             DataCodeAssignmentsToolStripMenuItem.Enabled = True
             KeyboardShortcutsToolStripMenuItem.Enabled = True
-            fetch_data()
+            m_grdDatabase = New VideoMinerDataGridView(DB_DATA_TABLE, True)
+            SplitContainer1.Panel2.Controls.Add(m_grdDatabase)
+            m_grdDatabase.Dock = DockStyle.Fill
+            'm_grdDatabase.fetchData()()()
             database_is_open_toggle_visibility()
         End If
-    End Sub
-
-    ''' <summary>
-    ''' Fetch the data table from the MS Access database into the DataGridView and sets the next unique ID that the database can recieve.
-    ''' </summary>
-    ''' <remarks>Order of the rows will be by decending primary key ('ID' field)</remarks>
-    Private Sub fetch_data()
-        ' Save the scrollbar position before refetch
-        Dim saveRow As Integer = 0
-        Dim saveColumn As Integer = 0
-        If grdVideoMinerDatabase.Rows.Count > 0 Then
-            saveRow = grdVideoMinerDatabase.FirstDisplayedCell.RowIndex + 1
-            If grdVideoMinerDatabase.ColumnCount > 0 Then
-                saveColumn = grdVideoMinerDatabase.FirstDisplayedCell.ColumnIndex
-            End If
-        End If
-
-        m_data_codes_table = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE & " order by 1;", DB_DATA_CODES_TABLE)
-        m_data_table = Database.GetDataTable("SELECT * FROM " & DB_DATA_TABLE & " ORDER BY ID DESC;", DB_DATA_TABLE) ' DESC is important here, see comment below on m_db_id_num
-        grdVideoMinerDatabase.DataSource = m_data_table
-
-        Dim intIDColumn As Integer = 0
-        If m_data_table.Rows.Count > 0 Then
-            m_db_id_num = CLng(m_data_table.Rows(0).Item(intIDColumn)) + 1 ' m_db_id_num is the next unique primary key to use in inserting data into database (assumes decending order)
-        Else
-            m_db_id_num = 1
-        End If
-        If Me.grdVideoMinerDatabase.Rows.Count = 0 Then
-            Me.cmdUpdateDatabase.Enabled = False
-            Me.cmdRevertDatabase.Enabled = False
-        Else
-            Me.cmdUpdateDatabase.Enabled = True
-
-            Me.cmdRevertDatabase.Enabled = True
-        End If
-        blupdateColumns = True
-
-        If saveColumn <> 0 And saveColumn < grdVideoMinerDatabase.ColumnCount Then
-            grdVideoMinerDatabase.FirstDisplayedScrollingColumnIndex = saveColumn
-        End If
-        ' Set the row headers to be the ID column values, and make sure the header is wide enough
-        grdVideoMinerDatabase.RowHeadersWidth = 60
-        For i As Integer = 0 To grdVideoMinerDatabase.Rows.Count - 1
-            grdVideoMinerDatabase.Rows(i).HeaderCell.Value = grdVideoMinerDatabase.Rows(i).Cells(0).Value.ToString()
-        Next
-        ' If data was freshly fetched, no grid cells wil be dirty, so we can allow the 'Define All' buttons to be pressed
-        pnlTransectData.EnableDefineAllButton()
-        pnlHabitatData.EnableDefineAllButton()
-
-        ' Make the colun headers on the DataGridView non-clickable. If they are clickable, the coloring introduced when data is dirty will dissapear on the sort.
-        ' TODO: Store the coloring data in a data structure and re-apply the coloring after the sort.
-        'For col As Integer = 0 To grdVideoMinerDatabase.ColumnCount - 1
-        ' grdVideoMinerDatabase.Columns(col).SortMode = DataGridViewColumnSortMode.NotSortable
-        ' Next
-
     End Sub
 
     ''' <summary>
@@ -3504,7 +3443,7 @@ Public Class VideoMiner
     ''' of codes, the first one being the data code for the field being recorded to in the 'data' table and the second being the data code itself as chosen by the user.</param>
     Private Sub runInsertQuery(dictTransect As Dictionary(Of String, Tuple(Of String, String, Boolean)))
         Dim names As String = "insert into " & DB_DATA_TABLE & " (ID,"
-        Dim values As String = "values(" & m_db_id_num & ","
+        Dim values As String = "values(" & Database.GetNextPrimaryKeyValue(DB_DATA_TABLE) & ","
         Dim strQuery As String
 
         If m_strVideoFile <> String.Empty Then
@@ -3632,7 +3571,7 @@ Public Class VideoMiner
             frmRareSpeciesLookup.Show()
         Else
             If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
-                fetch_data() ' Cleans up the table first
+                m_grdDatabase.fetchData() ' Cleans up the table first
                 frmRareSpeciesLookup.Show()
             End If
         End If
@@ -3893,379 +3832,6 @@ Public Class VideoMiner
         End If
     End Sub
 
-#Region "DataGridView functions and handlers"
-    ''' <summary>
-    ''' Whether or not the row is synced properly with the database. Used when the user edits a cell value. The cell's row
-    ''' will immediately be colored since the data are now 'dirty' but if the value is of the wrong type (not validated)
-    ''' then this is required to put the row back into the condition it was in before the current edit attempt.
-    ''' </summary>
-    Private rowWasGood As Boolean
-
-    ''' <summary>
-    ''' Writes the ID numbers in the row headers, and sets the width to fit.
-    ''' </summary>
-    Private Sub grdVideoMinerDatabase_ColumnHeaderMouseClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles grdVideoMinerDatabase.ColumnHeaderMouseClick
-        'Set the row headers to be the ID column values, and make sure the header is wide enough
-        grdVideoMinerDatabase.RowHeadersWidth = 60
-        For i As Integer = 0 To grdVideoMinerDatabase.Rows.Count - 1
-            grdVideoMinerDatabase.Rows(i).HeaderCell.Value = grdVideoMinerDatabase.Rows(i).Cells(0).Value.ToString()
-        Next
-    End Sub
-
-    ''' <summary>
-    ''' When the user clicks a column header, record the cell color data so that any that are dirty will remain so after the sort takes place.
-    ''' </summary>
-    Private Sub grdVideoMinerDatabase_CellMouseDown(sender As Object, e As DataGridViewCellMouseEventArgs) Handles grdVideoMinerDatabase.CellMouseDown
-        If e.RowIndex = -1 Then
-            ReDim arrColoring(grdVideoMinerDatabase.RowCount - 1)
-            For row As Integer = 0 To grdVideoMinerDatabase.RowCount - 1
-                arrColoring(row) = New stcRowColoring
-                arrColoring(row).id = CType(grdVideoMinerDatabase.Rows(row).Cells(0).Value, String)
-                arrColoring(row).rowCol = grdVideoMinerDatabase.Rows(row).DefaultCellStyle.BackColor
-                ReDim arrColoring(row).cellForegroundCols(grdVideoMinerDatabase.ColumnCount - 1)
-                ReDim arrColoring(row).cellBackgroundCols(grdVideoMinerDatabase.ColumnCount - 1)
-                For cell As Integer = 0 To grdVideoMinerDatabase.ColumnCount - 1
-                    arrColoring(row).cellForegroundCols(cell) = grdVideoMinerDatabase.Rows(row).Cells(cell).Style.ForeColor
-                    arrColoring(row).cellBackgroundCols(cell) = grdVideoMinerDatabase.Rows(row).Cells(cell).Style.BackColor
-                Next
-            Next
-        End If
-    End Sub
-
-    Delegate Sub UpdateColoringDelegate()
-    Private marshalUpdateColoring As UpdateColoringDelegate = New UpdateColoringDelegate(AddressOf UpdateColoring)
-
-    ''' <summary>
-    ''' Marshalled sub used to re-apply the coloring of the dirty data cells in the data grid. This must be marshalled to ensure it happens after the
-    ''' DataBinding Event has taken place.
-    ''' </summary>
-    Private Sub UpdateColoring()
-        Dim id As String
-        For row As Integer = 0 To grdVideoMinerDatabase.RowCount - 1
-            ' Get the ID found in the current row
-            id = CType(grdVideoMinerDatabase.Rows(row).Cells(0).Value, String)
-            ' Find the id in the coloring array
-            For i As Integer = 0 To arrColoring.Length - 1
-                If arrColoring(i).id = id Then
-                    ' Apply the coloring to this row and move on
-                    grdVideoMinerDatabase.Rows(row).DefaultCellStyle.BackColor = arrColoring(i).rowCol
-                    For cell As Integer = 0 To grdVideoMinerDatabase.ColumnCount - 1
-                        grdVideoMinerDatabase.Rows(row).Cells(cell).Style.ForeColor = arrColoring(i).cellForegroundCols(cell)
-                        grdVideoMinerDatabase.Rows(row).Cells(cell).Style.BackColor = arrColoring(i).cellBackgroundCols(cell)
-                    Next
-                End If
-            Next
-        Next
-        arrColoring = Nothing
-    End Sub
-
-    ''' <summary>
-    ''' Apply coloring to the data grid after it has been sorted
-    ''' </summary>
-    Private Sub grdVideoMinerDatabase_Sorted(sender As Object, e As DataGridViewBindingCompleteEventArgs) Handles grdVideoMinerDatabase.DataBindingComplete
-        ' Prevent initial data binding from failing
-        If IsNothing(arrColoring) Then Exit Sub
-        If e.ListChangedType <> ListChangedType.Reset Then Exit Sub
-        Me.BeginInvoke(marshalUpdateColoring)
-    End Sub
-
-
-    ''' <summary>
-    ''' Triggered when any cell value is changed in the grid. Will update a label telling the user that the data is no longer synced with the database,
-    ''' and color the row of cells salmon.
-    ''' If the user just types the same value that was in the cell to begin with, the row will be unchanged.
-    ''' </summary>
-    Private Sub grdVideoMinerDatabase_CurrentCellDirtyStateChanged(sender As Object, e As EventArgs) Handles grdVideoMinerDatabase.CurrentCellDirtyStateChanged
-        rowWasGood = (grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.BackColor <> Color.Salmon)
-        If grdVideoMinerDatabase.IsCurrentCellDirty Then
-            lblDirtyData.ForeColor = Color.Red
-            lblDirtyData.Text = "Data unsynced"
-            grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.BackColor = Color.Salmon
-            grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.SelectionBackColor = Color.DarkSalmon
-            grdVideoMinerDatabase.CurrentCell.Style.ForeColor = Color.AntiqueWhite
-            grdVideoMinerDatabase.CurrentCell.Style.BackColor = Color.Firebrick
-            pnlTransectData.DisableDefineAllButton()
-            pnlHabitatData.DisableDefineAllButton()
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' Give column and row-specific error message to user. Avoids errors/exceptions during the update to the database.
-    ''' </summary>
-    Private Sub grdVideoMinerDatabase_DataError(sender As Object, e As System.Windows.Forms.DataGridViewDataErrorEventArgs) Handles grdVideoMinerDatabase.DataError
-        Dim strFieldName As String = grdVideoMinerDatabase.Columns(e.ColumnIndex).HeaderText
-        If rowWasGood Then
-            ' Reset the background color back to white and the selection color back to default 'HighLight'
-            grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.BackColor = Color.White
-            grdVideoMinerDatabase.Rows(grdVideoMinerDatabase.CurrentRow.Index).DefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Highlight
-            grdVideoMinerDatabase.CurrentCell.Style.BackColor = Color.White
-            grdVideoMinerDatabase.CurrentCell.Style.ForeColor = Color.Black
-        End If
-        ' Get ID number and use that as row since the user can see it labelled on the row headers
-        Dim row As Integer = CInt(grdVideoMinerDatabase.Rows(e.RowIndex).Cells(0).Value.ToString())
-        Select Case strFieldName
-            Case "ID"
-                MessageBox.Show("Error in column 'ID', row " & row & ": Value must be a non-null integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "TransectDate"
-                MessageBox.Show("Error in column 'TransectDate', row " & row & ": Value must be a DateTime (mm/dd/yyyy).", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "TimeCode"
-                MessageBox.Show("Error in column 'TimeCode', row " & row & ": Value must be a DateTime (mm/dd/yyyy).", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "TimeSource"
-                MessageBox.Show("Error in column 'TimeSource', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "OnBottom"
-                MessageBox.Show("Error in column 'OnBottom', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "DominantSubstrate"
-                MessageBox.Show("Error in column 'DominantSubstrate', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "DominantPercent"
-                MessageBox.Show("Error in column 'DominantPercent', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "SubdominantSubstrate"
-                MessageBox.Show("Error in column 'SubdominantSubstrate', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "SubdominantPercent"
-                MessageBox.Show("Error in column 'SubdominantPercent', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "SurveyModeID"
-                MessageBox.Show("Error in column 'SurveyModeID', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "ReliefID"
-                MessageBox.Show("Error in column 'ReliefID', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "DisturbanceID"
-                MessageBox.Show("Error in column 'DisturbanceID', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "ProtocolID"
-                MessageBox.Show("Error in column 'ProtocolID', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "ImageQualityID"
-                MessageBox.Show("Error in column 'ImageQualityID', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "SpeciesCount"
-                MessageBox.Show("Error in column 'SpeciesCount', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "Side"
-                MessageBox.Show("Error in column 'Side', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "Range"
-                MessageBox.Show("Error in column 'Range', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "Length"
-                MessageBox.Show("Error in column 'Length', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "Height"
-                MessageBox.Show("Error in column 'Height', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "Width"
-                MessageBox.Show("Error in column 'Width', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "Abundance"
-                MessageBox.Show("Error in column 'Abundance', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "IDConfidence"
-                MessageBox.Show("Error in column 'IDConfidence', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case DATA_CODE
-                MessageBox.Show("Error in column 'DataCode', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "X"
-                MessageBox.Show("Error in column 'X', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "Y"
-                MessageBox.Show("Error in column 'Y', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "Z"
-                MessageBox.Show("Error in column 'Z', row " & row & ": Value must be an integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "ElapsedTime"
-                MessageBox.Show("Error in column 'ElapsedTime', row " & row & ": Value must be a DateTime.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "ReviewedDate"
-                MessageBox.Show("Error in column 'ReviewedDate', row " & row & ": Value must be a DateTime.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Case "ReviewedTime"
-                MessageBox.Show("Error in column 'ReviewedTime', row " & row & ": Value must be a DateTime.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Select
-    End Sub
-
-    ''' <summary>
-    ''' Key events for the data grid. The arrow keys will move to adjacent cells, the Enter key will submit the edit (if applicable)
-    ''' and move to the next cell down or, if it is currently the last row, the next cell on the right, or if neither of those,
-    ''' the top left-most cell. Pressing the 'delete' key will delete rows from the grid view and the database.
-    ''' </summary>
-    Private Sub grdVideoMinerDatabase_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles grdVideoMinerDatabase.KeyDown
-        'Private Sub grdVideoMinerDatabase_KeyDown(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.KeyEventArgs) Handles grdVideoMinerDatabase.KeyDown
-        Select Case e.KeyCode
-            Case Keys.Delete
-                deleteSelectedRows(sender, e)
-        End Select
-    End Sub
-
-    Private Sub grdVideoMinerDatabase_UserDeletedRow(sender As Object, e As DataGridViewRowEventArgs) Handles grdVideoMinerDatabase.UserDeletedRow
-        If grdVideoMinerDatabase.Rows.Count = 0 Then
-            fetch_data()
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' Allow keys to be captured while the editor is focussed on an individual cell
-    ''' </summary>
-    Private Sub grdVideoMinerDatabase_EditingControlShowing(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewEditingControlShowingEventArgs) Handles grdVideoMinerDatabase.EditingControlShowing
-        'Private Sub grdVideoMinerDatabase_EditingControlShowing(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.DataGridViewEditingControlShowingEventArgs) Handles grdVideoMinerDatabase.EditingControlShowing
-        Dim tb As TextBox = CType(e.Control, TextBox)
-        AddHandler tb.PreviewKeyDown, AddressOf TextBox_PreviewKeyDown
-    End Sub
-
-    ''' <summary>
-    ''' Sets up the Enter or Return key to be captured by the TextBox, which is a cell in the DataGridView.
-    ''' This is the only way that the Enter key can be used to submit a value when editing a cell.
-    ''' </summary>
-    Private Sub TextBox_PreviewKeyDown(ByVal sender As Object, ByVal e As PreviewKeyDownEventArgs)
-        If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Return Then
-            e.IsInputKey = True
-        End If
-    End Sub
-
-    Private Sub cmdUpdateDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdUpdateDatabase.Click
-        updateDatabaseWithGridValues()
-    End Sub
-
-    ''' <summary>
-    ''' Deletes selected rows from the MS access database as well as in the grid view. A confirmation box will verify this.
-    ''' </summary>
-    Private Sub deleteSelectedRows(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        If grdVideoMinerDatabase.SelectedRows.Count > 0 Then
-            If MessageBox.Show("Are you sure you want to delete all selected rows from the database? They will be gone forever.", "Delete rows?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = vbYes Then
-                For Each row As DataGridViewRow In grdVideoMinerDatabase.SelectedRows
-                    grdVideoMinerDatabase.Rows.Remove(row)
-                Next
-                updateDatabaseWithGridValues()
-            End If
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' Update the MS Access database table 'data' with values from the DataGridView object.
-    ''' </summary>
-    Private Sub updateDatabaseWithGridValues()
-        Database.Update(m_data_table, DB_DATA_TABLE)
-        lblDirtyData.ForeColor = Color.LimeGreen
-        lblDirtyData.Text = "Data synced"
-        For i As Integer = 0 To grdVideoMinerDatabase.RowCount - 1
-            For cell As Integer = 0 To grdVideoMinerDatabase.Rows(i).Cells.Count - 1
-                'Reset all cell backcolors and forecolors
-                grdVideoMinerDatabase.Rows(i).Cells(cell).Style.ForeColor = Color.Black
-                grdVideoMinerDatabase.Rows(i).Cells(cell).Style.BackColor = Color.White
-            Next
-        Next
-        fetch_data() ' triggers code to check for 0 rows situation and disable buttons if so.
-    End Sub
-
-    ''' <summary>
-    ''' Captures right click in the DataGridView. This will delete rows from the grid view and the database.
-    ''' </summary>
-    ''' <remarks>If no rows are selected, a message will tell you to select rows and then press delete</remarks>
-    Private Sub grdVideoMinerDatabase_RightClick(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs) Handles grdVideoMinerDatabase.MouseClick
-        'Private Sub grdVideoMinerDatabase_RightClick(ByVal sender As DataGridView, ByVal e As System.Windows.Forms.MouseEventArgs) Handles grdVideoMinerDatabase.MouseClick
-        If e.Button = Windows.Forms.MouseButtons.Right Then
-            Dim cms As ContextMenuStrip = New ContextMenuStrip
-            Dim item1 As ToolStripItem
-            If grdVideoMinerDatabase.SelectedRows.Count > 0 Then
-                item1 = cms.Items.Add("Delete selected rows (or use delete key)")
-                item1.Tag = 1
-                AddHandler item1.Click, AddressOf deleteSelectedRows
-            Else
-                item1 = cms.Items.Add("Delete rows by selecting them and pressing delete.")
-                item1.Tag = 1
-            End If
-            cms.Show(grdVideoMinerDatabase, e.Location)
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' Validate the cell values if user makes them NULL. Avoids errors/exceptions during the update to the database.
-    ''' </summary>
-    Private Sub grdVideoMinerDatabase_CellValidating(ByVal sender As Object, ByVal e As DataGridViewCellValidatingEventArgs) Handles grdVideoMinerDatabase.CellValidating
-        ' Get column name from cell that was changed
-        Dim strFieldName As String = grdVideoMinerDatabase.Columns(e.ColumnIndex).HeaderText
-        Dim s As String = e.FormattedValue.ToString()
-        Select Case strFieldName
-            Case "ID"
-                If s = String.Empty Then
-                    MessageBox.Show("Error in column 'ID', row " & e.RowIndex.ToString() & ": Value must be a non-null integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    e.Cancel = True
-                Else
-                    ' Check to see that the ID is unique in the grid to avoid exceptions when update query is run later
-                    Dim isUnique As Boolean = True
-                    For Each row As DataGridViewRow In grdVideoMinerDatabase.Rows
-                        If Not row.IsNewRow Then
-                            Dim cell As DataGridViewCell = row.Cells("ID")
-                            ' Compare new and old values as long as it is not the same row
-                            If cell.Value.ToString = e.FormattedValue.ToString And cell.RowIndex <> e.RowIndex Then
-                                isUnique = False
-                            End If
-                        End If
-                    Next
-                    If Not isUnique Then
-                        MessageBox.Show("Error in column 'ID', row " & e.RowIndex.ToString() & ": The value is not unique. 'ID' is the primary key and must have a unique value.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                        e.Cancel = True
-                    End If
-                End If
-            Case (DATA_CODE)
-                If s = String.Empty Then
-                    MessageBox.Show("Error in column 'DataCode', row " & e.RowIndex.ToString() & ": Value must be a non-null integer.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    e.Cancel = True
-                End If
-        End Select
-    End Sub
-
-    ''' <summary>
-    ''' Reload the grid from the access database. A confirmation box will be displayed and if the user aggrees then any changes in the grid will
-    ''' be discarded and the database will be reloaded from scratch
-    ''' </summary>
-    Private Sub cmdRevertDatabase_Click(sender As Object, e As EventArgs) Handles cmdRevertDatabase.Click
-        If MessageBox.Show("Are you sure you want to discard all unsynced changes in the grid and revert to the database data?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = Windows.Forms.DialogResult.Yes Then
-            fetch_data()
-            lblDirtyData.ForeColor = Color.LimeGreen
-            lblDirtyData.Text = "Data synced"
-        End If
-    End Sub
-#End Region
-
-    Private Sub ConfigureButtonFormatToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureButtonFormatToolStripMenuItem.Click
-        If Not frmConfigureButtonFormat Is Nothing Then
-            frmConfigureButtonFormat.Dispose()
-            frmConfigureButtonFormat = Nothing
-        End If
-
-        frmConfigureButtonFormat = New frmConfigureButtonFormat(m_ButtonHeight, m_ButtonWidth, m_ButtonFont, m_ButtonTextSize)
-        frmConfigureButtonFormat.ShowDialog()
-    End Sub
-
-    Private Sub tmrComputerTime_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrComputerTime.Tick
-        Dim strTime As String = String.Empty
-        If Now.Hour >= 10 Then
-            strTime = CStr(Now.Hour)
-        Else
-            strTime = "0" & CStr(Now.Hour)
-        End If
-        If Now.Minute >= 10 Then
-            strTime = strTime & ":" & CStr(Now.Minute)
-        Else
-            strTime = strTime & ":0" & CStr(Now.Minute)
-        End If
-        If Now.Second >= 10 Then
-            strTime = strTime & ":" & CStr(Now.Second)
-        Else
-            strTime = strTime & ":0" & CStr(Now.Second)
-        End If
-        Me.txtTime.Text = strTime
-        Me.txtTime.Font = New Font(String.Empty, STATUS_FONT_SIZE, FontStyle.Bold)
-        Me.txtTime.BackColor = Color.LightGray
-        Me.txtTime.ForeColor = Color.LimeGreen
-        Me.txtTimeSource.BackColor = Color.LightGray
-        Me.txtTimeSource.ForeColor = Color.LimeGreen
-        Me.txtDateSource.BackColor = Color.LightGray
-        Me.txtDateSource.ForeColor = Color.LimeGreen
-
-        Dim strDate As String = String.Empty
-        If Now.Day >= 10 Then
-            strDate = CStr(Now.Day)
-        Else
-            strDate = "0" & CStr(Now.Day)
-        End If
-        If Now.Month >= 10 Then
-            strDate = strDate & "/" & CStr(Now.Month)
-        Else
-            strDate = strDate & "/0" & CStr(Now.Month)
-        End If
-        If Now.Year >= 10 Then
-            strDate = strDate & "/" & CStr(Now.Year)
-        Else
-            strDate = strDate & "/0" & CStr(Now.Year)
-        End If
-
-        m_transect_date = CDate(strDate)
-        Me.txtTransectDate.Text = CType(m_transect_date, String)
-
-    End Sub
 
     Private Sub txtTime_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtTime.TextChanged
         If Me.txtTimeSource.Text = "VIDEO" Then
@@ -4302,37 +3868,37 @@ Public Class VideoMiner
         frmEditLookupTable.ShowDialog()
     End Sub
 
-    Private Sub grdVideoMinerDatabase_ColumnDisplayIndexChanged(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewColumnEventArgs) Handles grdVideoMinerDatabase.ColumnDisplayIndexChanged
-        If blupdateColumns Then
-            If Not blOpenDatabase And Not blCloseDatabase Then
-                Dim strColumns As String = String.Empty
-                dataColumns = New Collection
-                Dim dgColumn As DataGridViewColumn
-                For Each dgColumn In grdVideoMinerDatabase.Columns
-                    dataColumns.Add(dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width)
-                    strColumns = strColumns & dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width & ","
-                Next
-                SaveConfiguration(XPATH_DATABASE_NAME, m_db_filename)
-                SaveConfiguration(XPATH_DATABASE_COLUMNS, strColumns.Substring(0, strColumns.Length - 1))
-            End If
-        End If
-    End Sub
+    'Private Sub grdVideoMinerDatabase_ColumnDisplayIndexChanged(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewColumnEventArgs)
+    '    If blupdateColumns Then
+    '        If Not blOpenDatabase And Not blCloseDatabase Then
+    '            Dim strColumns As String = String.Empty
+    '            dataColumns = New Collection
+    '            Dim dgColumn As DataGridViewColumn
+    '            For Each dgColumn In grdVideoMinerDatabase.Columns
+    '                dataColumns.Add(dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width)
+    '                strColumns = strColumns & dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width & ","
+    '            Next
+    '            SaveConfiguration(XPATH_DATABASE_NAME, m_db_filename)
+    '            SaveConfiguration(XPATH_DATABASE_COLUMNS, strColumns.Substring(0, strColumns.Length - 1))
+    '        End If
+    '    End If
+    'End Sub
 
-    Private Sub grdVideoMinerDatabase_ColumnWidthChanged(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewColumnEventArgs) Handles grdVideoMinerDatabase.ColumnWidthChanged
-        If blupdateColumns Then
-            If Not blOpenDatabase And Not blCloseDatabase Then
-                Dim strColumns As String = String.Empty
-                dataColumns = New Collection
-                Dim dgColumn As DataGridViewColumn
-                For Each dgColumn In grdVideoMinerDatabase.Columns
-                    dataColumns.Add(dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width)
-                    strColumns = strColumns & dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width & ","
-                Next
-                SaveConfiguration(XPATH_DATABASE_NAME, m_db_filename)
-                SaveConfiguration(XPATH_DATABASE_COLUMNS, strColumns.Substring(0, strColumns.Length - 1))
-            End If
-        End If
-    End Sub
+    'Private Sub grdVideoMinerDatabase_ColumnWidthChanged(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewColumnEventArgs)
+    '    If blupdateColumns Then
+    '        If Not blOpenDatabase And Not blCloseDatabase Then
+    '            Dim strColumns As String = String.Empty
+    '            dataColumns = New Collection
+    '            Dim dgColumn As DataGridViewColumn
+    '            For Each dgColumn In grdVideoMinerDatabase.Columns
+    '                dataColumns.Add(dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width)
+    '                strColumns = strColumns & dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width & ","
+    '            Next
+    '            SaveConfiguration(XPATH_DATABASE_NAME, m_db_filename)
+    '            SaveConfiguration(XPATH_DATABASE_COLUMNS, strColumns.Substring(0, strColumns.Length - 1))
+    '        End If
+    '    End If
+    'End Sub
 
     ''' <summary>
     ''' Set the User time (txtTime) textbox and source time (txtTimeSource) to show
@@ -4674,7 +4240,7 @@ Public Class VideoMiner
     ''' If user changes the selection, just refresh the data so that the new selection is reflected.
     ''' </summary>
     Private Sub AlwaysShowNewestRecordToolStripMenuItem_Click(sender As Object, e As EventArgs)
-        fetch_data()
+        m_grdDatabase.fetchData()
     End Sub
 
     Private Function MethodInvoker() As [Delegate]

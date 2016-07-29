@@ -1576,12 +1576,6 @@ VideoMiner
  Opens the MS Access database and fills the DynamicPanels with buttons. Set up visibility on other VideoMiner buttons
  </summary>
 </member>
-<member name="M:VideoMiner.VideoMiner.fetch_data">
- <summary>
- Fetch the data table from the MS Access database into the DataGridView and sets the next unique ID that the database can recieve.
- </summary>
- <remarks>Order of the rows will be by decending primary key ('ID' field)</remarks>
-</member>
 <member name="M:VideoMiner.VideoMiner.runInsertQuery(System.Collections.Generic.Dictionary{System.String,System.Tuple{System.String,System.String,System.Boolean}})">
  <summary>
  Creates and runs an 'INSERT INTO' query on the database for all of the given items in the dictionary. Each item will be incorporated into a single query for insertion.
@@ -1607,91 +1601,6 @@ VideoMiner
 <member name="M:VideoMiner.VideoMiner.frmConfigureButtons_DatabaseModifiedHandler">
  <summary>
  The habitat and/or transect buttons in the database have been modified and need to be redrawn.
- </summary>
-</member>
-<member name="F:VideoMiner.VideoMiner.rowWasGood">
- <summary>
- Whether or not the row is synced properly with the database. Used when the user edits a cell value. The cell's row
- will immediately be colored since the data are now 'dirty' but if the value is of the wrong type (not validated)
- then this is required to put the row back into the condition it was in before the current edit attempt.
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_ColumnHeaderMouseClick(System.Object,System.Windows.Forms.DataGridViewCellMouseEventArgs)">
- <summary>
- Writes the ID numbers in the row headers, and sets the width to fit.
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_CellMouseDown(System.Object,System.Windows.Forms.DataGridViewCellMouseEventArgs)">
- <summary>
- When the user clicks a column header, record the cell color data so that any that are dirty will remain so after the sort takes place.
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMiner.UpdateColoring">
- <summary>
- Marshalled sub used to re-apply the coloring of the dirty data cells in the data grid. This must be marshalled to ensure it happens after the
- DataBinding Event has taken place.
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_Sorted(System.Object,System.Windows.Forms.DataGridViewBindingCompleteEventArgs)">
- <summary>
- Apply coloring to the data grid after it has been sorted
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_CurrentCellDirtyStateChanged(System.Object,System.EventArgs)">
- <summary>
- Triggered when any cell value is changed in the grid. Will update a label telling the user that the data is no longer synced with the database,
- and color the row of cells salmon.
- If the user just types the same value that was in the cell to begin with, the row will be unchanged.
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_DataError(System.Object,System.Windows.Forms.DataGridViewDataErrorEventArgs)">
- <summary>
- Give column and row-specific error message to user. Avoids errors/exceptions during the update to the database.
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_KeyDown(System.Object,System.Windows.Forms.KeyEventArgs)">
- <summary>
- Key events for the data grid. The arrow keys will move to adjacent cells, the Enter key will submit the edit (if applicable)
- and move to the next cell down or, if it is currently the last row, the next cell on the right, or if neither of those,
- the top left-most cell. Pressing the 'delete' key will delete rows from the grid view and the database.
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_EditingControlShowing(System.Object,System.Windows.Forms.DataGridViewEditingControlShowingEventArgs)">
- <summary>
- Allow keys to be captured while the editor is focussed on an individual cell
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMiner.TextBox_PreviewKeyDown(System.Object,System.Windows.Forms.PreviewKeyDownEventArgs)">
- <summary>
- Sets up the Enter or Return key to be captured by the TextBox, which is a cell in the DataGridView.
- This is the only way that the Enter key can be used to submit a value when editing a cell.
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMiner.deleteSelectedRows(System.Object,System.EventArgs)">
- <summary>
- Deletes selected rows from the MS access database as well as in the grid view. A confirmation box will verify this.
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMiner.updateDatabaseWithGridValues">
- <summary>
- Update the MS Access database table 'data' with values from the DataGridView object.
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_RightClick(System.Object,System.Windows.Forms.MouseEventArgs)">
- <summary>
- Captures right click in the DataGridView. This will delete rows from the grid view and the database.
- </summary>
- <remarks>If no rows are selected, a message will tell you to select rows and then press delete</remarks>
-</member>
-<member name="M:VideoMiner.VideoMiner.grdVideoMinerDatabase_CellValidating(System.Object,System.Windows.Forms.DataGridViewCellValidatingEventArgs)">
- <summary>
- Validate the cell values if user makes them NULL. Avoids errors/exceptions during the update to the database.
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMiner.cmdRevertDatabase_Click(System.Object,System.EventArgs)">
- <summary>
- Reload the grid from the access database. A confirmation box will be displayed and if the user aggrees then any changes in the grid will
- be discarded and the database will be reloaded from scratch
  </summary>
 </member>
 <member name="M:VideoMiner.VideoMiner.setTimes">
