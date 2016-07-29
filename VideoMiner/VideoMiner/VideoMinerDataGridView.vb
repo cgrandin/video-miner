@@ -87,6 +87,14 @@ Public Class VideoMinerDataGridView
         Clean
         Dirty
     End Enum
+    ''' <summary>
+    ''' Order the rows are displayed by Primary key id
+    ''' </summary>
+    Public Enum RowOrderEnum
+        Ascending
+        Descending
+    End Enum
+    Private m_row_order As RowOrderEnum
 #End Region
 
 #Region "Properties"
@@ -100,10 +108,14 @@ Public Class VideoMinerDataGridView
     Public Event UnsyncedEvent()
 #End Region
 
-    Public Sub New(tableName As String, Optional showPrimaryKeyField As Boolean = True)
+    Public Sub New(tableName As String,
+                   Optional showPrimaryKeyField As Boolean = True,
+                   Optional rowOrder As RowOrderEnum = RowOrderEnum.Ascending)
         InitializeComponent()
         m_table_name = tableName
+        m_primary_key_field = Database.GetPrimaryKeyFieldName(m_table_name)
         m_show_primary_key_field = showPrimaryKeyField
+        m_row_order = rowOrder
         m_arr_coloring = New List(Of stcRowColoring)
         grd.AllowUserToAddRows = False
         m_frmViewDataTable = New frmViewDataTable(DB_DATA_CODES_TABLE)
@@ -114,8 +126,13 @@ Public Class VideoMinerDataGridView
     ''' Fetch the data from the database, and enable/disble buttons according to what was retreived.
     ''' </summary>
     Public Sub fetchData()
-        m_primary_key_field = Database.GetPrimaryKeyFieldName(m_table_name)
-        m_data_table = Database.GetDataTable("select * from " & m_table_name & " order by " & m_primary_key_field, m_table_name)
+        Dim strQuery As String = "select * from " & m_table_name & " order by " & m_primary_key_field
+        If m_row_order = RowOrderEnum.Ascending Then
+            strQuery = strQuery & " asc"
+        Else
+            strQuery = strQuery & " desc"
+        End If
+        m_data_table = Database.GetDataTable(strQuery, m_table_name)
         grd.DataSource = m_data_table
         disableColumnSorting()
         m_curr_row = 0

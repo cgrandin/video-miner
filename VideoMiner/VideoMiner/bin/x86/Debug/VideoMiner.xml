@@ -1364,12 +1364,6 @@ VideoMiner
  </summary>
  <remarks></remarks>
 </member>
-<member name="M:VideoMiner.VideoMiner.mnuRefreshForm_Click(System.Object,System.EventArgs)">
- <summary>
- When the user clicks "Refresh database", it will reload the database into the form.
- </summary>
- <remarks></remarks>
-</member>
 <member name="M:VideoMiner.VideoMiner.mnuOpenDV_Click(System.Object,System.EventArgs)">
  <summary>
  When a user selects "Open a DV Device" from the file menu, the openDV() function to
@@ -3401,6 +3395,11 @@ VideoMiner
 <member name="T:VideoMiner.VideoMinerDataGridView.MoveDirection">
  <summary>
  Enumeration describing which way to move the button definition in the list
+ </summary>
+</member>
+<member name="T:VideoMiner.VideoMinerDataGridView.RowOrderEnum">
+ <summary>
+ Order the rows are displayed by Primary key id
  </summary>
 </member>
 <member name="M:VideoMiner.VideoMinerDataGridView.fetchData">

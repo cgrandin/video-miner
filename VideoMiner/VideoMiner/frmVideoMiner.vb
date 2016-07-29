@@ -1603,9 +1603,8 @@ Public Class VideoMiner
     ''' <remarks></remarks>
     Public Sub CloseDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuCloseDatabase.Click
         blCloseDatabase = True
-        m_grdDatabase.Hide()
         m_db_file_open = False
-        'db_file_unload()
+        m_grdDatabase.Hide()
         closeDatabase()
         no_files_loaded()
         'Me.cmdDefineAllTransectVariables.Visible = False
@@ -1634,14 +1633,6 @@ Public Class VideoMiner
         dictTempHabitatFieldValues = Nothing
         dictTransectFieldValues = Nothing
         blCloseDatabase = False
-    End Sub
-
-    ''' <summary>
-    ''' When the user clicks "Refresh database", it will reload the database into the form.
-    ''' </summary>
-    ''' <remarks></remarks>
-    Private Sub mnuRefreshForm_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuRefreshForm.Click
-        'refresh_database()
     End Sub
 
     ''' <summary>
@@ -1685,7 +1676,8 @@ Public Class VideoMiner
     ''' <remarks></remarks>
     Private Sub cmdShowSetTimecode_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdShowSetTimecode.Click
         If frmVideoPlayer Is Nothing Then
-            MessageBox.Show("Please open a video file before setting the time.", "Video File Not Open", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Please open a video file before setting the time.",
+                            "Video File Not Open", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         dataEntryStarted()
@@ -1818,7 +1810,6 @@ Public Class VideoMiner
             End If
             tc = m_tsUserTime
             strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
-            'strVideoTime = GetVideoTime(tc, strVideoDecimalTime)
         End If
         strVideoTextTime = strVideoTime
         toggle_bottom()
@@ -1834,7 +1825,9 @@ Public Class VideoMiner
             If IsNothing(m_data_table.GetChanges()) Then
                 btn.ShowForm(sender, e)
             Else
-                If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
+                If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?",
+                                   "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation,
+                                   MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
                     m_grdDatabase.fetchData() ' Cleans up the table first
                     If radQuickEntry.Checked Then
                         btn.RecordQuick()
@@ -1848,7 +1841,9 @@ Public Class VideoMiner
             If IsNothing(m_data_table.GetChanges()) Then
                 btn.ShowForm(sender, e)
             Else
-                If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
+                If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?",
+                                   "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation,
+                                   MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
                     m_grdDatabase.fetchData() ' Cleans up the table first
                     btn.ShowForm(sender, e)
                 End If
@@ -3428,7 +3423,7 @@ Public Class VideoMiner
             mnuCloseDatabase.Enabled = True
             DataCodeAssignmentsToolStripMenuItem.Enabled = True
             KeyboardShortcutsToolStripMenuItem.Enabled = True
-            m_grdDatabase = New VideoMinerDataGridView(DB_DATA_TABLE, True)
+            m_grdDatabase = New VideoMinerDataGridView(DB_DATA_TABLE, True, VideoMinerDataGridView.RowOrderEnum.Descending)
             SplitContainer1.Panel2.Controls.Add(m_grdDatabase)
             m_grdDatabase.Dock = DockStyle.Fill
             'm_grdDatabase.fetchData()()()
