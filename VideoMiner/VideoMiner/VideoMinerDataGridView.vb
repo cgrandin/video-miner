@@ -566,6 +566,7 @@ Public Class VideoMinerDataGridView
         End If
         dr.Item(m_primary_key_field) = intNextKey
         Database.InsertRow(dr, m_table_name)
+        RaiseEvent DataChanged()
         fetchData()
     End Sub
 
