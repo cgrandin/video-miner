@@ -233,7 +233,7 @@ Public Class VideoMinerDataGridView
         ' Get Primary Key value and use that as row since the user can see it labelled on the row headers
         Dim row As Integer = CInt(grd.Rows(e.RowIndex).Cells(0).Value.ToString())
         Dim colName As String = grd.Columns(e.ColumnIndex).Name
-        Dim colType As String = grd.DataSource.GetType().ToString()
+        Dim colType As String = m_data_table.Columns(e.ColumnIndex).DataType.ToString()
         MessageBox.Show("Error in column '" & strFieldName & "', row " & row & ": Value must be of type " &
                         colType & ".", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
     End Sub
@@ -383,6 +383,7 @@ Public Class VideoMinerDataGridView
             Dim intKey As Integer = m_arr_coloring(e.RowIndex).dbPrimaryKey
             If compareGridAndDatabaseRows(intKey, dr) Then
                 setCell(e.RowIndex, e.ColumnIndex, CellStatus.Clean)
+                ' Set controls correctly dependinng on whether or not the grid was synced before this operation
                 If m_synced Then
                     setSynced()
                 Else
@@ -391,7 +392,8 @@ Public Class VideoMinerDataGridView
                 RaiseEvent EndEditEvent(m_synced)
             End If
         Catch ex As Exception
-
+            ' This empty try/catch is required because the CellLeave sub is called many times during the building of the
+            ' grid and we only want to deal with it when the used actually does something.
         End Try
 
     End Sub
