@@ -47,8 +47,8 @@ Partial Class VideoMiner
         Me.mnuOpenImg = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuConfigureTools = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureSpeciesEventToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ConfigureHabitatButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureTransectButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConfigureHabitatButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureButtonFormatToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DisableHabitatButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EditLookupTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -130,13 +130,13 @@ Partial Class VideoMiner
         Me.cmdRevertDatabase = New System.Windows.Forms.Button()
         Me.cmdUpdateDatabase = New System.Windows.Forms.Button()
         Me.lblDirtyData = New System.Windows.Forms.Label()
-        Me.grdVideoMinerDatabase = New System.Windows.Forms.DataGridView()
         Me.fldlgOpenFD = New System.Windows.Forms.OpenFileDialog()
         Me.tmrRecordPerSecond = New System.Windows.Forms.Timer(Me.components)
         Me.tmrPlayForSeconds = New System.Windows.Forms.Timer(Me.components)
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
+        Me.grdVideoMinerDatabase = New System.Windows.Forms.DataGridView()
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -355,17 +355,17 @@ Partial Class VideoMiner
         Me.ConfigureSpeciesEventToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
         Me.ConfigureSpeciesEventToolStripMenuItem.Text = "Configure Species Event"
         '
-        'ConfigureHabitatButtonToolStripMenuItem
-        '
-        Me.ConfigureHabitatButtonToolStripMenuItem.Name = "ConfigureHabitatButtonToolStripMenuItem"
-        Me.ConfigureHabitatButtonToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
-        Me.ConfigureHabitatButtonToolStripMenuItem.Text = "Configure Habitat Buttons"
-        '
         'ConfigureTransectButtonsToolStripMenuItem
         '
         Me.ConfigureTransectButtonsToolStripMenuItem.Name = "ConfigureTransectButtonsToolStripMenuItem"
         Me.ConfigureTransectButtonsToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
         Me.ConfigureTransectButtonsToolStripMenuItem.Text = "Configure Transect Buttons"
+        '
+        'ConfigureHabitatButtonToolStripMenuItem
+        '
+        Me.ConfigureHabitatButtonToolStripMenuItem.Name = "ConfigureHabitatButtonToolStripMenuItem"
+        Me.ConfigureHabitatButtonToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
+        Me.ConfigureHabitatButtonToolStripMenuItem.Text = "Configure Habitat Buttons"
         '
         'ConfigureButtonFormatToolStripMenuItem
         '
@@ -1262,6 +1262,18 @@ Partial Class VideoMiner
         Me.lblDirtyData.TabIndex = 59
         Me.lblDirtyData.Text = "Data synced"
         '
+        'tmrRecordPerSecond
+        '
+        Me.tmrRecordPerSecond.Interval = 200
+        '
+        'tmrPlayForSeconds
+        '
+        Me.tmrPlayForSeconds.Interval = 10
+        '
+        'tmrComputerTime
+        '
+        Me.tmrComputerTime.Interval = 500
+        '
         'grdVideoMinerDatabase
         '
         Me.grdVideoMinerDatabase.AllowUserToAddRows = False
@@ -1275,18 +1287,6 @@ Partial Class VideoMiner
         Me.grdVideoMinerDatabase.RowTemplate.Height = 24
         Me.grdVideoMinerDatabase.Size = New System.Drawing.Size(1098, 125)
         Me.grdVideoMinerDatabase.TabIndex = 0
-        '
-        'tmrRecordPerSecond
-        '
-        Me.tmrRecordPerSecond.Interval = 200
-        '
-        'tmrPlayForSeconds
-        '
-        Me.tmrPlayForSeconds.Interval = 10
-        '
-        'tmrComputerTime
-        '
-        Me.tmrComputerTime.Interval = 500
         '
         'VideoMiner
         '
@@ -1402,7 +1402,6 @@ Partial Class VideoMiner
     Friend WithEvents cmdTransectStart As System.Windows.Forms.Button
     Friend WithEvents cmdShowSetTimecode As System.Windows.Forms.Button
     Friend WithEvents cmdNothingInPhoto As System.Windows.Forms.Button
-    Friend WithEvents grdVideoMinerDatabase As System.Windows.Forms.DataGridView
     Friend WithEvents SplitContainer2 As System.Windows.Forms.SplitContainer
     Friend WithEvents SplitContainer6 As System.Windows.Forms.SplitContainer
     Friend WithEvents SplitContainer7 As System.Windows.Forms.SplitContainer
@@ -1467,4 +1466,5 @@ Partial Class VideoMiner
     Friend WithEvents cmdRevertDatabase As System.Windows.Forms.Button
     Friend WithEvents SplitContainer8 As System.Windows.Forms.SplitContainer
     Friend WithEvents cmdOffBottom As Button
+    Friend WithEvents grdVideoMinerDatabase As DataGridView
 End Class
