@@ -139,7 +139,7 @@ Public Class VideoMiner
 
 #End Region
 
-#Region "Variables"
+#Region "Member variables"
     ' These are the dynamic panels to be added to the splitcontainers at runtime
     Friend WithEvents m_pnlTransectData As DynamicTableButtonPanel
     Friend WithEvents m_pnlHabitatData As DynamicTableButtonPanel
@@ -281,10 +281,10 @@ Public Class VideoMiner
     ''' <summary>
     ''' Used to store the state of the video when a data entry button is clicked.
     ''' </summary>
-    Private m_blWasPlaying As Boolean
+    Private m_was_playing As Boolean
 
     ' GPS connection settings to initialize m_frmGpsSettings form with
-    Private m_strComPort As String
+    Private m_com_port As String
     Private m_strNMEAStringType As String
     Private m_strParity As String
     Private m_intBaudRate As Integer
@@ -295,151 +295,35 @@ Public Class VideoMiner
     Private m_strDatabaseName As String
     Private m_strDatabaseColumns As String
 
-    Private ttToolTip As ToolTip
-    Private select_string As String
-    Private insert_string As String
-    Private substrate_name As String
-    Private substrate_code As String
+    Private m_tool_tip As ToolTip
 
-    'Public strKeyboardShortcut As String = String.Empty
-    'Public strCurrentKey As String = String.Empty
-    'Private value As Array = [Enum].GetValues(GetType(Keys))
+    Public m_image_open As Boolean = False
+    Public m_image_prefix As String
+    Public m_image_file_names() As String
+    Private m_is_on_bottom As Integer
+    Private m_curr_code As String
 
-    Public image_open As Boolean = False
-    Public image_prefix As String
-    Public fileNames() As String
-    Private relief_name As String
-    Private relief_code As String
-    Private is_on_bottom As Integer
-    Private curr_code As String
-    Private curr_name As String
-    Private blHandled As Boolean = False
+    Public m_comment As String
 
-    ' Variables to store form values
-    Public strWidth As String
-    Public strComment As String
-    Private strSide As String
-    Private strRange As String
-    Private strLength As String
-    Private strHeight As String
-    Private strAbundance As String
-    Private strIdConfidence As String
-    Private strSpeciesCount As String
-    Private strSpeciesCode As String
-    Public blSpeciesValuesSet As Boolean = False
+    Private m_video_seconds As Integer = 0
+    Private m_previous_video_seconds As Integer = 0
+    Private m_gps_seconds As Integer = 0
+    Private m_previous_gps_seconds As Integer = 0
+    Private m_first_time As Boolean = False
+    Private m_gps_first_time As Boolean = False
 
-    Private intVideoSeconds As Integer = 0
-    Private intPreviousVideoSeconds As Integer = 0
-    Private intGPSSeconds As Integer = 0
-    Private intPreviousGPSSeconds As Integer = 0
-    Private blFirstTime As Boolean = False
-    Private blGPSFirstTime As Boolean = False
+    ' The name of the current image including the path - used in open/save session only
+    'Private currentImage As String
 
+    Private m_default_quick_entry_count As String = "1"
 
-    ' Comparison value for reord every second functionality    
-    Public intLastVideoSecond As Integer = 0
-    Public intLastVideoMinute As Integer = 0
-    Public intLastVideoHour As Integer = 0
-    Public intVideoStopCounter As Integer = 0
-    Public blSpeciesCancelled As Boolean = False
-    Private blIsDuplicateTime As Boolean = False
-
-    ' User buttons
-    Dim button_height As Integer = 44
-    Dim button_width As Integer = 154
-
-    ' For the habitat variables
-    Public textboxes() As TextBox
-    Public strHabitatButtonCodeNames() As String ' name of the fields where the data came from when user clicks a user button
-    Private buttons() As Button
-    Private intHabitatButtonCodes() As Integer
-    Private strHabitatButtonTables() As String
-    Private strHabitatButtonUserCodeChoice() As String
-    Private strHabitatButtonUserNameChoice() As String
-    Private strHabitatButtonColors() As String
-    Private intNumHabitatButtons As Integer
-
-    ' Transect variables
-    Private Transect_Textboxes() As DynamicTextbox
-    Private strTransectButtonCodeNames() As String
-    Private intTransectButtonCodes() As Integer
-    Private strTransectButtonTables() As String
-    Private strTransectButtonUserCodeChoice() As String
-    Private strTransectButtonUserNameChoice() As String
-    Private strTransectButtonColors() As String
-    Private intNumTransectButtons As Integer
-
-    ' for the species variables
-    Private speciesButtons() As Button
-    Private strSpeciesButtonCodes() As String ' species codes
-    Private strSpeciesButtonNames() As String
-    Private strSpeciesButtonCodeNames() As String ' name of the fields where the data came from when user clicks a user button
-    Private intSpeciesButtonUserCodeChoice() As Integer
-    Private strSpeciesButtonUserNameChoice() As String
-    Private strSpeciesButtonColors() As String
-    Private intNumSpeciesButtons As Integer
-
-    ' Collection and dictionaries to handle dynamically updating the habitat species values
-    Private colTableFields As Collection
-    Private colTransectFields As Collection
-
-    ' The name of the current image including the path
-    Private currentImage As String
-    Private strFileType As String
-    Private intCurrentZoom As Integer
-    Private blSizeChanged As Boolean = False
-
-    Private intNumberDisplayRecords As Integer = 0
-    Private intDefaultNumberDisplayRecords As Integer = 15
-    Private strQuickEntryCount As String = String.Empty
-    Private strDefaultQuickEntryCount As String = "1"
-
-    Private blVideoWasPlaying As Boolean = False
-
-    Public tryCount As Integer = 0
-    Public aquiredTryCount As Integer = 0
-    Public strPreviousGPSTime As String = String.Empty
-    Public dblGPSExpiry As Double = 0
-
-    '    Public strTimeDateSource As String = "ELAPSED"
-    '    Public strPreviousClipTime As String = VIDEO_TIME_DECIMAL_LABEL
-    Public intTimeSource As Integer = 1
-    Public blImageWarning As Boolean = True
-    Public blScreenCaptureCalled As Boolean = False
-    Public blOpenDatabase As Boolean = False
-    Public blCloseDatabase As Boolean = False
-    Public dblVideoStartPosition As Double = 0
-    'Public txtNMEAStringData As String = String.Empty
-
-    Public dataColumns As Collection
+    Public m_time_source As Integer = 1
+    ' Public dataColumns As Collection used in grid resizing
     Public blupdateColumns As Boolean = True
 
     Private frmAbout As AboutBox1
     Private strAbout As String
 
-    ''' <summary>
-    ''' Coloring of a row in the data grid. When a field is sorted by clicking the column header, the coloring is recorded, then the grid is sorted,
-    ''' then the coloring is re-applied by using the key field 'ID'. This structure represents a single row in the grid. The two cell arrays hold the
-    ''' background and foreground colors for the cells in the row.
-    ''' </summary>
-    Structure stcRowColoring
-        Public id As String
-        Public rowCol As Color
-        Public cellForegroundCols As Color()
-        Public cellBackgroundCols As Color()
-    End Structure
-    ''' <summary>
-    ''' An array of row colorings to keep track of dirty cells when the columns are sorted.
-    ''' </summary>
-    Private arrColoring As stcRowColoring()
-#End Region
-
-#Region "Delegate Function Declarations"
-    Private Delegate Sub myDelegate()
-#End Region
-
-#Region "Member variables"
-#Region "VideoMiner members"
     Private WithEvents m_grdDatabase As VideoMinerDataGridView
     Private m_strVersion As String
     Private m_RangeChecked As Boolean
@@ -482,6 +366,10 @@ Public Class VideoMiner
     Private m_PreviousProjects As Collection
 #End Region
 
+#Region "Delegate Function Declarations"
+    Private Delegate Sub myDelegate()
+#End Region
+
 #Region "Relay Configuration"
     Private m_ConfigurationSet As Boolean
     Private m_RelaySetup As String
@@ -499,7 +387,6 @@ Public Class VideoMiner
     Private m_DeviceTwoRelayTwo As String
     Private m_DeviceTwoRelayThree As String
     Private m_DeviceTwoRelayFour As String
-#End Region
 #End Region
 
 #Region "Properties"
@@ -1020,16 +907,13 @@ Public Class VideoMiner
         video_file_unload()
         no_files_loaded()
         m_transect_name = UNNAMED_TRANSECT
-        curr_code = CStr(BAD_ID)
-        is_on_bottom = 0
+        m_curr_code = CStr(BAD_ID)
+        m_is_on_bottom = 0
         toggle_bottom()
 
         'lblDirtyData.Visible = False
 
-        intNumberDisplayRecords = intDefaultNumberDisplayRecords
-
-        Me.txtQuickSpeciesCount.Text = strDefaultQuickEntryCount
-        strQuickEntryCount = strDefaultQuickEntryCount
+        Me.txtQuickSpeciesCount.Text = m_default_quick_entry_count
 
         Me.SelectNextControl(Me.SplitContainer4.Panel2, False, True, True, True)
 
@@ -1063,12 +947,12 @@ Public Class VideoMiner
         m_transect_date = DateTime.ParseExact(strDate, "dd/MM/yyyy", Nothing)
         m_tsUserTime = Zero
 
-        ttToolTip = New ToolTip()
+        m_tool_tip = New ToolTip()
         ' Always show is required because the video window gets the focus if it's open.
-        ttToolTip.ShowAlways = True
-        ttToolTip.InitialDelay = 500
-        ttToolTip.AutoPopDelay = 5000
-        ttToolTip.ReshowDelay = 500
+        m_tool_tip.ShowAlways = True
+        m_tool_tip.InitialDelay = 500
+        m_tool_tip.AutoPopDelay = 5000
+        m_tool_tip.ReshowDelay = 500
 
         ' Set the GPS values to a default of nothing. Once a GPS device is connected, these will be
         ' continuously updated by the incoming data handler.
@@ -1077,7 +961,7 @@ Public Class VideoMiner
         m_GPS_Z = String.Empty
 
         ' Create some form instances here. These forms will remain hidden throughout the session, and ShowDialog will be called to show them
-        m_frmGpsSettings = New frmGpsSettings(m_strComPort, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
+        m_frmGpsSettings = New frmGpsSettings(m_com_port, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
         'm_frmGpsSettings.ShowDialog()
         m_frmSetTime = New frmSetTime(m_tsUserTime)
 
@@ -1116,10 +1000,10 @@ Public Class VideoMiner
                 m_ButtonTextSize = CInt(GetConfiguration(XPATH_BUTTON_TEXTSIZE))
                 m_ButtonFont = GetConfiguration(XPATH_BUTTON_FONT)
                 ' GPS settings
-                m_strComPort = GetConfiguration(XPATH_GPS_COM_PORT)
-                If m_strComPort = String.Empty Then
-                    m_strComPort = GPS_COM_PORT_DEFAULT
-                    SaveConfiguration(XPATH_GPS_COM_PORT, m_strComPort)
+                m_com_port = GetConfiguration(XPATH_GPS_COM_PORT)
+                If m_com_port = String.Empty Then
+                    m_com_port = GPS_COM_PORT_DEFAULT
+                    SaveConfiguration(XPATH_GPS_COM_PORT, m_com_port)
                 End If
                 m_strNMEAStringType = GetConfiguration(XPATH_GPS_NMEA_STRING)
                 If m_strNMEAStringType = String.Empty Then
@@ -1578,7 +1462,6 @@ Public Class VideoMiner
     ''' When the user clicks OK, sub openDatabase and send it the path of the database to open.
     ''' </summary>
     Private Sub mnuOpenDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuOpenDatabase.Click
-        blOpenDatabase = True
         Dim ofd As OpenFileDialog = New OpenFileDialog
         ofd.Title = OPEN_DB_TITLE
         ofd.InitialDirectory = m_strDatabasePath
@@ -1600,7 +1483,6 @@ Public Class VideoMiner
     ''' </summary>
     ''' <remarks></remarks>
     Public Sub CloseDatabase_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuCloseDatabase.Click
-        blCloseDatabase = True
         m_db_file_open = False
         m_grdDatabase.Hide()
         closeDatabase()
@@ -1630,7 +1512,6 @@ Public Class VideoMiner
         dictHabitatFieldValues = Nothing
         dictTempHabitatFieldValues = Nothing
         dictTransectFieldValues = Nothing
-        blCloseDatabase = False
     End Sub
 
     ''' <summary>
@@ -1643,7 +1524,7 @@ Public Class VideoMiner
 
     Private Sub GPSSettingsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuGPSSettings.Click
         'If m_frmGpsSettings Is Nothing Then
-        '    m_frmGpsSettings = New frmGpsSettings(m_strComPort, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
+        '    m_frmGpsSettings = New frmGpsSettings(m_com_port, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
         'End If
         m_frmGpsSettings.ShowDialog()
     End Sub
@@ -1728,7 +1609,7 @@ Public Class VideoMiner
             txtOnOffBottomTextbox.TextAlign = HorizontalAlignment.Center
             cmdOffBottom.Text = OFF_BOTTOM_STRING
             cmdOffBottom.Refresh()
-            is_on_bottom = 1
+            m_is_on_bottom = 1
         Else
             ' Currently in a transect, so we end it here
             txtTransectTextbox.Text = NO_TRANSECT
@@ -1752,14 +1633,14 @@ Public Class VideoMiner
             txtOnOffBottomTextbox.TextAlign = HorizontalAlignment.Center
             cmdOffBottom.Text = ON_BOTTOM_STRING
             cmdOffBottom.Refresh()
-            is_on_bottom = 0
+            m_is_on_bottom = 0
         End If
 
         If dict.ContainsKey(DATA_CODE) Then
             dict.Remove(DATA_CODE)
         End If
 
-        tuple = New Tuple(Of String, String, Boolean)("3", CType(is_on_bottom, String), True)
+        tuple = New Tuple(Of String, String, Boolean)("3", CType(m_is_on_bottom, String), True)
         dict.Add("OnBottom", tuple)
         tuple = New Tuple(Of String, String, Boolean)("3", "3", False)
         dict.Add(DATA_CODE, tuple)
@@ -1801,11 +1682,6 @@ Public Class VideoMiner
         End If
 
         If m_video_file_open And Not booUseGPSTimeCodes Then
-            If m_frmVideoPlayer.IsPlaying Then
-                blVideoWasPlaying = True
-            Else
-                blVideoWasPlaying = False
-            End If
             tc = m_tsUserTime
             strVideoTime = m_frmVideoPlayer.CurrentVideoTimeFormatted
         End If
@@ -2079,24 +1955,24 @@ Public Class VideoMiner
                 ' next timer tick
                 ' 00:00:00
 
-                intVideoSeconds = CInt(Mid(strVideoTime, 7, 2))
+                m_video_seconds = CInt(Mid(strVideoTime, 7, 2))
 
-                If blFirstTime Then
-                    intPreviousVideoSeconds = intVideoSeconds
-                    blFirstTime = False
+                If m_first_time Then
+                    m_previous_video_seconds = m_video_seconds
+                    m_first_time = False
                 End If
 
-                If intVideoSeconds = intPreviousVideoSeconds Then
-                    intVideoStopCounter += 1
-                    If intVideoStopCounter = 15 Then
-                        tmrRecordPerSecond.Stop()
-                        intVideoStopCounter = 0
-                    End If
+                If m_video_seconds = m_previous_video_seconds Then
+                    'intVideoStopCounter += 1
+                    'If intVideoStopCounter = 15 Then
+                    ' tmrRecordPerSecond.Stop()
+                    ' intVideoStopCounter = 0
+                    ' End If
                     Exit Sub
                 Else
 
-                    intVideoStopCounter = 0
-                    intPreviousVideoSeconds = intVideoSeconds
+                    '    intVideoStopCounter = 0
+                    m_previous_video_seconds = m_video_seconds
 
                     'query = createInsertQuery(NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING)
                     'Database.ExecuteNonQuery(query)
@@ -2111,17 +1987,17 @@ Public Class VideoMiner
                 ' if GPRMC is the chosen string type.
                 getGPSData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
 
-                'intGPSSeconds = CInt(Mid(tc, 7, 2))
+                'm_gps_seconds = CInt(Mid(tc, 7, 2))
 
-                If blGPSFirstTime Then
-                    intPreviousGPSSeconds = intGPSSeconds
-                    blGPSFirstTime = False
+                If m_gps_first_time Then
+                    m_previous_gps_seconds = m_gps_seconds
+                    m_gps_first_time = False
                 End If
 
-                If intGPSSeconds = intPreviousGPSSeconds Then
+                If m_gps_seconds = m_previous_gps_seconds Then
                     Exit Sub
                 Else
-                    intPreviousGPSSeconds = intGPSSeconds
+                    m_previous_gps_seconds = m_gps_seconds
                     'query = createInsertQuery(NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING)
                     ' Database.ExecuteNonQuery(query)
                     m_grdDatabase.fetchData()
@@ -2211,7 +2087,7 @@ Public Class VideoMiner
                 tc = m_tsUserTime
                 strVideoTime = m_frmVideoPlayer.CurrentVideoTimeFormatted
                 strVideoTextTime = strVideoTime
-                intPreviousVideoSeconds = CInt(Mid(strVideoTime, 7, 2))
+                m_previous_video_seconds = CInt(Mid(strVideoTime, 7, 2))
                 If m_frmVideoPlayer.IsPlaying Then
                     Me.tmrRecordPerSecond.Start()
                 End If
@@ -2232,8 +2108,8 @@ Public Class VideoMiner
         Dim strZ As String = NULL_STRING
         Dim query As String
         Dim blAquiredFix As Boolean = False
-        strComment = InputBox("Enter a comment to be inserted as a record", "Enter Comment")
-        If strComment = String.Empty Then
+        m_comment = InputBox("Enter a comment to be inserted as a record", "Enter Comment")
+        If m_comment = String.Empty Then
             If m_video_file_open Then
                 playVideo()
             End If
@@ -2269,7 +2145,7 @@ Public Class VideoMiner
         Dim strName As String = String.Empty
 
         ' If the image is open and the video is closed then get the picture information from the EXIF file
-        If image_open And m_video_file_open = False Then
+        If m_image_open And m_video_file_open = False Then
 
             'getEXIFData()
             strVideoTextTime = strVideoTime
@@ -2282,9 +2158,9 @@ Public Class VideoMiner
 
             If True Then
                 '    If Me.chkRepeatVariables.Checked = False Then
-                For j = 0 To intNumHabitatButtons - 1
-                    dictHabitatFieldValues(strHabitatButtonCodeNames(j).ToString) = "-9999"
-                Next
+                '                For j = 0 To intNumHabitatButtons - 1
+                '               dictHabitatFieldValues(strHabitatButtonCodeNames(j).ToString) = "-9999"
+                '              Next
             End If
 
             If tc.ToString() <> String.Empty Then
@@ -2317,7 +2193,7 @@ Public Class VideoMiner
             Dim query As String = String.Empty
             Dim blAquiredFix As Boolean = False
 
-            strComment = "Nothing in photo"
+            m_comment = "Nothing in photo"
 
             'If they are using the video control then get the time from there.
             ' The time code is set to be VIDEO_TIME_LABEL initially.
@@ -2331,9 +2207,9 @@ Public Class VideoMiner
             Try
 
 
-                For j = 0 To intNumHabitatButtons - 1
-                    dictHabitatFieldValues(strHabitatButtonCodeNames(j).ToString) = "-9999"
-                Next
+                ' For j = 0 To intNumHabitatButtons - 1
+                'dictHabitatFieldValues(strHabitatButtonCodeNames(j).ToString) = "-9999"
+                'Next
                 If booUseGPSTimeCodes Then
 
                     'Otherwise get the time from the NMEA string.
@@ -2349,7 +2225,7 @@ Public Class VideoMiner
                 Dim strCode As String = String.Empty
                 Dim strName As String = String.Empty
 
-                If image_open And m_video_file_open = False Then
+                If m_image_open And m_video_file_open = False Then
 
                     'getEXIFData()
                     strPhotoTextTime = strPhotoTime
@@ -2490,13 +2366,13 @@ Public Class VideoMiner
 
                     m_frmImage.Show()
                 End If
-                currentImage = strFileName
+                'currentImage = strFileName
                 'm_frmImage.PictureBox1.Image = Image.FromFile(strImageFileName)
                 'm_frmImage.Text = strImageFileName.Substring(strImageFileName.LastIndexOf("\") + 1, (strImageFileName.Length - strImageFileName.LastIndexOf("\") - 1))
                 VideoFileName = strImageFileName.Substring(strImageFileName.LastIndexOf("\") + 1, (strImageFileName.Length - strImageFileName.LastIndexOf("\") - 1))
 
-                ' set the flag "image_open" to be true.
-                image_open = True
+                ' set the flag "m_image_open" to be true.
+                m_image_open = True
                 ' Store the path of the current folder so that we can read 
                 ' all the images under the current directory
                 Dim m_strImagePath As String = strImageFileName.Substring(0, strImageFileName.LastIndexOf("\") + 1)
@@ -2518,8 +2394,8 @@ Public Class VideoMiner
                 ' Store the name of all image files in an array
                 ' We use the letter "|" to separate each file because "|" can not
                 ' be a part of a file name
-                fileNames = Split(cur_folder_files, "|")
-                image_prefix = strImageFileName.Substring(0, strImageFileName.LastIndexOf("."))
+                m_image_file_names = Split(cur_folder_files, "|")
+                m_image_prefix = strImageFileName.Substring(0, strImageFileName.LastIndexOf("."))
                 Me.cmdNothingInPhoto.Visible = True
                 mnuOpenImg.Enabled = True
             End If
@@ -2605,7 +2481,7 @@ Public Class VideoMiner
 
             If Not m_frmImage Is Nothing Then
                 blImageOpen = True
-                strImageFileName = currentImage
+                'strImageFileName = currentImage
             Else
                 blImageOpen = False
                 strImageFileName = NULL_STRING
@@ -2614,7 +2490,6 @@ Public Class VideoMiner
             'If Not Me.grdVideoMinerDatabase.DataSource Is Nothing Then
             '    blDatabaseOpen = True
             '    strDatabaseFileName = m_strDatabaseFilePath
-            '    strNumberRecordsShown = CStr(intNumberDisplayRecords)
             'Else
             '    blDatabaseOpen = False
             '    strDatabaseFileName = NULL_STRING
@@ -2685,7 +2560,7 @@ Public Class VideoMiner
 
         If Not m_frmImage Is Nothing Then
             blImageOpen = True
-            strImageFileName = currentImage
+            'strImageFileName = currentImage
         Else
             blImageOpen = False
             strImageFileName = NULL_STRING
@@ -2694,7 +2569,6 @@ Public Class VideoMiner
         'If Not Me.grdVideoMinerDatabase.DataSource Is Nothing Then
         '    blDatabaseOpen = True
         '    strDatabaseFileName = m_strDatabaseFilePath
-        '    strNumberRecordsShown = CStr(intNumberDisplayRecords)
         'Else
         '    blDatabaseOpen = False
         '    strDatabaseFileName = NULL_STRING
@@ -2920,7 +2794,7 @@ Public Class VideoMiner
         If IsNothing(m_pnlHabitatData) Or IsNothing(m_pnlTransectData) Then
             Exit Sub
         End If
-        If CBool(is_on_bottom) Then
+        If CBool(m_is_on_bottom) Then
             txtOnOffBottomTextbox.Text = OFF_BOTTOM_STRING
             txtOnOffBottomTextbox.Font = New Font(String.Empty, STATUS_FONT_SIZE, FontStyle.Bold)
             txtOnOffBottomTextbox.BackColor = Color.LightGray
@@ -2928,7 +2802,7 @@ Public Class VideoMiner
             txtOnOffBottomTextbox.TextAlign = HorizontalAlignment.Center
             cmdOffBottom.Text = ON_BOTTOM_STRING
             cmdOffBottom.Refresh()
-            is_on_bottom = 0
+            m_is_on_bottom = 0
         Else
             txtOnOffBottomTextbox.Text = ON_BOTTOM_STRING
             txtOnOffBottomTextbox.Font = New Font(String.Empty, STATUS_FONT_SIZE, FontStyle.Bold)
@@ -2937,14 +2811,14 @@ Public Class VideoMiner
             txtOnOffBottomTextbox.TextAlign = HorizontalAlignment.Center
             cmdOffBottom.Text = OFF_BOTTOM_STRING
             cmdOffBottom.Refresh()
-            is_on_bottom = 1
+            m_is_on_bottom = 1
         End If
         ' Need to merge dictionaries for Habitat and Transect panels here to the Off Bottom/ On Bottom KeyValuePair
         Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = New Dictionary(Of String, Tuple(Of String, String, Boolean))
         Dim tuple As Tuple(Of String, String, Boolean)
         dict = dict.Union(m_pnlHabitatData.Dictionary).Union(m_pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
 
-        tuple = New Tuple(Of String, String, Boolean)("3", CType(is_on_bottom, String), True)
+        tuple = New Tuple(Of String, String, Boolean)("3", CType(m_is_on_bottom, String), True)
         dict.Add("OnBottom", tuple)
         tuple = New Tuple(Of String, String, Boolean)("3", "3", False)
         dict.Add(DATA_CODE, tuple)
@@ -3057,11 +2931,11 @@ Public Class VideoMiner
                 End If
                 m_frmImage.Show()
             End If
-            image_open = True
+            m_image_open = True
             txtTimeSource.ForeColor = Color.LimeGreen
             Me.txtTime.ForeColor = Color.LimeGreen
             txtTimeSource.Text = "EXIF"
-            intTimeSource = 3
+            m_time_source = 3
             txtTimeSource.Font = New Font(String.Empty, STATUS_FONT_SIZE, FontStyle.Bold)
             txtTimeSource.BackColor = Color.LightGray
             txtTimeSource.ForeColor = Color.LimeGreen
@@ -3223,7 +3097,7 @@ Public Class VideoMiner
         If m_frmVideoPlayer.IsPaused Or m_frmVideoPlayer.IsStopped Then
             playVideo()
             If Me.chkRecordEachSecond.Checked = True Then
-                blFirstTime = True
+                m_first_time = True
                 'Me.tmrRecordPerSecond.Start()
             End If
         Else
@@ -3536,8 +3410,8 @@ Public Class VideoMiner
     ''' </summary>
     Private Sub dataEntryStarted()
         If Not m_frmVideoPlayer Is Nothing Then
-            m_blWasPlaying = m_frmVideoPlayer.IsPlaying
-            If m_blWasPlaying Then
+            m_was_playing = m_frmVideoPlayer.IsPlaying
+            If m_was_playing Then
                 m_frmVideoPlayer.pauseVideo()
             End If
         End If
@@ -3548,7 +3422,7 @@ Public Class VideoMiner
     ''' </summary>
     Private Sub dataEntryEnded()
         If Not m_frmVideoPlayer Is Nothing Then
-            If m_blWasPlaying Then
+            If m_was_playing Then
                 m_frmVideoPlayer.playVideo()
             End If
         End If
@@ -3619,11 +3493,11 @@ Public Class VideoMiner
     End Sub
 
     Public Sub cmdPrevious_MouseHover(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPrevious.MouseHover
-        ttToolTip.Show("Vlc.DotNet control does not support reverse frame stepping", Me)
+        m_tool_tip.Show("Vlc.DotNet control does not support reverse frame stepping", Me)
     End Sub
 
     Public Sub cmdPrevious_MouseLeave(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPrevious.MouseLeave
-        ttToolTip.Hide(Me)
+        m_tool_tip.Hide(Me)
     End Sub
 
     Private Sub DataCodeAssignmentsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DataCodeAssignmentsToolStripMenuItem.Click
@@ -3664,7 +3538,7 @@ Public Class VideoMiner
     Public Sub updateTextBox()
         'Try
         '    strTimeDateSource = "GPS"
-        '    intTimeSource = 4
+        '    m_time_source = 4
         '    Dim blAquiredFix As Boolean = False
         '    Dim m_CurrentPoint As Point
         '    'If Me.txtNMEA.InvokeRequired Then
@@ -3798,23 +3672,23 @@ Public Class VideoMiner
     End Sub
 
     Private Sub DisableHabitatButtonsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DisableHabitatButtonsToolStripMenuItem.Click
-        If DisableHabitatButtonsToolStripMenuItem.Text = "Disable Habitat Buttons" Then
-            DisableHabitatButtonsToolStripMenuItem.Text = "Enable Habitat Buttons"
-            Dim item As Button
-            For Each item In buttons
-                If Not item Is Nothing Then
-                    item.Enabled = False
-                End If
-            Next
-        Else
-            DisableHabitatButtonsToolStripMenuItem.Text = "Disable Habitat Buttons"
-            Dim item As Button
-            For Each item In buttons
-                If Not item Is Nothing Then
-                    item.Enabled = True
-                End If
-            Next
-        End If
+        'If DisableHabitatButtonsToolStripMenuItem.Text = "Disable Habitat Buttons" Then
+        '    DisableHabitatButtonsToolStripMenuItem.Text = "Enable Habitat Buttons"
+        '    Dim item As Button
+        '    For Each item In buttons
+        '        If Not item Is Nothing Then
+        '            item.Enabled = False
+        '        End If
+        '    Next
+        'Else
+        '    DisableHabitatButtonsToolStripMenuItem.Text = "Disable Habitat Buttons"
+        '    Dim item As Button
+        '    For Each item In buttons
+        '        If Not item Is Nothing Then
+        '            item.Enabled = True
+        '        End If
+        '    Next
+        'End If
     End Sub
 
     Private Sub m_pnlSpeciesData_SizeChanged(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -4018,7 +3892,7 @@ Public Class VideoMiner
 
     Private Sub image_form_closing() Handles m_frmImage.ImageFormClosingEvent
         cmdNothingInPhoto.Visible = False
-        image_open = False
+        m_image_open = False
         mnuOpenImg.Enabled = True
         mnuOpenFile.Enabled = True
         mnuUseExternalVideo.Enabled = True
@@ -4076,25 +3950,25 @@ Public Class VideoMiner
     End Sub
 
     Private Sub txtFramesToSkip_MouseHover(sender As Object, e As EventArgs) Handles txtFramesToSkip.MouseHover
-        ttToolTip.Show("Number of frames to skip for frame stepping", Me)
+        m_tool_tip.Show("Number of frames to skip for frame stepping", Me)
     End Sub
 
     Private Sub txtFramesToSkip_MouseLeave(sender As Object, e As EventArgs) Handles txtFramesToSkip.MouseLeave
-        ttToolTip.Hide(Me)
+        m_tool_tip.Hide(Me)
     End Sub
 
     ''' <summary>
     ''' Updates all GPS member variables for settings and saves the configuration for all of them (xml file)
     ''' </summary>
     Private Sub save_GPS_configuration() Handles m_frmGpsSettings.GPSVariablesChangedEvent
-        m_strComPort = m_frmGpsSettings.ComPort
+        m_com_port = m_frmGpsSettings.ComPort
         m_intBaudRate = m_frmGpsSettings.BaudRate
         m_strNMEAStringType = m_frmGpsSettings.NMEAStringType
         m_strParity = m_frmGpsSettings.Parity
         m_dblStopBits = m_frmGpsSettings.StopBits
         m_intDataBits = m_frmGpsSettings.DataBits
 
-        SaveConfiguration(XPATH_GPS_COM_PORT, m_strComPort)
+        SaveConfiguration(XPATH_GPS_COM_PORT, m_com_port)
         SaveConfiguration(XPATH_GPS_BAUD_RATE, CStr(m_intBaudRate))
         SaveConfiguration(XPATH_GPS_NMEA_STRING, m_strNMEAStringType)
         SaveConfiguration(XPATH_GPS_PARITY, m_strParity)

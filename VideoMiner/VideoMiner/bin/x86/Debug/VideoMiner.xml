@@ -1218,21 +1218,9 @@ VideoMiner
  so that they can link their data to the proper data code
  </summary>
 </member>
-<member name="F:VideoMiner.VideoMiner.m_blWasPlaying">
+<member name="F:VideoMiner.VideoMiner.m_was_playing">
  <summary>
  Used to store the state of the video when a data entry button is clicked.
- </summary>
-</member>
-<member name="T:VideoMiner.VideoMiner.stcRowColoring">
- <summary>
- Coloring of a row in the data grid. When a field is sorted by clicking the column header, the coloring is recorded, then the grid is sorted,
- then the coloring is re-applied by using the key field 'ID'. This structure represents a single row in the grid. The two cell arrays hold the
- background and foreground colors for the cells in the row.
- </summary>
-</member>
-<member name="F:VideoMiner.VideoMiner.arrColoring">
- <summary>
- An array of row colorings to keep track of dirty cells when the columns are sorted.
  </summary>
 </member>
 <member name="M:VideoMiner.VideoMiner.frmVideoMiner_Load(System.Object,System.EventArgs)">
