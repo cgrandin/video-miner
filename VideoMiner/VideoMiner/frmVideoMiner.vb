@@ -141,31 +141,31 @@ Public Class VideoMiner
 
 #Region "Variables"
     ' These are the dynamic panels to be added to the splitcontainers at runtime
-    Friend WithEvents pnlTransectData As DynamicTableButtonPanel
-    Friend WithEvents pnlHabitatData As DynamicTableButtonPanel
-    Friend WithEvents pnlSpeciesData As DynamicSpeciesButtonPanel
+    Friend WithEvents m_pnlTransectData As DynamicTableButtonPanel
+    Friend WithEvents m_pnlHabitatData As DynamicTableButtonPanel
+    Friend WithEvents m_pnlSpeciesData As DynamicSpeciesButtonPanel
     ' These are the forms which this form creates and they report directly to this form only
-    Private WithEvents frmSpeciesList As frmSpeciesList
-    Private WithEvents frmSetTime As frmSetTime
-    Private WithEvents frmImage As frmImage
-    Private WithEvents frmGpsSettings As frmGpsSettings
-    Private WithEvents frmEditSpecies As frmEditSpecies
-    Private WithEvents frmConfigureSpecies As frmConfigureSpecies
-    Private WithEvents frmSpeciesEvent As frmSpeciesEvent
-    Private WithEvents frmTableView As frmTableView
-    Private WithEvents frmAbundanceTableView As frmAbundanceTableView
-    Private WithEvents frmRareSpeciesLookup As frmRareSpeciesLookup
-    Private WithEvents frmRelayConfiguration As frmRelayConfiguration
-    Private WithEvents frmKeyboardCommands As frmKeyboardCommands
-    Private WithEvents frmAddNewTable As frmAddNewTable
-    Private WithEvents frmConfigureButtons As frmConfigureButtons
-    Private WithEvents frmVideoPlayer As frmVideoPlayer
-    Private WithEvents frmProjectNames As frmProjectNames
-    Private WithEvents frmDataCodes As frmDataCodes
-    Private WithEvents frmDeviceControl As frmDeviceControl
-    Private WithEvents frmConfigureButtonFormat As frmConfigureButtonFormat
-    Private WithEvents frmAddValue As frmAddValue
-    Private WithEvents frmEditLookupTable As frmEditLookupTable
+    Private WithEvents m_frmSpeciesList As frmSpeciesList
+    Private WithEvents m_frmSetTime As frmSetTime
+    Private WithEvents m_frmImage As frmImage
+    Private WithEvents m_frmGpsSettings As frmGpsSettings
+    'Private WithEvents m_frmEditSpecies As frmEditSpecies
+    Private WithEvents m_frmConfigureSpecies As frmConfigureSpecies
+    Private WithEvents m_frmSpeciesEvent As frmSpeciesEvent
+    'Private WithEvents m_frmTableView As frmTableView
+    'Private WithEvents m_frmAbundanceTableView As frmAbundanceTableView
+    Private WithEvents m_frmRareSpeciesLookup As frmRareSpeciesLookup
+    Private WithEvents m_frmRelayConfiguration As frmRelayConfiguration
+    Private WithEvents m_frmKeyboardCommands As frmKeyboardCommands
+    'Private WithEvents m_frmAddNewTable As frmAddNewTable
+    Private WithEvents m_frmConfigureButtons As frmConfigureButtons
+    Private WithEvents m_frmVideoPlayer As frmVideoPlayer
+    Private WithEvents m_frmProjectNames As frmProjectNames
+    Private WithEvents m_frmDataCodes As frmDataCodes
+    Private WithEvents m_frmDeviceControl As frmDeviceControl
+    Private WithEvents m_frmConfigureButtonFormat As frmConfigureButtonFormat
+    'Private WithEvents m_frmAddValue As frmAddValue
+    Private WithEvents m_frmEditLookupTable As frmEditLookupTable
 
     ''' <summary>
     ''' The working directory of the software
@@ -213,7 +213,7 @@ Public Class VideoMiner
     ''' <remarks></remarks>
     Private m_strSessionPath As String
     ''' <summary>
-    ''' Holds the user time as set by the frmSetTime form.
+    ''' Holds the user time as set by the m_frmSetTime form.
     ''' This is the master time object to be used by all functions when data are recorded.
     ''' </summary>
     ''' <remarks></remarks>
@@ -283,7 +283,7 @@ Public Class VideoMiner
     ''' </summary>
     Private m_blWasPlaying As Boolean
 
-    ' GPS connection settings to initialize frmGpsSettings form with
+    ' GPS connection settings to initialize m_frmGpsSettings form with
     Private m_strComPort As String
     Private m_strNMEAStringType As String
     Private m_strParity As String
@@ -382,8 +382,6 @@ Public Class VideoMiner
     ' Collection and dictionaries to handle dynamically updating the habitat species values
     Private colTableFields As Collection
     Private colTransectFields As Collection
-
-    'Private frmImageForm As frmImage
 
     ' The name of the current image including the path
     Private currentImage As String
@@ -968,7 +966,7 @@ Public Class VideoMiner
 
     Public Sub New()
         InitializeComponent()
-        frmSpeciesList = New frmSpeciesList
+        m_frmSpeciesList = New frmSpeciesList
     End Sub
 
     Protected Overrides Sub Finalize()
@@ -1079,27 +1077,27 @@ Public Class VideoMiner
         m_GPS_Z = String.Empty
 
         ' Create some form instances here. These forms will remain hidden throughout the session, and ShowDialog will be called to show them
-        frmGpsSettings = New frmGpsSettings(m_strComPort, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
-        'frmGpsSettings.ShowDialog()
-        frmSetTime = New frmSetTime(m_tsUserTime)
+        m_frmGpsSettings = New frmGpsSettings(m_strComPort, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
+        'm_frmGpsSettings.ShowDialog()
+        m_frmSetTime = New frmSetTime(m_tsUserTime)
 
         ' Add DynamicPanels to the SplitContainerPanels
-        pnlTransectData = New DynamicTableButtonPanel(PANEL_NAME_TRANSECT, True, Me.ButtonWidth, Me.ButtonHeight,
+        m_pnlTransectData = New DynamicTableButtonPanel(PANEL_NAME_TRANSECT, True, Me.ButtonWidth, Me.ButtonHeight,
                                                       Me.ButtonFont, CStr(ButtonTextSize), True, True)
-        SplitContainer7.Panel1.Controls.Add(pnlTransectData)
+        SplitContainer7.Panel1.Controls.Add(m_pnlTransectData)
 
-        pnlHabitatData = New DynamicTableButtonPanel(PANEL_NAME_HABITAT, True, Me.ButtonWidth, Me.ButtonHeight,
+        m_pnlHabitatData = New DynamicTableButtonPanel(PANEL_NAME_HABITAT, True, Me.ButtonWidth, Me.ButtonHeight,
             Me.ButtonFont, CStr(ButtonTextSize), True, True)
-        SplitContainer7.Panel2.Controls.Add(pnlHabitatData)
+        SplitContainer7.Panel2.Controls.Add(m_pnlHabitatData)
 
-        pnlSpeciesData = New DynamicSpeciesButtonPanel(PANEL_NAME_SPECIES, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize)
-        pnlSpeciesData.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
-        pnlSpeciesData.Dock = DockStyle.Fill
-        'AddHandler pnlSpeciesData.NewSpeciesEntryEvent, AddressOf new_species_entry_handler
-        SplitContainer8.Panel2.Controls.Add(pnlSpeciesData)
+        m_pnlSpeciesData = New DynamicSpeciesButtonPanel(PANEL_NAME_SPECIES, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize)
+        m_pnlSpeciesData.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
+        m_pnlSpeciesData.Dock = DockStyle.Fill
+        'AddHandler m_pnlSpeciesData.NewSpeciesEntryEvent, AddressOf new_species_entry_handler
+        SplitContainer8.Panel2.Controls.Add(m_pnlSpeciesData)
 
         ' Create this form once, since it loads comboboxes with large amounts of data.
-        frmRareSpeciesLookup = New frmRareSpeciesLookup
+        m_frmRareSpeciesLookup = New frmRareSpeciesLookup
     End Sub
 
     ''' <summary>
@@ -1506,7 +1504,7 @@ Public Class VideoMiner
             ' The idea here is to cause a click of the button that corresponds to the shortcut, because the
             ' code to build the query is complex and already implemented in buttonDataChanged()
             'If Not grdVideoMinerDatabase.Focused Then
-            pnlSpeciesData.ClickButton(CType(d.Rows(0).Item(1), String))
+            m_pnlSpeciesData.ClickButton(CType(d.Rows(0).Item(1), String))
             'End If
         End If
     End Sub
@@ -1644,20 +1642,20 @@ Public Class VideoMiner
     End Sub
 
     Private Sub GPSSettingsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuGPSSettings.Click
-        'If frmGpsSettings Is Nothing Then
-        '    frmGpsSettings = New frmGpsSettings(m_strComPort, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
+        'If m_frmGpsSettings Is Nothing Then
+        '    m_frmGpsSettings = New frmGpsSettings(m_strComPort, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
         'End If
-        frmGpsSettings.ShowDialog()
+        m_frmGpsSettings.ShowDialog()
     End Sub
 
     Private Sub mnuUseExternalVideo_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuUseExternalVideo.Click
-        If Not frmVideoPlayer Is Nothing Then
-            frmVideoPlayer.Close()
+        If Not m_frmVideoPlayer Is Nothing Then
+            m_frmVideoPlayer.Close()
         End If
         If mnuUseExternalVideo.Checked Then
             VideoFileName = "External Video"
-            frmSetTime.Show()
-            frmSetTime.BringToFront()
+            m_frmSetTime.Show()
+            m_frmSetTime.BringToFront()
             mnuOpenImg.Enabled = False
             mnuOpenFile.Enabled = False
         Else
@@ -1675,13 +1673,13 @@ Public Class VideoMiner
     ''' <param name="e"></param>
     ''' <remarks></remarks>
     Private Sub cmdShowSetTimecode_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdShowSetTimecode.Click
-        If frmVideoPlayer Is Nothing Then
+        If m_frmVideoPlayer Is Nothing Then
             MessageBox.Show("Please open a video file before setting the time.",
                             "Video File Not Open", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         dataEntryStarted()
-        frmSetTime.Show()
+        m_frmSetTime.Show()
     End Sub
 
     ''' <summary>
@@ -1697,7 +1695,7 @@ Public Class VideoMiner
         ' Need to merge dictionaries for Habitat and Transect panels here to the Off Bottom/ On Bottom KeyValuePair
         Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = New Dictionary(Of String, Tuple(Of String, String, Boolean))
         Dim tuple As Tuple(Of String, String, Boolean)
-        dict = dict.Union(pnlHabitatData.Dictionary).Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+        dict = dict.Union(m_pnlHabitatData.Dictionary).Union(m_pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
         If Not m_blInTransect Then
             ' Currently not in a transect, so we start it here
             dataEntryStarted()
@@ -1803,13 +1801,13 @@ Public Class VideoMiner
         End If
 
         If m_video_file_open And Not booUseGPSTimeCodes Then
-            If frmVideoPlayer.IsPlaying Then
+            If m_frmVideoPlayer.IsPlaying Then
                 blVideoWasPlaying = True
             Else
                 blVideoWasPlaying = False
             End If
             tc = m_tsUserTime
-            strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
+            strVideoTime = m_frmVideoPlayer.CurrentVideoTimeFormatted
         End If
         strVideoTextTime = strVideoTime
         toggle_bottom()
@@ -1819,7 +1817,7 @@ Public Class VideoMiner
     ''' Handler to check to make sure that the Data grid is not dirty. If it isn't, or the user says to disregard changes and save the record anyway,
     ''' the appropriate thing will happen for data recording (species event form will be shown or data table form be shown, or quick entry will happen).
     ''' </summary>
-    Private Sub button_CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles pnlHabitatData.CheckForDirtyDataEvent, pnlTransectData.CheckForDirtyDataEvent, pnlSpeciesData.CheckForDirtyDataEvent
+    Private Sub button_CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles m_pnlHabitatData.CheckForDirtyDataEvent, m_pnlTransectData.CheckForDirtyDataEvent, m_pnlSpeciesData.CheckForDirtyDataEvent
         If TypeOf sender Is DynamicButton Then
             Dim btn As DynamicButton = CType(sender, DynamicButton)
             If IsNothing(m_data_table.GetChanges()) Then
@@ -1859,10 +1857,10 @@ Public Class VideoMiner
         Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = New Dictionary(Of String, Tuple(Of String, String, Boolean))
         Dim tuple As Tuple(Of String, String, Boolean)
         ' Merge the two dictionaries from HABITAT and TRANSECT panels
-        For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlTransectData.Dictionary
+        For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In m_pnlTransectData.Dictionary
             dict.Add(kvp.Key, kvp.Value)
         Next
-        For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In pnlHabitatData.Dictionary
+        For Each kvp As KeyValuePair(Of String, Tuple(Of String, String, Boolean)) In m_pnlHabitatData.Dictionary
             dict.Add(kvp.Key, kvp.Value)
         Next
         If dict.ContainsKey(DATA_CODE) Then
@@ -1881,32 +1879,32 @@ Public Class VideoMiner
         m_grdDatabase.fetchData()
     End Sub
 
-    Private Sub dataButtonNewEntry() Handles pnlSpeciesData.StartDataEntryEvent,
-                                             pnlTransectData.StartDataEntryEvent,
-                                             pnlHabitatData.StartDataEntryEvent
+    Private Sub dataButtonNewEntry() Handles m_pnlSpeciesData.StartDataEntryEvent,
+                                             m_pnlTransectData.StartDataEntryEvent,
+                                             m_pnlHabitatData.StartDataEntryEvent
         dataEntryStarted()
     End Sub
 
-    Private Sub dataButtonEntryFinished() Handles pnlSpeciesData.EndDataEntryEvent,
-                                                  pnlTransectData.EndDataEntryEvent,
-                                                  pnlHabitatData.EndDataEntryEvent,
-                                                  frmRareSpeciesLookup.EndDataEntryEvent
+    Private Sub dataButtonEntryFinished() Handles m_pnlSpeciesData.EndDataEntryEvent,
+                                                  m_pnlTransectData.EndDataEntryEvent,
+                                                  m_pnlHabitatData.EndDataEntryEvent,
+                                                  m_frmRareSpeciesLookup.EndDataEntryEvent
         dataEntryEnded()
     End Sub
     ''' <summary>
     ''' Handle the entry of data by creating an insert query and
     ''' saving to the database.
     ''' </summary>
-    Private Sub dataChanged(sender As System.Object, e As System.EventArgs) Handles pnlHabitatData.EndDataEntryEvent,
-                                                                                    pnlTransectData.EndDataEntryEvent,
-                                                                                    pnlSpeciesData.EndDataEntryEvent,
-                                                                                    frmRareSpeciesLookup.EndDataEntryEvent
+    Private Sub dataChanged(sender As System.Object, e As System.EventArgs) Handles m_pnlHabitatData.EndDataEntryEvent,
+                                                                                    m_pnlTransectData.EndDataEntryEvent,
+                                                                                    m_pnlSpeciesData.EndDataEntryEvent,
+                                                                                    m_frmRareSpeciesLookup.EndDataEntryEvent
 
         If TypeOf sender Is DynamicSpeciesButtonPanel Then
             Dim pnl As DynamicSpeciesButtonPanel = CType(sender, DynamicSpeciesButtonPanel)
             Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = pnl.Dictionary
             ' If species panel, merge other two panel's dictionaries
-            dict = dict.Union(pnlHabitatData.Dictionary).Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+            dict = dict.Union(m_pnlHabitatData.Dictionary).Union(m_pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
             runInsertQuery(dict)
         ElseIf TypeOf sender Is DynamicTableButtonPanel Then
             Dim pnl As DynamicTableButtonPanel = CType(sender, DynamicTableButtonPanel)
@@ -1914,16 +1912,16 @@ Public Class VideoMiner
             Select Case pnl.Name
                 Case PANEL_NAME_HABITAT
                     ' merge the transect panel dictionary
-                    dict = dict.Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+                    dict = dict.Union(m_pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
                 Case PANEL_NAME_TRANSECT
                     ' merge the habitat panel dictionary
-                    dict = dict.Union(pnlHabitatData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+                    dict = dict.Union(m_pnlHabitatData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
             End Select
             runInsertQuery(dict)
         ElseIf TypeOf sender Is frmRareSpeciesLookup Then
             Dim frm As frmRareSpeciesLookup = CType(sender, frmRareSpeciesLookup)
             Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = frm.Dictionary
-            dict = dict.Union(pnlHabitatData.Dictionary).Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+            dict = dict.Union(m_pnlHabitatData.Dictionary).Union(m_pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
             runInsertQuery(dict)
         End If
         m_grdDatabase.fetchData()
@@ -1931,20 +1929,20 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
-    ''' Brings up the edit species dialog (frmSpeciesList) which allows the user to change the order of the species buttons
+    ''' Brings up the edit species dialog (m_frmSpeciesList) which allows the user to change the order of the species buttons
     ''' and to delete them, edit them, or add new ones.
     ''' </summary>
     Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEdit.Click
         dataEntryStarted()
-        frmSpeciesList.Show()
+        m_frmSpeciesList.Show()
     End Sub
 
     ''' <summary>
-    ''' When the user has changed the species buttons from the frmSpeciesEvent form, this function will remove and re-add the DynamicPanel
+    ''' When the user has changed the species buttons from the m_frmSpeciesEvent form, this function will remove and re-add the DynamicPanel
     ''' which contains the species buttons.
     ''' </summary>
-    Private Sub speciesButtonsChanged() Handles frmSpeciesList.SpeciesButtonsChangedEvent
-        pnlSpeciesData.fillPanel(DB_SPECIES_BUTTONS_TABLE)
+    Private Sub speciesButtonsChanged() Handles m_frmSpeciesList.SpeciesButtonsChangedEvent
+        m_pnlSpeciesData.fillPanel(DB_SPECIES_BUTTONS_TABLE)
     End Sub
 
     Public Sub mnuCapScr_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuCapScr.Click
@@ -1958,16 +1956,16 @@ Public Class VideoMiner
     ''' <summary>
     ''' Capture a screenshot of the video at it's current position, and write a transection to the database.
     ''' </summary>
-    Public Sub capture_screen_image() Handles frmVideoPlayer.CaptureScreenEvent
+    Public Sub capture_screen_image() Handles m_frmVideoPlayer.CaptureScreenEvent
         If Not m_video_file_open Then
             MessageBox.Show("Cannot capture screen unless video is open.", "No Video Open", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1)
             Exit Sub
         End If
         ' Convert slashes in date to underscores, and colons in time to underscores
         Dim strDate As String = m_transect_date.ToString("d").Replace("/", "_")
-        Dim strTime As String = (m_tsUserTime + frmVideoPlayer.CurrentVideoTime).ToString().Replace(":", "_")
+        Dim strTime As String = (m_tsUserTime + m_frmVideoPlayer.CurrentVideoTime).ToString().Replace(":", "_")
         Dim strDefaultFilename As String = "Capture_" & Me.txtProjectName.Text & "_" & strDate & "_" & strTime
-        Dim strFileName As String = frmVideoPlayer.captureScreen(strDate, strTime, strDefaultFilename)
+        Dim strFileName As String = m_frmVideoPlayer.captureScreen(strDate, strTime, strDefaultFilename)
         ' Enter record into the database
         If Database.IsOpen And strFileName <> String.Empty Then
             runInsertQueryScreenshot(strFileName)
@@ -1996,38 +1994,38 @@ Public Class VideoMiner
     ''' <summary>
     ''' Add a new project name to the XML file when the user changes it inside frmProjectNames
     ''' </summary>
-    Private Sub newProjectName() Handles frmProjectNames.NewProjectNameEvent
+    Private Sub newProjectName() Handles m_frmProjectNames.NewProjectNameEvent
         ' Add the new item to the current collection of items and also write it into the XML file
-        Dim name As String = frmProjectNames.getProjectName()
+        Dim name As String = m_frmProjectNames.getProjectName()
         m_PreviousProjects.Add(name, name) ' Key and value are identical, needed for removing from the collection which needs the key
-        SaveConfiguration("/PreviousProjects/ProjectName", frmProjectNames.getProjectName(), True)
+        SaveConfiguration("/PreviousProjects/ProjectName", m_frmProjectNames.getProjectName(), True)
     End Sub
 
     ''' <summary>
     ''' Change the project name to what was chosen in the frmProjectName form.
     ''' </summary>
-    Private Sub project_name_changed() Handles frmProjectNames.ProjectNameChangedEvent
-        txtProjectName.Text = frmProjectNames.getProjectName()
+    Private Sub project_name_changed() Handles m_frmProjectNames.ProjectNameChangedEvent
+        txtProjectName.Text = m_frmProjectNames.getProjectName()
     End Sub
 
     ''' <summary>
     ''' Delete the project name currently selected in the frmProjectName form.
     ''' </summary>
-    Private Sub project_name_delete() Handles frmProjectNames.DeleteProjectNameEvent
+    Private Sub project_name_delete() Handles m_frmProjectNames.DeleteProjectNameEvent
         ' Delete the name from the XML file and current collection
-        Dim key As String = frmProjectNames.getProjectNameToDelete()
+        Dim key As String = m_frmProjectNames.getProjectNameToDelete()
         m_PreviousProjects.Remove(key)
-        If Not DeleteXMLNode("/PreviousProjects/ProjectName", frmProjectNames.getProjectNameToDelete()) Then
+        If Not DeleteXMLNode("/PreviousProjects/ProjectName", m_frmProjectNames.getProjectNameToDelete()) Then
             MessageBox.Show("Error - failed to delete the node from the XML file. Check the file and retry.", "Failed to edit XML file", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 
     Private Sub txtProjectName_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtProjectName.Click
-        If frmProjectNames Is Nothing Then
-            frmProjectNames = New frmProjectNames
+        If m_frmProjectNames Is Nothing Then
+            m_frmProjectNames = New frmProjectNames
         End If
-        frmProjectNames.PopulateProjectList(m_PreviousProjects)
-        frmProjectNames.ShowDialog()
+        m_frmProjectNames.PopulateProjectList(m_PreviousProjects)
+        m_frmProjectNames.ShowDialog()
     End Sub
 
     Private Sub txtProjectName_Leave(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtProjectName.Leave
@@ -2070,7 +2068,7 @@ Public Class VideoMiner
             If m_video_file_open Then
                 'pauseVideo()
                 tc = m_tsUserTime
-                strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
+                strVideoTime = m_frmVideoPlayer.CurrentVideoTimeFormatted
                 strVideoTextTime = strVideoTime
 
                 ' Create a variable intCurrVideoSeconds to store the current video times second value.
@@ -2207,14 +2205,14 @@ Public Class VideoMiner
             Dim strY As String = String.Empty
             Dim strZ As String = String.Empty
 
-            If Not frmVideoPlayer Is Nothing Then
-                'If frmVideoPlayer.blIsPlaying Then
+            If Not m_frmVideoPlayer Is Nothing Then
+                'If m_frmVideoPlayer.blIsPlaying Then
 
                 tc = m_tsUserTime
-                strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
+                strVideoTime = m_frmVideoPlayer.CurrentVideoTimeFormatted
                 strVideoTextTime = strVideoTime
                 intPreviousVideoSeconds = CInt(Mid(strVideoTime, 7, 2))
-                If frmVideoPlayer.IsPlaying Then
+                If m_frmVideoPlayer.IsPlaying Then
                     Me.tmrRecordPerSecond.Start()
                 End If
                 'End If
@@ -2253,7 +2251,7 @@ Public Class VideoMiner
         If m_video_file_open Then
             pauseVideo()
             tc = m_tsUserTime
-            strVideoTime = frmVideoPlayer.CurrentVideoTimeFormatted
+            strVideoTime = m_frmVideoPlayer.CurrentVideoTimeFormatted
 
         End If
         If booUseGPSTimeCodes Then
@@ -2381,13 +2379,13 @@ Public Class VideoMiner
     End Sub
 
     Private Sub ConfigureSpeciesEventToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureSpeciesEventToolStripMenuItem.Click
-        If Not frmSpeciesEvent Is Nothing Then
-            frmSpeciesEvent.Dispose()
-            frmSpeciesEvent = Nothing
+        If Not m_frmSpeciesEvent Is Nothing Then
+            m_frmSpeciesEvent.Dispose()
+            m_frmSpeciesEvent = Nothing
         End If
 
-        frmConfigureSpecies = New frmConfigureSpecies
-        frmConfigureSpecies.ShowDialog()
+        m_frmConfigureSpecies = New frmConfigureSpecies
+        m_frmConfigureSpecies.ShowDialog()
 
     End Sub
 
@@ -2454,11 +2452,11 @@ Public Class VideoMiner
             'End If
 
             If blImageOpen = True Then
-                If Not frmImage Is Nothing Then
-                    frmImage.Close()
+                If Not m_frmImage Is Nothing Then
+                    m_frmImage.Close()
                 End If
-                If frmImage Is Nothing Then
-                    'frmImage = New frmImage(m_strImagePath, m_strimagefile)
+                If m_frmImage Is Nothing Then
+                    'm_frmImage = New frmImage(m_strImagePath, m_strimagefile)
                     Dim intX As Integer = 0
                     Dim intY As Integer = 0
 
@@ -2481,20 +2479,20 @@ Public Class VideoMiner
                     If intMonitorCount = 1 Then
                         aPoint.X = intX
                         aPoint.Y = CInt(intY / 2)
-                        frmImage.Location = aPoint
-                        frmImage.WindowState = FormWindowState.Normal
+                        m_frmImage.Location = aPoint
+                        m_frmImage.WindowState = FormWindowState.Normal
                     Else
                         aPoint.X = intX + priMon.Bounds.Width
                         aPoint.Y = CInt(intY / 2)
-                        frmImage.Location = aPoint
-                        frmImage.WindowState = FormWindowState.Maximized
+                        m_frmImage.Location = aPoint
+                        m_frmImage.WindowState = FormWindowState.Maximized
                     End If
 
-                    frmImage.Show()
+                    m_frmImage.Show()
                 End If
                 currentImage = strFileName
-                'frmImage.PictureBox1.Image = Image.FromFile(strImageFileName)
-                'frmImage.Text = strImageFileName.Substring(strImageFileName.LastIndexOf("\") + 1, (strImageFileName.Length - strImageFileName.LastIndexOf("\") - 1))
+                'm_frmImage.PictureBox1.Image = Image.FromFile(strImageFileName)
+                'm_frmImage.Text = strImageFileName.Substring(strImageFileName.LastIndexOf("\") + 1, (strImageFileName.Length - strImageFileName.LastIndexOf("\") - 1))
                 VideoFileName = strImageFileName.Substring(strImageFileName.LastIndexOf("\") + 1, (strImageFileName.Length - strImageFileName.LastIndexOf("\") - 1))
 
                 ' set the flag "image_open" to be true.
@@ -2526,15 +2524,15 @@ Public Class VideoMiner
                 mnuOpenImg.Enabled = True
             End If
             If blVideoOpen Then
-                If Not frmVideoPlayer Is Nothing Then
-                    frmVideoPlayer.Close()
+                If Not m_frmVideoPlayer Is Nothing Then
+                    m_frmVideoPlayer.Close()
                 End If
                 'current_directory = strVideoFileName.Substring(0, strVideoFileName.LastIndexOf("\"))
                 strVideoFilePath = strVideoFileName
                 VideoFileName = strVideoFilePath.Substring(strVideoFilePath.LastIndexOf("\") + 1, strVideoFilePath.Length - strVideoFilePath.LastIndexOf("\") - 1)
-                If frmVideoPlayer Is Nothing Then
-                    frmVideoPlayer = New frmVideoPlayer(VideoFileName, VIDEO_TIME_FORMAT)
-                    'frmVideoPlayer.pnlHideVideo.Visible = True
+                If m_frmVideoPlayer Is Nothing Then
+                    m_frmVideoPlayer = New frmVideoPlayer(VideoFileName, VIDEO_TIME_FORMAT)
+                    'm_frmVideoPlayer.pnlHideVideo.Visible = True
                     Dim intX As Integer = 0
                     Dim intY As Integer = 0
                     Dim intMonitorCount As Integer = 0
@@ -2553,22 +2551,22 @@ Public Class VideoMiner
                     If intMonitorCount = 1 Then
                         aPoint.X = intX
                         aPoint.Y = CInt(intY / 2)
-                        frmVideoPlayer.Location = aPoint
-                        frmVideoPlayer.WindowState = FormWindowState.Normal
-                        'frmVideoPlayer.TopMost = True
+                        m_frmVideoPlayer.Location = aPoint
+                        m_frmVideoPlayer.WindowState = FormWindowState.Normal
+                        'm_frmVideoPlayer.TopMost = True
                     Else
                         aPoint.X = intX + priMon.Bounds.Width
                         aPoint.Y = CInt(intY / 2)
-                        frmVideoPlayer.Location = aPoint
-                        frmVideoPlayer.WindowState = FormWindowState.Maximized
-                        'frmVideoPlayer.TopMost = True
+                        m_frmVideoPlayer.Location = aPoint
+                        m_frmVideoPlayer.WindowState = FormWindowState.Maximized
+                        'm_frmVideoPlayer.TopMost = True
                     End If
                     Me.VideoTime = Parse(strVideoTime)
-                    frmVideoPlayer.Show()
+                    m_frmVideoPlayer.Show()
 
                 Else
-                    'frmVideoPlayer.pnlHideVideo.Visible = True
-                    frmVideoPlayer.frmVideoPlayer_Load(Me, New System.EventArgs)
+                    'm_frmVideoPlayer.pnlHideVideo.Visible = True
+                    m_frmVideoPlayer.frmVideoPlayer_Load(Me, New System.EventArgs)
                 End If
             End If
             Me.Text = "Video Miner  " & Me.Version & " - " & Me.SessionName.Substring(Me.SessionName.LastIndexOf("\") + 1, (Me.SessionName.Length - 4) - Me.SessionName.LastIndexOf("\") - 1)
@@ -2594,18 +2592,18 @@ Public Class VideoMiner
             Dim strVideoTime As String
             Dim strNumberRecordsShown As String
 
-            If Not frmVideoPlayer Is Nothing Then
+            If Not m_frmVideoPlayer Is Nothing Then
                 blVideoOpen = True
                 strVideoFileName = strVideoFilePath
-                'strVideoTime = CStr(frmVideoPlayer.Ctlcontrols.currentPosition)
-                strVideoTime = CStr(frmVideoPlayer.Position)
+                'strVideoTime = CStr(m_frmVideoPlayer.Ctlcontrols.currentPosition)
+                strVideoTime = CStr(m_frmVideoPlayer.Position)
             Else
                 blVideoOpen = False
                 strVideoFileName = NULL_STRING
                 strVideoTime = NULL_STRING
             End If
 
-            If Not frmImage Is Nothing Then
+            If Not m_frmImage Is Nothing Then
                 blImageOpen = True
                 strImageFileName = currentImage
             Else
@@ -2675,17 +2673,17 @@ Public Class VideoMiner
         Dim strVideoTime As String
         Dim strNumberRecordsShown As String
 
-        If Not frmVideoPlayer Is Nothing Then
+        If Not m_frmVideoPlayer Is Nothing Then
             blVideoOpen = True
             strVideoFileName = strVideoFilePath
-            strVideoTime = CStr(frmVideoPlayer.Position)
+            strVideoTime = CStr(m_frmVideoPlayer.Position)
         Else
             blVideoOpen = False
             strVideoFileName = NULL_STRING
             strVideoTime = NULL_STRING
         End If
 
-        If Not frmImage Is Nothing Then
+        If Not m_frmImage Is Nothing Then
             blImageOpen = True
             strImageFileName = currentImage
         Else
@@ -2919,7 +2917,7 @@ Public Class VideoMiner
     ''' insert a record in the database to reflect this change.
     ''' </summary>
     Private Sub toggle_bottom()
-        If IsNothing(pnlHabitatData) Or IsNothing(pnlTransectData) Then
+        If IsNothing(m_pnlHabitatData) Or IsNothing(m_pnlTransectData) Then
             Exit Sub
         End If
         If CBool(is_on_bottom) Then
@@ -2944,7 +2942,7 @@ Public Class VideoMiner
         ' Need to merge dictionaries for Habitat and Transect panels here to the Off Bottom/ On Bottom KeyValuePair
         Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = New Dictionary(Of String, Tuple(Of String, String, Boolean))
         Dim tuple As Tuple(Of String, String, Boolean)
-        dict = dict.Union(pnlHabitatData.Dictionary).Union(pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+        dict = dict.Union(m_pnlHabitatData.Dictionary).Union(m_pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
 
         tuple = New Tuple(Of String, String, Boolean)("3", CType(is_on_bottom, String), True)
         dict.Add("OnBottom", tuple)
@@ -3008,7 +3006,7 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
-    ''' Open an image. Creates a new instance of frmImage. Greys out the video menu
+    ''' Open an image. Creates a new instance of m_frmImage. Greys out the video menu
     ''' as we should only have either video or image open, not both.
     ''' </summary>
     Private Sub openImage()
@@ -3023,11 +3021,11 @@ Public Class VideoMiner
             m_strImagePath = GetDirectoryName(ofd.FileName)
             ' Store the new image path in XML file each time an image is opened
             SaveConfiguration(XPATH_IMAGE_PATH, m_strImagePath)
-            If frmImage Is Nothing Then
-                frmImage = New frmImage(m_strImagePath, GetFileName(ofd.FileName))
-                If frmImage.ImageDirectoryEmpty Then
-                    frmImage.ImageDirectoryEmptyMessage()
-                    frmImage = Nothing
+            If m_frmImage Is Nothing Then
+                m_frmImage = New frmImage(m_strImagePath, GetFileName(ofd.FileName))
+                If m_frmImage.ImageDirectoryEmpty Then
+                    m_frmImage.ImageDirectoryEmptyMessage()
+                    m_frmImage = Nothing
                     Exit Sub
                 End If
                 pnlVideoControls.Visible = False
@@ -3049,15 +3047,15 @@ Public Class VideoMiner
                 If intMonitorCount = 1 Then
                     aPoint.X = intX
                     aPoint.Y = CInt(intY / 2)
-                    frmImage.Location = aPoint
-                    frmImage.WindowState = FormWindowState.Normal
+                    m_frmImage.Location = aPoint
+                    m_frmImage.WindowState = FormWindowState.Normal
                 Else
                     aPoint.X = intX + priMon.Bounds.Width
                     aPoint.Y = CInt(intY / 2)
-                    frmImage.Location = aPoint
-                    frmImage.WindowState = FormWindowState.Maximized
+                    m_frmImage.Location = aPoint
+                    m_frmImage.WindowState = FormWindowState.Maximized
                 End If
-                frmImage.Show()
+                m_frmImage.Show()
             End If
             image_open = True
             txtTimeSource.ForeColor = Color.LimeGreen
@@ -3105,7 +3103,7 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
-    ''' Open a video file. Creates a new instance of frmVideoPlayer
+    ''' Open a video file. Creates a new instance of m_frmVideoPlayer
     ''' </summary>
     ''' <returns>Boolean representing success</returns>
     ''' <remarks>Returns True if the user chose an existing file to play, False is they pressed cancel or clicked the 'X'</remarks>
@@ -3126,9 +3124,9 @@ Public Class VideoMiner
             Return False
         End If
 
-        If frmVideoPlayer Is Nothing Then
+        If m_frmVideoPlayer Is Nothing Then
             Try
-                frmVideoPlayer = New frmVideoPlayer(VideoFileName, VIDEO_TIME_FORMAT)
+                m_frmVideoPlayer = New frmVideoPlayer(VideoFileName, VIDEO_TIME_FORMAT)
             Catch ex As Exception
                 MessageBox.Show("Error creating the video player form. Error message is: " & vbCrLf & ex.Message)
                 Return False
@@ -3150,22 +3148,22 @@ Public Class VideoMiner
             If secMon Is Nothing Then
                 aPoint.X = intX
                 aPoint.Y = CInt(intY / 2)
-                frmVideoPlayer.Location = aPoint
-                frmVideoPlayer.WindowState = FormWindowState.Normal
-                frmVideoPlayer.TopMost = True
+                m_frmVideoPlayer.Location = aPoint
+                m_frmVideoPlayer.WindowState = FormWindowState.Normal
+                m_frmVideoPlayer.TopMost = True
             Else
                 'aPoint.X = intX + priMon.Bounds.Width
                 'aPoint.Y = intY / 2
                 ' Use these settings when debugging, and comment out the windowstate and topmost lines below
                 aPoint.X = CInt(intX + priMon.Bounds.Width / 3)
                 aPoint.Y = CInt(intY / 4)
-                frmVideoPlayer.Location = aPoint
-                'frmVideoPlayer.WindowState = FormWindowState.Maximized
-                'frmVideoPlayer.TopMost = True
+                m_frmVideoPlayer.Location = aPoint
+                'm_frmVideoPlayer.WindowState = FormWindowState.Maximized
+                'm_frmVideoPlayer.TopMost = True
             End If
             Me.VideoTime = Zero
-            frmVideoPlayer.Show()
-            'frmVideoPlayer.pnlHideVideo.Visible = True
+            m_frmVideoPlayer.Show()
+            'm_frmVideoPlayer.pnlHideVideo.Visible = True
             pnlVideoControls.Visible = True
             Me.txtTransectDate.Enabled = True
             Me.txtProjectName.Enabled = True
@@ -3181,7 +3179,7 @@ Public Class VideoMiner
             End If
 
             ' In the future if the frames per second are returned properly, this will show that in the status bar..
-            'Me.lblVideo.Text = "Video File '" & VideoFileName & "' is open (" & frmVideoPlayer.FPS & " frames per second)"
+            'Me.lblVideo.Text = "Video File '" & VideoFileName & "' is open (" & m_frmVideoPlayer.FPS & " frames per second)"
             Me.lblVideo.Text = "Video File '" & VideoFileName & "' is open"
             m_video_file_open = True
             mnuOpenImg.Enabled = False
@@ -3189,8 +3187,8 @@ Public Class VideoMiner
             mnuUseExternalVideo.Enabled = False
             Return True
         Else
-            'frmVideoPlayer.frmVideoPlayer_Load(Me, New System.EventArgs)
-            'Me.VideoTime = frmVideoPlayer.CurrentVideoTime
+            'm_frmVideoPlayer.frmVideoPlayer_Load(Me, New System.EventArgs)
+            'Me.VideoTime = m_frmVideoPlayer.CurrentVideoTime
             Return False
         End If
     End Function
@@ -3202,7 +3200,7 @@ Public Class VideoMiner
                 Dim dblCurrentSeconds As Double
                 Dim strSeconds As String()
                 Dim intCurrentSeconds As Integer
-                dblCurrentSeconds = frmVideoPlayer.Position
+                dblCurrentSeconds = m_frmVideoPlayer.Position
                 strSeconds = dblCurrentSeconds.ToString.Split("."c)
                 intCurrentSeconds = CInt(strSeconds(0))
                 'intPlayForSeconds = CInt(Me.txtPlaySeconds.Text)
@@ -3222,7 +3220,7 @@ Public Class VideoMiner
     End Sub
 
     Public Sub cmdPlayPause_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPlayPause.Click
-        If frmVideoPlayer.IsPaused Or frmVideoPlayer.IsStopped Then
+        If m_frmVideoPlayer.IsPaused Or m_frmVideoPlayer.IsStopped Then
             playVideo()
             If Me.chkRecordEachSecond.Checked = True Then
                 blFirstTime = True
@@ -3238,10 +3236,10 @@ Public Class VideoMiner
     ''' When the video file is closed, change labels and timecodes to reflect the closure
     ''' </summary>
     Public Sub video_file_unload()
-        If Not frmVideoPlayer Is Nothing Then
-            frmVideoPlayer.Hide()
-            frmVideoPlayer.Dispose()
-            frmVideoPlayer = Nothing
+        If Not m_frmVideoPlayer Is Nothing Then
+            m_frmVideoPlayer.Hide()
+            m_frmVideoPlayer.Dispose()
+            m_frmVideoPlayer = Nothing
         End If
         lblVideo.Text = VIDEO_FILE_STATUS_UNLOADED
         pnlVideoControls.Visible = False
@@ -3269,8 +3267,8 @@ Public Class VideoMiner
     ''' Tell the video player to play the video
     ''' </summary>
     Private Sub playVideo()
-        'frmVideoPlayer.Rate = m_dblVideoRate
-        frmVideoPlayer.playVideo()
+        'm_frmVideoPlayer.Rate = m_dblVideoRate
+        m_frmVideoPlayer.playVideo()
     End Sub
 
     ''' <summary>
@@ -3280,7 +3278,7 @@ Public Class VideoMiner
         'If Me.tmrRecordPerSecond.Enabled Then
         ' Me.tmrRecordPerSecond.Stop()
         ' End If
-        frmVideoPlayer.pauseVideo()
+        m_frmVideoPlayer.pauseVideo()
     End Sub
 
     ''' <summary>
@@ -3290,13 +3288,13 @@ Public Class VideoMiner
         'If Me.tmrRecordPerSecond.Enabled Then
         ' Me.tmrRecordPerSecond.Stop()
         ' End If
-        frmVideoPlayer.stopVideo()
+        m_frmVideoPlayer.stopVideo()
     End Sub
 
     ''' <summary>
     ''' If the video player is paused, show the play icon and set some variables
     ''' </summary>
-    Public Sub playerPaused() Handles frmVideoPlayer.PauseEvent
+    Public Sub playerPaused() Handles m_frmVideoPlayer.PauseEvent
         ' This is used to sense when the video player form pauses its video
         cmdPlayPause.BackgroundImage = My.Resources.Play_Icon
         FfwdCount = 0
@@ -3306,7 +3304,7 @@ Public Class VideoMiner
     ''' <summary>
     ''' If the video player is playing, show the pause icon and set some variables
     ''' </summary>
-    Public Sub playerPlaying() Handles frmVideoPlayer.PlayEvent
+    Public Sub playerPlaying() Handles m_frmVideoPlayer.PlayEvent
         ' This is used to sense when the video player form starts playing its video
         cmdPlayPause.BackgroundImage = My.Resources.Pause_Icon
         setTimes()
@@ -3317,11 +3315,11 @@ Public Class VideoMiner
     ''' <summary>
     ''' If the video player is stopped, show the play icon and set some variables
     ''' </summary>
-    Public Sub playerStopped() Handles frmVideoPlayer.StopEvent
+    Public Sub playerStopped() Handles m_frmVideoPlayer.StopEvent
         ' This is used to sense when the video player form stops its video from inside.
         ' it is added as a handler and an event raised from the frmVideoPlayer class
         cmdPlayPause.BackgroundImage = My.Resources.Play_Icon
-        Me.txtTimeSource.Text = frmVideoPlayer.CurrentVideoTimeFormatted
+        Me.txtTimeSource.Text = m_frmVideoPlayer.CurrentVideoTimeFormatted
         setTimes()
         FfwdCount = 0
         RwndCOunt = 0
@@ -3330,27 +3328,27 @@ Public Class VideoMiner
     ''' <summary>
     ''' Updates the time text on the form everytime the timer tick event is issued by the frmVideoPlayer form
     ''' </summary>
-    Public Sub timerTick() Handles frmVideoPlayer.TimerTickEvent
-        Me.txtTimeSource.Text = frmVideoPlayer.CurrentVideoTimeFormatted
-        If frmVideoPlayer.IsPlaying Or frmVideoPlayer.IsPaused Then
-            Dim tsNewTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
+    Public Sub timerTick() Handles m_frmVideoPlayer.TimerTickEvent
+        Me.txtTimeSource.Text = m_frmVideoPlayer.CurrentVideoTimeFormatted
+        If m_frmVideoPlayer.IsPlaying Or m_frmVideoPlayer.IsPaused Then
+            Dim tsNewTime As TimeSpan = m_tsUserTime + m_frmVideoPlayer.CurrentVideoTime
             txtTime.Text = String.Format(VIDEO_TIME_FORMAT, tsNewTime.Hours, tsNewTime.Minutes, tsNewTime.Seconds, tsNewTime.Milliseconds)
         End If
     End Sub
 
-    Public Sub videoEnded() Handles frmVideoPlayer.VideoEndedEvent
+    Public Sub videoEnded() Handles m_frmVideoPlayer.VideoEndedEvent
         ' This is used to sense when the video ends its video from inside.
-        ' it is added as a handler and an event raised from the frmVideoPlayer class
+        ' it is added as a handler and an event raised from the m_frmVideoPlayer class
         cmdPlayPause.BackgroundImage = My.Resources.Play_Icon
-        Me.txtTimeSource.Text = frmVideoPlayer.CurrentVideoTimeFormatted
+        Me.txtTimeSource.Text = m_frmVideoPlayer.CurrentVideoTimeFormatted
         If m_tsUserTime <> Zero Then
-            Dim tsNewTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
+            Dim tsNewTime As TimeSpan = m_tsUserTime + m_frmVideoPlayer.CurrentVideoTime
             txtTime.Text = String.Format(VIDEO_TIME_FORMAT, tsNewTime.Hours, tsNewTime.Minutes, tsNewTime.Seconds, tsNewTime.Milliseconds)
             'txtTime.
         End If
     End Sub
 
-    Public Sub playerClosing() Handles frmVideoPlayer.ClosingEvent
+    Public Sub playerClosing() Handles m_frmVideoPlayer.ClosingEvent
         ' This is used to sense when the video player is closed (i.e. press the topright 'X' button)
         ' it is added as a handler and an event raised from the frmVideoPlayer class
         video_file_unload()
@@ -3359,7 +3357,7 @@ Public Class VideoMiner
     Private Sub increaseRate()
         Try
             m_dblVideoRate = m_dblVideoRate + 0.25
-            frmVideoPlayer.Rate = m_dblVideoRate
+            m_frmVideoPlayer.Rate = m_dblVideoRate
             Me.lblVideoRate.Text = m_dblVideoRate & " X"
         Catch ex As Exception
             MessageBox.Show(ex.Message)
@@ -3371,7 +3369,7 @@ Public Class VideoMiner
             If m_dblVideoRate <> 0.25 Then
                 m_dblVideoRate = m_dblVideoRate - 0.25
             End If
-            frmVideoPlayer.Rate = m_dblVideoRate
+            m_frmVideoPlayer.Rate = m_dblVideoRate
             Me.lblVideoRate.Text = m_dblVideoRate & " X"
         Catch ex As Exception
             MessageBox.Show(ex.Message)
@@ -3380,9 +3378,9 @@ Public Class VideoMiner
 
     Private Sub Stepforward()
         If txtFramesToSkip.Text = String.Empty Then
-            frmVideoPlayer.stepForward(VIDEO_FRAME_STEP_DEFAULT)
+            m_frmVideoPlayer.stepForward(VIDEO_FRAME_STEP_DEFAULT)
         Else
-            frmVideoPlayer.stepForward(CInt(txtFramesToSkip.Text))
+            m_frmVideoPlayer.stepForward(CInt(txtFramesToSkip.Text))
         End If
     End Sub
 
@@ -3401,9 +3399,9 @@ Public Class VideoMiner
         mnuCloseDatabase.Enabled = False
         DataCodeAssignmentsToolStripMenuItem.Enabled = False
         KeyboardShortcutsToolStripMenuItem.Enabled = False
-        pnlTransectData.removeAllDynamicControls()
-        pnlHabitatData.removeAllDynamicControls()
-        pnlSpeciesData.removeAllDynamicControls()
+        m_pnlTransectData.removeAllDynamicControls()
+        m_pnlHabitatData.removeAllDynamicControls()
+        m_pnlSpeciesData.removeAllDynamicControls()
     End Sub
 
     ''' <summary>
@@ -3415,9 +3413,9 @@ Public Class VideoMiner
         If Database.IsOpen Then
             m_db_filename = get_rel_filename(m_strDatabaseFilePath)
             m_db_file_open = True
-            pnlTransectData.fillPanel(DB_TRANSECT_BUTTONS_TABLE)
-            pnlHabitatData.fillPanel(DB_HABITAT_BUTTONS_TABLE)
-            pnlSpeciesData.fillPanel(DB_SPECIES_BUTTONS_TABLE)
+            m_pnlTransectData.fillPanel(DB_TRANSECT_BUTTONS_TABLE)
+            m_pnlHabitatData.fillPanel(DB_HABITAT_BUTTONS_TABLE)
+            m_pnlSpeciesData.fillPanel(DB_SPECIES_BUTTONS_TABLE)
             Me.lblDatabase.Text = DB_FILE_STATUS_LOADED & m_db_filename & " is open"
             mnuOpenDatabase.Enabled = False
             mnuCloseDatabase.Enabled = True
@@ -3426,7 +3424,6 @@ Public Class VideoMiner
             m_grdDatabase = New VideoMinerDataGridView(DB_DATA_TABLE, True, VideoMinerDataGridView.RowOrderEnum.Descending)
             SplitContainer1.Panel2.Controls.Add(m_grdDatabase)
             m_grdDatabase.Dock = DockStyle.Fill
-            'm_grdDatabase.fetchData()()()
             database_is_open_toggle_visibility()
         End If
     End Sub
@@ -3464,8 +3461,8 @@ Public Class VideoMiner
         If Not IsNothing(m_tsUserTime) Then
             names = names & "TextTime,"
             Dim tmp As TimeSpan = m_tsUserTime
-            If Not IsNothing(frmVideoPlayer) Then
-                tmp = tmp + frmVideoPlayer.CurrentVideoTime
+            If Not IsNothing(m_frmVideoPlayer) Then
+                tmp = tmp + m_frmVideoPlayer.CurrentVideoTime
             End If
             values = values & SingleQuote(tmp.ToString("dd\.hh\:mm\:ss\.fff")) & ","
         End If
@@ -3485,7 +3482,7 @@ Public Class VideoMiner
             values = values & SingleQuote(m_GPS_Z) & ","
         End If
 
-        'Dim tsTime As TimeSpan = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
+        'Dim tsTime As TimeSpan = m_tsUserTime + m_frmVideoPlayer.CurrentVideoTime
         'If tsTime <> Zero Then
         ' Dim dt As DateTime = m_transect_date + tsTime
         ' Dim st As String = pad0(tsTime.Hours) & ":" & pad0(tsTime.Minutes) & ":" & pad0(tsTime.Seconds)
@@ -3529,8 +3526,8 @@ Public Class VideoMiner
             Me.txtQuickSpeciesCount.Visible = False
         End If
         ' Tell the species panel that the buttons should all be quick entry type
-        If Not IsNothing(pnlSpeciesData) Then
-            pnlSpeciesData.WhichEntryStyle = DynamicButton.WhichEntryStyleEnum.Quick
+        If Not IsNothing(m_pnlSpeciesData) Then
+            m_pnlSpeciesData.WhichEntryStyle = DynamicButton.WhichEntryStyleEnum.Quick
         End If
     End Sub
 
@@ -3538,10 +3535,10 @@ Public Class VideoMiner
     ''' Used to pause the video if data entry has started.
     ''' </summary>
     Private Sub dataEntryStarted()
-        If Not frmVideoPlayer Is Nothing Then
-            m_blWasPlaying = frmVideoPlayer.IsPlaying
+        If Not m_frmVideoPlayer Is Nothing Then
+            m_blWasPlaying = m_frmVideoPlayer.IsPlaying
             If m_blWasPlaying Then
-                frmVideoPlayer.pauseVideo()
+                m_frmVideoPlayer.pauseVideo()
             End If
         End If
     End Sub
@@ -3550,9 +3547,9 @@ Public Class VideoMiner
     ''' Used to play the video if data entry has ended.
     ''' </summary>
     Private Sub dataEntryEnded()
-        If Not frmVideoPlayer Is Nothing Then
+        If Not m_frmVideoPlayer Is Nothing Then
             If m_blWasPlaying Then
-                frmVideoPlayer.playVideo()
+                m_frmVideoPlayer.playVideo()
             End If
         End If
     End Sub
@@ -3563,38 +3560,38 @@ Public Class VideoMiner
     Private Sub cmdRareSpeciesLookup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdRareSpeciesLookup.Click
         If IsNothing(m_data_table.GetChanges()) Then
             dataEntryStarted()
-            frmRareSpeciesLookup.Show()
+            m_frmRareSpeciesLookup.Show()
         Else
             If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?", "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
                 m_grdDatabase.fetchData() ' Cleans up the table first
-                frmRareSpeciesLookup.Show()
+                m_frmRareSpeciesLookup.Show()
             End If
         End If
     End Sub
 
     Private Sub KeyboardShortcutsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles KeyboardShortcutsToolStripMenuItem.Click
-        frmKeyboardCommands = New frmKeyboardCommands
-        frmKeyboardCommands.ShowDialog()
+        m_frmKeyboardCommands = New frmKeyboardCommands
+        m_frmKeyboardCommands.ShowDialog()
     End Sub
 
     Private Sub ConfigureHabitatButtonToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureHabitatButtonToolStripMenuItem.Click
-        frmConfigureButtons = New frmConfigureButtons(DB_HABITAT_BUTTONS_TABLE, PANEL_NAME_TRANSECT)
-        frmConfigureButtons.ShowDialog()
+        m_frmConfigureButtons = New frmConfigureButtons(DB_HABITAT_BUTTONS_TABLE, PANEL_NAME_TRANSECT)
+        m_frmConfigureButtons.ShowDialog()
     End Sub
 
     Private Sub ConfigureTransectButtonsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureTransectButtonsToolStripMenuItem.Click
-        frmConfigureButtons = New frmConfigureButtons(DB_TRANSECT_BUTTONS_TABLE, PANEL_NAME_HABITAT)
-        frmConfigureButtons.ShowDialog()
+        m_frmConfigureButtons = New frmConfigureButtons(DB_TRANSECT_BUTTONS_TABLE, PANEL_NAME_HABITAT)
+        m_frmConfigureButtons.ShowDialog()
     End Sub
 
     ''' <summary>
     ''' The habitat and/or transect buttons in the database have been modified and need to be redrawn.
     ''' </summary>
-    Private Sub frmConfigureButtons_DatabaseModifiedHandler() Handles frmConfigureButtons.DatabaseModifiedEvent
-        pnlHabitatData.removeAllDynamicControls()
-        pnlHabitatData.fillPanel(DB_HABITAT_BUTTONS_TABLE)
-        pnlTransectData.removeAllDynamicControls()
-        pnlTransectData.fillPanel(DB_TRANSECT_BUTTONS_TABLE)
+    Private Sub m_frmConfigureButtons_DatabaseModifiedHandler() Handles m_frmConfigureButtons.DatabaseModifiedEvent
+        m_pnlHabitatData.removeAllDynamicControls()
+        m_pnlHabitatData.fillPanel(DB_HABITAT_BUTTONS_TABLE)
+        m_pnlTransectData.removeAllDynamicControls()
+        m_pnlTransectData.fillPanel(DB_TRANSECT_BUTTONS_TABLE)
     End Sub
 
     Public Sub cmdStop_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdStop.Click
@@ -3630,37 +3627,37 @@ Public Class VideoMiner
     End Sub
 
     Private Sub DataCodeAssignmentsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DataCodeAssignmentsToolStripMenuItem.Click
-        frmDataCodes = New frmDataCodes
-        frmDataCodes.ShowDialog()
+        m_frmDataCodes = New frmDataCodes
+        m_frmDataCodes.ShowDialog()
     End Sub
 
     Private Sub DeviceControlToolStripMenuItem1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DeviceControl.Click
-        frmDeviceControl = New frmDeviceControl
-        frmDeviceControl.ShowDialog()
+        m_frmDeviceControl = New frmDeviceControl
+        m_frmDeviceControl.ShowDialog()
     End Sub
 
     Private Sub RelayConfigurationToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RelayConfigurationToolStripMenuItem.Click
-        frmRelayConfiguration = New frmRelayConfiguration
+        m_frmRelayConfiguration = New frmRelayConfiguration
 
         ' Transfer the relay configuration variables to the relay configuration form
-        frmRelayConfiguration.ConfigurationSet = Me.ConfigurationSet
-        frmRelayConfiguration.RelaySetup = Me.RelaySetup
-        frmRelayConfiguration.ParallelCom = Me.ParallelCom
-        frmRelayConfiguration.ParallelBaud = Me.ParallelBaud
-        frmRelayConfiguration.PortOneCom = Me.PortOneCom
-        frmRelayConfiguration.PortOneBaud = Me.PortOneBaud
-        frmRelayConfiguration.PortTwoCom = Me.PortTwoCom
-        frmRelayConfiguration.PortTwoBaud = Me.PortTwoBaud
-        frmRelayConfiguration.DeviceOneRelayOne = Me.DeviceOneRelayOne
-        frmRelayConfiguration.DeviceOneRelayTwo = Me.DeviceOneRelayTwo
-        frmRelayConfiguration.DeviceOneRelayThree = Me.DeviceOneRelayThree
-        frmRelayConfiguration.DeviceOneRelayFour = Me.DeviceOneRelayFour
-        frmRelayConfiguration.DeviceTwoRelayOne = Me.DeviceTwoRelayOne
-        frmRelayConfiguration.DeviceTwoRelayTwo = Me.DeviceTwoRelayTwo
-        frmRelayConfiguration.DeviceTwoRelayThree = Me.DeviceTwoRelayThree
-        frmRelayConfiguration.DeviceTwoRelayFour = Me.DeviceTwoRelayFour
+        m_frmRelayConfiguration.ConfigurationSet = Me.ConfigurationSet
+        m_frmRelayConfiguration.RelaySetup = Me.RelaySetup
+        m_frmRelayConfiguration.ParallelCom = Me.ParallelCom
+        m_frmRelayConfiguration.ParallelBaud = Me.ParallelBaud
+        m_frmRelayConfiguration.PortOneCom = Me.PortOneCom
+        m_frmRelayConfiguration.PortOneBaud = Me.PortOneBaud
+        m_frmRelayConfiguration.PortTwoCom = Me.PortTwoCom
+        m_frmRelayConfiguration.PortTwoBaud = Me.PortTwoBaud
+        m_frmRelayConfiguration.DeviceOneRelayOne = Me.DeviceOneRelayOne
+        m_frmRelayConfiguration.DeviceOneRelayTwo = Me.DeviceOneRelayTwo
+        m_frmRelayConfiguration.DeviceOneRelayThree = Me.DeviceOneRelayThree
+        m_frmRelayConfiguration.DeviceOneRelayFour = Me.DeviceOneRelayFour
+        m_frmRelayConfiguration.DeviceTwoRelayOne = Me.DeviceTwoRelayOne
+        m_frmRelayConfiguration.DeviceTwoRelayTwo = Me.DeviceTwoRelayTwo
+        m_frmRelayConfiguration.DeviceTwoRelayThree = Me.DeviceTwoRelayThree
+        m_frmRelayConfiguration.DeviceTwoRelayFour = Me.DeviceTwoRelayFour
 
-        frmRelayConfiguration.ShowDialog()
+        m_frmRelayConfiguration.ShowDialog()
     End Sub
 
     ' Handles updating the NMEA text box
@@ -3687,10 +3684,10 @@ Public Class VideoMiner
         '    'MsgBox(frmVideoMiner.txtNMEA.Text)
         '    'aSerialPort.DiscardInBuffer()
 
-        '    'If Not frmGpsSettings Is Nothing Then
-        '    If Not frmGpsSettings Is Nothing Then
-        '        frmGpsSettings.cmdConnection.Enabled = True
-        '        frmGpsSettings.cmdConnection.Text = "Close GPS Connection"
+        '    'If Not m_frmGpsSettings Is Nothing Then
+        '    If Not m_frmGpsSettings Is Nothing Then
+        '        m_frmGpsSettings.cmdConnection.Enabled = True
+        '        m_frmGpsSettings.cmdConnection.Text = "Close GPS Connection"
         '    End If
         '    ' Create a new point object and populate it with the location from the NMEA string
 
@@ -3712,9 +3709,9 @@ Public Class VideoMiner
 
         '    ' If there is not a GPS fix then exit the sub routine
         '    If Not blAquiredFix Then
-        '        If Not frmGpsSettings Is Nothing Then
-        '            frmGpsSettings.lblGPSMessage.Text = "SEARCHING. . ."
-        '            frmGpsSettings.lblGPSMessage.ForeColor = Color.Blue
+        '        If Not m_frmGpsSettings Is Nothing Then
+        '            m_frmGpsSettings.lblGPSMessage.Text = "SEARCHING. . ."
+        '            m_frmGpsSettings.lblGPSMessage.ForeColor = Color.Blue
         '        End If
         '        Me.lblGPSConnectionValue.Text = "SEARCHING. . ."
         '        Me.lblGPSConnectionValue.ForeColor = Color.Blue
@@ -3728,9 +3725,9 @@ Public Class VideoMiner
         '    Me.tmrGPSExpiry.Start()
         '    aquiredTryCount = 0
         '    strCaption = "GPS FIX"
-        '    If Not frmGpsSettings Is Nothing Then
-        '        frmGpsSettings.lblGPSMessage.Text = strCaption
-        '        frmGpsSettings.lblGPSMessage.ForeColor = Color.LimeGreen
+        '    If Not m_frmGpsSettings Is Nothing Then
+        '        m_frmGpsSettings.lblGPSMessage.Text = strCaption
+        '        m_frmGpsSettings.lblGPSMessage.ForeColor = Color.LimeGreen
         '    End If
         '    Me.lblGPSConnectionValue.Text = strCaption
         '    Me.lblGPSConnectionValue.ForeColor = Color.LimeGreen
@@ -3744,15 +3741,15 @@ Public Class VideoMiner
         '    End If
 
         '    ' Format the values to include 5 decimal places
-        '    If Not frmGpsSettings Is Nothing Then
-        '        frmGpsSettings.lblCurrentYValue.Text = FormatNumber(Me.GPS_Y, 5)
-        '        frmGpsSettings.lblCurrentXValue.Text = FormatNumber(Me.GPS_X, 5)
-        '        frmGpsSettings.lblCurrentZValue.Text = FormatNumber(Me.GPS_Z, 2)
-        '        frmGpsSettings.lblCurrentDateValue.Text = Me.GPSDate
-        '        frmGpsSettings.lblCurrentTimeValue.Text = Me.GPSDateTime
+        '    If Not m_frmGpsSettings Is Nothing Then
+        '        m_frmGpsSettings.lblCurrentYValue.Text = FormatNumber(Me.GPS_Y, 5)
+        '        m_frmGpsSettings.lblCurrentXValue.Text = FormatNumber(Me.GPS_X, 5)
+        '        m_frmGpsSettings.lblCurrentZValue.Text = FormatNumber(Me.GPS_Z, 2)
+        '        m_frmGpsSettings.lblCurrentDateValue.Text = Me.GPSDate
+        '        m_frmGpsSettings.lblCurrentTimeValue.Text = Me.GPSDateTime
         '    End If
-        '    If Not frmSetTime Is Nothing Then
-        '        frmSetTime.txtSetTime.Text = Me.GPSDateTime
+        '    If Not m_frmSetTime Is Nothing Then
+        '        m_frmSetTime.txtSetTime.Text = Me.GPSDateTime
         '    End If
         '    Me.lblYValue.Text = FormatNumber(Me.GPS_Y, 5)
         '    Me.lblXValue.Text = FormatNumber(Me.GPS_X, 5)
@@ -3786,7 +3783,7 @@ Public Class VideoMiner
         '    '    Me.txtTime.Text = Me.GPSDateTime
         '    '    Me.txtDateSource.ForeColor = Color.Red
         '    'End If
-        '    'frmGpsSettings.lblCurrentTimeValue.Text = Me.GPSDateTime
+        '    'm_frmGpsSettings.lblCurrentTimeValue.Text = Me.GPSDateTime
         '    'End If
         '    '     End If
         'Catch ex As Exception
@@ -3820,10 +3817,10 @@ Public Class VideoMiner
         End If
     End Sub
 
-    Private Sub pnlSpeciesData_SizeChanged(ByVal sender As Object, ByVal e As System.EventArgs)
+    Private Sub m_pnlSpeciesData_SizeChanged(ByVal sender As Object, ByVal e As System.EventArgs)
         If m_db_file_open Then
 
-            Me.pnlSpeciesData.Controls.Clear()
+            Me.m_pnlSpeciesData.Controls.Clear()
         End If
     End Sub
 
@@ -3859,8 +3856,8 @@ Public Class VideoMiner
     End Sub
 
     Private Sub EditLookupTableToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles EditLookupTableToolStripMenuItem.Click
-        frmEditLookupTable = New frmEditLookupTable
-        frmEditLookupTable.ShowDialog()
+        m_frmEditLookupTable = New frmEditLookupTable
+        m_frmEditLookupTable.ShowDialog()
     End Sub
 
     'Private Sub grdVideoMinerDatabase_ColumnDisplayIndexChanged(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewColumnEventArgs)
@@ -3900,8 +3897,8 @@ Public Class VideoMiner
     ''' </summary>
     Private Sub setTimes()
         Dim tsNewTime As TimeSpan
-        If frmVideoPlayer IsNot Nothing Then
-            tsNewTime = m_tsUserTime + frmVideoPlayer.CurrentVideoTime
+        If m_frmVideoPlayer IsNot Nothing Then
+            tsNewTime = m_tsUserTime + m_frmVideoPlayer.CurrentVideoTime
         Else
             tsNewTime = m_tsUserTime
         End If
@@ -3928,60 +3925,60 @@ Public Class VideoMiner
     ''' <summary>
     ''' Gets the new user defined time from the set time form and call setUserTime to apply
     ''' </summary>
-    Private Sub time_changed() Handles frmSetTime.TimeChanged
-        m_tsUserTime = frmSetTime.UserTime
+    Private Sub time_changed() Handles m_frmSetTime.TimeChanged
+        m_tsUserTime = m_frmSetTime.UserTime
         setTimes()
     End Sub
 
-    Private Sub species_configuration_update() Handles frmConfigureSpecies.SpeciesConfigurationUpdate
-        RangeChecked = frmConfigureSpecies.RangeChecked
-        IDConfidenceChecked = frmConfigureSpecies.IDConfidenceChecked
-        AbundanceChecked = frmConfigureSpecies.AbundanceChecked
-        CountChecked = frmConfigureSpecies.CountChecked
-        HeightChecked = frmConfigureSpecies.HeightChecked
-        WidthChecked = frmConfigureSpecies.WidthChecked
-        LengthChecked = frmConfigureSpecies.LengthChecked
-        CommentsChecked = frmConfigureSpecies.CommentsChecked
+    Private Sub species_configuration_update() Handles m_frmConfigureSpecies.SpeciesConfigurationUpdate
+        RangeChecked = m_frmConfigureSpecies.RangeChecked
+        IDConfidenceChecked = m_frmConfigureSpecies.IDConfidenceChecked
+        AbundanceChecked = m_frmConfigureSpecies.AbundanceChecked
+        CountChecked = m_frmConfigureSpecies.CountChecked
+        HeightChecked = m_frmConfigureSpecies.HeightChecked
+        WidthChecked = m_frmConfigureSpecies.WidthChecked
+        LengthChecked = m_frmConfigureSpecies.LengthChecked
+        CommentsChecked = m_frmConfigureSpecies.CommentsChecked
 
-        Range = frmConfigureSpecies.Range
-        Side = frmConfigureSpecies.Side
-        IDConfidence = frmConfigureSpecies.IDConfidence
-        Abundance = frmConfigureSpecies.Abundance
-        Count = frmConfigureSpecies.Count
-        SpeciesHeight = frmConfigureSpecies.SpeciesHeight
-        SpeciesWidth = frmConfigureSpecies.SpeciesWidth
-        Length = frmConfigureSpecies.Length
-        Comments = frmConfigureSpecies.Comments
+        Range = m_frmConfigureSpecies.Range
+        Side = m_frmConfigureSpecies.Side
+        IDConfidence = m_frmConfigureSpecies.IDConfidence
+        Abundance = m_frmConfigureSpecies.Abundance
+        Count = m_frmConfigureSpecies.Count
+        SpeciesHeight = m_frmConfigureSpecies.SpeciesHeight
+        SpeciesWidth = m_frmConfigureSpecies.SpeciesWidth
+        Length = m_frmConfigureSpecies.Length
+        Comments = m_frmConfigureSpecies.Comments
     End Sub
 
-    'Private Sub species_button_configuration_changed() Handles frmSpeciesEvent.SpeciesButtonConfigurationChangedEvent
-    'Range = frmSpeciesEvent.Range
-    'Side = frmSpeciesEvent.Side
-    'IDConfidence = frmSpeciesEvent.IDConfidence
-    'Abundance = frmSpeciesEvent.Abundance
-    'Count = frmSpeciesEvent.Count
-    'SpeciesHeight = frmSpeciesEvent.SpeciesHeight
-    'SpeciesWidth = frmSpeciesEvent.SpeciesWidth
-    'Length = frmSpeciesEvent.Length
-    'Comments = frmSpeciesEvent.Comments
-    'SpeciesCode = frmSpeciesEvent.SpeciesCode
+    'Private Sub species_button_configuration_changed() Handles m_frmSpeciesEvent.SpeciesButtonConfigurationChangedEvent
+    'Range = m_frmSpeciesEvent.Range
+    'Side = m_frmSpeciesEvent.Side
+    'IDConfidence = m_frmSpeciesEvent.IDConfidence
+    'Abundance = m_frmSpeciesEvent.Abundance
+    'Count = m_frmSpeciesEvent.Count
+    'SpeciesHeight = m_frmSpeciesEvent.SpeciesHeight
+    'SpeciesWidth = m_frmSpeciesEvent.SpeciesWidth
+    'Length = m_frmSpeciesEvent.Length
+    'Comments = m_frmSpeciesEvent.Comments
+    'SpeciesCode = m_frmSpeciesEvent.SpeciesCode
     'End Sub
 
-    Private Sub gps_connected() Handles frmGpsSettings.GPSConnectedEvent
+    Private Sub gps_connected() Handles m_frmGpsSettings.GPSConnectedEvent
         lblGPSPortValue.Text = "OPEN"
         lblGPSPortValue.ForeColor = Color.LimeGreen
         lblGPSConnectionValue.Text = "CONNECTED"
         lblGPSConnectionValue.ForeColor = Color.Blue
 
-        frmSetTime.UserTime = m_GPSUserTime
-        frmSetTime.ChangeSource(Global.VideoMiner.frmSetTime.WhichTimeEnum.GPS)
+        m_frmSetTime.UserTime = m_GPSUserTime
+        m_frmSetTime.ChangeSource(frmSetTime.WhichTimeEnum.GPS)
     End Sub
 
     ''' <summary>
     ''' Handles the GPS disconnection. Location data are reset and the SetTime form is set up to be Video time instead.
     ''' </summary>
     ''' <remarks></remarks>
-    Private Sub gps_disconnected() Handles frmGpsSettings.GPSDisconnectedEvent
+    Private Sub gps_disconnected() Handles m_frmGpsSettings.GPSDisconnectedEvent
         ' Clear out the last location data
         m_GPS_X = String.Empty
         m_GPS_Y = String.Empty
@@ -4005,11 +4002,11 @@ Public Class VideoMiner
         lblZ.Visible = False
 
         ' Revert to default of video time
-        frmSetTime.TimeSource = Global.VideoMiner.frmSetTime.WhichTimeEnum.Video
-        frmSetTime.rbVideoTime.Checked = True
+        m_frmSetTime.TimeSource = frmSetTime.WhichTimeEnum.Video
+        m_frmSetTime.rbVideoTime.Checked = True
     End Sub
 
-    Private Sub gps_connecting() Handles frmGpsSettings.ConnectingSerialPortEvent
+    Private Sub gps_connecting() Handles m_frmGpsSettings.ConnectingSerialPortEvent
         lblGPSConnectionValue.Text = "SEARCHING. . ."
         lblGPSConnectionValue.ForeColor = Color.Blue
         lblXValue.ForeColor = Color.Red
@@ -4019,70 +4016,59 @@ Public Class VideoMiner
         txtDateSource.ForeColor = Color.Red
     End Sub
 
-    Private Sub image_form_closing() Handles frmImage.ImageFormClosingEvent
+    Private Sub image_form_closing() Handles m_frmImage.ImageFormClosingEvent
         cmdNothingInPhoto.Visible = False
         image_open = False
         mnuOpenImg.Enabled = True
         mnuOpenFile.Enabled = True
         mnuUseExternalVideo.Enabled = True
-        frmImage = Nothing
+        m_frmImage = Nothing
     End Sub
 
-    Private Sub button_configuration_changed() Handles frmConfigureButtonFormat.ButtonConfigurationChangedEvent
-        With frmConfigureButtonFormat
+    Private Sub button_configuration_changed() Handles m_frmConfigureButtonFormat.ButtonConfigurationChangedEvent
+        With m_frmConfigureButtonFormat
             ButtonHeight = CInt(.txtButtonHeight.Text)
             ButtonWidth = CInt(.txtButtonWidth.Text)
             ButtonFont = .cboButtonFont.Text
             ButtonTextSize = CInt(.cboButtonTextSize.Text)
             blupdateColumns = False
-            pnlSpeciesData.Controls.Clear()
+            m_pnlSpeciesData.Controls.Clear()
             blupdateColumns = True
         End With
     End Sub
 
-    'Private Sub species_code_changed() Handles frmRareSpeciesLookup.EndDataEntryEvent
-    '    SpeciesCode = frmRareSpeciesLookup.lblSpeciesCodeValue.Text
-    '    If frmRareSpeciesLookup.lblCommonNameValue.Text = String.Empty Then
-    '        SpeciesName = frmRareSpeciesLookup.lblScientificNameValue.Text
-    '    Else
-    '        SpeciesName = frmRareSpeciesLookup.lblCommonNameValue.Text
-    '    End If
-    '    'SpeciesVariableButtonHandler(Me, Nothing)
-    'End Sub
-
-    Private Sub relay_configuration_changed() Handles frmRelayConfiguration.RelayConfigurationChangedEvent
-        ConfigurationSet = frmRelayConfiguration.ConfigurationSet
-        RelaySetup = frmRelayConfiguration.RelaySetup
-        ParallelCom = frmRelayConfiguration.ParallelCom
-        ParallelBaud = frmRelayConfiguration.ParallelBaud
+    Private Sub relay_configuration_changed() Handles m_frmRelayConfiguration.RelayConfigurationChangedEvent
+        ConfigurationSet = m_frmRelayConfiguration.ConfigurationSet
+        RelaySetup = m_frmRelayConfiguration.RelaySetup
+        ParallelCom = m_frmRelayConfiguration.ParallelCom
+        ParallelBaud = m_frmRelayConfiguration.ParallelBaud
     End Sub
 
-    Private Sub right_arrow_pressed() Handles frmVideoPlayer.RightArrowPressedEvent
-        If frmVideoPlayer.IsPlaying Then
+    Private Sub right_arrow_pressed() Handles m_frmVideoPlayer.RightArrowPressedEvent
+        If m_frmVideoPlayer.IsPlaying Then
             pauseVideo()
-        ElseIf frmVideoPlayer.IsPaused Then
+        ElseIf m_frmVideoPlayer.IsPaused Then
             Stepforward()
         End If
     End Sub
 
-    'Private Sub frmVideoMiner_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown, frmVideoPlayer.KeyDown
-    Private Sub frmVideoMiner_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles frmVideoPlayer.KeyDown
+    Private Sub frmVideoMiner_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles m_frmVideoPlayer.KeyDown
         Select Case e.KeyCode
             Case Keys.Left
                 e.Handled = True
             Case Keys.Right
-                If frmVideoPlayer.IsPlaying Then
+                If m_frmVideoPlayer.IsPlaying Then
                     pauseVideo()
-                ElseIf frmVideoPlayer.IsPaused Then
+                ElseIf m_frmVideoPlayer.IsPaused Then
                     Stepforward()
                 End If
                 e.Handled = True
             Case Keys.Space
-                If frmVideoPlayer.IsPlaying Then
+                If m_frmVideoPlayer.IsPlaying Then
                     pauseVideo()
-                ElseIf frmVideoPlayer.IsPaused Then
+                ElseIf m_frmVideoPlayer.IsPaused Then
                     playVideo()
-                ElseIf frmVideoPlayer.IsStopped Then
+                ElseIf m_frmVideoPlayer.IsStopped Then
                     playVideo()
                 End If
                 e.Handled = True
@@ -4100,13 +4086,13 @@ Public Class VideoMiner
     ''' <summary>
     ''' Updates all GPS member variables for settings and saves the configuration for all of them (xml file)
     ''' </summary>
-    Private Sub save_GPS_configuration() Handles frmGpsSettings.GPSVariablesChangedEvent
-        m_strComPort = frmGpsSettings.ComPort
-        m_intBaudRate = frmGpsSettings.BaudRate
-        m_strNMEAStringType = frmGpsSettings.NMEAStringType
-        m_strParity = frmGpsSettings.Parity
-        m_dblStopBits = frmGpsSettings.StopBits
-        m_intDataBits = frmGpsSettings.DataBits
+    Private Sub save_GPS_configuration() Handles m_frmGpsSettings.GPSVariablesChangedEvent
+        m_strComPort = m_frmGpsSettings.ComPort
+        m_intBaudRate = m_frmGpsSettings.BaudRate
+        m_strNMEAStringType = m_frmGpsSettings.NMEAStringType
+        m_strParity = m_frmGpsSettings.Parity
+        m_dblStopBits = m_frmGpsSettings.StopBits
+        m_intDataBits = m_frmGpsSettings.DataBits
 
         SaveConfiguration(XPATH_GPS_COM_PORT, m_strComPort)
         SaveConfiguration(XPATH_GPS_BAUD_RATE, CStr(m_intBaudRate))
@@ -4125,17 +4111,17 @@ Public Class VideoMiner
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub RefreshGPSStatus()
-        If frmGpsSettings.IsConnected Then
-            m_GPSUserTime = frmGpsSettings.GPSTime
-            m_tsUserTime = frmGpsSettings.GPSTime
+        If m_frmGpsSettings.IsConnected Then
+            m_GPSUserTime = m_frmGpsSettings.GPSTime
+            m_tsUserTime = m_frmGpsSettings.GPSTime
             ' Get the GPS location data into Videominer member variables
-            m_GPS_X = frmGpsSettings.LatitudeString
-            m_GPS_Y = frmGpsSettings.LongitudeString
-            m_GPS_Z = frmGpsSettings.ElevationString
-            lblXValue.Text = frmGpsSettings.LatitudeDegrees & Chr(&HB0) & "  " & frmGpsSettings.LatitudeMinutes & "'"
-            lblYValue.Text = frmGpsSettings.LongitudeDegrees & Chr(&HB0) & "  " & frmGpsSettings.LongitudeMinutes & "'"
-            lblZValue.Text = frmGpsSettings.Elevation & "m"
-            txtNMEA.Text = frmGpsSettings.NMEAString
+            m_GPS_X = m_frmGpsSettings.LatitudeString
+            m_GPS_Y = m_frmGpsSettings.LongitudeString
+            m_GPS_Z = m_frmGpsSettings.ElevationString
+            lblXValue.Text = m_frmGpsSettings.LatitudeDegrees & Chr(&HB0) & "  " & m_frmGpsSettings.LatitudeMinutes & "'"
+            lblYValue.Text = m_frmGpsSettings.LongitudeDegrees & Chr(&HB0) & "  " & m_frmGpsSettings.LongitudeMinutes & "'"
+            lblZValue.Text = m_frmGpsSettings.Elevation & "m"
+            txtNMEA.Text = m_frmGpsSettings.NMEAString
             lblX.Visible = True
             lblY.Visible = True
             lblZ.Visible = True
@@ -4153,7 +4139,7 @@ Public Class VideoMiner
             lblZValue.Visible = False
             txtNMEA.Visible = False
             lblGPSLocation.Visible = False
-            m_tsUserTime = frmSetTime.UserTime
+            m_tsUserTime = m_frmSetTime.UserTime
         End If
         txtTime.Text = pad0(m_tsUserTime.Hours) & ":" & pad0(m_tsUserTime.Minutes) & ":" & pad0(m_tsUserTime.Seconds)
     End Sub
@@ -4161,25 +4147,25 @@ Public Class VideoMiner
     ''' <summary>
     ''' The Set Time form will request GPS time, and this function handles that
     ''' </summary>
-    Private Sub frmSetTime_RequestGPS() Handles frmSetTime.RequestGPSTime
-        If frmGpsSettings.IsConnected Then
-            frmSetTime.UserTime = m_GPSUserTime
-            frmSetTime.ChangeSource(frmSetTime.WhichTimeEnum.GPS)
+    Private Sub m_frmSetTime_RequestGPS() Handles m_frmSetTime.RequestGPSTime
+        If m_frmGpsSettings.IsConnected Then
+            m_frmSetTime.UserTime = m_GPSUserTime
+            m_frmSetTime.ChangeSource(frmSetTime.WhichTimeEnum.GPS)
         Else
-            frmGpsSettings.ShowDialog()
+            m_frmGpsSettings.ShowDialog()
         End If
     End Sub
 
     ''' <summary>
-    ''' Handles an event to grab the time from the frmSetTime form.
+    ''' Handles an event to grab the time from the m_frmSetTime form.
     ''' </summary>
-    Private Sub frmSetTime_TimeSourceChanged() Handles frmSetTime.TimeSourceChange
+    Private Sub m_frmSetTime_TimeSourceChanged() Handles m_frmSetTime.TimeSourceChange
     End Sub
 
     ''' <summary>
     ''' Handles an event to grab the latest data from the GPS device.
     ''' </summary>
-    Private Sub frmGpsSettings_DataChanged() Handles frmGpsSettings.DataChangedEvent
+    Private Sub m_frmGpsSettings_DataChanged() Handles m_frmGpsSettings.DataChangedEvent
         If Me.InvokeRequired Then
             Me.Invoke(marshalRefreshGPSStatus)
         Else
@@ -4214,28 +4200,21 @@ Public Class VideoMiner
             e.Cancel = True
         Else
             If e.CloseReason = CloseReason.UserClosing Then
-                If frmVideoPlayer IsNot Nothing Then
-                    frmVideoPlayer.Close()
-                    frmVideoPlayer = Nothing
+                If m_frmVideoPlayer IsNot Nothing Then
+                    m_frmVideoPlayer.Close()
+                    m_frmVideoPlayer = Nothing
                 End If
-                If frmGpsSettings IsNot Nothing Then
-                    frmGpsSettings.Close()
-                    frmGpsSettings = Nothing
+                If m_frmGpsSettings IsNot Nothing Then
+                    m_frmGpsSettings.Close()
+                    m_frmGpsSettings = Nothing
                 End If
-                If frmSetTime IsNot Nothing Then
-                    frmSetTime.Close()
-                    frmSetTime = Nothing
+                If m_frmSetTime IsNot Nothing Then
+                    m_frmSetTime.Close()
+                    m_frmSetTime = Nothing
                 End If
                 e.Cancel = False
             End If
         End If
-    End Sub
-
-    ''' <summary>
-    ''' If user changes the selection, just refresh the data so that the new selection is reflected.
-    ''' </summary>
-    Private Sub AlwaysShowNewestRecordToolStripMenuItem_Click(sender As Object, e As EventArgs)
-        m_grdDatabase.fetchData()
     End Sub
 
     Private Function MethodInvoker() As [Delegate]
@@ -4244,15 +4223,15 @@ Public Class VideoMiner
 
     Private Sub radDetailedEntry_CheckedChanged(sender As Object, e As EventArgs) Handles radDetailedEntry.CheckedChanged
         ' Tell the species panel that the buttons should all be detailed entry type
-        If Not IsNothing(pnlSpeciesData) Then
-            pnlSpeciesData.WhichEntryStyle = DynamicButton.WhichEntryStyleEnum.Detailed
+        If Not IsNothing(m_pnlSpeciesData) Then
+            m_pnlSpeciesData.WhichEntryStyle = DynamicButton.WhichEntryStyleEnum.Detailed
         End If
     End Sub
 
     Private Sub radAbundanceEntry_CheckedChanged(sender As Object, e As EventArgs) Handles radAbundanceEntry.CheckedChanged
         ' Tell the species panel that the buttons should all be abundance entry type
-        If Not IsNothing(pnlSpeciesData) Then
-            pnlSpeciesData.WhichEntryStyle = DynamicButton.WhichEntryStyleEnum.Abundance
+        If Not IsNothing(m_pnlSpeciesData) Then
+            m_pnlSpeciesData.WhichEntryStyle = DynamicButton.WhichEntryStyleEnum.Abundance
         End If
     End Sub
 
@@ -4260,8 +4239,8 @@ Public Class VideoMiner
     ''' When the user changes the quick entry value, set all species buttons to have that value.
     ''' </summary>
     Private Sub txtQuickSpeciesCount_TextChanged(sender As Object, e As EventArgs) Handles txtQuickSpeciesCount.TextChanged
-        If Not IsNothing(pnlSpeciesData) Then
-            pnlSpeciesData.changeQuickEntryNum(CInt(txtQuickSpeciesCount.Text))
+        If Not IsNothing(m_pnlSpeciesData) Then
+            m_pnlSpeciesData.changeQuickEntryNum(CInt(txtQuickSpeciesCount.Text))
         End If
     End Sub
 
@@ -4270,12 +4249,12 @@ Public Class VideoMiner
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub dataEntryCanceledHandler(ByVal sender As Object, ByVal e As EventArgs) Handles pnlHabitatData.DataEntryCanceled,
-                                                                                               pnlTransectData.DataEntryCanceled,
-                                                                                               pnlSpeciesData.DataEntryCanceled,
-                                                                                               frmRareSpeciesLookup.DataEntryCanceled,
-                                                                                               frmSpeciesList.DataEntryCanceled,
-                                                                                               frmSetTime.DataEntryCanceled
+    Private Sub dataEntryCanceledHandler(ByVal sender As Object, ByVal e As EventArgs) Handles m_pnlHabitatData.DataEntryCanceled,
+                                                                                               m_pnlTransectData.DataEntryCanceled,
+                                                                                               m_pnlSpeciesData.DataEntryCanceled,
+                                                                                               m_frmRareSpeciesLookup.DataEntryCanceled,
+                                                                                               m_frmSpeciesList.DataEntryCanceled,
+                                                                                               m_frmSetTime.DataEntryCanceled
         dataEntryEnded()
     End Sub
 

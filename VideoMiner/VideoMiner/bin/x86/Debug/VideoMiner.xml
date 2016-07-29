@@ -1145,7 +1145,7 @@ VideoMiner
 </member>
 <member name="F:VideoMiner.VideoMiner.m_tsUserTime">
  <summary>
- Holds the user time as set by the frmSetTime form.
+ Holds the user time as set by the m_frmSetTime form.
  This is the master time object to be used by all functions when data are recorded.
  </summary>
  <remarks></remarks>
@@ -1415,13 +1415,13 @@ VideoMiner
 </member>
 <member name="M:VideoMiner.VideoMiner.cmdEdit_Click(System.Object,System.EventArgs)">
  <summary>
- Brings up the edit species dialog (frmSpeciesList) which allows the user to change the order of the species buttons
+ Brings up the edit species dialog (m_frmSpeciesList) which allows the user to change the order of the species buttons
  and to delete them, edit them, or add new ones.
  </summary>
 </member>
 <member name="M:VideoMiner.VideoMiner.speciesButtonsChanged">
  <summary>
- When the user has changed the species buttons from the frmSpeciesEvent form, this function will remove and re-add the DynamicPanel
+ When the user has changed the species buttons from the m_frmSpeciesEvent form, this function will remove and re-add the DynamicPanel
  which contains the species buttons.
  </summary>
 </member>
@@ -1502,7 +1502,7 @@ VideoMiner
 </member>
 <member name="M:VideoMiner.VideoMiner.openImage">
  <summary>
- Open an image. Creates a new instance of frmImage. Greys out the video menu
+ Open an image. Creates a new instance of m_frmImage. Greys out the video menu
  as we should only have either video or image open, not both.
  </summary>
 </member>
@@ -1515,7 +1515,7 @@ VideoMiner
 </member>
 <member name="M:VideoMiner.VideoMiner.openVideo">
  <summary>
- Open a video file. Creates a new instance of frmVideoPlayer
+ Open a video file. Creates a new instance of m_frmVideoPlayer
  </summary>
  <returns>Boolean representing success</returns>
  <remarks>Returns True if the user chose an existing file to play, False is they pressed cancel or clicked the 'X'</remarks>
@@ -1592,7 +1592,7 @@ VideoMiner
  For looking up and saving to the database a rare species (one not on the species buttons).
  </summary>
 </member>
-<member name="M:VideoMiner.VideoMiner.frmConfigureButtons_DatabaseModifiedHandler">
+<member name="M:VideoMiner.VideoMiner.m_frmConfigureButtons_DatabaseModifiedHandler">
  <summary>
  The habitat and/or transect buttons in the database have been modified and need to be redrawn.
  </summary>
@@ -1629,17 +1629,17 @@ VideoMiner
  </summary>
  <remarks></remarks>
 </member>
-<member name="M:VideoMiner.VideoMiner.frmSetTime_RequestGPS">
+<member name="M:VideoMiner.VideoMiner.m_frmSetTime_RequestGPS">
  <summary>
  The Set Time form will request GPS time, and this function handles that
  </summary>
 </member>
-<member name="M:VideoMiner.VideoMiner.frmSetTime_TimeSourceChanged">
+<member name="M:VideoMiner.VideoMiner.m_frmSetTime_TimeSourceChanged">
  <summary>
- Handles an event to grab the time from the frmSetTime form.
+ Handles an event to grab the time from the m_frmSetTime form.
  </summary>
 </member>
-<member name="M:VideoMiner.VideoMiner.frmGpsSettings_DataChanged">
+<member name="M:VideoMiner.VideoMiner.m_frmGpsSettings_DataChanged">
  <summary>
  Handles an event to grab the latest data from the GPS device.
  </summary>
@@ -1653,11 +1653,6 @@ VideoMiner
 <member name="M:VideoMiner.VideoMiner.Me_Closing(System.Object,System.Windows.Forms.FormClosingEventArgs)">
  <summary>
  When the user clicks the X to close the application, this handles that and closes any open forms and sets them up for garbage collection
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMiner.AlwaysShowNewestRecordToolStripMenuItem_Click(System.Object,System.EventArgs)">
- <summary>
- If user changes the selection, just refresh the data so that the new selection is reflected.
  </summary>
 </member>
 <member name="M:VideoMiner.VideoMiner.txtQuickSpeciesCount_TextChanged(System.Object,System.EventArgs)">
