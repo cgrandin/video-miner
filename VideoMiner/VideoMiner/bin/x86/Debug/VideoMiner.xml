@@ -3527,7 +3527,8 @@ VideoMiner
 </member>
 <member name="M:VideoMiner.VideoMinerDataGridView.grd_DataError(System.Object,System.Windows.Forms.DataGridViewDataErrorEventArgs)">
  <summary>
- Give column and row-specific error message to user. Avoids errors/exceptions during the update to the database.
+ Give column and row-specific error message to user if incorrect data type was entered.
+ Avoids errors/exceptions during the update to the database.
  </summary>
 </member>
 <member name="M:VideoMiner.VideoMinerDataGridView.compareGridAndDatabaseRows(System.Int32,System.Data.DataRow)">

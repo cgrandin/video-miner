@@ -224,7 +224,8 @@ Public Class VideoMinerDataGridView
     End Sub
 
     ''' <summary>
-    ''' Give column and row-specific error message to user. Avoids errors/exceptions during the update to the database.
+    ''' Give column and row-specific error message to user if incorrect data type was entered.
+    ''' Avoids errors/exceptions during the update to the database.
     ''' </summary>
     Private Sub grd_DataError(sender As Object, e As System.Windows.Forms.DataGridViewDataErrorEventArgs) Handles grd.DataError
         Dim strFieldName As String = grd.Columns(e.ColumnIndex).HeaderText
@@ -232,7 +233,6 @@ Public Class VideoMinerDataGridView
         setCell(e.RowIndex, e.ColumnIndex, CellStatus.Clean)
         ' Get Primary Key value and use that as row since the user can see it labelled on the row headers
         Dim row As Integer = CInt(grd.Rows(e.RowIndex).Cells(0).Value.ToString())
-        Dim colName As String = grd.Columns(e.ColumnIndex).Name
         Dim colType As String = m_data_table.Columns(e.ColumnIndex).DataType.ToString()
         MessageBox.Show("Error in column '" & strFieldName & "', row " & row & ": Value must be of type " &
                         colType & ".", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)

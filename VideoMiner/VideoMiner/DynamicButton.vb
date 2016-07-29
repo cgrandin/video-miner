@@ -361,31 +361,38 @@ Public Class DynamicButton
         End If
 
         If m_which_entry_style = WhichEntryStyleEnum.Table Then
-            Dim d As DataTable
-            If m_table_name = USER_ENTERED Then
-                ' In the database, the name 'UserEntered' is in place of the tablename, so we must ask user here for the code value
-                d = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE & " where Description = '" & m_button_text & "';", DB_DATA_CODES_TABLE)
-                m_data_code = d.Rows(0).Item(0).ToString()
-            Else
-                m_data_table = Database.GetDataTable("select * from " & m_table_name & " order by 1;", m_table_name)
-                d = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE & " where LookupTable = '" & m_table_name & "';", DB_DATA_CODES_TABLE)
-                m_data_code = d.Rows(0).Item(0).ToString()
-                ' Create new Table view form, but don't show it yet.
-                m_frmTableView = New frmTableView(Me.Text, m_data_table)
-                ' Set up the correct datacode for the form
-                m_frmTableView.DataCode = m_data_code
-                m_frmTableView.DataCodeName = m_data_code_name
-            End If
-            If d.Rows.Count > 1 Then
-                ' There may be more than one row which have the same lookup table. e.g. substrate or substrate percent tables will do this
-                ' so this tries to match the first 8 characters and use that one.
-                ' TODO: Fix this. It works for now, but if two descriptions start with the same 8 letters, there will be erroneous data
-                For i As Integer = 0 To d.Rows.Count - 1
-                    If Strings.Left(m_data_code_name, 8) = Strings.Left(d.Rows(i).Item("Description").ToString(), 8) Then
-                        m_data_code = d.Rows(i).Item(0).ToString()
-                    End If
-                Next
-            End If
+            Try
+                Dim d As DataTable
+                If m_table_name = USER_ENTERED Then
+                    ' In the database, the name 'UserEntered' is in place of the tablename, so we must ask user here for the code value
+                    d = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE & " where Description = '" & m_button_text & "';", DB_DATA_CODES_TABLE)
+                    m_data_code = d.Rows(0).Item(0).ToString()
+                Else
+                    m_data_table = Database.GetDataTable("select * from " & m_table_name & " order by 1;", m_table_name)
+                    d = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE & " where LookupTable = '" & m_table_name & "';", DB_DATA_CODES_TABLE)
+                    m_data_code = d.Rows(0).Item(0).ToString()
+                    ' Create new Table view form, but don't show it yet.
+                    m_frmTableView = New frmTableView(Me.Text, m_data_table)
+                    ' Set up the correct datacode for the form
+                    m_frmTableView.DataCode = m_data_code
+                    m_frmTableView.DataCodeName = m_data_code_name
+                End If
+                If d.Rows.Count > 1 Then
+                    ' There may be more than one row which have the same lookup table. e.g. substrate or substrate percent tables will do this
+                    ' so this tries to match the first 8 characters and use that one.
+                    ' TODO: Fix this. It works for now, but if two descriptions start with the same 8 letters, there will be erroneous data
+                    For i As Integer = 0 To d.Rows.Count - 1
+                        If Strings.Left(m_data_code_name, 8) = Strings.Left(d.Rows(i).Item("Description").ToString(), 8) Then
+                            m_data_code = d.Rows(i).Item(0).ToString()
+                        End If
+                    Next
+                End If
+
+            Catch ex As Exception
+                MessageBox.Show("There was an error creating a button. Make sure to check all button tables in the database and make sure they contain valid rows." & vbCrLf & vbCrLf &
+                                "Exception message:" & vbCrLf & ex.Message,
+                                "Error loading button", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
         Else
             m_frmAbundanceTableView = New frmAbundanceTableView()
             m_frmSpeciesEvent = New frmSpeciesEvent(m_button_text)
