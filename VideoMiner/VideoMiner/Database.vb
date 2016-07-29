@@ -240,7 +240,12 @@ Public Module Database
             ' Loop through the table to get the column names, and add the new values to the query
             For i As Integer = 0 To data_table.Columns.Count - 1
                 names = names & data_table.Columns(i).ColumnName
-                values = values & SingleQuote(data_row(i).ToString())
+                If data_row(i).ToString() = NULL_STRING Then
+                    values = values & UNINITIALIZED_DATA_VALUE
+                Else
+                    values = values & SingleQuote(data_row(i).ToString())
+                End If
+
                 If i <> data_table.Columns.Count - 1 Then
                     names = names & ","
                     values = values & ","
@@ -333,8 +338,8 @@ Public Module Database
                 Return -1
             End If
         Catch ex As Exception
-            MessageBox.Show("Error getting next Primary key value on database table." & vbCrLf & vbCrLf & "Exception:" &
-                            vbCrLf & ex.Message, "Error extracting value", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            'MessageBox.Show("Error getting next Primary key value on database table." & vbCrLf & vbCrLf & "Exception:" &
+            'vbCrLf & ex.Message, "Error extracting value", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return -1
         End Try
     End Function

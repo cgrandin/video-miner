@@ -840,16 +840,42 @@ VideoMiner
  The data table containing the contents of the table given by m_table_name
  </summary>
 </member>
-<member name="M:VideoMiner.frmConfigureButtons.#ctor(System.String)">
+<member name="M:VideoMiner.frmConfigureButtons.#ctor(System.String,System.String)">
  <summary>
  Initialize the query, and extract the data that query defines into a DataSet with corresponding DataTable.
  Populate the list and set up list attributes.
  </summary>
 </member>
-<member name="M:VideoMiner.frmConfigureButtons.cmdMoveToPanel_Click(System.Object,System.EventArgs)">
+<member name="M:VideoMiner.frmConfigureButtons.moveOrCopyToPanel(VideoMiner.frmConfigureButtons.MoveOrCopyEnum)">
+ <summary>
+ Selected rows will be either moved or copied to the other panel.
+ </summary>
+</member>
+<member name="M:VideoMiner.frmConfigureButtons.btnMoveToPanel_Click(System.Object,System.EventArgs)">
  <summary>
  Clicking this button results in the selected rows being moved to the other panel.
  The database will also have the entries moved from one button table to the other.
+ </summary>
+</member>
+<member name="M:VideoMiner.frmConfigureButtons.btnCopyToPanel_Click(System.Object,System.EventArgs)">
+ <summary>
+ Clicking this button results in the selected rows being copied to the other panel.
+ The database will also have the entries moved from one button table to the other.
+ </summary>
+</member>
+<member name="M:VideoMiner.frmConfigureButtons.btnOK_Click(System.Object,System.EventArgs)">
+ <summary>
+ Fire an event if there have been modifications so that the parent can redraw the buttons.
+ </summary>
+</member>
+<member name="M:VideoMiner.frmConfigureButtons.setSynced">
+ <summary>
+ Set the buttons to indicate that the data are synced with the database
+ </summary>
+</member>
+<member name="M:VideoMiner.frmConfigureButtons.setUnSynced">
+ <summary>
+ Set the buttons to indicate that the data are unsynced with the database
  </summary>
 </member>
 <member name="M:VideoMiner.frmCreateKeyboardShortcut.ProcessCmdKey(System.Windows.Forms.Message@,System.Windows.Forms.Keys)">
@@ -3408,6 +3434,11 @@ VideoMiner
  so that mouse click events can be captured On the video itself.
  </summary>
 </member>
+<member name="F:VideoMiner.VideoMinerDataGridView.m_synced">
+ <summary>
+ Whether or not the grid is synced with the database
+ </summary>
+</member>
 <member name="F:VideoMiner.VideoMinerDataGridView.m_table_name">
  <summary>
  Name of the table that is bound to the DataGridView
@@ -3597,7 +3628,7 @@ VideoMiner
  Validate the cell values if user makes them NULL. Avoids errors/exceptions during the update to the database.
  </summary>
 </member>
-<member name="M:VideoMiner.VideoMinerDataGridView.cmdRevertDatabase_Click(System.Object,System.EventArgs)">
+<member name="M:VideoMiner.VideoMinerDataGridView.btnRevertDatabase_Click(System.Object,System.EventArgs)">
  <summary>
  Reload the grid from the access database. A confirmation box will be displayed and if the user aggrees then any changes in the grid will
  be discarded and the database will be reloaded from scratch

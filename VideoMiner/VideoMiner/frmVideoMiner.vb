@@ -3644,14 +3644,12 @@ Public Class VideoMiner
     End Sub
 
     Private Sub ConfigureHabitatButtonToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureHabitatButtonToolStripMenuItem.Click
-        frmConfigureButtons = New frmConfigureButtons(DB_HABITAT_BUTTONS_TABLE)
-        frmConfigureButtons.cmdMoveToPanel.Text = "Move To " & PANEL_NAME_TRANSECT
+        frmConfigureButtons = New frmConfigureButtons(DB_HABITAT_BUTTONS_TABLE, PANEL_NAME_TRANSECT)
         frmConfigureButtons.ShowDialog()
     End Sub
 
     Private Sub ConfigureTransectButtonsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureTransectButtonsToolStripMenuItem.Click
-        frmConfigureButtons = New frmConfigureButtons(DB_TRANSECT_BUTTONS_TABLE)
-        frmConfigureButtons.cmdMoveToPanel.Text = "Move To " & PANEL_NAME_HABITAT
+        frmConfigureButtons = New frmConfigureButtons(DB_TRANSECT_BUTTONS_TABLE, PANEL_NAME_HABITAT)
         frmConfigureButtons.ShowDialog()
     End Sub
 

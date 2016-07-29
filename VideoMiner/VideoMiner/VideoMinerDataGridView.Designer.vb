@@ -32,6 +32,7 @@ Partial Class VideoMinerDataGridView
         Me.btnAddRow = New System.Windows.Forms.Button()
         Me.btnMoveDown = New System.Windows.Forms.Button()
         Me.btnMoveUp = New System.Windows.Forms.Button()
+        Me.btnDeleteRows = New System.Windows.Forms.Button()
         CType(Me.grd, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.Panel1.SuspendLayout()
@@ -104,6 +105,7 @@ Partial Class VideoMinerDataGridView
         '
         'Panel1
         '
+        Me.Panel1.Controls.Add(Me.btnDeleteRows)
         Me.Panel1.Controls.Add(Me.btnDataCodes)
         Me.Panel1.Controls.Add(Me.btnAddRow)
         Me.Panel1.Controls.Add(Me.btnMoveDown)
@@ -116,7 +118,7 @@ Partial Class VideoMinerDataGridView
         '
         'btnDataCodes
         '
-        Me.btnDataCodes.Location = New System.Drawing.Point(0, 106)
+        Me.btnDataCodes.Location = New System.Drawing.Point(0, 153)
         Me.btnDataCodes.Name = "btnDataCodes"
         Me.btnDataCodes.Size = New System.Drawing.Size(94, 23)
         Me.btnDataCodes.TabIndex = 7
@@ -125,7 +127,7 @@ Partial Class VideoMinerDataGridView
         '
         'btnAddRow
         '
-        Me.btnAddRow.Location = New System.Drawing.Point(0, 59)
+        Me.btnAddRow.Location = New System.Drawing.Point(0, 58)
         Me.btnAddRow.Name = "btnAddRow"
         Me.btnAddRow.Size = New System.Drawing.Size(94, 23)
         Me.btnAddRow.TabIndex = 6
@@ -149,6 +151,15 @@ Partial Class VideoMinerDataGridView
         Me.btnMoveUp.TabIndex = 4
         Me.btnMoveUp.Text = "Move Up"
         Me.btnMoveUp.UseVisualStyleBackColor = True
+        '
+        'btnDeleteRows
+        '
+        Me.btnDeleteRows.Location = New System.Drawing.Point(0, 85)
+        Me.btnDeleteRows.Name = "btnDeleteRows"
+        Me.btnDeleteRows.Size = New System.Drawing.Size(94, 23)
+        Me.btnDeleteRows.TabIndex = 8
+        Me.btnDeleteRows.Text = "Delete Rows"
+        Me.btnDeleteRows.UseVisualStyleBackColor = True
         '
         'VideoMinerDataGridView
         '
@@ -175,4 +186,5 @@ Partial Class VideoMinerDataGridView
     Friend WithEvents btnMoveUp As Button
     Friend WithEvents btnAddRow As Button
     Friend WithEvents btnDataCodes As Button
+    Friend WithEvents btnDeleteRows As Button
 End Class

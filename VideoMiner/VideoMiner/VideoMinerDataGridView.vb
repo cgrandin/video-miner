@@ -19,6 +19,10 @@ Public Class VideoMinerDataGridView
 
 #Region "Member variables"
     ''' <summary>
+    ''' Whether or not the grid is synced with the database
+    ''' </summary>
+    Private m_synced As Boolean
+    ''' <summary>
     ''' Name of the table that is bound to the DataGridView
     ''' </summary>
     Private m_table_name As String
@@ -89,7 +93,11 @@ Public Class VideoMinerDataGridView
 #End Region
 
 #Region "Events"
+    Public Event BeginEditEvent()
+    Public Event EndEditEvent(blSynced As Boolean)
     Public Event DataChanged()
+    Public Event SyncedEvent()
+    Public Event UnsyncedEvent()
 #End Region
 
     Public Sub New(tableName As String, Optional showPrimaryKeyField As Boolean = True)
@@ -171,6 +179,11 @@ Public Class VideoMinerDataGridView
         btnSync.Enabled = False
         btnRevert.Enabled = False
         btnAddRow.Enabled = True
+        btnMoveUp.Enabled = True
+        btnMoveDown.Enabled = True
+        btnDeleteRows.Enabled = True
+        m_synced = True
+        RaiseEvent SyncedEvent()
     End Sub
 
     ''' <summary>
@@ -182,6 +195,11 @@ Public Class VideoMinerDataGridView
         btnSync.Enabled = True
         btnRevert.Enabled = True
         btnAddRow.Enabled = False
+        btnMoveUp.Enabled = False
+        btnMoveDown.Enabled = False
+        btnDeleteRows.Enabled = False
+        m_synced = False
+        RaiseEvent UnsyncedEvent()
     End Sub
 
     ''' <summary>
@@ -311,6 +329,16 @@ Public Class VideoMinerDataGridView
         If colName = m_primary_key_field Then
             setPrimaryKey(e.RowIndex, CInt(grd.Rows(e.RowIndex).Cells(e.ColumnIndex).Value))
         End If
+        lblSync.ForeColor = Color.Red
+        lblSync.Text = UNSYNCED_TEXT
+        btnSync.Enabled = True
+        btnRevert.Enabled = True
+        btnAddRow.Enabled = False
+        btnMoveUp.Enabled = False
+        btnMoveDown.Enabled = False
+        btnDeleteRows.Enabled = False
+        btnSync.Enabled = False
+        btnRevert.Enabled = False
     End Sub
 
     ''' <summary>
@@ -355,10 +383,17 @@ Public Class VideoMinerDataGridView
             Dim intKey As Integer = m_arr_coloring(e.RowIndex).dbPrimaryKey
             If compareGridAndDatabaseRows(intKey, dr) Then
                 setCell(e.RowIndex, e.ColumnIndex, CellStatus.Clean)
+                If m_synced Then
+                    setSynced()
+                Else
+                    setUnsynced()
+                End If
+                RaiseEvent EndEditEvent(m_synced)
             End If
         Catch ex As Exception
 
         End Try
+
     End Sub
 
     ''' <summary>
@@ -378,19 +413,23 @@ Public Class VideoMinerDataGridView
     ''' </summary>
     Public Sub deleteSelectedRows(Optional showWarning As Boolean = True)
         Dim blDoDelete As Boolean = False
-        If grd.SelectedRows.Count > 0 Then
-            If showWarning Then
-                If MessageBox.Show("Are you sure you want to delete all selected rows from the database and save all changes to the database?",
-                                   "Delete rows and sync changes?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = vbYes Then
-                    blDoDelete = True
-                End If
+        If grd.SelectedRows.Count = 0 Then
+            MessageBox.Show("At least one row must be selected for a delete operation.",
+                               "No rows selected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
+        End If
+        If showWarning Then
+            If MessageBox.Show("Are you sure you want to delete all selected rows from the database and save all changes to the database?",
+                               "Delete rows and sync changes?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = vbYes Then
+                blDoDelete = True
             End If
-            If blDoDelete Then
-                For Each row As DataGridViewRow In grd.SelectedRows
-                    grd.Rows.Remove(row)
-                Next
-                updateDatabaseWithGridValues()
-            End If
+        End If
+        If blDoDelete Then
+            For Each row As DataGridViewRow In grd.SelectedRows
+                grd.Rows.Remove(row)
+            Next
+            updateDatabaseWithGridValues()
+            RaiseEvent DataChanged()
         End If
     End Sub
 
@@ -496,7 +535,7 @@ Public Class VideoMinerDataGridView
     ''' Reload the grid from the access database. A confirmation box will be displayed and if the user aggrees then any changes in the grid will
     ''' be discarded and the database will be reloaded from scratch
     ''' </summary>
-    Private Sub cmdRevertDatabase_Click(sender As Object, e As EventArgs) Handles btnRevert.Click
+    Private Sub btnRevertDatabase_Click(sender As Object, e As EventArgs) Handles btnRevert.Click
         If MessageBox.Show("Are you sure you want to discard all unsynced changes in the grid and revert to the database data?",
                            "Are you sure?", MessageBoxButtons.YesNo,
                            MessageBoxIcon.Exclamation) = Windows.Forms.DialogResult.Yes Then
@@ -513,9 +552,18 @@ Public Class VideoMinerDataGridView
     ''' Add a new empty row to the database and the DataGridView.
     ''' </summary>
     Private Sub btnAddRow_Click(sender As Object, e As EventArgs) Handles btnAddRow.Click
+        Dim dr As DataRow
         Dim intNextKey As Integer = Database.GetNextPrimaryKeyValue(m_table_name)
-        Dim drvLastRow As DataRowView = DirectCast(grd.Rows(grd.Rows.Count - 1).DataBoundItem, DataRowView)
-        Dim dr As DataRow = drvLastRow.Row
+        If intNextKey = -1 Then
+            ' The table is empty so we need to insert a n empty row with a primary key of 1
+            intNextKey = 1
+            dr = m_data_table.NewRow()
+        Else
+            ' The table is not empty, so we copy the last row and change the key to be the last
+            ' row's key + 1
+            Dim drvLastRow As DataRowView = DirectCast(grd.Rows(grd.Rows.Count - 1).DataBoundItem, DataRowView)
+            dr = drvLastRow.Row
+        End If
         dr.Item(m_primary_key_field) = intNextKey
         Database.InsertRow(dr, m_table_name)
         fetchData()
@@ -586,6 +634,7 @@ Public Class VideoMinerDataGridView
         ' This allows user to move one item down or up quickly
         grd.ClearSelection()
         grd.Rows(intSelectedIndex).Selected = True
+        RaiseEvent DataChanged()
     End Sub
 
     Private Sub btnMoveUp_Click(sender As Object, e As EventArgs) Handles btnMoveUp.Click
@@ -623,5 +672,9 @@ Public Class VideoMinerDataGridView
         If Not IsNothing(m_frmViewDataTable) Then
             m_frmViewDataTable.Close()
         End If
+    End Sub
+
+    Private Sub btnDeleteRows_Click(sender As Object, e As EventArgs) Handles btnDeleteRows.Click
+        deleteSelectedRows()
     End Sub
 End Class

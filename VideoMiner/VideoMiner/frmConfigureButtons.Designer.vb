@@ -23,24 +23,25 @@ Partial Class frmConfigureButtons
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmConfigureButtons))
-        Me.cmdMoveToPanel = New System.Windows.Forms.Button()
+        Me.btnMoveToPanel = New System.Windows.Forms.Button()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Panel4 = New System.Windows.Forms.Panel()
         Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
         Me.btnOK = New System.Windows.Forms.Button()
+        Me.btnCopyToPanel = New System.Windows.Forms.Button()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         Me.SuspendLayout()
         '
-        'cmdMoveToPanel
+        'btnMoveToPanel
         '
-        Me.cmdMoveToPanel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdMoveToPanel.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdMoveToPanel.Location = New System.Drawing.Point(257, 3)
-        Me.cmdMoveToPanel.Name = "cmdMoveToPanel"
-        Me.cmdMoveToPanel.Size = New System.Drawing.Size(220, 38)
-        Me.cmdMoveToPanel.TabIndex = 14
-        Me.cmdMoveToPanel.UseVisualStyleBackColor = True
+        Me.btnMoveToPanel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnMoveToPanel.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnMoveToPanel.Location = New System.Drawing.Point(142, 3)
+        Me.btnMoveToPanel.Name = "btnMoveToPanel"
+        Me.btnMoveToPanel.Size = New System.Drawing.Size(220, 38)
+        Me.btnMoveToPanel.TabIndex = 14
+        Me.btnMoveToPanel.UseVisualStyleBackColor = True
         '
         'TableLayoutPanel1
         '
@@ -68,10 +69,12 @@ Partial Class frmConfigureButtons
         '
         'TableLayoutPanel2
         '
-        Me.TableLayoutPanel2.ColumnCount = 2
+        Me.TableLayoutPanel2.ColumnCount = 3
         Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel2.Controls.Add(Me.cmdMoveToPanel, 0, 0)
+        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 230.0!))
+        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.00001!))
+        Me.TableLayoutPanel2.Controls.Add(Me.btnCopyToPanel, 0, 0)
+        Me.TableLayoutPanel2.Controls.Add(Me.btnMoveToPanel, 0, 0)
         Me.TableLayoutPanel2.Controls.Add(Me.btnOK, 1, 0)
         Me.TableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel2.Location = New System.Drawing.Point(3, 266)
@@ -84,18 +87,29 @@ Partial Class frmConfigureButtons
         'btnOK
         '
         Me.btnOK.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnOK.Location = New System.Drawing.Point(483, 3)
+        Me.btnOK.Location = New System.Drawing.Point(598, 3)
         Me.btnOK.Name = "btnOK"
         Me.btnOK.Size = New System.Drawing.Size(220, 38)
         Me.btnOK.TabIndex = 19
-        Me.btnOK.Text = "DONE"
+        Me.btnOK.Text = "Close"
         Me.btnOK.UseVisualStyleBackColor = True
+        '
+        'btnCopyToPanel
+        '
+        Me.btnCopyToPanel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnCopyToPanel.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCopyToPanel.Location = New System.Drawing.Point(372, 3)
+        Me.btnCopyToPanel.Name = "btnCopyToPanel"
+        Me.btnCopyToPanel.Size = New System.Drawing.Size(220, 38)
+        Me.btnCopyToPanel.TabIndex = 20
+        Me.btnCopyToPanel.UseVisualStyleBackColor = True
         '
         'frmConfigureButtons
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(967, 313)
+        Me.ControlBox = False
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
@@ -107,9 +121,10 @@ Partial Class frmConfigureButtons
         Me.ResumeLayout(False)
 
     End Sub
-    Friend WithEvents cmdMoveToPanel As System.Windows.Forms.Button
+    Friend WithEvents btnMoveToPanel As System.Windows.Forms.Button
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents btnOK As Button
     Friend WithEvents Panel4 As Panel
     Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
+    Friend WithEvents btnCopyToPanel As Button
 End Class
