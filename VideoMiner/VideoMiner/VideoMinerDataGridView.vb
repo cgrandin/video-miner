@@ -102,6 +102,8 @@ Public Class VideoMinerDataGridView
     Dim m_add_row As ToolTip
     Dim m_delete_rows As ToolTip
     Dim m_show_data_codes As ToolTip
+    Dim m_sync As ToolTip
+    Dim m_revert As ToolTip
 
 #End Region
 
@@ -145,13 +147,22 @@ Public Class VideoMinerDataGridView
         m_move_down.SetToolTip(btnMoveDown, "Move the selected row down the table")
 
         m_add_row = New ToolTip()
-        m_add_row.SetToolTip(btnAddRow, "Adds a new row to the bottom of the table. The new row will be a copy of the last row or if empty, an empty row")
+        m_add_row.SetToolTip(btnAddRow, "Adds a new row to the database table. The new row will be a copy " & vbCrLf &
+                             "of the most recent row or an empty row if the table is empty")
 
         m_delete_rows = New ToolTip()
-        m_delete_rows.SetToolTip(btnDeleteRows, "Deletes the selected rows from the database")
+        m_delete_rows.SetToolTip(btnDeleteRows, "Deletes the selected rows from the database. You can also press the 'delete' key " & vbCrLf &
+                                 "or right-click to delete rows")
 
         m_show_data_codes = New ToolTip()
         m_show_data_codes.SetToolTip(btnDataCodes, "Show the database table 'Data Codes'")
+
+        m_sync = New ToolTip()
+        m_sync.SetToolTip(btnSync, "Save the modified data (colored cells) to the database")
+
+        m_revert = New ToolTip()
+        m_revert.SetToolTip(btnRevert, "Discard the modified data (colored cells) and reload the " & vbCrLf &
+                            "database data into the grid")
 
         If m_show_tooltips Then
             EnableToolTips()
@@ -167,6 +178,8 @@ Public Class VideoMinerDataGridView
         m_add_row.Active = False
         m_delete_rows.Active = False
         m_show_data_codes.Active = False
+        m_sync.Active = False
+        m_revert.Active = False
     End Sub
 
     Public Sub EnableToolTips()
@@ -175,6 +188,8 @@ Public Class VideoMinerDataGridView
         m_add_row.Active = True
         m_delete_rows.Active = True
         m_show_data_codes.Active = True
+        m_sync.Active = True
+        m_revert.Active = True
     End Sub
 
     ''' <summary>
@@ -307,7 +322,7 @@ Public Class VideoMinerDataGridView
         Dim row As Integer = CInt(grd.Rows(e.RowIndex).Cells(0).Value.ToString())
         Dim colType As String = m_data_table.Columns(e.ColumnIndex).DataType.ToString()
         MessageBox.Show("Error in column '" & strFieldName & "', row " & row & ": Value must be of type " &
-                        colType & ".", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        colType & ".", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
     End Sub
 
     ''' <summary>
