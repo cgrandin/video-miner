@@ -1086,7 +1086,11 @@ VideoMiner
 </member>
 <member name="T:VideoMiner.VideoMiner">
  <summary>
- This is the main form for the program, and instantiates most of the other forms.
+ This is the main form for the program. Once launched, and an Open Database commend is issued,
+ the dynamic panels representing the 3 panels TRANSECT, HABITAT, and SPECIES will be loaded. Each of these
+ in turn load arrays of objects DynamicButton for SPECIES and DynamicTableButton for TRANSECT and HABITAT.
+ The Database module holds a global instance of the database so that it is consolidated for all forms.
+ 
  </summary>
 </member>
 <member name="F:VideoMiner.VideoMiner.m_strWorkingPath">

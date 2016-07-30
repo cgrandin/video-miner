@@ -3,15 +3,17 @@ Option Strict On
 ' The following 3 imports are necessary for using ADO.NET, which permits database access.
 ' All times are stored as TimeSpan objects
 Imports System.TimeSpan
-Imports System.Drawing.Imaging
 Imports System.IO
 Imports System.IO.Path
 Imports Microsoft.VisualBasic.ApplicationServices
 Imports System.Xml
-Imports System.ComponentModel
 
 ''' <summary>
-''' This is the main form for the program, and instantiates most of the other forms.
+''' This is the main form for the program. Once launched, and an Open Database commend is issued,
+''' the dynamic panels representing the 3 panels TRANSECT, HABITAT, and SPECIES will be loaded. Each of these
+''' in turn load arrays of objects DynamicButton for SPECIES and DynamicTableButton for TRANSECT and HABITAT.
+''' The Database module holds a global instance of the database so that it is consolidated for all forms.
+''' 
 ''' </summary>
 Public Class VideoMiner
 
@@ -86,6 +88,8 @@ Public Class VideoMiner
     Private Const PANEL_NAME_HABITAT As String = "HABITAT DATA"
     Private Const PANEL_NAME_TRANSECT As String = "TRANSECT DATA"
 
+    Private DEFAULT_QUICK_ENTRY_COUNT As String = "1"
+
     Private Const VIDEO_TIME_FORMAT As String = "{0:D2}:{1:D2}:{2:D2}.{3:D3}" ' D3 = 3 decimal places
     Private Const VIDEO_FRAME_STEP_DEFAULT As Integer = 500
     Public Const DB_ADO_CONN_STRING_1 As String = "Data Source="
@@ -145,6 +149,7 @@ Public Class VideoMiner
     Friend WithEvents m_pnlHabitatData As DynamicTableButtonPanel
     Friend WithEvents m_pnlSpeciesData As DynamicSpeciesButtonPanel
     ' These are the forms which this form creates and they report directly to this form only
+    Private WithEvents m_frmAbout As AboutBox1
     Private WithEvents m_frmSpeciesList As frmSpeciesList
     Private WithEvents m_frmSetTime As frmSetTime
     Private WithEvents m_frmImage As frmImage
@@ -166,6 +171,7 @@ Public Class VideoMiner
     Private WithEvents m_frmConfigureButtonFormat As frmConfigureButtonFormat
     'Private WithEvents m_frmAddValue As frmAddValue
     Private WithEvents m_frmEditLookupTable As frmEditLookupTable
+    Private WithEvents m_grdDatabase As VideoMinerDataGridView
 
     ''' <summary>
     ''' The working directory of the software
@@ -285,15 +291,15 @@ Public Class VideoMiner
 
     ' GPS connection settings to initialize m_frmGpsSettings form with
     Private m_com_port As String
-    Private m_strNMEAStringType As String
-    Private m_strParity As String
-    Private m_intBaudRate As Integer
-    Private m_dblStopBits As Double
-    Private m_intDataBits As Integer
-    Private m_intTimeout As Integer
+    Private m_nmea_string_type As String
+    Private m_parity As String
+    Private m_baud_rate As Integer
+    Private m_stop_bits As Double
+    Private m_data_bits As Integer
+    Private m_timeout As Integer
 
-    Private m_strDatabaseName As String
-    Private m_strDatabaseColumns As String
+    Private m_database_name As String
+    Private m_database_columns As String
 
     Private m_tool_tip As ToolTip
 
@@ -315,55 +321,21 @@ Public Class VideoMiner
     ' The name of the current image including the path - used in open/save session only
     'Private currentImage As String
 
-    Private m_default_quick_entry_count As String = "1"
-
     Public m_time_source As Integer = 1
     ' Public dataColumns As Collection used in grid resizing
-    Public blupdateColumns As Boolean = True
+    'Public blupdateColumns As Boolean = True
 
-    Private frmAbout As AboutBox1
-    Private strAbout As String
+    Private m_version As String
 
-    Private WithEvents m_grdDatabase As VideoMinerDataGridView
-    Private m_strVersion As String
-    Private m_RangeChecked As Boolean
-    Private m_IDConfidenceChecked As Boolean
-    Private m_AbundanceChecked As Boolean
-    Private m_CountChecked As Boolean
-    Private m_HeightChecked As Boolean
-    Private m_WidthChecked As Boolean
-    Private m_LengthChecked As Boolean
-    Private m_CommentsChecked As Boolean
 
-    Private m_SpeciesCode As String
-    Private m_SpeciesName As String
+    Private m_gps_user_time As TimeSpan
 
-    Private m_ScreenCaptureName As String
-    Private m_ElapsedTime As String
+    Private m_button_width As Integer
+    Private m_button_height As Integer
+    Private m_button_text_size As Integer
+    Private m_button_font As String
 
-    Private m_Side As String
-    Private m_Range As String
-    Private m_IDConfidence As String
-    Private m_Abundance As String
-    Private m_Count As String
-    Private m_Height As String
-    Private m_Width As String
-    Private m_Length As String
-    Private m_Comments As String
-
-    Private m_FfwdCount As Integer
-    Private m_RwndCount As Integer
-
-    Private m_SessionName As String
-
-    Private m_GPSUserTime As TimeSpan
-
-    Private m_ButtonWidth As Integer
-    Private m_ButtonHeight As Integer
-    Private m_ButtonTextSize As Integer
-    Private m_ButtonFont As String
-
-    Private m_PreviousProjects As Collection
+    Private m_previous_projects As Collection
 #End Region
 
 #Region "Delegate Function Declarations"
@@ -371,48 +343,30 @@ Public Class VideoMiner
 #End Region
 
 #Region "Relay Configuration"
-    Private m_ConfigurationSet As Boolean
-    Private m_RelaySetup As String
-    Private m_ParallelCom As String
-    Private m_ParallelBaud As Integer
-    Private m_PortOneCom As String
-    Private m_PortTwoCom As String
-    Private m_PortOneBaud As Integer
-    Private m_PortTwoBaud As Integer
-    Private m_DeviceOneRelayOne As String
-    Private m_DeviceOneRelayTwo As String
-    Private m_DeviceOneRelayThree As String
-    Private m_DeviceOneRelayFour As String
-    Private m_DeviceTwoRelayOne As String
-    Private m_DeviceTwoRelayTwo As String
-    Private m_DeviceTwoRelayThree As String
-    Private m_DeviceTwoRelayFour As String
+    Private m_configuration_set As Boolean
+    Private m_relay_setup As String
+    Private m_parallel_com As String
+    Private m_parallel_baud As Integer
+    Private m_port_one_com As String
+    Private m_port_two_com As String
+    Private m_port_one_baud As Integer
+    Private m_port_two_baud As Integer
+    Private m_device_one_relay_one As String
+    Private m_device_one_relay_two As String
+    Private m_device_one_relay_three As String
+    Private m_device_one_relay_four As String
+    Private m_device_two_relay_one As String
+    Private m_device_two_relay_two As String
+    Private m_device_two_relay_three As String
+    Private m_device_two_relay_four As String
 #End Region
 
 #Region "Properties"
 #Region "VideoMiner Properties"
     Public ReadOnly Property Version As String
         Get
-            Return m_strVersion
+            Return m_version
         End Get
-    End Property
-
-    Public Property SpeciesCode() As String
-        Get
-            Return m_SpeciesCode
-        End Get
-        Set(ByVal value As String)
-            m_SpeciesCode = value
-        End Set
-    End Property
-
-    Public Property SpeciesName() As String
-        Get
-            Return m_SpeciesName
-        End Get
-        Set(ByVal value As String)
-            m_SpeciesName = value
-        End Set
     End Property
 
     Public Property VideoFileName() As String
@@ -430,194 +384,7 @@ Public Class VideoMiner
         End Set
     End Property
 
-    Public Property ScreenCaptureName() As String
-        Get
-            Return m_ScreenCaptureName
-        End Get
-        Set(ByVal value As String)
-            m_ScreenCaptureName = value
-        End Set
-    End Property
 
-    Public Property RangeChecked() As Boolean
-        Get
-            Return m_RangeChecked
-        End Get
-        Set(ByVal value As Boolean)
-            m_RangeChecked = value
-        End Set
-    End Property
-
-    Public Property IDConfidenceChecked() As Boolean
-        Get
-            Return m_IDConfidenceChecked
-        End Get
-        Set(ByVal value As Boolean)
-            m_IDConfidenceChecked = value
-        End Set
-    End Property
-
-    Public Property AbundanceChecked() As Boolean
-        Get
-            Return m_AbundanceChecked
-        End Get
-        Set(ByVal value As Boolean)
-            m_AbundanceChecked = value
-        End Set
-    End Property
-
-    Public Property CountChecked() As Boolean
-        Get
-            Return m_CountChecked
-        End Get
-        Set(ByVal value As Boolean)
-            m_CountChecked = value
-        End Set
-    End Property
-
-    Public Property HeightChecked() As Boolean
-        Get
-            Return m_HeightChecked
-        End Get
-        Set(ByVal value As Boolean)
-            m_HeightChecked = value
-        End Set
-    End Property
-
-    Public Property WidthChecked() As Boolean
-        Get
-            Return m_WidthChecked
-        End Get
-        Set(ByVal value As Boolean)
-            m_WidthChecked = value
-        End Set
-    End Property
-
-    Public Property LengthChecked() As Boolean
-        Get
-            Return m_LengthChecked
-        End Get
-        Set(ByVal value As Boolean)
-            m_LengthChecked = value
-        End Set
-    End Property
-
-    Public Property CommentsChecked() As Boolean
-        Get
-            Return m_CommentsChecked
-        End Get
-        Set(ByVal value As Boolean)
-            m_CommentsChecked = value
-        End Set
-    End Property
-
-    Public Property Side() As String
-        Get
-            Return m_Side
-        End Get
-        Set(ByVal value As String)
-            m_Side = value
-        End Set
-    End Property
-
-    Public Property Range() As String
-        Get
-            Return m_Range
-        End Get
-        Set(ByVal value As String)
-            m_Range = value
-        End Set
-    End Property
-
-    Public Property IDConfidence() As String
-        Get
-            Return m_IDConfidence
-        End Get
-        Set(ByVal value As String)
-            m_IDConfidence = value
-        End Set
-    End Property
-
-    Public Property Abundance() As String
-        Get
-            Return m_Abundance
-        End Get
-        Set(ByVal value As String)
-            m_Abundance = value
-        End Set
-    End Property
-
-    Public Property Count() As String
-        Get
-            Return m_Count
-        End Get
-        Set(ByVal value As String)
-            m_Count = value
-        End Set
-    End Property
-
-    Public Property SpeciesHeight() As String
-        Get
-            Return m_Height
-        End Get
-        Set(ByVal value As String)
-            m_Height = value
-        End Set
-    End Property
-
-    Public Property SpeciesWidth() As String
-        Get
-            Return m_Width
-        End Get
-        Set(ByVal value As String)
-            m_Width = value
-        End Set
-    End Property
-
-    Public Property Length() As String
-        Get
-            Return m_Length
-        End Get
-        Set(ByVal value As String)
-            m_Length = value
-        End Set
-    End Property
-
-    Public Property Comments() As String
-        Get
-            Return m_Comments
-        End Get
-        Set(ByVal value As String)
-            m_Comments = value
-        End Set
-    End Property
-
-    Public Property FfwdCount() As Integer
-        Get
-            Return m_FfwdCount
-        End Get
-        Set(ByVal value As Integer)
-            m_FfwdCount = value
-        End Set
-    End Property
-
-    Public Property RwndCOunt() As Integer
-        Get
-            Return m_RwndCount
-        End Get
-        Set(ByVal value As Integer)
-            m_RwndCount = value
-        End Set
-    End Property
-
-    Public Property ElapsedTime() As String
-        Get
-            Return m_ElapsedTime
-        End Get
-        Set(ByVal value As String)
-            m_ElapsedTime = value
-        End Set
-    End Property
 
     Public Property VideoTime() As TimeSpan
         Get
@@ -625,15 +392,6 @@ Public Class VideoMiner
         End Get
         Set(ByVal value As TimeSpan)
             m_tsUserTime = value
-        End Set
-    End Property
-
-    Public Property SessionName() As String
-        Get
-            Return m_SessionName
-        End Get
-        Set(ByVal value As String)
-            m_SessionName = value
         End Set
     End Property
 
@@ -666,37 +424,37 @@ Public Class VideoMiner
 
     Public Property ButtonWidth() As Integer
         Get
-            Return m_ButtonWidth
+            Return m_button_width
         End Get
         Set(ByVal value As Integer)
-            m_ButtonWidth = value
+            m_button_width = value
         End Set
     End Property
 
     Public Property ButtonHeight() As Integer
         Get
-            Return m_ButtonHeight
+            Return m_button_height
         End Get
         Set(ByVal value As Integer)
-            m_ButtonHeight = value
+            m_button_height = value
         End Set
     End Property
 
     Public Property ButtonTextSize() As Integer
         Get
-            Return m_ButtonTextSize
+            Return m_button_text_size
         End Get
         Set(ByVal value As Integer)
-            m_ButtonTextSize = value
+            m_button_text_size = value
         End Set
     End Property
 
     Public Property ButtonFont() As String
         Get
-            Return m_ButtonFont
+            Return m_button_font
         End Get
         Set(ByVal value As String)
-            m_ButtonFont = value
+            m_button_font = value
         End Set
     End Property
 
@@ -704,145 +462,145 @@ Public Class VideoMiner
 #Region "Relay Properties"
     Public Property ConfigurationSet() As Boolean
         Get
-            Return m_ConfigurationSet
+            Return m_configuration_set
         End Get
         Set(ByVal value As Boolean)
-            m_ConfigurationSet = value
+            m_configuration_set = value
         End Set
     End Property
 
     Public Property RelaySetup() As String
         Get
-            Return m_RelaySetup
+            Return m_relay_setup
         End Get
         Set(ByVal value As String)
-            m_RelaySetup = value
+            m_relay_setup = value
         End Set
     End Property
 
     Public Property ParallelCom() As String
         Get
-            Return m_ParallelCom
+            Return m_parallel_com
         End Get
         Set(ByVal value As String)
-            m_ParallelCom = value
+            m_parallel_com = value
         End Set
     End Property
 
     Public Property ParallelBaud() As Integer
         Get
-            Return m_ParallelBaud
+            Return m_parallel_baud
         End Get
         Set(ByVal value As Integer)
-            m_ParallelBaud = value
+            m_parallel_baud = value
         End Set
     End Property
 
     Public Property PortOneCom() As String
         Get
-            Return m_PortOneCom
+            Return m_port_one_com
         End Get
         Set(ByVal value As String)
-            m_PortOneCom = value
+            m_port_one_com = value
         End Set
     End Property
 
     Public Property PortTwoCom() As String
         Get
-            Return m_PortTwoCom
+            Return m_port_two_com
         End Get
         Set(ByVal value As String)
-            m_PortTwoCom = value
+            m_port_two_com = value
         End Set
     End Property
 
     Public Property PortOneBaud() As Integer
         Get
-            Return m_PortOneBaud
+            Return m_port_one_baud
         End Get
         Set(ByVal value As Integer)
-            m_PortOneBaud = value
+            m_port_one_baud = value
         End Set
     End Property
 
     Public Property PortTwoBaud() As Integer
         Get
-            Return m_PortTwoBaud
+            Return m_port_two_baud
         End Get
         Set(ByVal value As Integer)
-            m_PortTwoBaud = value
+            m_port_two_baud = value
         End Set
     End Property
 
     Public Property DeviceOneRelayOne() As String
         Get
-            Return m_DeviceOneRelayOne
+            Return m_device_one_relay_one
         End Get
         Set(ByVal value As String)
-            m_DeviceOneRelayOne = value
+            m_device_one_relay_one = value
         End Set
     End Property
 
     Public Property DeviceOneRelayTwo() As String
         Get
-            Return m_DeviceOneRelayTwo
+            Return m_device_one_relay_two
         End Get
         Set(ByVal value As String)
-            m_DeviceOneRelayTwo = value
+            m_device_one_relay_two = value
         End Set
     End Property
 
     Public Property DeviceOneRelayThree() As String
         Get
-            Return m_DeviceOneRelayThree
+            Return m_device_one_relay_three
         End Get
         Set(ByVal value As String)
-            m_DeviceOneRelayThree = value
+            m_device_one_relay_three = value
         End Set
     End Property
 
     Public Property DeviceOneRelayFour() As String
         Get
-            Return m_DeviceOneRelayFour
+            Return m_device_one_relay_four
         End Get
         Set(ByVal value As String)
-            m_DeviceOneRelayFour = value
+            m_device_one_relay_four = value
         End Set
     End Property
 
     Public Property DeviceTwoRelayOne() As String
         Get
-            Return m_DeviceTwoRelayOne
+            Return m_device_two_relay_one
         End Get
         Set(ByVal value As String)
-            m_DeviceTwoRelayOne = value
+            m_device_two_relay_one = value
         End Set
     End Property
 
     Public Property DeviceTwoRelayTwo() As String
         Get
-            Return m_DeviceTwoRelayTwo
+            Return m_device_two_relay_two
         End Get
         Set(ByVal value As String)
-            m_DeviceTwoRelayTwo = value
+            m_device_two_relay_two = value
         End Set
     End Property
 
     Public Property DeviceTwoRelayThree() As String
         Get
-            Return m_DeviceTwoRelayThree
+            Return m_device_two_relay_three
         End Get
         Set(ByVal value As String)
-            m_DeviceTwoRelayThree = value
+            m_device_two_relay_three = value
         End Set
     End Property
 
     Public Property DeviceTwoRelayFour() As String
         Get
-            Return m_DeviceTwoRelayFour
+            Return m_device_two_relay_four
         End Get
         Set(ByVal value As String)
-            m_DeviceTwoRelayFour = value
+            m_device_two_relay_four = value
         End Set
     End Property
 
@@ -879,7 +637,7 @@ Public Class VideoMiner
         Dim assembly As System.Reflection.Assembly = System.Reflection.Assembly.GetAssembly(asType)
         Dim aAssemblyInfo As New AssemblyInfo(assembly)
         Dim aVersionInfo As Version = aAssemblyInfo.Version
-        m_strVersion = aVersionInfo.ToString
+        m_version = aVersionInfo.ToString
         Text = Name & " - " & Version & " - BETA"
 
         ' Enable Key preview so that video player hotkeys can be instantiated from this forms event handler.
@@ -913,7 +671,7 @@ Public Class VideoMiner
 
         'lblDirtyData.Visible = False
 
-        Me.txtQuickSpeciesCount.Text = m_default_quick_entry_count
+        Me.txtQuickSpeciesCount.Text = DEFAULT_QUICK_ENTRY_COUNT
 
         Me.SelectNextControl(Me.SplitContainer4.Panel2, False, True, True, True)
 
@@ -961,7 +719,7 @@ Public Class VideoMiner
         m_GPS_Z = String.Empty
 
         ' Create some form instances here. These forms will remain hidden throughout the session, and ShowDialog will be called to show them
-        m_frmGpsSettings = New frmGpsSettings(m_com_port, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
+        m_frmGpsSettings = New frmGpsSettings(m_com_port, m_nmea_string_type, m_baud_rate, m_parity, m_stop_bits, m_data_bits, m_timeout)
         'm_frmGpsSettings.ShowDialog()
         m_frmSetTime = New frmSetTime(m_tsUserTime)
 
@@ -995,74 +753,74 @@ Public Class VideoMiner
         Try
             If File.Exists(m_strConfigFile) Then
                 ' Button settings
-                m_ButtonHeight = CInt(GetConfiguration(XPATH_BUTTON_HEIGHT))
-                m_ButtonWidth = CInt(GetConfiguration(XPATH_BUTTON_WIDTH))
-                m_ButtonTextSize = CInt(GetConfiguration(XPATH_BUTTON_TEXTSIZE))
-                m_ButtonFont = GetConfiguration(XPATH_BUTTON_FONT)
+                m_button_height = CInt(GetConfiguration(XPATH_BUTTON_HEIGHT))
+                m_button_width = CInt(GetConfiguration(XPATH_BUTTON_WIDTH))
+                m_button_text_size = CInt(GetConfiguration(XPATH_BUTTON_TEXTSIZE))
+                m_button_font = GetConfiguration(XPATH_BUTTON_FONT)
                 ' GPS settings
                 m_com_port = GetConfiguration(XPATH_GPS_COM_PORT)
                 If m_com_port = String.Empty Then
                     m_com_port = GPS_COM_PORT_DEFAULT
                     SaveConfiguration(XPATH_GPS_COM_PORT, m_com_port)
                 End If
-                m_strNMEAStringType = GetConfiguration(XPATH_GPS_NMEA_STRING)
-                If m_strNMEAStringType = String.Empty Then
-                    m_strNMEAStringType = GPS_NMEA_DEFAULT
-                    SaveConfiguration(XPATH_GPS_NMEA_STRING, m_strNMEAStringType)
+                m_nmea_string_type = GetConfiguration(XPATH_GPS_NMEA_STRING)
+                If m_nmea_string_type = String.Empty Then
+                    m_nmea_string_type = GPS_NMEA_DEFAULT
+                    SaveConfiguration(XPATH_GPS_NMEA_STRING, m_nmea_string_type)
                 End If
                 strTmp = GetConfiguration(XPATH_GPS_BAUD_RATE)
                 If strTmp = String.Empty Then
-                    m_intBaudRate = GPS_BAUD_RATE_DEFAULT
-                    SaveConfiguration(XPATH_GPS_BAUD_RATE, CStr(m_intBaudRate))
+                    m_baud_rate = GPS_BAUD_RATE_DEFAULT
+                    SaveConfiguration(XPATH_GPS_BAUD_RATE, CStr(m_baud_rate))
                 Else
-                    m_intBaudRate = CInt(strTmp)
+                    m_baud_rate = CInt(strTmp)
                 End If
-                m_strParity = GetConfiguration(XPATH_GPS_PARITY)
-                If m_strParity = String.Empty Then
-                    m_strParity = GPS_PARITY_DEFAULT
-                    SaveConfiguration(XPATH_GPS_PARITY, m_strParity)
+                m_parity = GetConfiguration(XPATH_GPS_PARITY)
+                If m_parity = String.Empty Then
+                    m_parity = GPS_PARITY_DEFAULT
+                    SaveConfiguration(XPATH_GPS_PARITY, m_parity)
                 End If
                 strTmp = GetConfiguration(XPATH_GPS_STOP_BITS)
                 If strTmp = String.Empty Then
-                    m_dblStopBits = GPS_STOP_BITS_DEFAULT
-                    SaveConfiguration(XPATH_GPS_STOP_BITS, CStr(m_dblStopBits))
+                    m_stop_bits = GPS_STOP_BITS_DEFAULT
+                    SaveConfiguration(XPATH_GPS_STOP_BITS, CStr(m_stop_bits))
                 Else
-                    m_dblStopBits = CInt(strTmp)
+                    m_stop_bits = CInt(strTmp)
                 End If
                 strTmp = GetConfiguration(XPATH_GPS_DATA_BITS)
                 If strTmp = String.Empty Then
-                    m_intDataBits = GPS_DATA_BITS_DEFAULT
-                    SaveConfiguration(XPATH_GPS_DATA_BITS, CStr(m_intDataBits))
+                    m_data_bits = GPS_DATA_BITS_DEFAULT
+                    SaveConfiguration(XPATH_GPS_DATA_BITS, CStr(m_data_bits))
                 Else
-                    m_intDataBits = CInt(strTmp)
+                    m_data_bits = CInt(strTmp)
                 End If
                 strTmp = GetConfiguration(XPATH_GPS_TIMEOUT)
                 If strTmp = String.Empty Then
-                    m_intTimeout = GPS_TIMEOUT_DEFAULT
-                    SaveConfiguration(XPATH_GPS_TIMEOUT, CStr(m_intTimeout))
+                    m_timeout = GPS_TIMEOUT_DEFAULT
+                    SaveConfiguration(XPATH_GPS_TIMEOUT, CStr(m_timeout))
                 Else
-                    m_intTimeout = CInt(strTmp)
+                    m_timeout = CInt(strTmp)
                 End If
                 ' Database settings
-                m_strDatabaseName = GetConfiguration(XPATH_DATABASE_NAME)
-                m_strDatabaseColumns = GetConfiguration(XPATH_DATABASE_COLUMNS)
+                m_database_name = GetConfiguration(XPATH_DATABASE_NAME)
+                m_database_columns = GetConfiguration(XPATH_DATABASE_COLUMNS)
                 'Relay settings
-                m_ConfigurationSet = CBool(GetConfiguration(XPATH_DEVICE_CONFIGURATION_SET))
-                m_RelaySetup = GetConfiguration(XPATH_DEVICE_SETUP)
-                m_ParallelCom = GetConfiguration(XPATH_DEVICE_PARALLEL_COM_PORT)
-                m_ParallelBaud = CInt(GetConfiguration(XPATH_DEVICE_PARALLEL_BAUD_RATE))
+                m_configuration_set = CBool(GetConfiguration(XPATH_DEVICE_CONFIGURATION_SET))
+                m_relay_setup = GetConfiguration(XPATH_DEVICE_SETUP)
+                m_parallel_com = GetConfiguration(XPATH_DEVICE_PARALLEL_COM_PORT)
+                m_parallel_baud = CInt(GetConfiguration(XPATH_DEVICE_PARALLEL_BAUD_RATE))
                 PortOneCom = GetConfiguration(XPATH_DEVICE_TWOPORTS_DEVICE1_COM_PORT)
-                m_PortOneBaud = CInt(GetConfiguration(XPATH_DEVICE_TWOPORTS_DEVICE1_BAUD_RATE))
-                m_PortTwoCom = GetConfiguration(XPATH_DEVICE_TWOPORTS_DEVICE2_COM_PORT)
-                m_PortTwoBaud = CInt(GetConfiguration(XPATH_DEVICE_TWOPORTS_DEVICE2_BAUD_RATE))
-                m_DeviceOneRelayOne = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE1_RELAY1)
-                m_DeviceOneRelayTwo = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE1_RELAY2)
-                m_DeviceOneRelayThree = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE1_RELAY3)
-                m_DeviceOneRelayFour = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE1_RELAY4)
-                m_DeviceTwoRelayOne = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE2_RELAY1)
-                m_DeviceTwoRelayTwo = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE2_RELAY2)
-                m_DeviceTwoRelayThree = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE2_RELAY3)
-                m_DeviceTwoRelayFour = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE2_RELAY4)
+                m_port_one_baud = CInt(GetConfiguration(XPATH_DEVICE_TWOPORTS_DEVICE1_BAUD_RATE))
+                m_port_two_com = GetConfiguration(XPATH_DEVICE_TWOPORTS_DEVICE2_COM_PORT)
+                m_port_two_baud = CInt(GetConfiguration(XPATH_DEVICE_TWOPORTS_DEVICE2_BAUD_RATE))
+                m_device_one_relay_one = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE1_RELAY1)
+                m_device_one_relay_two = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE1_RELAY2)
+                m_device_one_relay_three = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE1_RELAY3)
+                m_device_one_relay_four = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE1_RELAY4)
+                m_device_two_relay_one = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE2_RELAY1)
+                m_device_two_relay_two = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE2_RELAY2)
+                m_device_two_relay_three = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE2_RELAY3)
+                m_device_two_relay_four = GetConfiguration(XPATH_DEVICE_RELAY_DEVICE2_RELAY4)
                 ' Paths
                 m_strDatabasePath = GetConfiguration(XPATH_DATABASE_PATH)
                 m_strVideoPath = GetConfiguration(XPATH_VIDEO_PATH)
@@ -1088,7 +846,7 @@ Public Class VideoMiner
                 End If
 
                 ' The list of previous project names
-                m_PreviousProjects = GetConfigurationCollection(XPATH_PREVIOUS_PROJECTS)
+                m_previous_projects = GetConfigurationCollection(XPATH_PREVIOUS_PROJECTS)
                 Return True
             End If
         Catch ex As Exception
@@ -1335,20 +1093,20 @@ Public Class VideoMiner
 
             ' Create the parent and child node objects and cycle through the file
             Dim parentNode, childNode As XmlNode
-            m_PreviousProjects = New Collection
+            m_previous_projects = New Collection
             For Each parentNode In nodeList
                 If parentNode.HasChildNodes Then
                     For Each childNode In parentNode.ChildNodes
                         If childNode.ChildNodes.Count > 0 Then
-                            m_PreviousProjects.Add(childNode.InnerXml, childNode.InnerXml)
+                            m_previous_projects.Add(childNode.InnerXml, childNode.InnerXml)
                         Else
-                            m_PreviousProjects.Add(childNode.Value, childNode.Value)
+                            m_previous_projects.Add(childNode.Value, childNode.Value)
                         End If
                         'Debug.WriteLine("strString: " & strString)
                     Next
                 End If
             Next
-            Return m_PreviousProjects
+            Return m_previous_projects
         Else
             Return Nothing
         End If
@@ -1451,8 +1209,8 @@ Public Class VideoMiner
     ''' <param name="sender">System.Object</param>
     ''' <param name="e">System.EventArgs</param>
     Private Sub mnuAbout_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles InformationToolStripMenuItem.Click
-        frmAbout = New AboutBox1
-        frmAbout.ShowDialog()
+        m_frmAbout = New AboutBox1
+        m_frmAbout.ShowDialog()
     End Sub
 
     ''' <summary>
@@ -1524,7 +1282,7 @@ Public Class VideoMiner
 
     Private Sub GPSSettingsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuGPSSettings.Click
         'If m_frmGpsSettings Is Nothing Then
-        '    m_frmGpsSettings = New frmGpsSettings(m_com_port, m_strNMEAStringType, m_intBaudRate, m_strParity, m_dblStopBits, m_intDataBits, m_intTimeout)
+        '    m_frmGpsSettings = New frmGpsSettings(m_com_port, m_nmea_string_type, m_baud_rate, m_parity, m_stop_bits, m_data_bits, m_timeout)
         'End If
         m_frmGpsSettings.ShowDialog()
     End Sub
@@ -1873,7 +1631,7 @@ Public Class VideoMiner
     Private Sub newProjectName() Handles m_frmProjectNames.NewProjectNameEvent
         ' Add the new item to the current collection of items and also write it into the XML file
         Dim name As String = m_frmProjectNames.getProjectName()
-        m_PreviousProjects.Add(name, name) ' Key and value are identical, needed for removing from the collection which needs the key
+        m_previous_projects.Add(name, name) ' Key and value are identical, needed for removing from the collection which needs the key
         SaveConfiguration("/PreviousProjects/ProjectName", m_frmProjectNames.getProjectName(), True)
     End Sub
 
@@ -1890,7 +1648,7 @@ Public Class VideoMiner
     Private Sub project_name_delete() Handles m_frmProjectNames.DeleteProjectNameEvent
         ' Delete the name from the XML file and current collection
         Dim key As String = m_frmProjectNames.getProjectNameToDelete()
-        m_PreviousProjects.Remove(key)
+        m_previous_projects.Remove(key)
         If Not DeleteXMLNode("/PreviousProjects/ProjectName", m_frmProjectNames.getProjectNameToDelete()) Then
             MessageBox.Show("Error - failed to delete the node from the XML file. Check the file and retry.", "Failed to edit XML file", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
@@ -1900,7 +1658,7 @@ Public Class VideoMiner
         If m_frmProjectNames Is Nothing Then
             m_frmProjectNames = New frmProjectNames
         End If
-        m_frmProjectNames.PopulateProjectList(m_PreviousProjects)
+        m_frmProjectNames.PopulateProjectList(m_previous_projects)
         m_frmProjectNames.ShowDialog()
     End Sub
 
@@ -2291,7 +2049,6 @@ Public Class VideoMiner
             ' Store the chosen session path in the XML file
             m_strSessionPath = Path.GetDirectoryName(ofd.FileName)
             SaveConfiguration(XPATH_SESSION_PATH, m_strSessionPath)
-            Me.SessionName = strFileName
 
             If strFileName = String.Empty Or Not System.IO.File.Exists(strFileName) Then
                 Exit Sub
@@ -2445,7 +2202,7 @@ Public Class VideoMiner
                     m_frmVideoPlayer.frmVideoPlayer_Load(Me, New System.EventArgs)
                 End If
             End If
-            Me.Text = "Video Miner  " & Me.Version & " - " & Me.SessionName.Substring(Me.SessionName.LastIndexOf("\") + 1, (Me.SessionName.Length - 4) - Me.SessionName.LastIndexOf("\") - 1)
+            'Me.Text = "Video Miner  " & Me.Version & " - " & Me.SessionName.Substring(Me.SessionName.LastIndexOf("\") + 1, (Me.SessionName.Length - 4) - Me.SessionName.LastIndexOf("\") - 1)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "Exception was thrown", MessageBoxButtons.OK)
         End Try
@@ -2457,7 +2214,7 @@ Public Class VideoMiner
     Private Sub saveSession()
         Try
             Dim strFileName As String
-            strFileName = Me.SessionName
+            'strFileName = Me.SessionName
 
             Dim blVideoOpen As Boolean
             Dim blImageOpen As Boolean
@@ -2529,7 +2286,7 @@ Public Class VideoMiner
 
         Dim strFileName As String = String.Empty
         strFileName = sfd.FileName
-        Me.SessionName = strFileName
+        'Me.SessionName = strFileName
 
         If strFileName = String.Empty Then
             Exit Sub
@@ -2586,7 +2343,7 @@ Public Class VideoMiner
 
         ex = createXMLSessionFile(strFileName, blVideoOpen, strVideoFileName, strVideoTime, blImageOpen, strImageFileName, blDatabaseOpen, strDatabaseFileName, strNumberRecordsShown)
         If ex Is Nothing Then
-            Me.Text = "Video Miner  " & Me.Version & " - " & Me.SessionName.Substring(Me.SessionName.LastIndexOf("\") + 1, (Me.SessionName.Length - 4) - Me.SessionName.LastIndexOf("\") - 1)
+            'Me.Text = "Video Miner  " & Me.Version & " - " & Me.SessionName.Substring(Me.SessionName.LastIndexOf("\") + 1, (Me.SessionName.Length - 4) - Me.SessionName.LastIndexOf("\") - 1)
         Else
             MessageBox.Show("The following error occured while saving the file: " & ex.Message & ".  Please try again.", "Error Saving Session", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -3171,8 +2928,6 @@ Public Class VideoMiner
     Public Sub playerPaused() Handles m_frmVideoPlayer.PauseEvent
         ' This is used to sense when the video player form pauses its video
         cmdPlayPause.BackgroundImage = My.Resources.Play_Icon
-        FfwdCount = 0
-        RwndCOunt = 0
     End Sub
 
     ''' <summary>
@@ -3182,8 +2937,6 @@ Public Class VideoMiner
         ' This is used to sense when the video player form starts playing its video
         cmdPlayPause.BackgroundImage = My.Resources.Pause_Icon
         setTimes()
-        FfwdCount = 0
-        RwndCOunt = 0
     End Sub
 
     ''' <summary>
@@ -3195,8 +2948,6 @@ Public Class VideoMiner
         cmdPlayPause.BackgroundImage = My.Resources.Play_Icon
         Me.txtTimeSource.Text = m_frmVideoPlayer.CurrentVideoTimeFormatted
         setTimes()
-        FfwdCount = 0
-        RwndCOunt = 0
     End Sub
 
     ''' <summary>
@@ -3804,47 +3555,13 @@ Public Class VideoMiner
         setTimes()
     End Sub
 
-    Private Sub species_configuration_update() Handles m_frmConfigureSpecies.SpeciesConfigurationUpdate
-        RangeChecked = m_frmConfigureSpecies.RangeChecked
-        IDConfidenceChecked = m_frmConfigureSpecies.IDConfidenceChecked
-        AbundanceChecked = m_frmConfigureSpecies.AbundanceChecked
-        CountChecked = m_frmConfigureSpecies.CountChecked
-        HeightChecked = m_frmConfigureSpecies.HeightChecked
-        WidthChecked = m_frmConfigureSpecies.WidthChecked
-        LengthChecked = m_frmConfigureSpecies.LengthChecked
-        CommentsChecked = m_frmConfigureSpecies.CommentsChecked
-
-        Range = m_frmConfigureSpecies.Range
-        Side = m_frmConfigureSpecies.Side
-        IDConfidence = m_frmConfigureSpecies.IDConfidence
-        Abundance = m_frmConfigureSpecies.Abundance
-        Count = m_frmConfigureSpecies.Count
-        SpeciesHeight = m_frmConfigureSpecies.SpeciesHeight
-        SpeciesWidth = m_frmConfigureSpecies.SpeciesWidth
-        Length = m_frmConfigureSpecies.Length
-        Comments = m_frmConfigureSpecies.Comments
-    End Sub
-
-    'Private Sub species_button_configuration_changed() Handles m_frmSpeciesEvent.SpeciesButtonConfigurationChangedEvent
-    'Range = m_frmSpeciesEvent.Range
-    'Side = m_frmSpeciesEvent.Side
-    'IDConfidence = m_frmSpeciesEvent.IDConfidence
-    'Abundance = m_frmSpeciesEvent.Abundance
-    'Count = m_frmSpeciesEvent.Count
-    'SpeciesHeight = m_frmSpeciesEvent.SpeciesHeight
-    'SpeciesWidth = m_frmSpeciesEvent.SpeciesWidth
-    'Length = m_frmSpeciesEvent.Length
-    'Comments = m_frmSpeciesEvent.Comments
-    'SpeciesCode = m_frmSpeciesEvent.SpeciesCode
-    'End Sub
-
     Private Sub gps_connected() Handles m_frmGpsSettings.GPSConnectedEvent
         lblGPSPortValue.Text = "OPEN"
         lblGPSPortValue.ForeColor = Color.LimeGreen
         lblGPSConnectionValue.Text = "CONNECTED"
         lblGPSConnectionValue.ForeColor = Color.Blue
 
-        m_frmSetTime.UserTime = m_GPSUserTime
+        m_frmSetTime.UserTime = m_gps_user_time
         m_frmSetTime.ChangeSource(frmSetTime.WhichTimeEnum.GPS)
     End Sub
 
@@ -3905,9 +3622,9 @@ Public Class VideoMiner
             ButtonWidth = CInt(.txtButtonWidth.Text)
             ButtonFont = .cboButtonFont.Text
             ButtonTextSize = CInt(.cboButtonTextSize.Text)
-            blupdateColumns = False
+            'blupdateColumns = False
             m_pnlSpeciesData.Controls.Clear()
-            blupdateColumns = True
+            'blupdateColumns = True
         End With
     End Sub
 
@@ -3962,19 +3679,19 @@ Public Class VideoMiner
     ''' </summary>
     Private Sub save_GPS_configuration() Handles m_frmGpsSettings.GPSVariablesChangedEvent
         m_com_port = m_frmGpsSettings.ComPort
-        m_intBaudRate = m_frmGpsSettings.BaudRate
-        m_strNMEAStringType = m_frmGpsSettings.NMEAStringType
-        m_strParity = m_frmGpsSettings.Parity
-        m_dblStopBits = m_frmGpsSettings.StopBits
-        m_intDataBits = m_frmGpsSettings.DataBits
+        m_baud_rate = m_frmGpsSettings.BaudRate
+        m_nmea_string_type = m_frmGpsSettings.NMEAStringType
+        m_parity = m_frmGpsSettings.Parity
+        m_stop_bits = m_frmGpsSettings.StopBits
+        m_data_bits = m_frmGpsSettings.DataBits
 
         SaveConfiguration(XPATH_GPS_COM_PORT, m_com_port)
-        SaveConfiguration(XPATH_GPS_BAUD_RATE, CStr(m_intBaudRate))
-        SaveConfiguration(XPATH_GPS_NMEA_STRING, m_strNMEAStringType)
-        SaveConfiguration(XPATH_GPS_PARITY, m_strParity)
-        SaveConfiguration(XPATH_GPS_STOP_BITS, CStr(m_dblStopBits))
-        SaveConfiguration(XPATH_GPS_DATA_BITS, CStr(m_intDataBits))
-        SaveConfiguration(XPATH_GPS_TIMEOUT, CStr(m_intTimeout))
+        SaveConfiguration(XPATH_GPS_BAUD_RATE, CStr(m_baud_rate))
+        SaveConfiguration(XPATH_GPS_NMEA_STRING, m_nmea_string_type)
+        SaveConfiguration(XPATH_GPS_PARITY, m_parity)
+        SaveConfiguration(XPATH_GPS_STOP_BITS, CStr(m_stop_bits))
+        SaveConfiguration(XPATH_GPS_DATA_BITS, CStr(m_data_bits))
+        SaveConfiguration(XPATH_GPS_TIMEOUT, CStr(m_timeout))
     End Sub
 
     Private Delegate Sub RefreshGPSStatusDelegate()
@@ -3986,7 +3703,7 @@ Public Class VideoMiner
     ''' <remarks></remarks>
     Private Sub RefreshGPSStatus()
         If m_frmGpsSettings.IsConnected Then
-            m_GPSUserTime = m_frmGpsSettings.GPSTime
+            m_gps_user_time = m_frmGpsSettings.GPSTime
             m_tsUserTime = m_frmGpsSettings.GPSTime
             ' Get the GPS location data into Videominer member variables
             m_GPS_X = m_frmGpsSettings.LatitudeString
@@ -4023,7 +3740,7 @@ Public Class VideoMiner
     ''' </summary>
     Private Sub m_frmSetTime_RequestGPS() Handles m_frmSetTime.RequestGPSTime
         If m_frmGpsSettings.IsConnected Then
-            m_frmSetTime.UserTime = m_GPSUserTime
+            m_frmSetTime.UserTime = m_gps_user_time
             m_frmSetTime.ChangeSource(frmSetTime.WhichTimeEnum.GPS)
         Else
             m_frmGpsSettings.ShowDialog()
