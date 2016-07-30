@@ -3062,8 +3062,12 @@ Public Class VideoMiner
     ''' <param name="dictTransect">A Dictionary object of Key/Value pairs where the keys are field names as found in the main 'data' table in the database, and the values are a pair
     ''' of codes, the first one being the data code for the field being recorded to in the 'data' table and the second being the data code itself as chosen by the user.</param>
     Private Sub runInsertQuery(dictTransect As Dictionary(Of String, Tuple(Of String, String, Boolean)))
+        Dim intKey As Integer = Database.GetNextPrimaryKeyValue(DB_DATA_TABLE)
+        If intKey <= 0 Then
+            intKey = 1
+        End If
         Dim names As String = "insert into " & DB_DATA_TABLE & " (ID,"
-        Dim values As String = "values(" & Database.GetNextPrimaryKeyValue(DB_DATA_TABLE) & ","
+        Dim values As String = "values(" & CStr(intKey) & ","
         Dim strQuery As String
 
         If m_strVideoFile <> String.Empty Then

@@ -643,7 +643,7 @@ Public Class VideoMinerDataGridView
     Private Sub btnAddRow_Click(sender As Object, e As EventArgs) Handles btnAddRow.Click
         Dim dr As DataRow
         Dim intNextKey As Integer = Database.GetNextPrimaryKeyValue(m_table_name)
-        If intNextKey = -1 Then
+        If intNextKey <= 0 Then
             ' The table is empty so we need to insert a n empty row with a primary key of 1
             intNextKey = 1
             dr = m_data_table.NewRow()
