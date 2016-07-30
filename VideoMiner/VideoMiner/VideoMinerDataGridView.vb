@@ -650,8 +650,7 @@ Public Class VideoMinerDataGridView
         Else
             ' The table is not empty, so we copy the last row and change the key to be the last
             ' row's key + 1
-            Dim drvLastRow As DataRowView = DirectCast(grd.Rows(grd.Rows.Count - 1).DataBoundItem, DataRowView)
-            dr = drvLastRow.Row
+            dr = Database.GetRow(intNextKey - 1, m_table_name)
         End If
         dr.Item(m_primary_key_field) = intNextKey
         Database.InsertRow(dr, m_table_name)

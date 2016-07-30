@@ -94,6 +94,12 @@ VideoMiner
  </summary>
  <returns></returns>
 </member>
+<member name="M:VideoMiner.Database.GetRow(System.Int32,System.String)">
+ <summary>
+ Return the DataRow which corresponds to the primary key intKey.
+ Returns Nothing if the key wasn't in the table.
+ </summary>
+</member>
 <member name="M:VideoMiner.Database.InsertRow(System.Data.DataRow,System.String)">
  <summary>
  Runs an insert query to insert a new row of data in the table given by tableName.

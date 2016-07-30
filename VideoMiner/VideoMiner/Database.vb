@@ -221,6 +221,23 @@ Public Module Database
         Return True
     End Function
 
+
+    ''' <summary>
+    ''' Return the DataRow which corresponds to the primary key intKey.
+    ''' Returns Nothing if the key wasn't in the table.
+    ''' </summary>
+    Public Function GetRow(intKey As Integer, tableName As String) As DataRow
+        If Not IsOpen Then
+            MessageBox.Show("The database has not been opened yet.", "Database not open", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return Nothing
+        End If
+        Dim data_table As DataTable = GetDataTable("select * from " & tableName &
+                                                   " where " & GetPrimaryKeyFieldName(tableName) & "=" &
+                                                   intKey, tableName)
+        Dim dr As DataRow = data_table.Rows(0)
+        Return dr
+    End Function
+
     ''' <summary>
     ''' Runs an insert query to insert a new row of data in the table given by tableName.
     ''' It is up to the caller to make sure the data match the table being inserted into.
