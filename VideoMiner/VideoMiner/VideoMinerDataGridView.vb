@@ -95,9 +95,25 @@ Public Class VideoMinerDataGridView
         Descending
     End Enum
     Private m_row_order As RowOrderEnum
+    Private m_show_tooltips As Boolean
+    ' Tooltip members
+    Dim m_move_up As ToolTip
+    Dim m_move_down As ToolTip
+    Dim m_add_row As ToolTip
+    Dim m_delete_rows As ToolTip
+    Dim m_show_data_codes As ToolTip
+
 #End Region
 
 #Region "Properties"
+    Public Property ShowTooltips
+        Get
+            Return m_show_tooltips
+        End Get
+        Set(value)
+            m_show_tooltips = CBool(value)
+        End Set
+    End Property
 #End Region
 
 #Region "Events"
@@ -110,16 +126,55 @@ Public Class VideoMinerDataGridView
 
     Public Sub New(tableName As String,
                    Optional showPrimaryKeyField As Boolean = True,
-                   Optional rowOrder As RowOrderEnum = RowOrderEnum.Ascending)
+                   Optional rowOrder As RowOrderEnum = RowOrderEnum.Ascending,
+                   Optional showToolTips As Boolean = True)
         InitializeComponent()
         m_table_name = tableName
         m_primary_key_field = Database.GetPrimaryKeyFieldName(m_table_name)
         m_show_primary_key_field = showPrimaryKeyField
         m_row_order = rowOrder
+        m_show_tooltips = showToolTips
         m_arr_coloring = New List(Of stcRowColoring)
         grd.AllowUserToAddRows = False
         m_frmViewDataTable = New frmViewDataTable(DB_DATA_CODES_TABLE)
+
+        ' Add tooltips
+        m_move_up = New ToolTip()
+        m_move_up.SetToolTip(btnMoveUp, "Move the selected row up the table")
+        m_move_down = New ToolTip()
+        m_move_down.SetToolTip(btnMoveDown, "Move the selected row down the table")
+
+        m_add_row = New ToolTip()
+        m_add_row.SetToolTip(btnAddRow, "Adds a new row to the bottom of the table. The new row will be a copy of the last row or if empty, an empty row")
+
+        m_delete_rows = New ToolTip()
+        m_delete_rows.SetToolTip(btnDeleteRows, "Deletes the selected rows from the database")
+
+        m_show_data_codes = New ToolTip()
+        m_show_data_codes.SetToolTip(btnDataCodes, "Show the database table 'Data Codes'")
+
+        If m_show_tooltips Then
+            EnableToolTips()
+        Else
+            DisableToolTips()
+        End If
         fetchData()
+    End Sub
+
+    Public Sub DisableToolTips()
+        m_move_up.Active = False
+        m_move_down.Active = False
+        m_add_row.Active = False
+        m_delete_rows.Active = False
+        m_show_data_codes.Active = False
+    End Sub
+
+    Public Sub EnableToolTips()
+        m_move_up.Active = True
+        m_move_down.Active = True
+        m_add_row.Active = True
+        m_delete_rows.Active = True
+        m_show_data_codes.Active = True
     End Sub
 
     ''' <summary>

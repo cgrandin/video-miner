@@ -1659,6 +1659,11 @@ VideoMiner
  <param name="sender"></param>
  <param name="e"></param>
 </member>
+<member name="M:VideoMiner.VideoMiner.mnuShowTooltips_Click(System.Object,System.EventArgs)">
+ <summary>
+ Toggle Tooltip visibility
+ </summary>
+</member>
 <member name="T:VideoMiner.frmEditSpecies">
  <summary>
  This form class allows the user to add a new species to the database table 'videominer_species_buttons' or to edit properties of an existing species

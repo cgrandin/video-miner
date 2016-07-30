@@ -3046,7 +3046,10 @@ Public Class VideoMiner
             mnuCloseDatabase.Enabled = True
             DataCodeAssignmentsToolStripMenuItem.Enabled = True
             KeyboardShortcutsToolStripMenuItem.Enabled = True
-            m_grdDatabase = New VideoMinerDataGridView(DB_DATA_TABLE, True, VideoMinerDataGridView.RowOrderEnum.Descending)
+            m_grdDatabase = New VideoMinerDataGridView(DB_DATA_TABLE,
+                                                       True,
+                                                       VideoMinerDataGridView.RowOrderEnum.Descending,
+                                                       True)
             SplitContainer1.Panel2.Controls.Add(m_grdDatabase)
             m_grdDatabase.Dock = DockStyle.Fill
             database_is_open_toggle_visibility()
@@ -3849,4 +3852,19 @@ Public Class VideoMiner
         dataEntryEnded()
     End Sub
 
+    ''' <summary>
+    ''' Toggle Tooltip visibility
+    ''' </summary>
+    Private Sub mnuShowTooltips_Click(sender As Object, e As EventArgs) Handles mnuShowTooltips.Click
+        If IsNothing(m_grdDatabase) Then
+            Exit Sub
+        End If
+        If mnuShowTooltips.Checked Then
+            mnuShowTooltips.Checked = False
+            m_grdDatabase.DisableToolTips()
+        Else
+            mnuShowTooltips.Checked = True
+            m_grdDatabase.EnableToolTips()
+        End If
+    End Sub
 End Class

@@ -52,6 +52,7 @@ Partial Class VideoMiner
         Me.ConfigureButtonFormatToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DisableHabitatButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EditLookupTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuShowTooltips = New System.Windows.Forms.ToolStripMenuItem()
         Me.GPSToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuGPSSettings = New System.Windows.Forms.ToolStripMenuItem()
         Me.DeviceToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -336,7 +337,7 @@ Partial Class VideoMiner
         '
         'mnuConfigureTools
         '
-        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ConfigureSpeciesEventToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.ConfigureButtonFormatToolStripMenuItem, Me.DisableHabitatButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem})
+        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ConfigureSpeciesEventToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.ConfigureButtonFormatToolStripMenuItem, Me.DisableHabitatButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem, Me.mnuShowTooltips})
         Me.mnuConfigureTools.Name = "mnuConfigureTools"
         Me.mnuConfigureTools.Size = New System.Drawing.Size(72, 20)
         Me.mnuConfigureTools.Text = "Configure"
@@ -376,6 +377,14 @@ Partial Class VideoMiner
         Me.EditLookupTableToolStripMenuItem.Name = "EditLookupTableToolStripMenuItem"
         Me.EditLookupTableToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
         Me.EditLookupTableToolStripMenuItem.Text = "Edit Lookup Table"
+        '
+        'mnuShowTooltips
+        '
+        Me.mnuShowTooltips.Checked = True
+        Me.mnuShowTooltips.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.mnuShowTooltips.Name = "mnuShowTooltips"
+        Me.mnuShowTooltips.Size = New System.Drawing.Size(219, 22)
+        Me.mnuShowTooltips.Text = "Show Tooltips"
         '
         'GPSToolStripMenuItem
         '
@@ -1388,4 +1397,5 @@ Partial Class VideoMiner
     Friend WithEvents cmdAddComment As System.Windows.Forms.Button
     Friend WithEvents SplitContainer8 As System.Windows.Forms.SplitContainer
     Friend WithEvents cmdOffBottom As Button
+    Friend WithEvents mnuShowTooltips As ToolStripMenuItem
 End Class
