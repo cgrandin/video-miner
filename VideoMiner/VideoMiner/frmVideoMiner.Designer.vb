@@ -1197,7 +1197,7 @@ Partial Class VideoMiner
         '
         'cmdAddComment
         '
-        Me.cmdAddComment.Location = New System.Drawing.Point(3, 3)
+        Me.cmdAddComment.Location = New System.Drawing.Point(0, 34)
         Me.cmdAddComment.Name = "cmdAddComment"
         Me.cmdAddComment.Size = New System.Drawing.Size(154, 30)
         Me.cmdAddComment.TabIndex = 37
@@ -1207,7 +1207,7 @@ Partial Class VideoMiner
         '
         'cmdNothingInPhoto
         '
-        Me.cmdNothingInPhoto.Location = New System.Drawing.Point(3, 35)
+        Me.cmdNothingInPhoto.Location = New System.Drawing.Point(160, 34)
         Me.cmdNothingInPhoto.Name = "cmdNothingInPhoto"
         Me.cmdNothingInPhoto.Size = New System.Drawing.Size(154, 30)
         Me.cmdNothingInPhoto.TabIndex = 55

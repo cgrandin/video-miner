@@ -3049,7 +3049,8 @@ Public Class VideoMiner
             m_grdDatabase = New VideoMinerDataGridView(DB_DATA_TABLE,
                                                        True,
                                                        VideoMinerDataGridView.RowOrderEnum.Descending,
-                                                       True)
+                                                       True,
+                                                       False)
             SplitContainer1.Panel2.Controls.Add(m_grdDatabase)
             m_grdDatabase.Dock = DockStyle.Fill
             database_is_open_toggle_visibility()
@@ -3190,6 +3191,9 @@ Public Class VideoMiner
     ''' For looking up and saving to the database a rare species (one not on the species buttons).
     ''' </summary>
     Private Sub cmdRareSpeciesLookup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdRareSpeciesLookup.Click
+        If IsNothing(m_data_table) Then
+            Exit Sub
+        End If
         If IsNothing(m_data_table.GetChanges()) Then
             dataEntryStarted()
             m_frmRareSpeciesLookup.Show()

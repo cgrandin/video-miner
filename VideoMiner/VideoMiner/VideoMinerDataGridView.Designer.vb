@@ -127,7 +127,7 @@ Partial Class VideoMinerDataGridView
         '
         'btnDataCodes
         '
-        Me.btnDataCodes.Location = New System.Drawing.Point(0, 131)
+        Me.btnDataCodes.Location = New System.Drawing.Point(0, 112)
         Me.btnDataCodes.Name = "btnDataCodes"
         Me.btnDataCodes.Size = New System.Drawing.Size(94, 23)
         Me.btnDataCodes.TabIndex = 7

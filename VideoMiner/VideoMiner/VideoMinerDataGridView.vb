@@ -95,6 +95,10 @@ Public Class VideoMinerDataGridView
         Descending
     End Enum
     Private m_row_order As RowOrderEnum
+    ''' <summary>
+    ''' Show or hide the last column buttons, i.e. Move, add row, delete, show data codes buttons
+    ''' </summary>
+    Private m_show_buttons As Boolean
     Private m_show_tooltips As Boolean
     ' Tooltip members
     Dim m_move_up As ToolTip
@@ -129,16 +133,22 @@ Public Class VideoMinerDataGridView
     Public Sub New(tableName As String,
                    Optional showPrimaryKeyField As Boolean = True,
                    Optional rowOrder As RowOrderEnum = RowOrderEnum.Ascending,
-                   Optional showToolTips As Boolean = True)
+                   Optional showToolTips As Boolean = True,
+                   Optional showButtons As Boolean = True)
         InitializeComponent()
         m_table_name = tableName
         m_primary_key_field = Database.GetPrimaryKeyFieldName(m_table_name)
         m_show_primary_key_field = showPrimaryKeyField
         m_row_order = rowOrder
         m_show_tooltips = showToolTips
+        m_show_buttons = showButtons
         m_arr_coloring = New List(Of stcRowColoring)
         grd.AllowUserToAddRows = False
         m_frmViewDataTable = New frmViewDataTable(DB_DATA_CODES_TABLE)
+
+        If Not m_show_buttons Then
+            TableLayoutPanel1.ColumnStyles(4).Width = 0
+        End If
 
         ' Add tooltips
         m_move_up = New ToolTip()

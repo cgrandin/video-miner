@@ -3400,6 +3400,11 @@ VideoMiner
  Order the rows are displayed by Primary key id
  </summary>
 </member>
+<member name="F:VideoMiner.VideoMinerDataGridView.m_show_buttons">
+ <summary>
+ Show or hide the last column buttons, i.e. Move, add row, delete, show data codes buttons
+ </summary>
+</member>
 <member name="M:VideoMiner.VideoMinerDataGridView.fetchData">
  <summary>
  Fetch the data from the database, and enable/disble buttons according to what was retreived.
