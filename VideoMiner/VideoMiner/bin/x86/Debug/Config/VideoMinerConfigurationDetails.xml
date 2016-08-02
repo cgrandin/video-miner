@@ -103,4 +103,45 @@
     <DataBits>8</DataBits>
     <Timeout>5</Timeout>
   </GPS>
+  <DataColumnVisibility>
+    <ID>True</ID>
+    <TransectDate>False</TransectDate>
+    <TimeCode>True</TimeCode>
+    <TextTime>False</TextTime>
+    <TextTimeDecimal>False</TextTimeDecimal>
+    <TimeSource>False</TimeSource>
+    <ProjectName>False</ProjectName>
+    <TransectName>False</TransectName>
+    <OnBottom>True</OnBottom>
+    <DominantSubstrate>True</DominantSubstrate>
+    <DominantPercent>True</DominantPercent>
+    <SubdominantSubstrate>False</SubdominantSubstrate>
+    <SubdominantPercent>False</SubdominantPercent>
+    <SurveyModeID>False</SurveyModeID>
+    <ReliefID>True</ReliefID>
+    <DisturbanceID>False</DisturbanceID>
+    <ComplexityID>True</ComplexityID>
+    <ProtocolID>True</ProtocolID>
+    <ImageQualityID>True</ImageQualityID>
+    <FieldOfView>False</FieldOfView>
+    <SpeciesName>True</SpeciesName>
+    <SpeciesID>True</SpeciesID>
+    <SpeciesCount>False</SpeciesCount>
+    <Side>False</Side>
+    <Range>True</Range>
+    <Length>False</Length>
+    <Height>False</Height>
+    <Width>False</Width>
+    <Abundance>False</Abundance>
+    <IDConfidence>False</IDConfidence>
+    <Comment>True</Comment>
+    <DataCode>True</DataCode>
+    <X>False</X>
+    <Y>False</Y>
+    <Z>False</Z>
+    <FileName>True</FileName>
+    <ScreenCaptureName>False</ScreenCaptureName>
+    <ElapsedTime>False</ElapsedTime>
+    <ReviewedDateTime>False</ReviewedDateTime>
+  </DataColumnVisibility>
 </VideoMinerConfigurationDetails>

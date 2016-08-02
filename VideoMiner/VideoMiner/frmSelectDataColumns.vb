@@ -20,7 +20,7 @@
     Public Sub New(dt As DataTable)
         InitializeComponent()
         m_data_table = dt
-        ReDim m_show_indices(m_data_table.Columns.Count)
+        ReDim m_show_indices(m_data_table.Columns.Count - 1)
         ' Add all fields found in the database table to the list
         For col As Integer = 0 To m_data_table.Columns.Count - 1
             clbData.Items.Add(m_data_table.Columns(col).ColumnName)
@@ -45,6 +45,24 @@
                 m_show_indices(idx) = False
             End If
         Next
+    End Sub
+
+    ''' <summary>
+    ''' Set the checked items to have the visibility as supplied by the argument blVis.
+    ''' Fires the DataTableModified Event
+    ''' </summary>
+    ''' <param name="blVis"></param>
+    Public Sub SetVisibleColumns(blVis As Boolean())
+        For idx As Integer = 0 To clbData.Items.Count - 1
+            If blVis(idx) Then
+                m_show_indices(idx) = True
+                clbData.SetItemChecked(idx, True)
+            Else
+                m_show_indices(idx) = False
+                clbData.SetItemChecked(idx, False)
+            End If
+        Next
+        RaiseEvent DataTableModified()
     End Sub
 
     Private Sub me_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing

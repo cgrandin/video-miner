@@ -1085,6 +1085,13 @@ VideoMiner
  Record into array the visibility settings as set by user.
  </summary>
 </member>
+<member name="M:VideoMiner.frmSelectDataColumns.SetVisibleColumns(System.Boolean[])">
+ <summary>
+ Set the checked items to have the visibility as supplied by the argument blVis.
+ Fires the DataTableModified Event
+ </summary>
+ <param name="blVis"></param>
+</member>
 <member name="E:VideoMiner.frmStringDataViewer.ShowChosenStringOnlyEvent">
  <summary>
  Signal the calling class that you want to only be sent data for whatever string was chosen in that class.
@@ -1317,6 +1324,12 @@ VideoMiner
  </summary>
  <param name="xPath">An XPath String representing the XML node name, with children seperated by "/"</param>
  <returns>A String, the value of the requested XML node</returns>
+</member>
+<member name="M:VideoMiner.VideoMiner.GetDataColumnVisibilityConfiguration">
+ <summary>
+ Retrieve the DataColumnVisibility values from the XML configuration file.
+ </summary>
+ <returns>An array of booleans or Nothing if DataColumnVisibility is not found in the XML file</returns>
 </member>
 <member name="M:VideoMiner.VideoMiner.GetConfigurationCollection(System.String)">
  <summary>
@@ -1688,7 +1701,8 @@ VideoMiner
 </member>
 <member name="M:VideoMiner.VideoMiner.DataTableModified">
  <summary>
- Change the visibility of the datbase table columns for the main data table
+ Change the visibility of the datbase table columns for the main data table.
+ Also, save the configuration so it doesn't have to be done every time the app is opened.
  </summary>
 </member>
 <member name="T:VideoMiner.frmEditSpecies">

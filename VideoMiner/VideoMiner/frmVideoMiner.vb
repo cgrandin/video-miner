@@ -1045,12 +1045,12 @@ Public Class VideoMiner
             ' Load the config file nodes into the Node List object
             Dim nodeList As XmlNodeList = xmlDoc.SelectNodes(strPath)
             If nodeList Is Nothing Then
-                Return String.Empty
+                Return NULL_STRING
             End If
 
             ' Create the parent and child node objects and cycle through the file
             Dim parentNode, childNode As XmlNode
-            Dim strString As String = String.Empty
+            Dim strString As String = NULL_STRING
             For Each parentNode In nodeList
                 If parentNode.HasChildNodes Then
                     For Each childNode In parentNode.ChildNodes
@@ -1069,10 +1069,43 @@ Public Class VideoMiner
 
             Return strString
         Else
-            Return String.Empty
+            Return NULL_STRING
         End If
 
     End Function
+
+    ''' <summary>
+    ''' Retrieve the DataColumnVisibility values from the XML configuration file.
+    ''' </summary>
+    ''' <returns>An array of booleans or Nothing if DataColumnVisibility is not found in the XML file</returns>
+    Public Function GetDataColumnVisibilityConfiguration() As Boolean()
+        Dim retArray As Boolean()
+        Dim strPath As String = VMCD & "/DataColumnVisibility"
+        If File.Exists(m_strConfigFile) Then
+            Dim xmlDoc As New XmlDocument
+            xmlDoc.Load(m_strConfigFile)
+
+            Dim nodeList As XmlNodeList = xmlDoc.SelectNodes(strPath)
+            If nodeList Is Nothing Then
+                Return Nothing
+            End If
+
+            Dim parentNode As XmlNode
+            Dim strString As String = NULL_STRING
+            For Each parentNode In nodeList
+                ReDim retArray(parentNode.ChildNodes.Count - 1)
+                If parentNode.HasChildNodes Then
+                    For i As Integer = 0 To parentNode.ChildNodes.Count - 1
+                        retArray(i) = Convert.ToBoolean(parentNode.ChildNodes(i).InnerXml)
+                    Next
+                End If
+            Next
+            Return retArray
+        Else
+            Return Nothing
+        End If
+    End Function
+
 
     ''' <summary>
     ''' Get a collection of variables values for a given node from the XML configuration file.
@@ -3005,6 +3038,15 @@ Public Class VideoMiner
             m_data_table = m_grdDatabase.DataTable
             SplitContainer1.Panel2.Controls.Add(m_grdDatabase)
             m_grdDatabase.Dock = DockStyle.Fill
+            If IsNothing(m_frmSelectDataColumns) Then
+                m_frmSelectDataColumns = New frmSelectDataColumns(m_data_table)
+            End If
+            Dim blDataColumnVis As Boolean() = GetDataColumnVisibilityConfiguration()
+            If IsNothing(blDataColumnVis) Then
+                DataTableModified()
+            Else
+                m_frmSelectDataColumns.SetVisibleColumns(blDataColumnVis)
+            End If
             database_is_open_toggle_visibility()
         End If
     End Sub
@@ -3832,19 +3874,20 @@ Public Class VideoMiner
     ''' Select the data table columns to show. This changes the select query used to populate the grid
     ''' </summary>
     Private Sub DataTableColumnsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DataTableColumnsToolStripMenuItem.Click
-        If IsNothing(m_frmSelectDataColumns) Then
-            m_frmSelectDataColumns = New frmSelectDataColumns(m_data_table)
-        End If
         m_frmSelectDataColumns.Show()
     End Sub
 
     ''' <summary>
-    ''' Change the visibility of the datbase table columns for the main data table
+    ''' Change the visibility of the datbase table columns for the main data table.
+    ''' Also, save the configuration so it doesn't have to be done every time the app is opened.
     ''' </summary>
     Private Sub DataTableModified() Handles m_frmSelectDataColumns.DataTableModified
+        Dim strColName As String
         Dim visibleCols As Boolean() = m_frmSelectDataColumns.VisibleColumns
         For i As Integer = 0 To visibleCols.Count - 1
             m_grdDatabase.DGV.Columns(i).Visible = m_frmSelectDataColumns.VisibleColumns(i)
+            strColName = m_grdDatabase.DGV.Columns(i).Name
+            SaveConfiguration("/DataColumnVisibility/" & strColName, m_frmSelectDataColumns.VisibleColumns(i).ToString(), False)
         Next
     End Sub
 End Class
