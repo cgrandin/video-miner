@@ -172,6 +172,7 @@ Public Class VideoMiner
     'Private WithEvents m_frmAddValue As frmAddValue
     Private WithEvents m_frmEditLookupTable As frmEditLookupTable
     Private WithEvents m_grdDatabase As VideoMinerDataGridView
+    Private WithEvents m_frmSelectDataColumns As frmSelectDataColumns
 
     ''' <summary>
     ''' The working directory of the software
@@ -1448,42 +1449,6 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
-    ''' Handler to check to make sure that the Data grid is not dirty. If it isn't, or the user says to disregard changes and save the record anyway,
-    ''' the appropriate thing will happen for data recording (species event form will be shown or data table form be shown, or quick entry will happen).
-    ''' </summary>
-    Private Sub button_CheckForDirtyDataEvent(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles m_pnlHabitatData.CheckForDirtyDataEvent, m_pnlTransectData.CheckForDirtyDataEvent, m_pnlSpeciesData.CheckForDirtyDataEvent
-        If TypeOf sender Is DynamicButton Then
-            Dim btn As DynamicButton = CType(sender, DynamicButton)
-            If IsNothing(m_data_table.GetChanges()) Then
-                btn.ShowForm(sender, e)
-            Else
-                If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?",
-                                   "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation,
-                                   MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
-                    m_grdDatabase.fetchData() ' Cleans up the table first
-                    If radQuickEntry.Checked Then
-                        btn.RecordQuick()
-                    Else
-                        btn.ShowForm(sender, e)
-                    End If
-                End If
-            End If
-        ElseIf TypeOf sender Is DynamicTableButton Then
-            Dim btn As DynamicTableButton = CType(sender, DynamicTableButton)
-            If IsNothing(m_data_table.GetChanges()) Then
-                btn.ShowForm(sender, e)
-            Else
-                If MessageBox.Show("You have unsynced changes in your data table. Discard changes and record data anyway?",
-                                   "Data table dirty", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation,
-                                   MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
-                    m_grdDatabase.fetchData() ' Cleans up the table first
-                    btn.ShowForm(sender, e)
-                End If
-            End If
-        End If
-    End Sub
-
-    ''' <summary>
     ''' Build a dictionary and run an insert query for a screenshot event. The Habitat and Transect panels' data will be merged into the dictionary prior to insertion.
     ''' </summary>
     ''' <param name="filename">The name of the file the screenshot was captured to</param>
@@ -2063,7 +2028,7 @@ Public Class VideoMiner
             Dim strVideoTime As String
             Dim strNumberRecordsShown As String
 
-            'CJG need to fix getconfiguration to take a config filename for this
+            'TODO: fix getconfiguration to take a config filename for this
             blVideoOpen = CBool(GetConfiguration("SessionConfiguration/Video/Open"))
             strVideoFileName = GetConfiguration("SessionConfiguration/Video/FileName")
             strVideoTime = GetConfiguration("SessionConfiguration/Video/Position")
@@ -2074,15 +2039,6 @@ Public Class VideoMiner
             blDatabaseOpen = CBool(GetConfiguration("SessionConfiguration/Database/Open"))
             strDatabaseFileName = GetConfiguration("SessionConfiguration/Database/FileName")
             strNumberRecordsShown = GetConfiguration("SessionConfiguration/Database/NumberRecordsShown")
-
-            'If blDatabaseOpen = True Then
-            '    If Not Me.grdVideoMinerDatabase.DataSource Is Nothing Then
-            '        CloseDatabase_Click(Nothing, Nothing)
-            '    End If
-            '    openDatabase()
-            '    files_loaded()
-            '    m_strDatabaseFilePath = strDatabaseFileName
-            'End If
 
             If blImageOpen = True Then
                 If Not m_frmImage Is Nothing Then
@@ -2123,12 +2079,7 @@ Public Class VideoMiner
 
                     m_frmImage.Show()
                 End If
-                'currentImage = strFileName
-                'm_frmImage.PictureBox1.Image = Image.FromFile(strImageFileName)
-                'm_frmImage.Text = strImageFileName.Substring(strImageFileName.LastIndexOf("\") + 1, (strImageFileName.Length - strImageFileName.LastIndexOf("\") - 1))
                 VideoFileName = strImageFileName.Substring(strImageFileName.LastIndexOf("\") + 1, (strImageFileName.Length - strImageFileName.LastIndexOf("\") - 1))
-
-                ' set the flag "m_image_open" to be true.
                 m_image_open = True
                 ' Store the path of the current folder so that we can read 
                 ' all the images under the current directory
@@ -3051,6 +3002,7 @@ Public Class VideoMiner
                                                        VideoMinerDataGridView.RowOrderEnum.Descending,
                                                        True,
                                                        False)
+            m_data_table = m_grdDatabase.DataTable
             SplitContainer1.Panel2.Controls.Add(m_grdDatabase)
             m_grdDatabase.Dock = DockStyle.Fill
             database_is_open_toggle_visibility()
@@ -3874,5 +3826,25 @@ Public Class VideoMiner
             mnuShowTooltips.Checked = True
             m_grdDatabase.EnableToolTips()
         End If
+    End Sub
+
+    ''' <summary>
+    ''' Select the data table columns to show. This changes the select query used to populate the grid
+    ''' </summary>
+    Private Sub DataTableColumnsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DataTableColumnsToolStripMenuItem.Click
+        If IsNothing(m_frmSelectDataColumns) Then
+            m_frmSelectDataColumns = New frmSelectDataColumns(m_data_table)
+        End If
+        m_frmSelectDataColumns.Show()
+    End Sub
+
+    ''' <summary>
+    ''' Change the visibility of the datbase table columns for the main data table
+    ''' </summary>
+    Private Sub DataTableModified() Handles m_frmSelectDataColumns.DataTableModified
+        Dim visibleCols As Boolean() = m_frmSelectDataColumns.VisibleColumns
+        For i As Integer = 0 To visibleCols.Count - 1
+            m_grdDatabase.DGV.Columns(i).Visible = m_frmSelectDataColumns.VisibleColumns(i)
+        Next
     End Sub
 End Class

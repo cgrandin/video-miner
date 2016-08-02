@@ -1068,6 +1068,23 @@ VideoMiner
  <param name="sender"></param>
  <param name="e"></param>
 </member>
+<member name="F:VideoMiner.frmSelectDataColumns.m_show_indices">
+ <summary>
+ An array of integers holding the data table column indices that are being shown.
+ </summary>
+</member>
+<member name="P:VideoMiner.frmSelectDataColumns.VisibleColumns">
+ <summary>
+ An array of booleans, 1 for each column of the data table.
+ True means the column is visible, False means it is hidden.
+ </summary>
+ <returns></returns>
+</member>
+<member name="M:VideoMiner.frmSelectDataColumns.recordVisibility">
+ <summary>
+ Record into array the visibility settings as set by user.
+ </summary>
+</member>
 <member name="E:VideoMiner.frmStringDataViewer.ShowChosenStringOnlyEvent">
  <summary>
  Signal the calling class that you want to only be sent data for whatever string was chosen in that class.
@@ -1393,12 +1410,6 @@ VideoMiner
  <param name="sender"></param>
  <param name="e"></param>
 </member>
-<member name="M:VideoMiner.VideoMiner.button_CheckForDirtyDataEvent(System.Object,System.EventArgs)">
- <summary>
- Handler to check to make sure that the Data grid is not dirty. If it isn't, or the user says to disregard changes and save the record anyway,
- the appropriate thing will happen for data recording (species event form will be shown or data table form be shown, or quick entry will happen).
- </summary>
-</member>
 <member name="M:VideoMiner.VideoMiner.runInsertQueryScreenshot(System.String)">
  <summary>
  Build a dictionary and run an insert query for a screenshot event. The Habitat and Transect panels' data will be merged into the dictionary prior to insertion.
@@ -1668,6 +1679,16 @@ VideoMiner
 <member name="M:VideoMiner.VideoMiner.mnuShowTooltips_Click(System.Object,System.EventArgs)">
  <summary>
  Toggle Tooltip visibility
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMiner.DataTableColumnsToolStripMenuItem_Click(System.Object,System.EventArgs)">
+ <summary>
+ Select the data table columns to show. This changes the select query used to populate the grid
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMiner.DataTableModified">
+ <summary>
+ Change the visibility of the datbase table columns for the main data table
  </summary>
 </member>
 <member name="T:VideoMiner.frmEditSpecies">

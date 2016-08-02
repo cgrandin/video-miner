@@ -112,6 +112,17 @@ Public Class VideoMinerDataGridView
 #End Region
 
 #Region "Properties"
+    Public ReadOnly Property DGV As DataGridView
+        Get
+            Return grd
+        End Get
+    End Property
+
+    Public ReadOnly Property DataTable As DataTable
+        Get
+            Return m_data_table
+        End Get
+    End Property
     Public Property ShowTooltips
         Get
             Return m_show_tooltips
@@ -448,7 +459,6 @@ Public Class VideoMinerDataGridView
         If IsNothing(m_arr_coloring) Or e.ColumnIndex = -1 Then
             Exit Sub
         End If
-        grd.EndEdit()
         Dim drvRow As DataRowView = DirectCast(grd.Rows(e.RowIndex).DataBoundItem, DataRowView)
         Dim dr As DataRow = drvRow.Row
         If compareGridAndDatabaseRows(getPrimaryKey(e.RowIndex), dr) Then
