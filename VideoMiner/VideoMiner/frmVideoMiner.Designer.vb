@@ -347,7 +347,7 @@ Partial Class VideoMiner
         '
         Me.DataTableColumnsToolStripMenuItem.Name = "DataTableColumnsToolStripMenuItem"
         Me.DataTableColumnsToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
-        Me.DataTableColumnsToolStripMenuItem.Text = "Data table columns"
+        Me.DataTableColumnsToolStripMenuItem.Text = "Data column visibility"
         '
         'ConfigureSpeciesEventToolStripMenuItem
         '

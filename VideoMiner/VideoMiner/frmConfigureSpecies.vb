@@ -1,22 +1,15 @@
-﻿Imports System.Xml
-Imports System.IO
-Imports System.Data.OleDb
+﻿Public Class frmConfigureSpecies
 
-Public Class frmConfigureSpecies
-
-    Event SpeciesConfigurationUpdate()
-
-#Region "Fields"
-    Private m_Range As String
-    Private m_Side As String
-    Private m_IDConfidence As String
-    Private m_Abundance As String
-    Private m_Count As String
-    Private m_Height As String
-    Private m_Width As String
-    Private m_Length As String
-    Private m_Comments As String
-
+#Region "Member variables"
+    Private m_range As String
+    Private m_side As String
+    Private m_id_confidence As String
+    Private m_abundance As String
+    Private m_count As String
+    Private m_height As String
+    Private m_width As String
+    Private m_length As String
+    Private m_comments As String
 #End Region
 
 #Region "Properties"
@@ -94,255 +87,240 @@ Public Class frmConfigureSpecies
 
     Public Property Range() As String
         Get
-            Return m_Range
+            Return m_range
         End Get
         Set(ByVal value As String)
-            m_Range = value
+            m_range = value
         End Set
     End Property
 
     Public Property Side() As String
         Get
-            Return m_Side
+            Return m_side
         End Get
         Set(ByVal value As String)
-            m_Side = value
+            m_side = value
         End Set
     End Property
 
     Public Property IDConfidence() As String
         Get
-            Return m_IDConfidence
+            Return m_id_confidence
         End Get
         Set(ByVal value As String)
-            m_IDConfidence = value
+            m_id_confidence = value
         End Set
     End Property
 
     Public Property Abundance() As String
         Get
-            Return m_Abundance
+            Return m_abundance
         End Get
         Set(ByVal value As String)
-            m_Abundance = value
+            m_abundance = value
         End Set
     End Property
 
     Public Property Count() As String
         Get
-            Return m_Count
+            Return m_count
         End Get
         Set(ByVal value As String)
-            m_Count = value
+            m_count = value
         End Set
     End Property
 
     Public Property SpeciesHeight() As String
         Get
-            Return m_Height
+            Return m_height
         End Get
         Set(ByVal value As String)
-            m_Height = value
+            m_height = value
         End Set
     End Property
 
     Public Property SpeciesWidth() As String
         Get
-            Return m_Width
+            Return m_width
         End Get
         Set(ByVal value As String)
-            m_Width = value
+            m_width = value
         End Set
     End Property
 
     Public Property Length() As String
         Get
-            Return m_Length
+            Return m_length
         End Get
         Set(ByVal value As String)
-            m_Length = value
+            m_length = value
         End Set
     End Property
 
     Public Property Comments() As String
         Get
-            Return m_Comments
+            Return m_comments
         End Get
         Set(ByVal value As String)
-            m_Comments = value
+            m_comments = value
         End Set
     End Property
-
-
 #End Region
 
-    Dim path As String
-    Dim strConfigFile As String
-    Dim dt As DataTable
-    Dim row As DataRow
+    Public Event SpeciesConfigurationUpdate()
 
     Public Sub New()
         InitializeComponent()
     End Sub
 
     Private Sub frmConfigureSpecies_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        Dim d As DataTable = Database.GetDataTable("SELECT ConfidenceID, ConfidenceIdDescription FROM " & DB_CONFIDENCE_IDS_TABLE & " ORDER BY ConfidenceID;", DB_CONFIDENCE_IDS_TABLE)
+        Dim d As DataTable = Database.GetDataTable("select ConfidenceID, ConfidenceIdDescription from " &
+                                                   DB_CONFIDENCE_IDS_TABLE & " order by ConfidenceID", DB_CONFIDENCE_IDS_TABLE)
+        Dim row As DataRow
         For Each row In d.Rows
-            Me.cboIDConfidence.Items.Add(New ValueDescriptionPair(row.Item(0).ToString(), row.Item(1).ToString()))
+            cboIDConfidence.Items.Add(New ValueDescriptionPair(row.Item(0).ToString(), row.Item(1).ToString()))
         Next
-        d = Database.GetDataTable("SELECT ACFORScaleID, ACFORScaleDescription FROM " & DB_ABUNDANCE_TABLE & " ORDER BY ACFORScaleID;", DB_ABUNDANCE_TABLE)
+        d = Database.GetDataTable("select ACFORScaleID, ACFORScaleDescription from " &
+                                  DB_ABUNDANCE_TABLE & " order by ACFORScaleID", DB_ABUNDANCE_TABLE)
         For Each row In d.Rows
             cboAbundance.Items.Add(New ValueDescriptionPair(row.Item(0).ToString(), row.Item(1).ToString()))
         Next
         ' Add the side items to the Side combobox
-        Me.cboSide.Items.Add("On Center")
-        Me.cboSide.Items.Add("Port")
-        Me.cboSide.Items.Add("Starboard")
-        ' Check to see if the string values are NULL
-        Me.Range = checkString(Me.Range)
-        Me.Side = checkString(Me.Side)
-        Me.IDConfidence = checkString(Me.IDConfidence)
-        Me.Abundance = checkString(Me.Abundance)
-        Me.Count = checkString(Me.Count)
-        Me.SpeciesHeight = checkString(Me.SpeciesHeight)
-        Me.SpeciesWidth = checkString(Me.SpeciesWidth)
-        Me.Length = checkString(Me.Length)
-        Me.Comments = checkString(Me.Comments)
-        ' Modify the checked property of each checkbox according to the value found in the xml configuration file
-        Me.chkRange.Checked = Me.RangeChecked
-        Me.chkIDConfidence.Checked = Me.IDConfidenceChecked
-        Me.chkAbundance.Checked = Me.AbundanceChecked
-        Me.chkCount.Checked = Me.CountChecked
-        Me.chkHeight.Checked = Me.HeightChecked
-        Me.chkWidth.Checked = Me.WidthChecked
-        Me.chkLength.Checked = Me.LengthChecked
-        Me.chkComments.Checked = Me.CommentsChecked
-        ' Modify the text property of each textbox/combobox according to the value found in the xml configuration file
-        Me.txtRangeValue.Text = Me.Range
-        Me.cboSide.SelectedIndex = Me.Side
-        Me.cboIDConfidence.Text = Me.IDConfidence
-        Me.cboAbundance.Text = Me.Abundance
-        Me.txtCount.Text = Me.Count
-        Me.txtHeight.Text = Me.SpeciesHeight
-        Me.txtWidth.Text = Me.SpeciesWidth
-        Me.txtLength.Text = Me.Length
-        Me.txtComments.Text = Me.Comments
-        ' Enable or disable the corresponding control according to the state of each checkbox
-        enableDisable(Me.txtRangeValue, chkRange.Checked)
-        enableDisable(Me.cboSide, chkRange.Checked)
-        enableDisable(Me.cboIDConfidence, chkIDConfidence.Checked)
-        enableDisable(Me.cboAbundance, chkAbundance.Checked)
-        enableDisable(Me.txtCount, chkCount.Checked)
-        enableDisable(Me.txtHeight, chkHeight.Checked)
-        enableDisable(Me.txtWidth, chkWidth.Checked)
-        enableDisable(Me.txtLength, chkLength.Checked)
-        enableDisable(Me.txtComments, chkComments.Checked)
-    End Sub
+        cboSide.Items.Add("On Center")
 
-    ' Function to enable or disable a form based on the boolean value passed as a parameter
-    Private Sub enableDisable(ByRef control As Windows.Forms.Control, ByVal blValue As Boolean)
-        If blValue = True Then
-            control.Enabled = True
-        Else
-            control.Enabled = False
-        End If
+        cboSide.Items.Add("Port")
+        cboSide.Items.Add("Starboard")
+        ' Check to see if the string values are NULL
+        m_range = checkString(m_range)
+        m_side = checkString(m_side)
+        m_id_confidence = checkString(m_id_confidence)
+        m_abundance = checkString(m_abundance)
+        m_count = checkString(m_count)
+        m_height = checkString(m_height)
+        m_width = checkString(m_width)
+        m_length = checkString(Length)
+        m_comments = checkString(Comments)
+        ' Modify the checked property of each checkbox according to the value found in the xml configuration file
+        chkRange.Checked = RangeChecked
+        chkIDConfidence.Checked = IDConfidenceChecked
+        chkAbundance.Checked = AbundanceChecked
+        chkCount.Checked = CountChecked
+        chkHeight.Checked = HeightChecked
+        chkWidth.Checked = WidthChecked
+        chkLength.Checked = LengthChecked
+        chkComments.Checked = CommentsChecked
+        ' Modify the text property of each textbox/combobox according to the value found in the xml configuration file
+        txtRangeValue.Text = m_range
+        'cboSide.SelectedIndex = CInt(m_side)
+        cboIDConfidence.Text = m_id_confidence
+        cboAbundance.Text = m_abundance
+        txtCount.Text = m_count
+        txtHeight.Text = m_height
+        txtWidth.Text = m_width
+        txtLength.Text = Length
+        txtComments.Text = Comments
+        ' Enable or disable the corresponding control according to the state of each checkbox
+        txtRangeValue.Enabled = chkRange.Checked
+        cboSide.Enabled = chkRange.Checked
+        cboIDConfidence.Enabled = chkIDConfidence.Checked
+        cboAbundance.Enabled = chkAbundance.Checked
+        txtCount.Enabled = chkCount.Checked
+        txtHeight.Enabled = chkHeight.Checked
+        txtWidth.Enabled = chkWidth.Checked
+        txtLength.Enabled = chkLength.Checked
+        txtComments.Enabled = chkComments.Checked
     End Sub
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
-
-        path = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly.GetName.CodeBase)
-        If (path.StartsWith("file:\")) Then
-            path = path.Substring(6)    ' Remove unnecessary substring
-        End If
-        Me.Range = checkString(Me.txtRangeValue.Text)
-        Me.Side = checkString(Me.cboSide.SelectedIndex)
-        Me.IDConfidence = checkString(Me.cboIDConfidence.Text)
-        Me.Abundance = checkString(Me.cboAbundance.Text)
-        Me.Count = checkString(Me.txtCount.Text)
-        Me.SpeciesHeight = checkString(Me.txtHeight.Text)
-        Me.SpeciesWidth = checkString(Me.txtWidth.Text)
-        Me.Length = checkString(Me.txtRangeValue.Text)
-        Me.Comments = checkString(Me.txtComments.Text)
+        m_range = checkString(txtRangeValue.Text)
+        m_side = checkString(cboSide.SelectedIndex.ToString())
+        m_id_confidence = checkString(cboIDConfidence.Text)
+        m_abundance = checkString(cboAbundance.Text)
+        m_count = checkString(txtCount.Text)
+        m_height = checkString(txtHeight.Text)
+        m_width = checkString(txtWidth.Text)
+        m_length = checkString(txtRangeValue.Text)
+        m_comments = checkString(txtComments.Text)
         RaiseEvent SpeciesConfigurationUpdate()
-        Me.Close()
+        Close()
     End Sub
 
     Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-        Me.Close()
+        Close()
     End Sub
 
     Private Function checkString(ByVal strValue As String) As String
-        If strValue = "" Then
+        If strValue = NULL_STRING Then
             strValue = UNINITIALIZED_DATA_VALUE
         ElseIf strValue = UNINITIALIZED_DATA_VALUE Then
-            strValue = ""
+            strValue = NULL_STRING
         End If
         Return strValue
     End Function
 
     Private Sub chkRange_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkRange.CheckedChanged
-        enableDisable(Me.txtRangeValue, chkRange.Checked)
-        enableDisable(Me.cboSide, chkRange.Checked)
+        txtRangeValue.Enabled = chkRange.Checked
+        cboSide.Enabled = chkRange.Checked
     End Sub
 
     Private Sub chkIDConfidence_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkIDConfidence.CheckedChanged
-        enableDisable(Me.cboIDConfidence, chkIDConfidence.Checked)
+        cboIDConfidence.Enabled = chkIDConfidence.Checked
     End Sub
 
     Private Sub chkAbundance_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkAbundance.CheckedChanged
-        enableDisable(Me.cboAbundance, chkAbundance.Checked)
+        cboAbundance.Enabled = chkAbundance.Checked
     End Sub
 
     Private Sub chkCount_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkCount.CheckedChanged
-        enableDisable(Me.txtCount, chkCount.Checked)
+        txtCount.Enabled = chkCount.Checked
     End Sub
 
     Private Sub chkHeight_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkHeight.CheckedChanged
-        enableDisable(Me.txtHeight, chkHeight.Checked)
+        txtHeight.Enabled = chkHeight.Checked
     End Sub
 
     Private Sub chkWidth_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkWidth.CheckedChanged
-        enableDisable(Me.txtWidth, chkWidth.Checked)
+        txtWidth.Enabled = chkWidth.Checked
     End Sub
 
     Private Sub chkLength_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkLength.CheckedChanged
-        enableDisable(Me.txtLength, chkLength.Checked)
+        txtLength.Enabled = chkLength.Checked
     End Sub
 
     Private Sub chkComments_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkComments.CheckedChanged
-        enableDisable(Me.txtComments, chkComments.Checked)
+        txtComments.Enabled = chkComments.Checked
     End Sub
 
     Private Sub cboSide_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboSide.SelectedIndexChanged
-        If cboSide.SelectedItem = "On Center" Then
-            Me.txtRangeValue.Text = ""
-            Me.txtRangeValue.Enabled = False
+        If cboSide.SelectedItem.ToString() = "On Center" Then
+            txtRangeValue.Text = NULL_STRING
+            txtRangeValue.Enabled = False
         Else
-            Me.txtRangeValue.Enabled = True
+            txtRangeValue.Enabled = True
         End If
     End Sub
 
     Private Sub txtAbundance_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs)
-        modGlobals.numericTextboxValidation(e)
+        numericTextboxValidation(e)
     End Sub
 
     Private Sub txtCount_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtCount.KeyPress
-        modGlobals.numericTextboxValidation(e)
+        numericTextboxValidation(e)
     End Sub
 
     Private Sub txtHeight_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtHeight.KeyPress
-        modGlobals.numericTextboxValidation(e)
+        numericTextboxValidation(e)
     End Sub
 
     Private Sub txtLength_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtLength.KeyPress
-        modGlobals.numericTextboxValidation(e)
+        numericTextboxValidation(e)
     End Sub
 
     Private Sub txtRangeValue_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtRangeValue.KeyPress
-        modGlobals.numericTextboxValidation(e)
+        numericTextboxValidation(e)
     End Sub
 
     Private Sub txtWidth_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtWidth.KeyPress
-        modGlobals.numericTextboxValidation(e)
+        numericTextboxValidation(e)
     End Sub
 End Class

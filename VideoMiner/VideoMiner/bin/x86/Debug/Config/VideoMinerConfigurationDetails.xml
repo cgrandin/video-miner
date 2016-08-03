@@ -106,9 +106,9 @@
   <DataColumnVisibility>
     <ID>True</ID>
     <TransectDate>True</TransectDate>
-    <TimeCode>True</TimeCode>
-    <TextTime>True</TextTime>
-    <TextTimeDecimal>True</TextTimeDecimal>
+    <TimeCode>False</TimeCode>
+    <TextTime>False</TextTime>
+    <TextTimeDecimal>False</TextTimeDecimal>
     <TimeSource>True</TimeSource>
     <ProjectName>False</ProjectName>
     <TransectName>True</TransectName>
@@ -117,7 +117,7 @@
     <DominantPercent>False</DominantPercent>
     <SubdominantSubstrate>True</SubdominantSubstrate>
     <SubdominantPercent>True</SubdominantPercent>
-    <SurveyModeID>False</SurveyModeID>
+    <SurveyModeID>True</SurveyModeID>
     <ReliefID>True</ReliefID>
     <DisturbanceID>True</DisturbanceID>
     <ComplexityID>True</ComplexityID>
@@ -136,12 +136,12 @@
     <IDConfidence>True</IDConfidence>
     <Comment>True</Comment>
     <DataCode>True</DataCode>
-    <X>True</X>
-    <Y>True</Y>
-    <Z>True</Z>
+    <X>False</X>
+    <Y>False</Y>
+    <Z>False</Z>
     <FileName>True</FileName>
-    <ScreenCaptureName>True</ScreenCaptureName>
-    <ElapsedTime>True</ElapsedTime>
-    <ReviewedDateTime>True</ReviewedDateTime>
+    <ScreenCaptureName>False</ScreenCaptureName>
+    <ElapsedTime>False</ElapsedTime>
+    <ReviewedDateTime>False</ReviewedDateTime>
   </DataColumnVisibility>
 </VideoMinerConfigurationDetails>

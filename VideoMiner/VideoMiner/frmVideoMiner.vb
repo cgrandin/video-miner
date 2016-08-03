@@ -662,6 +662,17 @@ Public Class VideoMiner
         End If
 
         m_db_file_open = False
+        ' Disable all configuration menu items pertaining to the database
+        DataCodeAssignmentsToolStripMenuItem.Enabled = False
+        KeyboardShortcutsToolStripMenuItem.Enabled = False
+        DataTableColumnsToolStripMenuItem.Enabled = False
+        ConfigureSpeciesEventToolStripMenuItem.Enabled = False
+        ConfigureHabitatButtonToolStripMenuItem.Enabled = False
+        ConfigureTransectButtonsToolStripMenuItem.Enabled = False
+        ConfigureButtonFormatToolStripMenuItem.Enabled = False
+        DisableHabitatButtonsToolStripMenuItem.Enabled = False
+        EditLookupTableToolStripMenuItem.Enabled = False
+
         m_video_file_open = False
         video_file_unload()
         no_files_loaded()
@@ -2490,6 +2501,13 @@ Public Class VideoMiner
         radAbundanceEntry.Visible = True
         cmdEdit.Visible = True
         cmdRareSpeciesLookup.Visible = True
+        DataTableColumnsToolStripMenuItem.Enabled = True
+        ConfigureSpeciesEventToolStripMenuItem.Enabled = True
+        ConfigureHabitatButtonToolStripMenuItem.Enabled = True
+        ConfigureTransectButtonsToolStripMenuItem.Enabled = True
+        ConfigureButtonFormatToolStripMenuItem.Enabled = True
+        DisableHabitatButtonsToolStripMenuItem.Enabled = True
+        EditLookupTableToolStripMenuItem.Enabled = True
         If m_video_file_open Then
             txtTransectDate.Enabled = True
             txtProjectName.Enabled = True
@@ -3005,9 +3023,16 @@ Public Class VideoMiner
         End If
         Me.lblDatabase.Text = DB_FILE_STATUS_UNLOADED
         mnuOpenDatabase.Enabled = True
-        mnuCloseDatabase.Enabled = False
         DataCodeAssignmentsToolStripMenuItem.Enabled = False
         KeyboardShortcutsToolStripMenuItem.Enabled = False
+        DataTableColumnsToolStripMenuItem.Enabled = False
+        ConfigureSpeciesEventToolStripMenuItem.Enabled = False
+        ConfigureHabitatButtonToolStripMenuItem.Enabled = False
+        ConfigureTransectButtonsToolStripMenuItem.Enabled = False
+        ConfigureButtonFormatToolStripMenuItem.Enabled = False
+        DisableHabitatButtonsToolStripMenuItem.Enabled = False
+        EditLookupTableToolStripMenuItem.Enabled = False
+
         m_pnlTransectData.removeAllDynamicControls()
         m_pnlHabitatData.removeAllDynamicControls()
         m_pnlSpeciesData.removeAllDynamicControls()
