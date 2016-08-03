@@ -666,7 +666,7 @@ Public Class VideoMiner
         DataCodeAssignmentsToolStripMenuItem.Enabled = False
         KeyboardShortcutsToolStripMenuItem.Enabled = False
         DataTableColumnsToolStripMenuItem.Enabled = False
-        ConfigureSpeciesEventToolStripMenuItem.Enabled = False
+        'ConfigureSpeciesEventToolStripMenuItem.Enabled = False
         ConfigureHabitatButtonToolStripMenuItem.Enabled = False
         ConfigureTransectButtonsToolStripMenuItem.Enabled = False
         ConfigureButtonFormatToolStripMenuItem.Enabled = False
@@ -2021,7 +2021,7 @@ Public Class VideoMiner
 
     End Sub
 
-    Private Sub ConfigureSpeciesEventToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureSpeciesEventToolStripMenuItem.Click
+    Private Sub ConfigureSpeciesEventToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         If Not m_frmSpeciesEvent Is Nothing Then
             m_frmSpeciesEvent.Dispose()
             m_frmSpeciesEvent = Nothing
@@ -2502,7 +2502,7 @@ Public Class VideoMiner
         cmdEdit.Visible = True
         cmdRareSpeciesLookup.Visible = True
         DataTableColumnsToolStripMenuItem.Enabled = True
-        ConfigureSpeciesEventToolStripMenuItem.Enabled = True
+        'ConfigureSpeciesEventToolStripMenuItem.Enabled = True
         ConfigureHabitatButtonToolStripMenuItem.Enabled = True
         ConfigureTransectButtonsToolStripMenuItem.Enabled = True
         ConfigureButtonFormatToolStripMenuItem.Enabled = True
@@ -3026,7 +3026,7 @@ Public Class VideoMiner
         DataCodeAssignmentsToolStripMenuItem.Enabled = False
         KeyboardShortcutsToolStripMenuItem.Enabled = False
         DataTableColumnsToolStripMenuItem.Enabled = False
-        ConfigureSpeciesEventToolStripMenuItem.Enabled = False
+        'ConfigureSpeciesEventToolStripMenuItem.Enabled = False
         ConfigureHabitatButtonToolStripMenuItem.Enabled = False
         ConfigureTransectButtonsToolStripMenuItem.Enabled = False
         ConfigureButtonFormatToolStripMenuItem.Enabled = False

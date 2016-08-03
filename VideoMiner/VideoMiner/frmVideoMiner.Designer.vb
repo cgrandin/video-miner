@@ -47,7 +47,6 @@ Partial Class VideoMiner
         Me.mnuOpenImg = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuConfigureTools = New System.Windows.Forms.ToolStripMenuItem()
         Me.DataTableColumnsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ConfigureSpeciesEventToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureTransectButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureHabitatButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureButtonFormatToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -338,7 +337,7 @@ Partial Class VideoMiner
         '
         'mnuConfigureTools
         '
-        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DataTableColumnsToolStripMenuItem, Me.ConfigureSpeciesEventToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.ConfigureButtonFormatToolStripMenuItem, Me.DisableHabitatButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem, Me.mnuShowTooltips})
+        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DataTableColumnsToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.ConfigureButtonFormatToolStripMenuItem, Me.DisableHabitatButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem, Me.mnuShowTooltips})
         Me.mnuConfigureTools.Name = "mnuConfigureTools"
         Me.mnuConfigureTools.Size = New System.Drawing.Size(72, 20)
         Me.mnuConfigureTools.Text = "Configure"
@@ -348,12 +347,6 @@ Partial Class VideoMiner
         Me.DataTableColumnsToolStripMenuItem.Name = "DataTableColumnsToolStripMenuItem"
         Me.DataTableColumnsToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
         Me.DataTableColumnsToolStripMenuItem.Text = "Data column visibility"
-        '
-        'ConfigureSpeciesEventToolStripMenuItem
-        '
-        Me.ConfigureSpeciesEventToolStripMenuItem.Name = "ConfigureSpeciesEventToolStripMenuItem"
-        Me.ConfigureSpeciesEventToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
-        Me.ConfigureSpeciesEventToolStripMenuItem.Text = "Species Event"
         '
         'ConfigureTransectButtonsToolStripMenuItem
         '
@@ -1350,7 +1343,6 @@ Partial Class VideoMiner
     Friend WithEvents mnthCalendar As System.Windows.Forms.MonthCalendar
     Friend WithEvents cmdCloseCalendar As System.Windows.Forms.Button
     Friend WithEvents mnuConfigureTools As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents ConfigureSpeciesEventToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents txtQuickSpeciesCount As System.Windows.Forms.TextBox
     Friend WithEvents lblQuickSpeciesCount As System.Windows.Forms.Label
     Friend WithEvents cmdRareSpeciesLookup As System.Windows.Forms.Button
