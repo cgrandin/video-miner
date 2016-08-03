@@ -25,12 +25,14 @@
         For col As Integer = 0 To m_data_table.Columns.Count - 1
             clbData.Items.Add(m_data_table.Columns(col).ColumnName)
         Next
+        clbData.CheckOnClick = True
         checkAll()
     End Sub
 
     Private Sub checkAll()
         For idx As Integer = 0 To clbData.Items.Count - 1
             clbData.SetItemCheckState(idx, CheckState.Checked)
+            m_show_indices(idx) = True
         Next
     End Sub
 
@@ -53,18 +55,27 @@
     ''' </summary>
     ''' <param name="blVis"></param>
     Public Sub SetVisibleColumns(blVis As Boolean())
-        For idx As Integer = 0 To clbData.Items.Count - 1
-            If blVis(idx) Then
-                m_show_indices(idx) = True
-                clbData.SetItemChecked(idx, True)
-            Else
-                m_show_indices(idx) = False
-                clbData.SetItemChecked(idx, False)
-            End If
-        Next
-        RaiseEvent DataTableModified()
+        Try
+            For idx As Integer = 0 To clbData.Items.Count - 1
+                If blVis(idx) Then
+                    m_show_indices(idx) = True
+                    clbData.SetItemChecked(idx, True)
+                Else
+                    m_show_indices(idx) = False
+                    clbData.SetItemChecked(idx, False)
+                End If
+            Next
+            RaiseEvent DataTableModified()
+        Catch ex As Exception
+            ' This happens if there was one or more child nodes missing from the DataColumnVisibility node
+            ' in the XML file. We could post an errorbox, but the program will default to fully selected and
+            ' fix the problem itself.
+        End Try
     End Sub
 
+    ''' <summary>
+    ''' When the form is closed, save the changes and raise an event so that the grid can be changed in the main form.
+    ''' </summary>
     Private Sub me_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If e.CloseReason = CloseReason.UserClosing Then
             e.Cancel = True

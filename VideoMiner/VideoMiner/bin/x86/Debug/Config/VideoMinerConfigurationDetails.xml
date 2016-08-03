@@ -105,43 +105,43 @@
   </GPS>
   <DataColumnVisibility>
     <ID>True</ID>
-    <TransectDate>False</TransectDate>
+    <TransectDate>True</TransectDate>
     <TimeCode>True</TimeCode>
-    <TextTime>False</TextTime>
-    <TextTimeDecimal>False</TextTimeDecimal>
-    <TimeSource>False</TimeSource>
+    <TextTime>True</TextTime>
+    <TextTimeDecimal>True</TextTimeDecimal>
+    <TimeSource>True</TimeSource>
     <ProjectName>False</ProjectName>
-    <TransectName>False</TransectName>
-    <OnBottom>True</OnBottom>
+    <TransectName>True</TransectName>
+    <OnBottom>False</OnBottom>
     <DominantSubstrate>True</DominantSubstrate>
-    <DominantPercent>True</DominantPercent>
-    <SubdominantSubstrate>False</SubdominantSubstrate>
-    <SubdominantPercent>False</SubdominantPercent>
+    <DominantPercent>False</DominantPercent>
+    <SubdominantSubstrate>True</SubdominantSubstrate>
+    <SubdominantPercent>True</SubdominantPercent>
     <SurveyModeID>False</SurveyModeID>
     <ReliefID>True</ReliefID>
-    <DisturbanceID>False</DisturbanceID>
+    <DisturbanceID>True</DisturbanceID>
     <ComplexityID>True</ComplexityID>
     <ProtocolID>True</ProtocolID>
     <ImageQualityID>True</ImageQualityID>
-    <FieldOfView>False</FieldOfView>
+    <FieldOfView>True</FieldOfView>
     <SpeciesName>True</SpeciesName>
     <SpeciesID>True</SpeciesID>
-    <SpeciesCount>False</SpeciesCount>
-    <Side>False</Side>
+    <SpeciesCount>True</SpeciesCount>
+    <Side>True</Side>
     <Range>True</Range>
-    <Length>False</Length>
-    <Height>False</Height>
-    <Width>False</Width>
-    <Abundance>False</Abundance>
-    <IDConfidence>False</IDConfidence>
+    <Length>True</Length>
+    <Height>True</Height>
+    <Width>True</Width>
+    <Abundance>True</Abundance>
+    <IDConfidence>True</IDConfidence>
     <Comment>True</Comment>
     <DataCode>True</DataCode>
-    <X>False</X>
-    <Y>False</Y>
-    <Z>False</Z>
+    <X>True</X>
+    <Y>True</Y>
+    <Z>True</Z>
     <FileName>True</FileName>
-    <ScreenCaptureName>False</ScreenCaptureName>
-    <ElapsedTime>False</ElapsedTime>
-    <ReviewedDateTime>False</ReviewedDateTime>
+    <ScreenCaptureName>True</ScreenCaptureName>
+    <ElapsedTime>True</ElapsedTime>
+    <ReviewedDateTime>True</ReviewedDateTime>
   </DataColumnVisibility>
 </VideoMinerConfigurationDetails>

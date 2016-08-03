@@ -46,6 +46,7 @@ Partial Class VideoMiner
         Me.mnuImageTools = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuOpenImg = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuConfigureTools = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DataTableColumnsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureSpeciesEventToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureTransectButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureHabitatButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -133,7 +134,6 @@ Partial Class VideoMiner
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
-        Me.DataTableColumnsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -343,48 +343,54 @@ Partial Class VideoMiner
         Me.mnuConfigureTools.Size = New System.Drawing.Size(72, 20)
         Me.mnuConfigureTools.Text = "Configure"
         '
+        'DataTableColumnsToolStripMenuItem
+        '
+        Me.DataTableColumnsToolStripMenuItem.Name = "DataTableColumnsToolStripMenuItem"
+        Me.DataTableColumnsToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
+        Me.DataTableColumnsToolStripMenuItem.Text = "Data table columns"
+        '
         'ConfigureSpeciesEventToolStripMenuItem
         '
         Me.ConfigureSpeciesEventToolStripMenuItem.Name = "ConfigureSpeciesEventToolStripMenuItem"
-        Me.ConfigureSpeciesEventToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
-        Me.ConfigureSpeciesEventToolStripMenuItem.Text = "Configure Species Event"
+        Me.ConfigureSpeciesEventToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
+        Me.ConfigureSpeciesEventToolStripMenuItem.Text = "Species Event"
         '
         'ConfigureTransectButtonsToolStripMenuItem
         '
         Me.ConfigureTransectButtonsToolStripMenuItem.Name = "ConfigureTransectButtonsToolStripMenuItem"
-        Me.ConfigureTransectButtonsToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
-        Me.ConfigureTransectButtonsToolStripMenuItem.Text = "Configure Transect Buttons"
+        Me.ConfigureTransectButtonsToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
+        Me.ConfigureTransectButtonsToolStripMenuItem.Text = "Transect Buttons"
         '
         'ConfigureHabitatButtonToolStripMenuItem
         '
         Me.ConfigureHabitatButtonToolStripMenuItem.Name = "ConfigureHabitatButtonToolStripMenuItem"
-        Me.ConfigureHabitatButtonToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
-        Me.ConfigureHabitatButtonToolStripMenuItem.Text = "Configure Habitat Buttons"
+        Me.ConfigureHabitatButtonToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
+        Me.ConfigureHabitatButtonToolStripMenuItem.Text = "Habitat Buttons"
         '
         'ConfigureButtonFormatToolStripMenuItem
         '
         Me.ConfigureButtonFormatToolStripMenuItem.Name = "ConfigureButtonFormatToolStripMenuItem"
-        Me.ConfigureButtonFormatToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
-        Me.ConfigureButtonFormatToolStripMenuItem.Text = "Configure Button Format"
+        Me.ConfigureButtonFormatToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
+        Me.ConfigureButtonFormatToolStripMenuItem.Text = "Button Format"
         '
         'DisableHabitatButtonsToolStripMenuItem
         '
         Me.DisableHabitatButtonsToolStripMenuItem.Name = "DisableHabitatButtonsToolStripMenuItem"
-        Me.DisableHabitatButtonsToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
+        Me.DisableHabitatButtonsToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
         Me.DisableHabitatButtonsToolStripMenuItem.Text = "Disable Habitat Buttons"
         '
         'EditLookupTableToolStripMenuItem
         '
         Me.EditLookupTableToolStripMenuItem.Name = "EditLookupTableToolStripMenuItem"
-        Me.EditLookupTableToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
-        Me.EditLookupTableToolStripMenuItem.Text = "Edit Lookup Table"
+        Me.EditLookupTableToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
+        Me.EditLookupTableToolStripMenuItem.Text = "Edit Lookup Tables"
         '
         'mnuShowTooltips
         '
         Me.mnuShowTooltips.Checked = True
         Me.mnuShowTooltips.CheckState = System.Windows.Forms.CheckState.Checked
         Me.mnuShowTooltips.Name = "mnuShowTooltips"
-        Me.mnuShowTooltips.Size = New System.Drawing.Size(219, 22)
+        Me.mnuShowTooltips.Size = New System.Drawing.Size(198, 22)
         Me.mnuShowTooltips.Text = "Show Tooltips"
         '
         'GPSToolStripMenuItem
@@ -1227,12 +1233,6 @@ Partial Class VideoMiner
         'tmrComputerTime
         '
         Me.tmrComputerTime.Interval = 500
-        '
-        'DataTableColumnsToolStripMenuItem
-        '
-        Me.DataTableColumnsToolStripMenuItem.Name = "DataTableColumnsToolStripMenuItem"
-        Me.DataTableColumnsToolStripMenuItem.Size = New System.Drawing.Size(219, 22)
-        Me.DataTableColumnsToolStripMenuItem.Text = "Data table columns"
         '
         'VideoMiner
         '

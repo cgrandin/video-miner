@@ -1092,6 +1092,11 @@ VideoMiner
  </summary>
  <param name="blVis"></param>
 </member>
+<member name="M:VideoMiner.frmSelectDataColumns.me_FormClosing(System.Object,System.Windows.Forms.FormClosingEventArgs)">
+ <summary>
+ When the form is closed, save the changes and raise an event so that the grid can be changed in the main form.
+ </summary>
+</member>
 <member name="E:VideoMiner.frmStringDataViewer.ShowChosenStringOnlyEvent">
  <summary>
  Signal the calling class that you want to only be sent data for whatever string was chosen in that class.
