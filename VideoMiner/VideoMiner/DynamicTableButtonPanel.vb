@@ -208,14 +208,15 @@ Public Class DynamicTableButtonPanel
         m_static_button_panel.GrowStyle = TableLayoutPanelGrowStyle.AddRows
         m_static_button_panel.AutoSizeMode = AutoSizeMode.GrowAndShrink
         m_static_button_panel.BorderStyle = BorderStyle.Fixed3D
+        m_static_button_panel.Dock = DockStyle.Top
+        m_static_button_panel.RowStyles.Add(New RowStyle(SizeType.Percent, 70))
+        m_static_button_panel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50))
+
 
         m_main_panel = New TableLayoutPanel()
         m_main_panel.GrowStyle = TableLayoutPanelGrowStyle.AddRows
         m_main_panel.AutoSizeMode = AutoSizeMode.GrowAndShrink
         m_main_panel.BorderStyle = BorderStyle.Fixed3D
-        m_static_button_panel.Dock = DockStyle.Top
-        m_static_button_panel.RowStyles.Add(New RowStyle(SizeType.Percent, 70))
-        m_static_button_panel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50))
 
         m_main_panel.Controls.Add(m_static_button_panel)
         Controls.Add(m_main_panel)
@@ -278,17 +279,16 @@ Public Class DynamicTableButtonPanel
         m_button_width = m_disable_buttons_button.Width
         If IsNothing(m_dynamic_button_panel) Then
             m_dynamic_button_panel = New TableLayoutPanel()
-            m_dynamic_button_panel.ColumnCount = 2
-            m_dynamic_button_panel.RowCount = getRowCount()
         End If
         intRow = 0
         intCol = 0
         m_dynamic_button_panel.Controls.Clear()
+        m_dynamic_button_panel.ColumnCount = 2
+        m_dynamic_button_panel.RowCount = getRowCount()
         For i As Integer = 0 To m_num_dynamic_buttons - 1
             m_dynamic_buttons(i).Width = m_button_width
             m_dynamic_buttons(i).Height = m_button_height
             m_dynamic_buttons(i).Dock = DockStyle.Top
-            'm_dynamic_buttons(i).Anchor = AnchorStyles.Left And AnchorStyles.Right
             m_dynamic_button_panel.Controls.Add(m_dynamic_buttons(i), intCol, intRow)
             If i = m_dynamic_button_panel.RowCount - 1 Then
                 intRow = 0
@@ -301,6 +301,10 @@ Public Class DynamicTableButtonPanel
         m_dynamic_button_panel.GrowStyle = TableLayoutPanelGrowStyle.AddRows
         m_dynamic_button_panel.AutoSizeMode = AutoSizeMode.GrowAndShrink
         m_dynamic_button_panel.BorderStyle = BorderStyle.Fixed3D
+        ' The next two calls are required so that the scrollbars will dissappear when the
+        ' number of buttons on the panel is reduced below that necessary for scrollbars.
+        m_dynamic_button_panel.AutoScroll = False
+        m_dynamic_button_panel.AutoScroll = True
 
         m_main_panel.Dock = DockStyle.Fill
         For i As Integer = 0 To m_dynamic_button_panel.RowCount - 1
@@ -308,17 +312,7 @@ Public Class DynamicTableButtonPanel
             m_dynamic_button_panel.RowStyles.Add(rs)
         Next
         m_main_panel.Controls.Add(m_dynamic_button_panel)
-
-        'm_dynamic_button_panel.RowStyles.Add(New RowStyle(SizeType.Absolute, m_button_height * 2))
-        'm_dynamic_button_panel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50))
-        'For Each rs As RowStyle In m_dynamic_button_panel.RowStyles
-        '    rs.SizeType = SizeType.Absolute
-        '    rs.Height = m_button_height * 2
-        'Next
-
-
         Controls.Add(m_main_panel)
-        '        m_dynamic_button_panel.Visible = True
         m_main_panel.Visible = True
     End Sub
 

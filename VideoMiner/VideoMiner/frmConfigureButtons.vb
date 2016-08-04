@@ -76,11 +76,11 @@
             End If
             r.Item(strKeyName) = intNextKey
             If Not Database.InsertRow(r, strMoveToTable) Then
-                MessageBox.Show("The database insert operation failed when trying to move the record to the " & strMoveToTable & " table",
+                MessageBox.Show("The database insert operation failed when trying to move a record to the " & strMoveToTable & " table",
                                 "Insert failed", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
             If Not Database.DeleteRow(intLastKey, m_table_name) Then
-                MessageBox.Show("The database delete operation failed when trying to move the record to the " & strMoveToTable & " table",
+                MessageBox.Show("The database delete operation failed when trying to move a record to the " & strMoveToTable & " table",
                                 "Delete failed", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         Next
