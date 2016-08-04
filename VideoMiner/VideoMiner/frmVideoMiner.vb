@@ -3021,7 +3021,7 @@ Public Class VideoMiner
         If Database.IsOpen Then
             Database.Close()
         End If
-        Me.lblDatabase.Text = DB_FILE_STATUS_UNLOADED
+        lblDatabase.Text = DB_FILE_STATUS_UNLOADED
         mnuOpenDatabase.Enabled = True
         DataCodeAssignmentsToolStripMenuItem.Enabled = False
         KeyboardShortcutsToolStripMenuItem.Enabled = False
@@ -3077,10 +3077,13 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
-    ''' Creates and runs an 'INSERT INTO' query on the database for all of the given items in the dictionary. Each item will be incorporated into a single query for insertion.
+    ''' Creates and runs an 'INSERT INTO' query on the database for all of the given items in the dictionary.
+    ''' Each item will be incorporated into a single query for insertion.
     ''' </summary>
-    ''' <param name="dictTransect">A Dictionary object of Key/Value pairs where the keys are field names as found in the main 'data' table in the database, and the values are a pair
-    ''' of codes, the first one being the data code for the field being recorded to in the 'data' table and the second being the data code itself as chosen by the user.</param>
+    ''' <param name="dictTransect">A Dictionary object of Key/Value pairs where the keys are field names
+    ''' as found in the main 'data' table in the database, and the values are a pair of codes, the first
+    ''' one being the data code for the field being recorded to in the 'data' table and the second being
+    ''' the data code itself as chosen by the user.</param>
     Private Sub runInsertQuery(dictTransect As Dictionary(Of String, Tuple(Of String, String, Boolean)))
         Dim intKey As Integer = Database.GetNextPrimaryKeyValue(DB_DATA_TABLE)
         If intKey <= 0 Then
@@ -3170,12 +3173,12 @@ Public Class VideoMiner
     End Sub
 
     Private Sub radQuickEntry_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles radQuickEntry.CheckedChanged
-        If Me.radQuickEntry.Checked = True Then
-            Me.lblQuickSpeciesCount.Visible = True
-            Me.txtQuickSpeciesCount.Visible = True
+        If radQuickEntry.Checked = True Then
+            lblQuickSpeciesCount.Visible = True
+            txtQuickSpeciesCount.Visible = True
         Else
-            Me.lblQuickSpeciesCount.Visible = False
-            Me.txtQuickSpeciesCount.Visible = False
+            lblQuickSpeciesCount.Visible = False
+            txtQuickSpeciesCount.Visible = False
         End If
         ' Tell the species panel that the buttons should all be quick entry type
         If Not IsNothing(m_pnlSpeciesData) Then

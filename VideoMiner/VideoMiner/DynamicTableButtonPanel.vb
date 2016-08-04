@@ -17,16 +17,17 @@ Public Class DynamicTableButtonPanel
     ''' </summary>
     ''' <remarks>This may or may not be shown in the panel</remarks>
     Private m_define_all_button As Button
+    Private m_disable_buttons_button As Button
+    ''' <summary>
+    ''' Necessary to hold the two buttons m_disable_buttons_button and m_define_all_button,
+    ''' and m_repeat_for_every_record in a 2x2 grid.
+    ''' </summary>
+    Private m_static_button_panel As TableLayoutPanel
     Private m_button_width As Integer
     Private m_button_height As Integer
     Private m_button_font As String
     Private m_button_text_size As Integer
 
-    ''' <summary>
-    ''' The number of static controls on the panel ('define all' button and 'repeat for every' checkbox)
-    ''' It will be one of 0, 1, or 2.
-    ''' </summary>
-    Private m_num_static_controls As Integer
     ''' <summary>
     ''' The number of dynamic buttons currently on the panel
     ''' </summary>
@@ -125,8 +126,9 @@ Public Class DynamicTableButtonPanel
         Name = strname
         m_repeat_for_every_record = Nothing
         m_define_all_button = Nothing
+        m_disable_buttons_button = Nothing
         m_y_offset = 0
-        m_gap = 2
+        m_gap = 1
         m_tuple = New Tuple(Of String, String, Boolean)(Nothing, Nothing, False)
         m_dict = New Dictionary(Of String, Tuple(Of String, String, Boolean))
 
@@ -136,54 +138,74 @@ Public Class DynamicTableButtonPanel
         m_button_font = strButtonFont
         m_button_text_size = CInt(strButtonTextSize)
 
-        m_num_static_controls = 0
+        m_static_button_panel = New TableLayoutPanel()
+        m_static_button_panel.ColumnCount = 2
+        m_static_button_panel.RowCount = 2
+
         If blIncludeRepeatCheckbox Then
+            m_static_button_panel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50))
             m_repeat_for_every_record = New CheckBox()
             m_repeat_for_every_record.Name = "chkRepeat"
             m_repeat_for_every_record.Text = "Repeat data for every record"
             m_repeat_for_every_record.Checked = blRepeatIsChecked
             m_repeat_for_every_record.TextAlign = ContentAlignment.MiddleLeft
-            m_repeat_for_every_record.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-            m_repeat_for_every_record.Width = intRepeatWidth
-            m_repeat_for_every_record.Height = intRepeatHeight
             m_repeat_for_every_record.ThreeState = False
-            m_repeat_for_every_record.Left = 1
-            m_repeat_for_every_record.Top = 19
-            m_y_offset = m_repeat_for_every_record.Bottom + m_gap
-            m_repeat_for_every_record.Visible = False
             AddHandler m_repeat_for_every_record.CheckedChanged, AddressOf repeatForEveryRecordHandler
-            m_num_static_controls += 1
-        Else
-            m_repeat_for_every_record = Nothing
+            m_repeat_for_every_record.Dock = DockStyle.Fill
+            m_static_button_panel.Controls.Add(m_repeat_for_every_record, 0, 0)
+            ' Force the checkbox to take up both columns in the first row
+            m_static_button_panel.SetCellPosition(m_repeat_for_every_record, New TableLayoutPanelCellPosition(0, 0))
+            m_static_button_panel.SetColumnSpan(m_repeat_for_every_record, 2)
         End If
         If blIncludeDefineAllButton Then
+            m_static_button_panel.RowStyles.Add(New RowStyle(SizeType.Percent, 50))
             m_define_all_button = New Button()
             m_define_all_button.Name = "btnDefineAll"
             m_define_all_button.Text = "Define All"
             m_define_all_button.TextAlign = ContentAlignment.MiddleCenter
             m_define_all_button.ForeColor = Color.Blue
             m_define_all_button.Font = New Font(m_button_font, m_button_text_size, FontStyle.Bold)
-            'm_define_all_button.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-            m_define_all_button.Width = m_button_width
-            m_define_all_button.Height = m_button_height
-            m_define_all_button.Left = 1
-            If blIncludeRepeatCheckbox Then
-                m_define_all_button.Top = 36
-            Else
-                m_define_all_button.Top = 19
-            End If
-            m_y_offset = m_define_all_button.Bottom + m_gap
-            m_define_all_button.Visible = False
             AddHandler m_define_all_button.Click, AddressOf DefineAll
-            Controls.Add(m_define_all_button)
-            m_num_static_controls += 1
-        Else
-            m_define_all_button = Nothing
+            m_define_all_button.Dock = DockStyle.Fill
+            If blIncludeRepeatCheckbox Then
+                m_static_button_panel.Controls.Add(m_define_all_button, 0, 1)
+            Else
+                m_static_button_panel.Controls.Add(m_define_all_button, 0, 0)
+            End If
         End If
+        ' Add a disable buttons button
+        m_disable_buttons_button = New Button()
+        m_disable_buttons_button.Name = "btnDisableButtons"
+        m_disable_buttons_button.Text = "Disable Buttons"
+        m_disable_buttons_button.TextAlign = ContentAlignment.MiddleCenter
+        m_disable_buttons_button.ForeColor = Color.Blue
+        m_disable_buttons_button.Font = New Font(m_button_font, m_button_text_size, FontStyle.Bold)
+        AddHandler m_disable_buttons_button.Click, AddressOf DisableEnableButtons
+        m_disable_buttons_button.Dock = DockStyle.Fill
         If blIncludeRepeatCheckbox Then
-            Controls.Add(m_repeat_for_every_record)
+            If blIncludeDefineAllButton Then
+                m_static_button_panel.Controls.Add(m_disable_buttons_button, 1, 1)
+            Else
+                m_static_button_panel.Controls.Add(m_disable_buttons_button, 0, 1)
+            End If
+        Else
+            If blIncludeDefineAllButton Then
+                m_static_button_panel.Controls.Add(m_disable_buttons_button, 1, 0)
+            Else
+                m_static_button_panel.Controls.Add(m_disable_buttons_button, 0, 0)
+            End If
         End If
-        BorderStyle = Windows.Forms.BorderStyle.Fixed3D
+        m_static_button_panel.GrowStyle = TableLayoutPanelGrowStyle.AddRows
+        m_static_button_panel.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        m_static_button_panel.BorderStyle = BorderStyle.Fixed3D
+        Controls.Add(m_static_button_panel)
+        m_static_button_panel.Dock = DockStyle.Top
+        m_static_button_panel.Visible = False
+        m_static_button_panel.RowStyles.Add(New RowStyle(SizeType.Percent, 70))
+        m_static_button_panel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50))
+        m_y_offset = m_static_button_panel.Bottom + m_gap
+
+        BorderStyle = BorderStyle.Fixed3D
         Dock = DockStyle.Fill
         AutoScroll = True
         m_num_dynamic_buttons = 0
@@ -194,11 +216,8 @@ Public Class DynamicTableButtonPanel
     ''' </summary>
     ''' <param name="strTableName">Name of the button description table in the MS Access database</param>
     Public Sub fillPanel(strTableName As String)
-        If Not IsNothing(m_repeat_for_every_record) Then
-            m_repeat_for_every_record.Visible = True
-        End If
-        If Not IsNothing(m_define_all_button) Then
-            m_define_all_button.Visible = True
+        If Not IsNothing(m_static_button_panel) Then
+            m_static_button_panel.Visible = True
         End If
         Dim d As DataTable = Database.GetDataTable("select * from " & strTableName & " order by DrawingOrder;", strTableName)
         m_num_dynamic_buttons = d.Rows.Count
@@ -226,7 +245,7 @@ Public Class DynamicTableButtonPanel
             cellsizex = m_dynamic_buttons(i).ControlWidth + m_gap
             cellsizey = m_dynamic_buttons(i).ControlHeight + m_gap
             'cellsizey = (1.5 * m_dynamic_buttons(i).ControlHeight) + m_gap
-            m_dynamic_buttons(i).Location = New System.Drawing.Point(m_gap + (cellsizex * intMultiply), m_y_offset + (cellsizey * (i - intAdd)))
+            m_dynamic_buttons(i).Location = New Drawing.Point(m_gap + (cellsizex * intMultiply), m_y_offset + (cellsizey * (i - intAdd)))
             Me.Controls.Add(m_dynamic_buttons(i))
             If i Mod 5 = 4 Then
                 intAdd += 5
@@ -239,14 +258,11 @@ Public Class DynamicTableButtonPanel
     ''' Removes all dynamic controls (DynamicButton and DynamicTextbox controls) from the panel.
     ''' </summary>
     Public Sub removeAllDynamicControls()
-        Do While Me.Controls.Count > m_num_static_controls
-            Me.Controls.RemoveAt(m_num_static_controls)
+        Do While Controls.Count > 1
+            Controls.RemoveAt(1)
         Loop
-        If Not IsNothing(m_repeat_for_every_record) Then
-            m_repeat_for_every_record.Visible = False
-        End If
-        If Not IsNothing(m_define_all_button) Then
-            m_define_all_button.Visible = False
+        If Not IsNothing(m_static_button_panel) Then
+            m_static_button_panel.Visible = False
         End If
     End Sub
 
@@ -268,7 +284,14 @@ Public Class DynamicTableButtonPanel
         Else
             For i As Integer = 0 To m_num_dynamic_buttons - 1
                 If Not IsNothing(m_dynamic_buttons(i).Dictionary) Then
-                    m_dict = m_dict.Union(m_dynamic_buttons(i).Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+                    Try
+                        m_dict = m_dict.Union(m_dynamic_buttons(i).Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+                    Catch ex As Exception
+                        MessageBox.Show("Error - the button you pressed has a duplicate on the panel, and was already set. Delete duplicate buttons.",
+                                        "Error - duplicate buttons",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error)
+                    End Try
                 End If
             Next
         End If
@@ -297,10 +320,27 @@ Public Class DynamicTableButtonPanel
     ''' This is a convinience button. The windows are opened in reverse order so that they will be in the correct order
     ''' from top to bottom.
     ''' </summary>
-    Private Sub DefineAll(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    Private Sub DefineAll(sender As Object, e As EventArgs)
         For i As Integer = m_num_dynamic_buttons - 1 To 0 Step -1
             m_dynamic_buttons(i).DataFormVisible = True
         Next
+    End Sub
+
+    ''' <summary>
+    ''' Disable or Enable everything on the panel
+    ''' </summary>
+    Private Sub DisableEnableButtons(sender As Object, e As EventArgs)
+        m_repeat_for_every_record.Enabled = Not m_repeat_for_every_record.Enabled
+        m_define_all_button.Enabled = Not m_define_all_button.Enabled
+        'm_static_button_panel.Enabled = Not m_static_button_panel.Enabled
+        For i As Integer = 0 To m_num_dynamic_buttons - 1
+            m_dynamic_buttons(i).Enabled = Not m_dynamic_buttons(i).Enabled
+        Next
+        If m_disable_buttons_button.Text = "Disable Buttons" Then
+            m_disable_buttons_button.Text = "Enable Buttons"
+        Else
+            m_disable_buttons_button.Text = "Disable Buttons"
+        End If
     End Sub
 
     ''' <summary>
