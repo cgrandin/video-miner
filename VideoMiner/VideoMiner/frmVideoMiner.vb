@@ -1555,10 +1555,26 @@ Public Class VideoMiner
             Select Case pnl.Name
                 Case PANEL_NAME_HABITAT
                     ' merge the transect panel dictionary
-                    dict = dict.Union(m_pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+                    Try
+                        dict = dict.Union(m_pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+                    Catch ex As Exception
+                        MessageBox.Show("Error - the button you pressed has a duplicate on the " & PANEL_NAME_TRANSECT & " panel, and was already set. Delete duplicate buttons.",
+                                        "Error - duplicate buttons",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error)
+                        Exit Sub
+                    End Try
                 Case PANEL_NAME_TRANSECT
                     ' merge the habitat panel dictionary
-                    dict = dict.Union(m_pnlHabitatData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+                    Try
+                        dict = dict.Union(m_pnlHabitatData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+                    Catch ex As Exception
+                        MessageBox.Show("Error - the button you pressed has a duplicate on the " & PANEL_NAME_HABITAT & " panel, and was already set. Delete duplicate buttons.",
+                                        "Error - duplicate buttons",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error)
+                        Exit Sub
+                    End Try
             End Select
             runInsertQuery(dict)
         ElseIf TypeOf sender Is frmRareSpeciesLookup Then

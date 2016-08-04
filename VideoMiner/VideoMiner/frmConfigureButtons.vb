@@ -15,10 +15,6 @@
     Private m_data_code As Integer
     Private m_field_name As String
     Private m_has_modifications As Boolean
-    Private Enum MoveOrCopyEnum
-        Move
-        Copy
-    End Enum
 #End Region
 
 #Region "Events"
@@ -34,7 +30,6 @@
         m_table_name = strConfigureTable
         m_grd = New VideoMinerDataGridView(m_table_name, True)
         btnMoveToPanel.Text = "Move to " & strPanelName
-        btnCopyToPanel.Text = "Copy to " & strPanelName
         Panel4.Controls.Add(m_grd)
         m_grd.Dock = DockStyle.Fill
     End Sub
@@ -49,9 +44,9 @@
     End Sub
 
     ''' <summary>
-    ''' Selected rows will be either moved or copied to the other panel.
+    ''' Selected rows will be moved to the other panel.
     ''' </summary>
-    Private Sub moveOrCopyToPanel(moveOrCopy As MoveOrCopyEnum)
+    Private Sub moveToPanel()
         Dim strMoveToTable As String
         Dim d As DataTable
         Dim r As DataRow
@@ -63,19 +58,14 @@
         Dim strKeyName As String = Database.GetPrimaryKeyFieldName(m_table_name)
         Dim lstSelectedKeys As List(Of DataRow) = m_grd.getSelectedRowsPrimaryKeys()
         If IsNothing(lstSelectedKeys) Then
-            Dim strMoveOrCopy As String
-            If moveOrCopy = MoveOrCopyEnum.Move Then
-                strMoveOrCopy = "move"
-            Else
-                strMoveOrCopy = "copy"
-            End If
-            MessageBox.Show("A row must be selected for a " & strMoveOrCopy & " operation.",
+            MessageBox.Show("A row must be selected for a move operation.",
                             "No rows selected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         d = Database.GetDataTable("select * from " & m_table_name, m_table_name)
         Dim intLastKey As Integer
         Dim intNextKey As Integer
+        m_grd.DGV.DataSource = Nothing
         For i As Integer = lstSelectedKeys.Count - 1 To 0 Step -1
             r = lstSelectedKeys(i)
             intLastKey = CInt(r.Item(strKeyName))
@@ -85,9 +75,13 @@
                 intNextKey = 1
             End If
             r.Item(strKeyName) = intNextKey
-            Database.InsertRow(r, strMoveToTable)
-            If moveOrCopy = MoveOrCopyEnum.Move Then
-                Database.DeleteRow(intLastKey, m_table_name)
+            If Not Database.InsertRow(r, strMoveToTable) Then
+                MessageBox.Show("The database insert operation failed when trying to move the record to the " & strMoveToTable & " table",
+                                "Insert failed", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End If
+            If Not Database.DeleteRow(intLastKey, m_table_name) Then
+                MessageBox.Show("The database delete operation failed when trying to move the record to the " & strMoveToTable & " table",
+                                "Delete failed", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         Next
         m_grd_DataChanged()
@@ -99,15 +93,7 @@
     ''' The database will also have the entries moved from one button table to the other.
     ''' </summary>
     Private Sub btnMoveToPanel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnMoveToPanel.Click
-        moveOrCopyToPanel(MoveOrCopyEnum.Move)
-    End Sub
-
-    ''' <summary>
-    ''' Clicking this button results in the selected rows being copied to the other panel.
-    ''' The database will also have the entries moved from one button table to the other.
-    ''' </summary>
-    Private Sub btnCopyToPanel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCopyToPanel.Click
-        moveOrCopyToPanel(MoveOrCopyEnum.Copy)
+        moveToPanel()
     End Sub
 
     ''' <summary>
@@ -139,7 +125,6 @@
     ''' </summary>
     Private Sub setSynced() Handles m_grd.SyncedEvent
         btnMoveToPanel.Enabled = True
-        btnCopyToPanel.Enabled = True
         btnOK.Enabled = True
     End Sub
 
@@ -148,7 +133,6 @@
     ''' </summary>
     Private Sub setUnSynced() Handles m_grd.UnsyncedEvent
         btnMoveToPanel.Enabled = False
-        btnCopyToPanel.Enabled = False
         btnOK.Enabled = False
     End Sub
 End Class

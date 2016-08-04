@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmConfigureButtons
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class frmConfigureButtons
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmConfigureButtons))
         Me.btnMoveToPanel = New System.Windows.Forms.Button()
@@ -28,7 +28,6 @@ Partial Class frmConfigureButtons
         Me.Panel4 = New System.Windows.Forms.Panel()
         Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
         Me.btnOK = New System.Windows.Forms.Button()
-        Me.btnCopyToPanel = New System.Windows.Forms.Button()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.TableLayoutPanel2.SuspendLayout()
         Me.SuspendLayout()
@@ -37,7 +36,7 @@ Partial Class frmConfigureButtons
         '
         Me.btnMoveToPanel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnMoveToPanel.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnMoveToPanel.Location = New System.Drawing.Point(142, 3)
+        Me.btnMoveToPanel.Location = New System.Drawing.Point(257, 3)
         Me.btnMoveToPanel.Name = "btnMoveToPanel"
         Me.btnMoveToPanel.Size = New System.Drawing.Size(220, 38)
         Me.btnMoveToPanel.TabIndex = 14
@@ -69,11 +68,9 @@ Partial Class frmConfigureButtons
         '
         'TableLayoutPanel2
         '
-        Me.TableLayoutPanel2.ColumnCount = 3
+        Me.TableLayoutPanel2.ColumnCount = 2
         Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 230.0!))
-        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.00001!))
-        Me.TableLayoutPanel2.Controls.Add(Me.btnCopyToPanel, 0, 0)
+        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.TableLayoutPanel2.Controls.Add(Me.btnMoveToPanel, 0, 0)
         Me.TableLayoutPanel2.Controls.Add(Me.btnOK, 1, 0)
         Me.TableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill
@@ -87,22 +84,12 @@ Partial Class frmConfigureButtons
         'btnOK
         '
         Me.btnOK.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnOK.Location = New System.Drawing.Point(598, 3)
+        Me.btnOK.Location = New System.Drawing.Point(483, 3)
         Me.btnOK.Name = "btnOK"
         Me.btnOK.Size = New System.Drawing.Size(220, 38)
         Me.btnOK.TabIndex = 19
         Me.btnOK.Text = "Close"
         Me.btnOK.UseVisualStyleBackColor = True
-        '
-        'btnCopyToPanel
-        '
-        Me.btnCopyToPanel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnCopyToPanel.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCopyToPanel.Location = New System.Drawing.Point(372, 3)
-        Me.btnCopyToPanel.Name = "btnCopyToPanel"
-        Me.btnCopyToPanel.Size = New System.Drawing.Size(220, 38)
-        Me.btnCopyToPanel.TabIndex = 20
-        Me.btnCopyToPanel.UseVisualStyleBackColor = True
         '
         'frmConfigureButtons
         '
@@ -126,5 +113,4 @@ Partial Class frmConfigureButtons
     Friend WithEvents btnOK As Button
     Friend WithEvents Panel4 As Panel
     Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
-    Friend WithEvents btnCopyToPanel As Button
 End Class

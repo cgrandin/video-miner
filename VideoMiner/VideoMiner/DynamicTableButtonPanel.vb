@@ -23,6 +23,16 @@ Public Class DynamicTableButtonPanel
     ''' and m_repeat_for_every_record in a 2x2 grid.
     ''' </summary>
     Private m_static_button_panel As TableLayoutPanel
+    ''' <summary>
+    ''' Holds the dynamic buttons in a 2-column table layout panel. The number of rows will depend
+    ''' on how many buttons are defined by the user.
+    ''' </summary>
+    Private m_dynamic_button_panel As TableLayoutPanel
+    ''' <summary>
+    ''' A two-row, one-column table layout panel which holds the m_static_button_panel on top
+    ''' and the m_dynamic_button_panel on the bottom.
+    ''' </summary>
+    Private m_main_panel As TableLayoutPanel
     Private m_button_width As Integer
     Private m_button_height As Integer
     Private m_button_font As String
@@ -198,17 +208,25 @@ Public Class DynamicTableButtonPanel
         m_static_button_panel.GrowStyle = TableLayoutPanelGrowStyle.AddRows
         m_static_button_panel.AutoSizeMode = AutoSizeMode.GrowAndShrink
         m_static_button_panel.BorderStyle = BorderStyle.Fixed3D
-        Controls.Add(m_static_button_panel)
+
+        m_main_panel = New TableLayoutPanel()
+        m_main_panel.GrowStyle = TableLayoutPanelGrowStyle.AddRows
+        m_main_panel.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        m_main_panel.BorderStyle = BorderStyle.Fixed3D
         m_static_button_panel.Dock = DockStyle.Top
-        m_static_button_panel.Visible = False
         m_static_button_panel.RowStyles.Add(New RowStyle(SizeType.Percent, 70))
         m_static_button_panel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50))
+
+        m_main_panel.Controls.Add(m_static_button_panel)
+        Controls.Add(m_main_panel)
         m_y_offset = m_static_button_panel.Bottom + m_gap
 
         BorderStyle = BorderStyle.Fixed3D
         Dock = DockStyle.Fill
         AutoScroll = True
         m_num_dynamic_buttons = 0
+        m_static_button_panel.Visible = False
+        m_main_panel.Visible = False
     End Sub
 
     ''' <summary>
@@ -219,7 +237,8 @@ Public Class DynamicTableButtonPanel
         If Not IsNothing(m_static_button_panel) Then
             m_static_button_panel.Visible = True
         End If
-        Dim d As DataTable = Database.GetDataTable("select * from " & strTableName & " order by DrawingOrder;", strTableName)
+        Dim strKey As String = Database.GetPrimaryKeyFieldName(strTableName)
+        Dim d As DataTable = Database.GetDataTable("select * from " & strTableName & " order by " & strKey, strTableName)
         m_num_dynamic_buttons = d.Rows.Count
         ReDim m_dynamic_buttons(m_num_dynamic_buttons)
         Dim i As Integer = 0
@@ -234,35 +253,91 @@ Public Class DynamicTableButtonPanel
     End Sub
 
     ''' <summary>
+    ''' Returns the number of rows that should be used given the number of dynamic buttons
+    ''' that must be placed.
+    ''' </summary>
+    Private Function getRowCount() As Integer
+        If m_num_dynamic_buttons < 5 Then
+            Return m_num_dynamic_buttons
+        Else
+            If m_num_dynamic_buttons Mod 2 = 0 Then
+                Return (m_num_dynamic_buttons \ 2)
+            Else
+                Return (m_num_dynamic_buttons \ 2) + 1
+            End If
+        End If
+    End Function
+
+    ''' <summary>
     ''' Place the controls in the panel in a grid fashion.
     ''' </summary>
     Private Sub placeControls()
-        Dim intAdd As Integer = 0
-        Dim intMultiply As Integer = 0
-        Dim cellsizex As Integer = m_button_width + m_gap
-        Dim cellsizey As Integer = m_button_height + m_gap
+        If m_num_dynamic_buttons = 0 Then Exit Sub
+        Dim intCol, intRow As Integer
+        m_button_height = m_disable_buttons_button.Height * 2
+        m_button_width = m_disable_buttons_button.Width
+        If IsNothing(m_dynamic_button_panel) Then
+            m_dynamic_button_panel = New TableLayoutPanel()
+            m_dynamic_button_panel.ColumnCount = 2
+            m_dynamic_button_panel.RowCount = getRowCount()
+        End If
+        intRow = 0
+        intCol = 0
+        m_dynamic_button_panel.Controls.Clear()
         For i As Integer = 0 To m_num_dynamic_buttons - 1
-            cellsizex = m_dynamic_buttons(i).ControlWidth + m_gap
-            cellsizey = m_dynamic_buttons(i).ControlHeight + m_gap
-            'cellsizey = (1.5 * m_dynamic_buttons(i).ControlHeight) + m_gap
-            m_dynamic_buttons(i).Location = New Drawing.Point(m_gap + (cellsizex * intMultiply), m_y_offset + (cellsizey * (i - intAdd)))
-            Me.Controls.Add(m_dynamic_buttons(i))
-            If i Mod 5 = 4 Then
-                intAdd += 5
-                intMultiply += 1
+            m_dynamic_buttons(i).Width = m_button_width
+            m_dynamic_buttons(i).Height = m_button_height
+            m_dynamic_buttons(i).Dock = DockStyle.Top
+            'm_dynamic_buttons(i).Anchor = AnchorStyles.Left And AnchorStyles.Right
+            m_dynamic_button_panel.Controls.Add(m_dynamic_buttons(i), intCol, intRow)
+            If i = m_dynamic_button_panel.RowCount - 1 Then
+                intRow = 0
+                intCol += 1
+            Else
+                intRow += 1
             End If
         Next
+        m_dynamic_button_panel.Dock = DockStyle.Fill
+        m_dynamic_button_panel.GrowStyle = TableLayoutPanelGrowStyle.AddRows
+        m_dynamic_button_panel.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        m_dynamic_button_panel.BorderStyle = BorderStyle.Fixed3D
+
+        m_main_panel.Dock = DockStyle.Fill
+        For i As Integer = 0 To m_dynamic_button_panel.RowCount - 1
+            Dim rs As RowStyle = New RowStyle(SizeType.Absolute, m_button_height)
+            m_dynamic_button_panel.RowStyles.Add(rs)
+        Next
+        m_main_panel.Controls.Add(m_dynamic_button_panel)
+
+        'm_dynamic_button_panel.RowStyles.Add(New RowStyle(SizeType.Absolute, m_button_height * 2))
+        'm_dynamic_button_panel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50))
+        'For Each rs As RowStyle In m_dynamic_button_panel.RowStyles
+        '    rs.SizeType = SizeType.Absolute
+        '    rs.Height = m_button_height * 2
+        'Next
+
+
+        Controls.Add(m_main_panel)
+        '        m_dynamic_button_panel.Visible = True
+        m_main_panel.Visible = True
+    End Sub
+
+    ''' <summary>
+    ''' Change the size of the dynamic buttons to be the same as the ones in the m_static_buttons_panel
+    ''' </summary>
+    Private Sub OnRezise_Form() Handles Me.Resize
+        placeControls()
     End Sub
 
     ''' <summary>
     ''' Removes all dynamic controls (DynamicButton and DynamicTextbox controls) from the panel.
     ''' </summary>
     Public Sub removeAllDynamicControls()
-        Do While Controls.Count > 1
-            Controls.RemoveAt(1)
+        Do While m_dynamic_button_panel.Controls.Count > 0
+            m_dynamic_button_panel.Controls.RemoveAt(0)
         Loop
-        If Not IsNothing(m_static_button_panel) Then
-            m_static_button_panel.Visible = False
+        If Not IsNothing(m_main_panel) Then
+            m_main_panel.Visible = False
         End If
     End Sub
 
@@ -361,6 +436,7 @@ Public Class DynamicTableButtonPanel
     Public Sub ClickButton(str As String)
         For i As Integer = 0 To m_num_dynamic_buttons - 1
             If m_dynamic_buttons(i).Text = str Then
+                ' TODO: fix this connection
                 'm_dynamic_buttons(i).PerformClick()
             End If
         Next

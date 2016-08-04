@@ -279,7 +279,6 @@ Public Module Database
                             vbCrLf & ex.Message, "Error updating table", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
         End Try
-        Return True
     End Function
 
     ''' <summary>
