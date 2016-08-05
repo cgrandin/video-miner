@@ -101,13 +101,13 @@ Public Class VideoMinerDataGridView
     Private m_show_buttons As Boolean
     Private m_show_tooltips As Boolean
     ' Tooltip members
-    Dim m_move_up As ToolTip
-    Dim m_move_down As ToolTip
-    Dim m_add_row As ToolTip
-    Dim m_delete_rows As ToolTip
-    Dim m_show_data_codes As ToolTip
-    Dim m_sync As ToolTip
-    Dim m_revert As ToolTip
+    Dim m_move_up_tooltip As ToolTip
+    Dim m_move_down_tooltip As ToolTip
+    Dim m_add_row_tooltip As ToolTip
+    Dim m_delete_rows_tooltip As ToolTip
+    Dim m_show_data_codes_tooltip As ToolTip
+    Dim m_sync_tooltip As ToolTip
+    Dim m_revert_tooltip As ToolTip
 
 #End Region
 
@@ -169,27 +169,27 @@ Public Class VideoMinerDataGridView
         End If
 
         ' Add tooltips
-        m_move_up = New ToolTip()
-        m_move_up.SetToolTip(btnMoveUp, "Move the selected row up the table")
-        m_move_down = New ToolTip()
-        m_move_down.SetToolTip(btnMoveDown, "Move the selected row down the table")
+        m_move_up_tooltip = New ToolTip()
+        m_move_up_tooltip.SetToolTip(btnMoveUp, "Move the selected row up the table")
+        m_move_down_tooltip = New ToolTip()
+        m_move_down_tooltip.SetToolTip(btnMoveDown, "Move the selected row down the table")
 
-        m_add_row = New ToolTip()
-        m_add_row.SetToolTip(btnAddRow, "Adds a new row to the database table. The new row will be a copy " & vbCrLf &
+        m_add_row_tooltip = New ToolTip()
+        m_add_row_tooltip.SetToolTip(btnAddRow, "Adds a new row to the database table. The new row will be a copy " & vbCrLf &
                              "of the most recent row or an empty row if the table is empty")
 
-        m_delete_rows = New ToolTip()
-        m_delete_rows.SetToolTip(btnDeleteRows, "Deletes the selected rows from the database. You can also press the 'delete' key " & vbCrLf &
+        m_delete_rows_tooltip = New ToolTip()
+        m_delete_rows_tooltip.SetToolTip(btnDeleteRows, "Deletes the selected rows from the database. You can also press the 'delete' key " & vbCrLf &
                                  "or right-click to delete rows")
 
-        m_show_data_codes = New ToolTip()
-        m_show_data_codes.SetToolTip(btnDataCodes, "Show the database table 'Data Codes'")
+        m_show_data_codes_tooltip = New ToolTip()
+        m_show_data_codes_tooltip.SetToolTip(btnDataCodes, "Show the database table 'Data Codes'")
 
-        m_sync = New ToolTip()
-        m_sync.SetToolTip(btnSync, "Save the modified data (colored cells) to the database")
+        m_sync_tooltip = New ToolTip()
+        m_sync_tooltip.SetToolTip(btnSync, "Save the modified data (colored cells) to the database")
 
-        m_revert = New ToolTip()
-        m_revert.SetToolTip(btnRevert, "Discard the modified data (colored cells) and reload the " & vbCrLf &
+        m_revert_tooltip = New ToolTip()
+        m_revert_tooltip.SetToolTip(btnRevert, "Discard the modified data (colored cells) and reload the " & vbCrLf &
                             "database data into the grid")
 
         If m_show_tooltips Then
@@ -201,23 +201,23 @@ Public Class VideoMinerDataGridView
     End Sub
 
     Public Sub DisableToolTips()
-        m_move_up.Active = False
-        m_move_down.Active = False
-        m_add_row.Active = False
-        m_delete_rows.Active = False
-        m_show_data_codes.Active = False
-        m_sync.Active = False
-        m_revert.Active = False
+        m_move_up_tooltip.Active = False
+        m_move_down_tooltip.Active = False
+        m_add_row_tooltip.Active = False
+        m_delete_rows_tooltip.Active = False
+        m_show_data_codes_tooltip.Active = False
+        m_sync_tooltip.Active = False
+        m_revert_tooltip.Active = False
     End Sub
 
     Public Sub EnableToolTips()
-        m_move_up.Active = True
-        m_move_down.Active = True
-        m_add_row.Active = True
-        m_delete_rows.Active = True
-        m_show_data_codes.Active = True
-        m_sync.Active = True
-        m_revert.Active = True
+        m_move_up_tooltip.Active = True
+        m_move_down_tooltip.Active = True
+        m_add_row_tooltip.Active = True
+        m_delete_rows_tooltip.Active = True
+        m_show_data_codes_tooltip.Active = True
+        m_sync_tooltip.Active = True
+        m_revert_tooltip.Active = True
     End Sub
 
     ''' <summary>
@@ -298,6 +298,8 @@ Public Class VideoMinerDataGridView
         btnMoveDown.Enabled = True
         btnDeleteRows.Enabled = True
         m_synced = True
+        grd_CellClick(New Object, New DataGridViewCellEventArgs(Nothing, Nothing))
+        grd_SelectionChanged(New Object, EventArgs.Empty)
         RaiseEvent SyncedEvent()
     End Sub
 
@@ -314,6 +316,8 @@ Public Class VideoMinerDataGridView
         btnMoveDown.Enabled = False
         btnDeleteRows.Enabled = False
         m_synced = False
+        grd_CellClick(New Object, New DataGridViewCellEventArgs(Nothing, Nothing))
+        grd_SelectionChanged(New Object, EventArgs.Empty)
         RaiseEvent UnsyncedEvent()
     End Sub
 
@@ -806,7 +810,7 @@ Public Class VideoMinerDataGridView
         End If
     End Sub
 
-    Private Sub grd_CellClick(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles grd.CellClick
+    Private Sub grd_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles grd.CellClick
         setButtonDisabledEnabled()
         RaiseEvent CellClick()
     End Sub

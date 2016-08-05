@@ -658,7 +658,6 @@ Public Class VideoMiner
         'ConfigureSpeciesEventToolStripMenuItem.Enabled = False
         ConfigureHabitatButtonToolStripMenuItem.Enabled = False
         ConfigureTransectButtonsToolStripMenuItem.Enabled = False
-        DisableHabitatButtonsToolStripMenuItem.Enabled = False
         EditLookupTableToolStripMenuItem.Enabled = False
 
         m_video_file_open = False
@@ -2508,7 +2507,6 @@ Public Class VideoMiner
         'ConfigureSpeciesEventToolStripMenuItem.Enabled = True
         ConfigureHabitatButtonToolStripMenuItem.Enabled = True
         ConfigureTransectButtonsToolStripMenuItem.Enabled = True
-        DisableHabitatButtonsToolStripMenuItem.Enabled = True
         EditLookupTableToolStripMenuItem.Enabled = True
         If m_video_file_open Then
             txtTransectDate.Enabled = True
@@ -3031,7 +3029,6 @@ Public Class VideoMiner
         'ConfigureSpeciesEventToolStripMenuItem.Enabled = False
         ConfigureHabitatButtonToolStripMenuItem.Enabled = False
         ConfigureTransectButtonsToolStripMenuItem.Enabled = False
-        DisableHabitatButtonsToolStripMenuItem.Enabled = False
         EditLookupTableToolStripMenuItem.Enabled = False
 
         m_pnlTransectData.removeAllDynamicControls()
@@ -3463,7 +3460,7 @@ Public Class VideoMiner
 
     End Sub
 
-    Private Sub DisableHabitatButtonsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DisableHabitatButtonsToolStripMenuItem.Click
+    Private Sub DisableHabitatButtonsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         'If DisableHabitatButtonsToolStripMenuItem.Text = "Disable Habitat Buttons" Then
         '    DisableHabitatButtonsToolStripMenuItem.Text = "Enable Habitat Buttons"
         '    Dim item As Button

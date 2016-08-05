@@ -49,7 +49,7 @@ Partial Class VideoMiner
         Me.DataTableColumnsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureTransectButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureHabitatButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DisableHabitatButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SpeciesButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EditLookupTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuShowTooltips = New System.Windows.Forms.ToolStripMenuItem()
         Me.GPSToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -132,7 +132,6 @@ Partial Class VideoMiner
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
-        Me.SpeciesButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -337,7 +336,7 @@ Partial Class VideoMiner
         '
         'mnuConfigureTools
         '
-        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DataTableColumnsToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.SpeciesButtonsToolStripMenuItem, Me.DisableHabitatButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem, Me.mnuShowTooltips})
+        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DataTableColumnsToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.SpeciesButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem, Me.mnuShowTooltips})
         Me.mnuConfigureTools.Name = "mnuConfigureTools"
         Me.mnuConfigureTools.Size = New System.Drawing.Size(72, 20)
         Me.mnuConfigureTools.Text = "Configure"
@@ -345,31 +344,31 @@ Partial Class VideoMiner
         'DataTableColumnsToolStripMenuItem
         '
         Me.DataTableColumnsToolStripMenuItem.Name = "DataTableColumnsToolStripMenuItem"
-        Me.DataTableColumnsToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
+        Me.DataTableColumnsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
         Me.DataTableColumnsToolStripMenuItem.Text = "Data column visibility"
         '
         'ConfigureTransectButtonsToolStripMenuItem
         '
         Me.ConfigureTransectButtonsToolStripMenuItem.Name = "ConfigureTransectButtonsToolStripMenuItem"
-        Me.ConfigureTransectButtonsToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
+        Me.ConfigureTransectButtonsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
         Me.ConfigureTransectButtonsToolStripMenuItem.Text = "Transect Buttons"
         '
         'ConfigureHabitatButtonToolStripMenuItem
         '
         Me.ConfigureHabitatButtonToolStripMenuItem.Name = "ConfigureHabitatButtonToolStripMenuItem"
-        Me.ConfigureHabitatButtonToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
+        Me.ConfigureHabitatButtonToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
         Me.ConfigureHabitatButtonToolStripMenuItem.Text = "Habitat Buttons"
         '
-        'DisableHabitatButtonsToolStripMenuItem
+        'SpeciesButtonsToolStripMenuItem
         '
-        Me.DisableHabitatButtonsToolStripMenuItem.Name = "DisableHabitatButtonsToolStripMenuItem"
-        Me.DisableHabitatButtonsToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
-        Me.DisableHabitatButtonsToolStripMenuItem.Text = "Disable Habitat Buttons"
+        Me.SpeciesButtonsToolStripMenuItem.Name = "SpeciesButtonsToolStripMenuItem"
+        Me.SpeciesButtonsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.SpeciesButtonsToolStripMenuItem.Text = "Species Buttons"
         '
         'EditLookupTableToolStripMenuItem
         '
         Me.EditLookupTableToolStripMenuItem.Name = "EditLookupTableToolStripMenuItem"
-        Me.EditLookupTableToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
+        Me.EditLookupTableToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
         Me.EditLookupTableToolStripMenuItem.Text = "Edit Lookup Tables"
         '
         'mnuShowTooltips
@@ -377,7 +376,7 @@ Partial Class VideoMiner
         Me.mnuShowTooltips.Checked = True
         Me.mnuShowTooltips.CheckState = System.Windows.Forms.CheckState.Checked
         Me.mnuShowTooltips.Name = "mnuShowTooltips"
-        Me.mnuShowTooltips.Size = New System.Drawing.Size(198, 22)
+        Me.mnuShowTooltips.Size = New System.Drawing.Size(188, 22)
         Me.mnuShowTooltips.Text = "Show Tooltips"
         '
         'GPSToolStripMenuItem
@@ -1221,12 +1220,6 @@ Partial Class VideoMiner
         '
         Me.tmrComputerTime.Interval = 500
         '
-        'SpeciesButtonsToolStripMenuItem
-        '
-        Me.SpeciesButtonsToolStripMenuItem.Name = "SpeciesButtonsToolStripMenuItem"
-        Me.SpeciesButtonsToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
-        Me.SpeciesButtonsToolStripMenuItem.Text = "Species Buttons"
-        '
         'VideoMiner
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1370,7 +1363,6 @@ Partial Class VideoMiner
     Friend WithEvents DeviceControl As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents RelayConfigurationToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents txtNMEA As System.Windows.Forms.TextBox
-    Friend WithEvents DisableHabitatButtonsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents cmdScreenCapture As System.Windows.Forms.Button
     Friend WithEvents chkDefineAll As System.Windows.Forms.CheckBox
     Friend WithEvents lblGPSPort As System.Windows.Forms.Label
