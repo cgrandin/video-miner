@@ -15,6 +15,7 @@
     Private m_data_code As Integer
     Private m_field_name As String
     Private m_has_modifications As Boolean
+    Private m_synced As Boolean
 #End Region
 
 #Region "Events"
@@ -32,6 +33,10 @@
         btnMoveToPanel.Text = "Move to " & strPanelName
         Panel4.Controls.Add(m_grd)
         m_grd.Dock = DockStyle.Fill
+    End Sub
+
+    Private Sub Form_Load() Handles Me.Load
+        btnMoveToPanel.Enabled = False
     End Sub
 
     Private Sub frmConfigureButtons_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -97,6 +102,18 @@
     End Sub
 
     ''' <summary>
+    ''' Set the MoveToPanel button to be enabled or disabled depending on whether or not
+    ''' the DataGridView has selected row(s)
+    ''' </summary>
+    Private Sub m_grd_CellClick() Handles m_grd.CellClick
+        If m_grd.DGV.SelectedRows.Count = 0 Then
+            btnMoveToPanel.Enabled = False
+        Else
+            btnMoveToPanel.Enabled = m_grd.IsSynced
+        End If
+    End Sub
+
+    ''' <summary>
     ''' Fire an event if there have been modifications so that the parent can redraw the buttons.
     ''' </summary>
     Private Sub btnOK_Click(sender As Object, e As EventArgs) Handles btnOK.Click
@@ -124,7 +141,7 @@
     ''' Set the buttons to indicate that the data are synced with the database
     ''' </summary>
     Private Sub setSynced() Handles m_grd.SyncedEvent
-        btnMoveToPanel.Enabled = True
+        btnMoveToPanel.Enabled = False
         btnOK.Enabled = True
     End Sub
 

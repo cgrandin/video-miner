@@ -112,6 +112,11 @@ Public Class VideoMinerDataGridView
 #End Region
 
 #Region "Properties"
+    Public ReadOnly Property IsSynced As Boolean
+        Get
+            Return m_synced
+        End Get
+    End Property
     Public ReadOnly Property DGV As DataGridView
         Get
             Return grd
@@ -139,6 +144,7 @@ Public Class VideoMinerDataGridView
     Public Event DataChanged()
     Public Event SyncedEvent()
     Public Event UnsyncedEvent()
+    Public Event CellClick()
 #End Region
 
     Public Sub New(tableName As String,
@@ -785,5 +791,9 @@ Public Class VideoMinerDataGridView
 
     Private Sub btnDeleteRows_Click(sender As Object, e As EventArgs) Handles btnDeleteRows.Click
         deleteSelectedRows()
+    End Sub
+
+    Private Sub grd_CellClick(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles grd.CellClick
+        RaiseEvent CellClick()
     End Sub
 End Class

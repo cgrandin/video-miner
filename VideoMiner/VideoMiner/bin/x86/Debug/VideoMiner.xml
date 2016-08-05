@@ -889,6 +889,12 @@ VideoMiner
  The database will also have the entries moved from one button table to the other.
  </summary>
 </member>
+<member name="M:VideoMiner.frmConfigureButtons.m_grd_CellClick">
+ <summary>
+ Set the MoveToPanel button to be enabled or disabled depending on whether or not
+ the DataGridView has selected row(s)
+ </summary>
+</member>
 <member name="M:VideoMiner.frmConfigureButtons.btnOK_Click(System.Object,System.EventArgs)">
  <summary>
  Fire an event if there have been modifications so that the parent can redraw the buttons.
