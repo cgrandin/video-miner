@@ -207,7 +207,7 @@ Public Class DynamicTableButtonPanel
         End If
         m_static_button_panel.GrowStyle = TableLayoutPanelGrowStyle.AddRows
         m_static_button_panel.AutoSizeMode = AutoSizeMode.GrowAndShrink
-        m_static_button_panel.BorderStyle = BorderStyle.Fixed3D
+        m_static_button_panel.BorderStyle = BorderStyle.FixedSingle
         m_static_button_panel.Dock = DockStyle.Top
         m_static_button_panel.RowStyles.Add(New RowStyle(SizeType.Percent, 70))
         m_static_button_panel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50))
@@ -216,7 +216,7 @@ Public Class DynamicTableButtonPanel
         m_main_panel = New TableLayoutPanel()
         m_main_panel.GrowStyle = TableLayoutPanelGrowStyle.AddRows
         m_main_panel.AutoSizeMode = AutoSizeMode.GrowAndShrink
-        m_main_panel.BorderStyle = BorderStyle.Fixed3D
+        'm_main_panel.BorderStyle = BorderStyle.Fixed3D
 
         m_main_panel.Controls.Add(m_static_button_panel)
         Controls.Add(m_main_panel)
@@ -300,17 +300,16 @@ Public Class DynamicTableButtonPanel
         m_dynamic_button_panel.Dock = DockStyle.Fill
         m_dynamic_button_panel.GrowStyle = TableLayoutPanelGrowStyle.AddRows
         m_dynamic_button_panel.AutoSizeMode = AutoSizeMode.GrowAndShrink
-        m_dynamic_button_panel.BorderStyle = BorderStyle.Fixed3D
+        'm_dynamic_button_panel.BorderStyle = BorderStyle.Fixed3D
         ' The next two calls are required so that the scrollbars will dissappear when the
         ' number of buttons on the panel is reduced below that necessary for scrollbars.
         m_dynamic_button_panel.AutoScroll = False
         m_dynamic_button_panel.AutoScroll = True
-
-        m_main_panel.Dock = DockStyle.Fill
-        For i As Integer = 0 To m_dynamic_button_panel.RowCount - 1
-            Dim rs As RowStyle = New RowStyle(SizeType.Absolute, m_button_height)
-            m_dynamic_button_panel.RowStyles.Add(rs)
+        For i As Integer = 0 To m_dynamic_button_panel.ColumnCount - 1
+            Dim cs As ColumnStyle = New ColumnStyle(SizeType.Percent, 50)
+            m_dynamic_button_panel.ColumnStyles.Add(cs)
         Next
+        m_main_panel.Dock = DockStyle.Fill
         m_main_panel.Controls.Add(m_dynamic_button_panel)
         Controls.Add(m_main_panel)
         m_main_panel.Visible = True
