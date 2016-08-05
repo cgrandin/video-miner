@@ -1,7 +1,15 @@
 ﻿''' <summary>
 ''' A panel that holds dynamic buttons which load database table forms when pressed.
+''' The panel contains a TableLayoutPanel with two rows and one columnn. The top cell
+''' contains another TableLayoutPanel which is 2x2 and holds the static controls. The repeat
+''' for every record checkbox is in the top two cells which are merged, the define all and
+''' disable buttons buttons are in the lower two cells.
+''' The lower cell in the main panel is a 2-colum TableLayoutPanel, and is built when the function
+''' fillPanel is called. This inserts the dynamic buttons, one to a cell from top to bottom in the
+''' first column, then top to bottom in the second column. If the form is resized, these controls
+''' are all replaced so that they remain in unison with each other and with the static controls
+''' in the top cell of the main panel.
 ''' </summary>
-''' <remarks></remarks>
 Public Class DynamicTableButtonPanel
     Inherits Panel
 
@@ -46,14 +54,6 @@ Public Class DynamicTableButtonPanel
     ''' Array of Dynamic buttons. This will be redimensioned at runtime
     ''' </summary>
     Private m_dynamic_buttons As DynamicTableButton()
-    ''' <summary>
-    ''' Lets the fillPanel functioin know at what vertical level to start placing dynamic buttons
-    ''' </summary>
-    Private m_y_offset As Integer
-    ''' <summary>
-    ''' Gap between dynamic buttons (and the other controls)
-    ''' </summary>
-    Private m_gap As Integer
     ''' <summary>
     ''' A tuple for the Dictionary object, m_dict.
     ''' </summary>
@@ -137,12 +137,9 @@ Public Class DynamicTableButtonPanel
         m_repeat_for_every_record = Nothing
         m_define_all_button = Nothing
         m_disable_buttons_button = Nothing
-        m_y_offset = 0
-        m_gap = 1
         m_tuple = New Tuple(Of String, String, Boolean)(Nothing, Nothing, False)
         m_dict = New Dictionary(Of String, Tuple(Of String, String, Boolean))
 
-        ' Load button constructs into member variables
         m_button_height = intButtonHeight
         m_button_width = intButtonWidth
         m_button_font = strButtonFont
@@ -212,15 +209,12 @@ Public Class DynamicTableButtonPanel
         m_static_button_panel.RowStyles.Add(New RowStyle(SizeType.Percent, 70))
         m_static_button_panel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50))
 
-
         m_main_panel = New TableLayoutPanel()
         m_main_panel.GrowStyle = TableLayoutPanelGrowStyle.AddRows
         m_main_panel.AutoSizeMode = AutoSizeMode.GrowAndShrink
-        'm_main_panel.BorderStyle = BorderStyle.Fixed3D
 
         m_main_panel.Controls.Add(m_static_button_panel)
         Controls.Add(m_main_panel)
-        m_y_offset = m_static_button_panel.Bottom + m_gap
 
         BorderStyle = BorderStyle.Fixed3D
         Dock = DockStyle.Fill
@@ -300,7 +294,6 @@ Public Class DynamicTableButtonPanel
         m_dynamic_button_panel.Dock = DockStyle.Fill
         m_dynamic_button_panel.GrowStyle = TableLayoutPanelGrowStyle.AddRows
         m_dynamic_button_panel.AutoSizeMode = AutoSizeMode.GrowAndShrink
-        'm_dynamic_button_panel.BorderStyle = BorderStyle.Fixed3D
         ' The next two calls are required so that the scrollbars will dissappear when the
         ' number of buttons on the panel is reduced below that necessary for scrollbars.
         m_dynamic_button_panel.AutoScroll = False
@@ -316,7 +309,7 @@ Public Class DynamicTableButtonPanel
     End Sub
 
     ''' <summary>
-    ''' Change the size of the dynamic buttons to be the same as the ones in the m_static_buttons_panel
+    ''' Change the size and placement of the dynamic buttons to be the same as the ones in the m_static_buttons_panel
     ''' </summary>
     Private Sub OnRezise_Form() Handles Me.Resize
         placeControls()
