@@ -3234,12 +3234,17 @@ Public Class VideoMiner
     End Sub
 
     Private Sub ConfigureHabitatButtonToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureHabitatButtonToolStripMenuItem.Click
-        m_frmConfigureButtons = New frmConfigureButtons(DB_HABITAT_BUTTONS_TABLE, PANEL_NAME_TRANSECT)
+        m_frmConfigureButtons = New frmConfigureButtons(DB_HABITAT_BUTTONS_TABLE, PANEL_NAME_HABITAT, PANEL_NAME_TRANSECT)
         m_frmConfigureButtons.ShowDialog()
     End Sub
 
     Private Sub ConfigureTransectButtonsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureTransectButtonsToolStripMenuItem.Click
-        m_frmConfigureButtons = New frmConfigureButtons(DB_TRANSECT_BUTTONS_TABLE, PANEL_NAME_HABITAT)
+        m_frmConfigureButtons = New frmConfigureButtons(DB_TRANSECT_BUTTONS_TABLE, PANEL_NAME_TRANSECT, PANEL_NAME_HABITAT)
+        m_frmConfigureButtons.ShowDialog()
+    End Sub
+
+    Private Sub SpeciesButtonsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SpeciesButtonsToolStripMenuItem.Click
+        m_frmConfigureButtons = New frmConfigureButtons(DB_SPECIES_BUTTONS_TABLE, PANEL_NAME_SPECIES, PANEL_NAME_SPECIES, False)
         m_frmConfigureButtons.ShowDialog()
     End Sub
 
@@ -3247,10 +3252,12 @@ Public Class VideoMiner
     ''' The habitat and/or transect buttons in the database have been modified and need to be redrawn.
     ''' </summary>
     Private Sub m_frmConfigureButtons_DatabaseModifiedHandler() Handles m_frmConfigureButtons.DatabaseModifiedEvent
-        m_pnlHabitatData.removeAllDynamicControls()
-        m_pnlHabitatData.fillPanel(DB_HABITAT_BUTTONS_TABLE)
         m_pnlTransectData.removeAllDynamicControls()
         m_pnlTransectData.fillPanel(DB_TRANSECT_BUTTONS_TABLE)
+        m_pnlHabitatData.removeAllDynamicControls()
+        m_pnlHabitatData.fillPanel(DB_HABITAT_BUTTONS_TABLE)
+        m_pnlSpeciesData.removeAllDynamicControls()
+        m_pnlSpeciesData.fillPanel(DB_SPECIES_BUTTONS_TABLE)
     End Sub
 
     Public Sub cmdStop_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdStop.Click

@@ -145,6 +145,7 @@ Public Class VideoMinerDataGridView
     Public Event SyncedEvent()
     Public Event UnsyncedEvent()
     Public Event CellClick()
+    Public Event SelectionChanged()
 #End Region
 
     Public Sub New(tableName As String,
@@ -795,5 +796,9 @@ Public Class VideoMinerDataGridView
 
     Private Sub grd_CellClick(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles grd.CellClick
         RaiseEvent CellClick()
+    End Sub
+
+    Private Sub grd_SelectionChanged(sender As Object, e As EventArgs) Handles grd.SelectionChanged
+        RaiseEvent SelectionChanged()
     End Sub
 End Class

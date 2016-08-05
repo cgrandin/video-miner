@@ -871,7 +871,25 @@ VideoMiner
  The data table containing the contents of the table given by m_table_name
  </summary>
 </member>
-<member name="M:VideoMiner.frmConfigureButtons.#ctor(System.String,System.String)">
+<member name="F:VideoMiner.frmConfigureButtons.m_source_panel">
+ <summary>
+ The panel name that this form represents
+ </summary>
+</member>
+<member name="F:VideoMiner.frmConfigureButtons.m_dest_panel">
+ <summary>
+ The destination panel name for move operations.
+ This only matters if m_movable is True.
+ </summary>
+</member>
+<member name="F:VideoMiner.frmConfigureButtons.m_movable">
+ <summary>
+ If the form is to have a move to panel.. button on it.
+ Essentialy if movable it is either the transect or habitat
+ panel buttons, if not movable it is the species data panel buttons.
+ </summary>
+</member>
+<member name="M:VideoMiner.frmConfigureButtons.#ctor(System.String,System.String,System.String,System.Boolean)">
  <summary>
  Initialize the query, and extract the data that query defines into a DataSet with corresponding DataTable.
  Populate the list and set up list attributes.

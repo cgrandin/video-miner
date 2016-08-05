@@ -132,6 +132,7 @@ Partial Class VideoMiner
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
+        Me.SpeciesButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -336,7 +337,7 @@ Partial Class VideoMiner
         '
         'mnuConfigureTools
         '
-        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DataTableColumnsToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.DisableHabitatButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem, Me.mnuShowTooltips})
+        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DataTableColumnsToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.SpeciesButtonsToolStripMenuItem, Me.DisableHabitatButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem, Me.mnuShowTooltips})
         Me.mnuConfigureTools.Name = "mnuConfigureTools"
         Me.mnuConfigureTools.Size = New System.Drawing.Size(72, 20)
         Me.mnuConfigureTools.Text = "Configure"
@@ -1220,6 +1221,12 @@ Partial Class VideoMiner
         '
         Me.tmrComputerTime.Interval = 500
         '
+        'SpeciesButtonsToolStripMenuItem
+        '
+        Me.SpeciesButtonsToolStripMenuItem.Name = "SpeciesButtonsToolStripMenuItem"
+        Me.SpeciesButtonsToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
+        Me.SpeciesButtonsToolStripMenuItem.Text = "Species Buttons"
+        '
         'VideoMiner
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1390,4 +1397,5 @@ Partial Class VideoMiner
     Friend WithEvents cmdOffBottom As Button
     Friend WithEvents mnuShowTooltips As ToolStripMenuItem
     Friend WithEvents DataTableColumnsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents SpeciesButtonsToolStripMenuItem As ToolStripMenuItem
 End Class

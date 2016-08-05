@@ -11,11 +11,26 @@
     ''' The data table containing the contents of the table given by m_table_name
     ''' </summary>
     Private m_data_table As DataTable
+    ''' <summary>
+    ''' The panel name that this form represents
+    ''' </summary>
+    Private m_source_panel As String
+    ''' <summary>
+    ''' The destination panel name for move operations.
+    ''' This only matters if m_movable is True.
+    ''' </summary>
+    Private m_dest_panel As String
     Private m_button_name As String
     Private m_data_code As Integer
     Private m_field_name As String
     Private m_has_modifications As Boolean
     Private m_synced As Boolean
+    ''' <summary>
+    ''' If the form is to have a move to panel.. button on it.
+    ''' Essentialy if movable it is either the transect or habitat
+    ''' panel buttons, if not movable it is the species data panel buttons.
+    ''' </summary>
+    Private m_movable As Boolean
 #End Region
 
 #Region "Events"
@@ -26,13 +41,23 @@
     ''' Initialize the query, and extract the data that query defines into a DataSet with corresponding DataTable.
     ''' Populate the list and set up list attributes.
     ''' </summary>
-    Public Sub New(strConfigureTable As String, strPanelName As String)
+    Public Sub New(strConfigureTable As String, strSourcePanelName As String, strDestPanelName As String, Optional movable As Boolean = True)
         InitializeComponent()
         m_table_name = strConfigureTable
+        m_source_panel = strSourcePanelName
+        m_dest_panel = strDestPanelName
         m_grd = New VideoMinerDataGridView(m_table_name, True)
-        btnMoveToPanel.Text = "Move to " & strPanelName
+        m_movable = movable
+        If m_movable Then
+            btnMoveToPanel.Text = "Move to " & m_dest_panel
+        Else
+            btnMoveToPanel.Visible = False
+            TableLayoutPanel2.ColumnStyles(0).Width = 0
+            btnOK.Anchor = AnchorStyles.Left And AnchorStyles.Right
+        End If
         Panel4.Controls.Add(m_grd)
         m_grd.Dock = DockStyle.Fill
+        Me.Text = Text & " - " & m_source_panel
     End Sub
 
     Private Sub Form_Load() Handles Me.Load
@@ -105,13 +130,17 @@
     ''' Set the MoveToPanel button to be enabled or disabled depending on whether or not
     ''' the DataGridView has selected row(s)
     ''' </summary>
-    Private Sub m_grd_CellClick() Handles m_grd.CellClick
+    Private Sub m_grd_CellClick() Handles m_grd.CellClick, m_grd.SelectionChanged
         If m_grd.DGV.SelectedRows.Count = 0 Then
             btnMoveToPanel.Enabled = False
         Else
             btnMoveToPanel.Enabled = m_grd.IsSynced
         End If
     End Sub
+
+    'Private Sub m_grd_SelectionChanged(sender As Object, e As EventArgs) Handles m_grd.SelectionChanged
+
+    'End Sub
 
     ''' <summary>
     ''' Fire an event if there have been modifications so that the parent can redraw the buttons.
