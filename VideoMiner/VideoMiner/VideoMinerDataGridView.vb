@@ -794,11 +794,25 @@ Public Class VideoMinerDataGridView
         deleteSelectedRows()
     End Sub
 
+    Private Sub setButtonDisabledEnabled()
+        If grd.SelectedRows.Count = 0 Then
+            btnDeleteRows.Enabled = False
+            btnMoveUp.Enabled = False
+            btnMoveDown.Enabled = False
+        Else
+            btnDeleteRows.Enabled = m_synced
+            btnMoveUp.Enabled = m_synced
+            btnMoveDown.Enabled = m_synced
+        End If
+    End Sub
+
     Private Sub grd_CellClick(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles grd.CellClick
+        setButtonDisabledEnabled()
         RaiseEvent CellClick()
     End Sub
 
     Private Sub grd_SelectionChanged(sender As Object, e As EventArgs) Handles grd.SelectionChanged
+        setButtonDisabledEnabled()
         RaiseEvent SelectionChanged()
     End Sub
 End Class

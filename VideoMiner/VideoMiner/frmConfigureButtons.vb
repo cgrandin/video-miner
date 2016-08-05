@@ -138,10 +138,6 @@
         End If
     End Sub
 
-    'Private Sub m_grd_SelectionChanged(sender As Object, e As EventArgs) Handles m_grd.SelectionChanged
-
-    'End Sub
-
     ''' <summary>
     ''' Fire an event if there have been modifications so that the parent can redraw the buttons.
     ''' </summary>
