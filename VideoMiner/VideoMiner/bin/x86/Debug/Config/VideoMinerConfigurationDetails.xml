@@ -42,10 +42,6 @@
       <Height>44</Height>
       <Width>154</Width>
     </ButtonSize>
-    <ButtonText>
-      <Font>Microsoft Sans Serif</Font>
-      <TextSize>8</TextSize>
-    </ButtonText>
   </ButtonFormat>
   <Database>
     <Configuration>

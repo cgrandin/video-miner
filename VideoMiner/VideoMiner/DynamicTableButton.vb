@@ -7,7 +7,8 @@
 ''' </summary>
 ''' <remarks></remarks>
 Public Class DynamicTableButton
-    Inherits SplitContainer
+    'Inherits SplitContainer
+    Inherits TableLayoutPanel
 
 #Region "Member variables"
     ''' <summary>
@@ -18,6 +19,7 @@ Public Class DynamicTableButton
     ''' A textbox attached below the button which shows the current value of the variable for the button.
     ''' </summary>
     Private m_txtStatus As DynamicTextbox
+    Private m_textbox_text_size As Integer
 
     ''' <summary>
     ''' Distinguishes between the two types of data this button can represent, database table
@@ -120,21 +122,19 @@ Public Class DynamicTableButton
                    intWidth As Integer,
                    Optional whichType As WhichTypeEnum = WhichTypeEnum.DataTable)
         m_which_type = whichType
-
-        Orientation = Orientation.Horizontal
-        IsSplitterFixed = True
-        Panel1.AutoScroll = False
-        Panel2.AutoScroll = False
+        m_textbox_text_size = CInt(row.Item(TEXTBOX_TEXT_SIZE))
+        RowCount = 2
+        ColumnCount = 1
 
         m_btnButton = New DynamicButton(row, intHeight, intWidth, DynamicButton.WhichEntryStyleEnum.Table)
         AddHandler m_btnButton.StartDataEntryEvent, AddressOf startDataEntryEventHandler
         AddHandler m_btnButton.EndDataEntryEvent, AddressOf endDataEntryEventHandler
         m_btnButton.Dock = DockStyle.Fill
-        Panel1.Controls.Add(m_btnButton)
+        Controls.Add(m_btnButton)
 
-        m_txtStatus = New DynamicTextbox(m_btnButton.ButtonFont, m_btnButton.ButtonTextSize)
-        Panel2.Controls.Add(m_txtStatus)
+        m_txtStatus = New DynamicTextbox(m_btnButton.ButtonFont, CStr(m_textbox_text_size))
         m_txtStatus.Dock = DockStyle.Fill
+        Controls.Add(m_txtStatus)
         m_txtStatus.setNoData(m_btnButton.ButtonText)
     End Sub
 

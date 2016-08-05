@@ -44,7 +44,6 @@ Public Class DynamicTableButtonPanel
     Private m_button_width As Integer
     Private m_button_height As Integer
     Private m_button_font As String
-    Private m_button_text_size As Integer
 
     ''' <summary>
     ''' The number of dynamic buttons currently on the panel
@@ -128,7 +127,6 @@ Public Class DynamicTableButtonPanel
                    Optional intButtonWidth As Integer = 170,
                    Optional intButtonHeight As Integer = 44,
                    Optional strButtonFont As String = DEFAULT_BUTTON_FONT,
-                   Optional strButtonTextSize As String = DEFAULT_BUTTON_TEXT_SIZE,
                    Optional blIncludeRepeatCheckbox As Boolean = False,
                    Optional blRepeatIsChecked As Boolean = True,
                    Optional intRepeatWidth As Integer = 210,
@@ -143,7 +141,6 @@ Public Class DynamicTableButtonPanel
         m_button_height = intButtonHeight
         m_button_width = intButtonWidth
         m_button_font = strButtonFont
-        m_button_text_size = CInt(strButtonTextSize)
 
         m_static_button_panel = New TableLayoutPanel()
         m_static_button_panel.ColumnCount = 2
@@ -171,7 +168,7 @@ Public Class DynamicTableButtonPanel
             m_define_all_button.Text = "Define All"
             m_define_all_button.TextAlign = ContentAlignment.MiddleCenter
             m_define_all_button.ForeColor = Color.Blue
-            m_define_all_button.Font = New Font(m_button_font, m_button_text_size, FontStyle.Bold)
+            m_define_all_button.Font = New Font(m_button_font, CInt(DEFAULT_BUTTON_TEXT_SIZE), FontStyle.Bold)
             AddHandler m_define_all_button.Click, AddressOf DefineAll
             m_define_all_button.Dock = DockStyle.Fill
             If blIncludeRepeatCheckbox Then
@@ -186,7 +183,7 @@ Public Class DynamicTableButtonPanel
         m_disable_buttons_button.Text = "Disable Buttons"
         m_disable_buttons_button.TextAlign = ContentAlignment.MiddleCenter
         m_disable_buttons_button.ForeColor = Color.Blue
-        m_disable_buttons_button.Font = New Font(m_button_font, m_button_text_size, FontStyle.Bold)
+        m_disable_buttons_button.Font = New Font(m_button_font, CInt(DEFAULT_BUTTON_TEXT_SIZE), FontStyle.Bold)
         AddHandler m_disable_buttons_button.Click, AddressOf DisableEnableButtons
         m_disable_buttons_button.Dock = DockStyle.Fill
         If blIncludeRepeatCheckbox Then
@@ -269,8 +266,6 @@ Public Class DynamicTableButtonPanel
     Private Sub placeControls()
         If m_num_dynamic_buttons = 0 Then Exit Sub
         Dim intCol, intRow As Integer
-        m_button_height = m_disable_buttons_button.Height * 2
-        m_button_width = m_disable_buttons_button.Width
         If IsNothing(m_dynamic_button_panel) Then
             m_dynamic_button_panel = New TableLayoutPanel()
         End If
@@ -280,8 +275,6 @@ Public Class DynamicTableButtonPanel
         m_dynamic_button_panel.ColumnCount = 2
         m_dynamic_button_panel.RowCount = getRowCount()
         For i As Integer = 0 To m_num_dynamic_buttons - 1
-            m_dynamic_buttons(i).Width = m_button_width
-            m_dynamic_buttons(i).Height = m_button_height
             m_dynamic_buttons(i).Dock = DockStyle.Top
             m_dynamic_button_panel.Controls.Add(m_dynamic_buttons(i), intCol, intRow)
             If i = m_dynamic_button_panel.RowCount - 1 Then
@@ -291,13 +284,16 @@ Public Class DynamicTableButtonPanel
                 intRow += 1
             End If
         Next
+        m_dynamic_button_panel.CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset
         m_dynamic_button_panel.Dock = DockStyle.Fill
-        m_dynamic_button_panel.GrowStyle = TableLayoutPanelGrowStyle.AddRows
-        m_dynamic_button_panel.AutoSizeMode = AutoSizeMode.GrowAndShrink
         ' The next two calls are required so that the scrollbars will dissappear when the
         ' number of buttons on the panel is reduced below that necessary for scrollbars.
         m_dynamic_button_panel.AutoScroll = False
         m_dynamic_button_panel.AutoScroll = True
+        For i As Integer = 0 To m_dynamic_button_panel.RowCount - 1
+            Dim rs As RowStyle = New RowStyle(SizeType.Absolute, m_dynamic_buttons(0).ControlHeight)
+            m_dynamic_button_panel.RowStyles.Add(rs)
+        Next
         For i As Integer = 0 To m_dynamic_button_panel.ColumnCount - 1
             Dim cs As ColumnStyle = New ColumnStyle(SizeType.Percent, 50)
             m_dynamic_button_panel.ColumnStyles.Add(cs)

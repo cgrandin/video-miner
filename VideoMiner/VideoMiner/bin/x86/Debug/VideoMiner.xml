@@ -422,7 +422,7 @@ VideoMiner
  If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
  not just the most recently-pressed button's data.
 </member>
-<member name="M:VideoMiner.DynamicSpeciesButtonPanel.#ctor(System.String,System.Int32,System.Int32,System.String,System.Int32,VideoMiner.DynamicButton.WhichEntryStyleEnum)">
+<member name="M:VideoMiner.DynamicSpeciesButtonPanel.#ctor(System.String,System.Int32,System.Int32,System.String,VideoMiner.DynamicButton.WhichEntryStyleEnum)">
  <summary>
  Create the DynamicSpeciesButtonPanel object.
  </summary>
@@ -430,7 +430,6 @@ VideoMiner
  <param name="intButtonWidth">The width of all the buttons on the panel.</param>
  <param name="intButtonHeight">The height of all the buttons on the panel.</param>
  <param name="strButtonFont">The font for all the buttons on the panel.</param>
- <param name="intButtonTextSize">The font size (pts) for all the buttons on the panel.</param>
 </member>
 <member name="M:VideoMiner.DynamicSpeciesButtonPanel.fillPanel(System.String)">
  <summary>
@@ -687,7 +686,7 @@ VideoMiner
  If the repeat checkbox is visible and checked, the dictionary will hold the key/value pairs for all buttons on the panel,
  not just the most recently-pressed button's data.
 </member>
-<member name="M:VideoMiner.DynamicTableButtonPanel.#ctor(System.String,System.Boolean,System.Int32,System.Int32,System.String,System.String,System.Boolean,System.Boolean,System.Int32,System.Int32)">
+<member name="M:VideoMiner.DynamicTableButtonPanel.#ctor(System.String,System.Boolean,System.Int32,System.Int32,System.String,System.Boolean,System.Boolean,System.Int32,System.Int32)">
  <summary>
  Create the DynamicTableButtonPanel object.
  </summary>

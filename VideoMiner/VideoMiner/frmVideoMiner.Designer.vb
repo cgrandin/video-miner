@@ -49,7 +49,6 @@ Partial Class VideoMiner
         Me.DataTableColumnsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureTransectButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureHabitatButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ConfigureButtonFormatToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DisableHabitatButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EditLookupTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuShowTooltips = New System.Windows.Forms.ToolStripMenuItem()
@@ -337,7 +336,7 @@ Partial Class VideoMiner
         '
         'mnuConfigureTools
         '
-        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DataTableColumnsToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.ConfigureButtonFormatToolStripMenuItem, Me.DisableHabitatButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem, Me.mnuShowTooltips})
+        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DataTableColumnsToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.DisableHabitatButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem, Me.mnuShowTooltips})
         Me.mnuConfigureTools.Name = "mnuConfigureTools"
         Me.mnuConfigureTools.Size = New System.Drawing.Size(72, 20)
         Me.mnuConfigureTools.Text = "Configure"
@@ -359,12 +358,6 @@ Partial Class VideoMiner
         Me.ConfigureHabitatButtonToolStripMenuItem.Name = "ConfigureHabitatButtonToolStripMenuItem"
         Me.ConfigureHabitatButtonToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
         Me.ConfigureHabitatButtonToolStripMenuItem.Text = "Habitat Buttons"
-        '
-        'ConfigureButtonFormatToolStripMenuItem
-        '
-        Me.ConfigureButtonFormatToolStripMenuItem.Name = "ConfigureButtonFormatToolStripMenuItem"
-        Me.ConfigureButtonFormatToolStripMenuItem.Size = New System.Drawing.Size(198, 22)
-        Me.ConfigureButtonFormatToolStripMenuItem.Text = "Button Format"
         '
         'DisableHabitatButtonsToolStripMenuItem
         '
@@ -1371,7 +1364,6 @@ Partial Class VideoMiner
     Friend WithEvents RelayConfigurationToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents txtNMEA As System.Windows.Forms.TextBox
     Friend WithEvents DisableHabitatButtonsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents ConfigureButtonFormatToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents cmdScreenCapture As System.Windows.Forms.Button
     Friend WithEvents chkDefineAll As System.Windows.Forms.CheckBox
     Friend WithEvents lblGPSPort As System.Windows.Forms.Label

@@ -9,7 +9,6 @@ Public Class DynamicSpeciesButtonPanel
     Private m_button_width As Integer
     Private m_button_height As Integer
     Private m_button_font As String
-    Private m_button_text_size As Integer
     ''' <summary>
     ''' The number of dynamic buttons currently on the panel
     ''' </summary>
@@ -103,12 +102,10 @@ Public Class DynamicSpeciesButtonPanel
     ''' <param name="intButtonWidth">The width of all the buttons on the panel.</param>
     ''' <param name="intButtonHeight">The height of all the buttons on the panel.</param>
     ''' <param name="strButtonFont">The font for all the buttons on the panel.</param>
-    ''' <param name="intButtonTextSize">The font size (pts) for all the buttons on the panel.</param>
     Public Sub New(strname As String,
                    Optional intButtonWidth As Integer = 170,
                    Optional intButtonHeight As Integer = 44,
                    Optional strButtonFont As String = "Microsoft Sans Serif",
-                   Optional intButtonTextSize As Integer = 8,
                    Optional whichEntryStyle As DynamicButton.WhichEntryStyleEnum = DynamicButton.WhichEntryStyleEnum.Detailed)
 
         Name = strname
@@ -121,7 +118,6 @@ Public Class DynamicSpeciesButtonPanel
         m_button_height = intButtonHeight
         m_button_width = intButtonWidth
         m_button_font = strButtonFont
-        m_button_text_size = intButtonTextSize
 
         m_which_entry_style = whichEntryStyle
         m_quick_entry_num = 1

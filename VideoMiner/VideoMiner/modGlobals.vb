@@ -54,12 +54,14 @@ Module modGlobals
     Public Const BUTTON_COLOR As String = "ButtonColor"
     Public Const BUTTON_FONT As String = "ButtonFont"
     Public Const BUTTON_TEXT_SIZE As String = "ButtonTextSize"
+    Public Const TEXTBOX_TEXT_SIZE As String = "TextboxTextSize"
     Public Const BUTTON_CODE As String = "ButtonCode"
     Public Const BUTTON_CODE_NAME As String = "ButtonCodeName"
     Public Const KEYBOARD_SHORTCUT As String = "KeyboardShortcut"
     Public Const USER_ENTERED As String = "UserEntered"
     Public Const DEFAULT_BUTTON_FONT As String = "Microsoft Sans Serif"
     Public Const DEFAULT_BUTTON_TEXT_SIZE As String = "10"
+    Public Const DEFAULT_TEXTBOX_TEXT_SIZE As String = "10"
 
     Public blRareSpecies As Boolean = False
 

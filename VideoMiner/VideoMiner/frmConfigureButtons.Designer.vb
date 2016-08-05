@@ -36,7 +36,7 @@ Partial Class frmConfigureButtons
         '
         Me.btnMoveToPanel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnMoveToPanel.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnMoveToPanel.Location = New System.Drawing.Point(257, 3)
+        Me.btnMoveToPanel.Location = New System.Drawing.Point(319, 3)
         Me.btnMoveToPanel.Name = "btnMoveToPanel"
         Me.btnMoveToPanel.Size = New System.Drawing.Size(220, 38)
         Me.btnMoveToPanel.TabIndex = 14
@@ -55,7 +55,7 @@ Partial Class frmConfigureButtons
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(967, 313)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1090, 313)
         Me.TableLayoutPanel1.TabIndex = 17
         '
         'Panel4
@@ -63,7 +63,7 @@ Partial Class frmConfigureButtons
         Me.Panel4.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel4.Location = New System.Drawing.Point(3, 3)
         Me.Panel4.Name = "Panel4"
-        Me.Panel4.Size = New System.Drawing.Size(961, 257)
+        Me.Panel4.Size = New System.Drawing.Size(1084, 257)
         Me.Panel4.TabIndex = 19
         '
         'TableLayoutPanel2
@@ -78,13 +78,13 @@ Partial Class frmConfigureButtons
         Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
         Me.TableLayoutPanel2.RowCount = 1
         Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(961, 44)
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(1084, 44)
         Me.TableLayoutPanel2.TabIndex = 20
         '
         'btnOK
         '
         Me.btnOK.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnOK.Location = New System.Drawing.Point(483, 3)
+        Me.btnOK.Location = New System.Drawing.Point(545, 3)
         Me.btnOK.Name = "btnOK"
         Me.btnOK.Size = New System.Drawing.Size(220, 38)
         Me.btnOK.TabIndex = 19
@@ -95,7 +95,7 @@ Partial Class frmConfigureButtons
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(967, 313)
+        Me.ClientSize = New System.Drawing.Size(1090, 313)
         Me.ControlBox = False
         Me.Controls.Add(Me.TableLayoutPanel1)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)

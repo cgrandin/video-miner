@@ -35,7 +35,6 @@ Public Class VideoMiner
 
     Private Const XPATH_BUTTON_HEIGHT As String = "/ButtonFormat/ButtonSize/Height"
     Private Const XPATH_BUTTON_WIDTH As String = "/ButtonFormat/ButtonSize/Width"
-    Private Const XPATH_BUTTON_TEXTSIZE As String = "/ButtonFormat/ButtonText/TextSize"
     Private Const XPATH_BUTTON_FONT As String = "/ButtonFormat/ButtonText/Font"
 
     Private Const XPATH_DATABASE_NAME As String = "/Database/Configuration/DatabaseName"
@@ -333,7 +332,6 @@ Public Class VideoMiner
 
     Private m_button_width As Integer
     Private m_button_height As Integer
-    Private m_button_text_size As Integer
     Private m_button_font As String
 
     Private m_previous_projects As Collection
@@ -438,15 +436,6 @@ Public Class VideoMiner
         End Get
         Set(ByVal value As Integer)
             m_button_height = value
-        End Set
-    End Property
-
-    Public Property ButtonTextSize() As Integer
-        Get
-            Return m_button_text_size
-        End Get
-        Set(ByVal value As Integer)
-            m_button_text_size = value
         End Set
     End Property
 
@@ -669,7 +658,6 @@ Public Class VideoMiner
         'ConfigureSpeciesEventToolStripMenuItem.Enabled = False
         ConfigureHabitatButtonToolStripMenuItem.Enabled = False
         ConfigureTransectButtonsToolStripMenuItem.Enabled = False
-        ConfigureButtonFormatToolStripMenuItem.Enabled = False
         DisableHabitatButtonsToolStripMenuItem.Enabled = False
         EditLookupTableToolStripMenuItem.Enabled = False
 
@@ -737,14 +725,14 @@ Public Class VideoMiner
 
         ' Add DynamicPanels to the SplitContainerPanels
         m_pnlTransectData = New DynamicTableButtonPanel(PANEL_NAME_TRANSECT, True, Me.ButtonWidth, Me.ButtonHeight,
-                                                      Me.ButtonFont, CStr(ButtonTextSize), True, True)
+                                                      Me.ButtonFont, True, True)
         SplitContainer7.Panel1.Controls.Add(m_pnlTransectData)
 
         m_pnlHabitatData = New DynamicTableButtonPanel(PANEL_NAME_HABITAT, True, Me.ButtonWidth, Me.ButtonHeight,
-            Me.ButtonFont, CStr(ButtonTextSize), True, True)
+            Me.ButtonFont, True, True)
         SplitContainer7.Panel2.Controls.Add(m_pnlHabitatData)
 
-        m_pnlSpeciesData = New DynamicSpeciesButtonPanel(PANEL_NAME_SPECIES, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont, Me.ButtonTextSize)
+        m_pnlSpeciesData = New DynamicSpeciesButtonPanel(PANEL_NAME_SPECIES, Me.ButtonWidth, Me.ButtonHeight, Me.ButtonFont)
         m_pnlSpeciesData.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         m_pnlSpeciesData.Dock = DockStyle.Fill
         'AddHandler m_pnlSpeciesData.NewSpeciesEntryEvent, AddressOf new_species_entry_handler
@@ -767,7 +755,6 @@ Public Class VideoMiner
                 ' Button settings
                 m_button_height = CInt(GetConfiguration(XPATH_BUTTON_HEIGHT))
                 m_button_width = CInt(GetConfiguration(XPATH_BUTTON_WIDTH))
-                m_button_text_size = CInt(GetConfiguration(XPATH_BUTTON_TEXTSIZE))
                 m_button_font = GetConfiguration(XPATH_BUTTON_FONT)
                 ' GPS settings
                 m_com_port = GetConfiguration(XPATH_GPS_COM_PORT)
@@ -2521,7 +2508,6 @@ Public Class VideoMiner
         'ConfigureSpeciesEventToolStripMenuItem.Enabled = True
         ConfigureHabitatButtonToolStripMenuItem.Enabled = True
         ConfigureTransectButtonsToolStripMenuItem.Enabled = True
-        ConfigureButtonFormatToolStripMenuItem.Enabled = True
         DisableHabitatButtonsToolStripMenuItem.Enabled = True
         EditLookupTableToolStripMenuItem.Enabled = True
         If m_video_file_open Then
@@ -3045,7 +3031,6 @@ Public Class VideoMiner
         'ConfigureSpeciesEventToolStripMenuItem.Enabled = False
         ConfigureHabitatButtonToolStripMenuItem.Enabled = False
         ConfigureTransectButtonsToolStripMenuItem.Enabled = False
-        ConfigureButtonFormatToolStripMenuItem.Enabled = False
         DisableHabitatButtonsToolStripMenuItem.Enabled = False
         EditLookupTableToolStripMenuItem.Enabled = False
 
@@ -3670,7 +3655,6 @@ Public Class VideoMiner
             ButtonHeight = CInt(.txtButtonHeight.Text)
             ButtonWidth = CInt(.txtButtonWidth.Text)
             ButtonFont = .cboButtonFont.Text
-            ButtonTextSize = CInt(.cboButtonTextSize.Text)
             'blupdateColumns = False
             m_pnlSpeciesData.Controls.Clear()
             'blupdateColumns = True
@@ -3934,4 +3918,5 @@ Public Class VideoMiner
             SaveConfiguration("/DataColumnVisibility/" & strColName, m_frmSelectDataColumns.VisibleColumns(i).ToString(), False)
         Next
     End Sub
+
 End Class
