@@ -204,11 +204,11 @@ Public Class frmSpeciesEvent
             " from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY " & strKeyButtons
         Dim data_table As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_BUTTONS_TABLE)
         ' If the SpeciesName is not in the table, add the Common name of the species into the list
-        Dim dr As DataRow = data_table.NewRow()
-        dr(strKeyButtons) = Database.GetNextPrimaryKeyValue(DB_SPECIES_BUTTONS_TABLE)
-        dr(BUTTON_TEXT) = SpeciesName
-        dr(BUTTON_CODE) = SpeciesCode
-        data_table.Rows.Add(dr)
+        'Dim dr As DataRow = data_table.NewRow()
+        'dr(strKeyButtons) = Database.GetNextPrimaryKeyValue(DB_SPECIES_BUTTONS_TABLE)
+        'dr(BUTTON_TEXT) = SpeciesName
+        'dr(BUTTON_CODE) = SpeciesCode
+        'data_table.Rows.Add(dr)
 
         With cboSpecies
             .DataSource = data_table
@@ -463,5 +463,6 @@ Public Class frmSpeciesEvent
             txtRange.Enabled = True
         End If
     End Sub
+
 End Class
 
