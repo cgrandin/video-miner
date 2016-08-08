@@ -110,7 +110,7 @@
     <TransectName>True</TransectName>
     <OnBottom>False</OnBottom>
     <DominantSubstrate>True</DominantSubstrate>
-    <DominantPercent>False</DominantPercent>
+    <DominantPercent>True</DominantPercent>
     <SubdominantSubstrate>True</SubdominantSubstrate>
     <SubdominantPercent>True</SubdominantPercent>
     <SurveyModeID>True</SurveyModeID>

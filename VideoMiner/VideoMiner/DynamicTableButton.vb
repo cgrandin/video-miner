@@ -1,5 +1,5 @@
 ﻿''' <summary>
-''' A Videominer dynamic table button and textbox on a small panel.
+''' A Videominer dynamic button and textbox on a small panel.
 ''' When the button is pressed, a database table will be shown and the user can
 ''' select the row they want. Once the row is selected, the value will be shown in the Textbox.
 ''' The DynamicTextbox shows the current status of the variable the button
@@ -7,7 +7,6 @@
 ''' </summary>
 ''' <remarks></remarks>
 Public Class DynamicTableButton
-    'Inherits SplitContainer
     Inherits TableLayoutPanel
 
 #Region "Member variables"

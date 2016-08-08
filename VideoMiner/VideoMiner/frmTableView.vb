@@ -153,7 +153,7 @@ Public Class frmTableView
         If e.CloseReason = CloseReason.UserClosing Then
             e.Cancel = True
             RaiseEvent DataEntryCanceled(sender, e)
-            Me.Hide()
+            Hide()
         End If
     End Sub
 
@@ -224,7 +224,7 @@ Public Class frmTableView
     End Sub
 
     Private Sub btnSkipSpatial_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSkipSpatial.Click
-        RaiseEvent EndDataEntryEvent(Me, e)
+        RaiseEvent DataEntryCanceled(sender, e)
         Hide()
     End Sub
 
@@ -239,7 +239,7 @@ Public Class frmTableView
         clearSelection()
         m_dict.Clear()
         RaiseEvent ClearEvent()
-        Me.Hide()
+        Hide()
     End Sub
 
     Private Sub cmdScreenCapture_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdScreenCapture.Click
