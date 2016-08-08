@@ -52,20 +52,18 @@
             btnMoveToPanel.Text = "Move to " & m_dest_panel
         Else
             btnMoveToPanel.Visible = False
+            btnMoveToPanel.Enabled = False
             TableLayoutPanel2.ColumnStyles(0).Width = 0
             btnOK.Anchor = AnchorStyles.Left And AnchorStyles.Right
         End If
         Panel4.Controls.Add(m_grd)
         m_grd.Dock = DockStyle.Fill
-        Me.Text = Text & " - " & m_source_panel
+        Text = Text & " - " & m_source_panel
     End Sub
 
-    Private Sub Form_Load() Handles Me.Load
-        btnMoveToPanel.Enabled = False
-    End Sub
-
-    Private Sub frmConfigureButtons_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub frmConfigureButtons_Load() Handles Me.Load
         m_has_modifications = False
+        btnMoveToPanel.Enabled = False
     End Sub
 
     Private Sub m_grd_DataChanged() Handles m_grd.DataChanged
@@ -166,7 +164,6 @@
     ''' Set the buttons to indicate that the data are synced with the database
     ''' </summary>
     Private Sub setSynced() Handles m_grd.SyncedEvent
-        btnMoveToPanel.Enabled = False
         btnOK.Enabled = True
     End Sub
 
@@ -174,7 +171,7 @@
     ''' Set the buttons to indicate that the data are unsynced with the database
     ''' </summary>
     Private Sub setUnSynced() Handles m_grd.UnsyncedEvent
-        btnMoveToPanel.Enabled = False
         btnOK.Enabled = False
     End Sub
+
 End Class
