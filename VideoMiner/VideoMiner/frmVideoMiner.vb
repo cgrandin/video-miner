@@ -3844,6 +3844,7 @@ Public Class VideoMiner
                                                                                                m_frmRareSpeciesLookup.DataEntryCanceled,
                                                                                                m_frmSpeciesList.DataEntryCanceled,
                                                                                                m_frmSetTime.DataEntryCanceled
+
         dataEntryEnded()
     End Sub
 

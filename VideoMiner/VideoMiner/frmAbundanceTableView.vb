@@ -54,6 +54,13 @@
     ''' Tell the parent that the data have changed
     ''' </summary>
     Public Event DataChanged(sender As System.Object, e As System.EventArgs)
+    ''' <summary>
+    ''' Fires when user presses Cancel or 'X' button.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Public Event DataEntryCanceled(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
 
     Public Sub New()
         InitializeComponent()
@@ -127,6 +134,7 @@
     End Sub
 
     Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
+        RaiseEvent DataEntryCanceled(sender, e)
         Hide()
     End Sub
 
@@ -136,6 +144,7 @@
     Private Sub frmTableView_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If e.CloseReason = CloseReason.UserClosing Then
             e.Cancel = True
+            RaiseEvent DataEntryCanceled(sender, e)
             Me.Hide()
         End If
     End Sub

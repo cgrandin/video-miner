@@ -275,7 +275,7 @@ VideoMiner
 </member>
 <member name="E:VideoMiner.DynamicButton.ClearEvent">
  <summary>
- Fires when the frmTableView is cleared via its clear button or a ctrl-click of this button
+ Fires when the frmTableView or frmAbundanceTableView is cleared via its clear button or a ctrl-click of this button
  </summary>
  <param name="sender"></param>
  <param name="e"></param>
@@ -870,6 +870,13 @@ VideoMiner
  <summary>
  Tell the parent that the data have changed
  </summary>
+</member>
+<member name="E:VideoMiner.frmAbundanceTableView.DataEntryCanceled">
+ <summary>
+ Fires when user presses Cancel or 'X' button.
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param>
 </member>
 <member name="M:VideoMiner.frmAbundanceTableView.ResizeGrid">
  <summary>

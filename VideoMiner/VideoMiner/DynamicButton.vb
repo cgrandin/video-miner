@@ -123,7 +123,7 @@ Public Class DynamicButton
     ''' <param name="e"></param>
     Public Event DataEntryCanceled(ByVal sender As System.Object, ByVal e As System.EventArgs)
     ''' <summary>
-    ''' Fires when the frmTableView is cleared via its clear button or a ctrl-click of this button
+    ''' Fires when the frmTableView or frmAbundanceTableView is cleared via its clear button or a ctrl-click of this button
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
@@ -513,7 +513,9 @@ Public Class DynamicButton
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub dataEntryCanceledHandler(ByVal sender As Object, ByVal e As EventArgs) Handles m_frmSpeciesEvent.DataEntryCanceled, m_frmTableView.DataEntryCanceled
+    Private Sub dataEntryCanceledHandler(ByVal sender As Object, ByVal e As EventArgs) Handles m_frmSpeciesEvent.DataEntryCanceled,
+                                                                                               m_frmTableView.DataEntryCanceled,
+                                                                                               m_frmAbundanceTableView.DataEntryCanceled
         RaiseEvent DataEntryCanceled(Me, EventArgs.Empty)
     End Sub
 End Class
