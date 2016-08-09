@@ -94,6 +94,8 @@ Public Class DynamicSpeciesButtonPanel
 #End Region
 
 #Region "Events"
+    Public Event RareSpeciesButtonPressed()
+    Public Event EditSpeciesButtonPressed()
     ''' <summary>
     ''' Signals the parent that a button has been pressed on this panel and data entry has started.
     ''' </summary>
@@ -504,11 +506,11 @@ Public Class DynamicSpeciesButtonPanel
     End Sub
 
     Private Sub btnRareSpeciesLookup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        ' Fire event to tell videominer to launch form
+        RaiseEvent RareSpeciesButtonPressed()
     End Sub
 
     Private Sub btnEditSpeciesButtons_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        ' Fire event to tell videominer to launch form
+        RaiseEvent EditSpeciesButtonPressed()
     End Sub
 
     ''' <summary>

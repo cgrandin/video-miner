@@ -1536,7 +1536,7 @@ VideoMiner
  saving to the database.
  </summary>
 </member>
-<member name="M:VideoMiner.VideoMiner.cmdEdit_Click(System.Object,System.EventArgs)">
+<member name="M:VideoMiner.VideoMiner.cmdEdit_Click">
  <summary>
  Brings up the edit species dialog (m_frmSpeciesList) which allows the user to change the order of the species buttons
  and to delete them, edit them, or add new ones.
@@ -1713,7 +1713,7 @@ VideoMiner
  Used to play the video if data entry has ended.
  </summary>
 </member>
-<member name="M:VideoMiner.VideoMiner.cmdRareSpeciesLookup_Click(System.Object,System.EventArgs)">
+<member name="M:VideoMiner.VideoMiner.cmdRareSpeciesLookup_Click">
  <summary>
  For looking up and saving to the database a rare species (one not on the species buttons).
  </summary>

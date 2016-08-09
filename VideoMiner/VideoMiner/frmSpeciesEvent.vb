@@ -204,11 +204,22 @@ Public Class frmSpeciesEvent
             " from " & DB_SPECIES_BUTTONS_TABLE & " ORDER BY " & strKeyButtons
         Dim data_table As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_BUTTONS_TABLE)
         ' If the SpeciesName is not in the table, add the Common name of the species into the list
-        'Dim dr As DataRow = data_table.NewRow()
-        'dr(strKeyButtons) = Database.GetNextPrimaryKeyValue(DB_SPECIES_BUTTONS_TABLE)
-        'dr(BUTTON_TEXT) = SpeciesName
-        'dr(BUTTON_CODE) = SpeciesCode
-        'data_table.Rows.Add(dr)
+        Dim blContainsSpecies As Boolean = False
+        Dim dr As DataRow
+        For i As Integer = 0 To data_table.Rows.Count - 1
+            dr = data_table.Rows(i)
+            If dr(BUTTON_TEXT).ToString() = species_name Then
+                blContainsSpecies = True
+                Exit For
+            End If
+        Next
+        If Not blContainsSpecies Then
+            dr = data_table.NewRow()
+            dr(strKeyButtons) = Database.GetNextPrimaryKeyValue(DB_SPECIES_BUTTONS_TABLE)
+            dr(BUTTON_TEXT) = SpeciesName
+            dr(BUTTON_CODE) = SpeciesCode
+            data_table.Rows.Add(dr)
+        End If
 
         With cboSpecies
             .DataSource = data_table

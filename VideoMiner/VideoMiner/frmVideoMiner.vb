@@ -1570,9 +1570,10 @@ Public Class VideoMiner
     ''' Brings up the edit species dialog (m_frmSpeciesList) which allows the user to change the order of the species buttons
     ''' and to delete them, edit them, or add new ones.
     ''' </summary>
-    Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        dataEntryStarted()
-        m_frmSpeciesList.Show()
+    Private Sub cmdEdit_Click() Handles m_pnlSpeciesData.EditSpeciesButtonPressed
+        SpeciesButtonsToolStripMenuItem_Click(Me, EventArgs.Empty)
+        'dataEntryStarted()
+        'm_frmSpeciesList.Show()
     End Sub
 
     ''' <summary>
@@ -3179,7 +3180,7 @@ Public Class VideoMiner
     ''' <summary>
     ''' For looking up and saving to the database a rare species (one not on the species buttons).
     ''' </summary>
-    Private Sub cmdRareSpeciesLookup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+    Private Sub cmdRareSpeciesLookup_Click() Handles m_pnlSpeciesData.RareSpeciesButtonPressed
         If IsNothing(m_data_table) Then
             Exit Sub
         End If
