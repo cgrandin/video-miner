@@ -139,7 +139,6 @@ Public Class VideoMiner
     Public Const SPECIES_ID_NOT_ASSIGNED As Integer = -1
     Public Const SPECIES_NAME_NOT_ASSIGNED As String = NULL_STRING
     Public Const SPECIES_COUNT_NOT_ASSIGNED As Integer = -1
-
 #End Region
 
 #Region "Member variables"

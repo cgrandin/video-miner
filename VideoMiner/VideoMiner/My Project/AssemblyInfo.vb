@@ -8,11 +8,11 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("VideoMiner")> 
-<Assembly: AssemblyDescription("'Mine' habitat and species data from video by recording into an MS Access database. Source code is available on GitHub. Designed and written by Chris Grandin. Uses the Vlc.DotNet assembly for the video player control.")> 
+<Assembly: AssemblyTitle("VideoMiner")>
+<Assembly: AssemblyDescription("'Mine' habitat and species data from video by recording into an MS Access database. Source code is available on GitHub. Designed and written by Chris Grandin.")>
 <Assembly: AssemblyCompany("Fisheries and Oceans Canada")> 
-<Assembly: AssemblyProduct("VideoMiner")> 
-<Assembly: AssemblyCopyright("Copyright © 2014")> 
+<Assembly: AssemblyProduct("VideoMiner")>
+<Assembly: AssemblyCopyright("Copyright © 2008-2016")>
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(True)> 

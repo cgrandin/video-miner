@@ -86,8 +86,6 @@ Partial Class VideoMiner
         Me.cmdCloseCalendar = New System.Windows.Forms.Button()
         Me.pnlVideoControls = New System.Windows.Forms.Panel()
         Me.txtFramesToSkip = New System.Windows.Forms.TextBox()
-        Me.chkDefineAll = New System.Windows.Forms.CheckBox()
-        Me.chkResumeVideo = New System.Windows.Forms.CheckBox()
         Me.cmdScreenCapture = New System.Windows.Forms.Button()
         Me.cmdNext = New System.Windows.Forms.Button()
         Me.cmdPrevious = New System.Windows.Forms.Button()
@@ -98,8 +96,6 @@ Partial Class VideoMiner
         Me.cmdPlayPause = New System.Windows.Forms.Button()
         Me.cmdIncreaseRate = New System.Windows.Forms.Button()
         Me.cmdDecreaseRate = New System.Windows.Forms.Button()
-        Me.cmdPlayForSeconds = New System.Windows.Forms.Button()
-        Me.txtPlaySeconds = New System.Windows.Forms.TextBox()
         Me.txtTransectDate = New System.Windows.Forms.TextBox()
         Me.chkRecordEachSecond = New System.Windows.Forms.CheckBox()
         Me.txtProjectName = New System.Windows.Forms.TextBox()
@@ -123,6 +119,10 @@ Partial Class VideoMiner
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
+        Me.txtPlaySeconds = New System.Windows.Forms.TextBox()
+        Me.cmdPlayForSeconds = New System.Windows.Forms.Button()
+        Me.chkDefineAll = New System.Windows.Forms.CheckBox()
+        Me.chkResumeVideo = New System.Windows.Forms.CheckBox()
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -741,27 +741,6 @@ Partial Class VideoMiner
         Me.txtFramesToSkip.TabIndex = 60
         Me.txtFramesToSkip.Text = "500"
         '
-        'chkDefineAll
-        '
-        Me.chkDefineAll.AutoSize = True
-        Me.chkDefineAll.Location = New System.Drawing.Point(3, 112)
-        Me.chkDefineAll.Name = "chkDefineAll"
-        Me.chkDefineAll.Size = New System.Drawing.Size(164, 17)
-        Me.chkDefineAll.TabIndex = 59
-        Me.chkDefineAll.Text = "Define All After Play Seconds"
-        Me.chkDefineAll.UseVisualStyleBackColor = True
-        '
-        'chkResumeVideo
-        '
-        Me.chkResumeVideo.AutoSize = True
-        Me.chkResumeVideo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkResumeVideo.Location = New System.Drawing.Point(3, 128)
-        Me.chkResumeVideo.Name = "chkResumeVideo"
-        Me.chkResumeVideo.Size = New System.Drawing.Size(116, 30)
-        Me.chkResumeVideo.TabIndex = 58
-        Me.chkResumeVideo.Text = "Resume Video" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "After Species Entry"
-        Me.chkResumeVideo.UseVisualStyleBackColor = True
-        '
         'cmdScreenCapture
         '
         Me.cmdScreenCapture.BackgroundImage = CType(resources.GetObject("cmdScreenCapture.BackgroundImage"), System.Drawing.Image)
@@ -867,22 +846,6 @@ Partial Class VideoMiner
         Me.cmdDecreaseRate.Size = New System.Drawing.Size(33, 26)
         Me.cmdDecreaseRate.TabIndex = 38
         Me.cmdDecreaseRate.UseVisualStyleBackColor = True
-        '
-        'cmdPlayForSeconds
-        '
-        Me.cmdPlayForSeconds.Location = New System.Drawing.Point(6, 89)
-        Me.cmdPlayForSeconds.Name = "cmdPlayForSeconds"
-        Me.cmdPlayForSeconds.Size = New System.Drawing.Size(80, 21)
-        Me.cmdPlayForSeconds.TabIndex = 40
-        Me.cmdPlayForSeconds.Text = "Play Seconds"
-        Me.cmdPlayForSeconds.UseVisualStyleBackColor = True
-        '
-        'txtPlaySeconds
-        '
-        Me.txtPlaySeconds.Location = New System.Drawing.Point(91, 89)
-        Me.txtPlaySeconds.Name = "txtPlaySeconds"
-        Me.txtPlaySeconds.Size = New System.Drawing.Size(86, 20)
-        Me.txtPlaySeconds.TabIndex = 41
         '
         'txtTransectDate
         '
@@ -1062,7 +1025,7 @@ Partial Class VideoMiner
         '
         'cmdAddComment
         '
-        Me.cmdAddComment.Location = New System.Drawing.Point(0, 34)
+        Me.cmdAddComment.Location = New System.Drawing.Point(3, 2)
         Me.cmdAddComment.Name = "cmdAddComment"
         Me.cmdAddComment.Size = New System.Drawing.Size(154, 30)
         Me.cmdAddComment.TabIndex = 37
@@ -1072,7 +1035,7 @@ Partial Class VideoMiner
         '
         'cmdNothingInPhoto
         '
-        Me.cmdNothingInPhoto.Location = New System.Drawing.Point(160, 34)
+        Me.cmdNothingInPhoto.Location = New System.Drawing.Point(163, 3)
         Me.cmdNothingInPhoto.Name = "cmdNothingInPhoto"
         Me.cmdNothingInPhoto.Size = New System.Drawing.Size(154, 30)
         Me.cmdNothingInPhoto.TabIndex = 55
@@ -1091,6 +1054,43 @@ Partial Class VideoMiner
         'tmrComputerTime
         '
         Me.tmrComputerTime.Interval = 500
+        '
+        'txtPlaySeconds
+        '
+        Me.txtPlaySeconds.Location = New System.Drawing.Point(91, 89)
+        Me.txtPlaySeconds.Name = "txtPlaySeconds"
+        Me.txtPlaySeconds.Size = New System.Drawing.Size(86, 20)
+        Me.txtPlaySeconds.TabIndex = 41
+        '
+        'cmdPlayForSeconds
+        '
+        Me.cmdPlayForSeconds.Location = New System.Drawing.Point(6, 89)
+        Me.cmdPlayForSeconds.Name = "cmdPlayForSeconds"
+        Me.cmdPlayForSeconds.Size = New System.Drawing.Size(80, 21)
+        Me.cmdPlayForSeconds.TabIndex = 40
+        Me.cmdPlayForSeconds.Text = "Play Seconds"
+        Me.cmdPlayForSeconds.UseVisualStyleBackColor = True
+        '
+        'chkDefineAll
+        '
+        Me.chkDefineAll.AutoSize = True
+        Me.chkDefineAll.Location = New System.Drawing.Point(3, 112)
+        Me.chkDefineAll.Name = "chkDefineAll"
+        Me.chkDefineAll.Size = New System.Drawing.Size(164, 17)
+        Me.chkDefineAll.TabIndex = 59
+        Me.chkDefineAll.Text = "Define All After Play Seconds"
+        Me.chkDefineAll.UseVisualStyleBackColor = True
+        '
+        'chkResumeVideo
+        '
+        Me.chkResumeVideo.AutoSize = True
+        Me.chkResumeVideo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.chkResumeVideo.Location = New System.Drawing.Point(3, 128)
+        Me.chkResumeVideo.Name = "chkResumeVideo"
+        Me.chkResumeVideo.Size = New System.Drawing.Size(116, 30)
+        Me.chkResumeVideo.TabIndex = 58
+        Me.chkResumeVideo.Text = "Resume Video" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "After Species Entry"
+        Me.chkResumeVideo.UseVisualStyleBackColor = True
         '
         'VideoMiner
         '
@@ -1180,8 +1180,6 @@ Partial Class VideoMiner
     Friend WithEvents SplitContainer1 As System.Windows.Forms.SplitContainer
     Friend WithEvents SplitContainer3 As System.Windows.Forms.SplitContainer
     Friend WithEvents lblVideoControls As System.Windows.Forms.Label
-    Friend WithEvents txtPlaySeconds As System.Windows.Forms.TextBox
-    Friend WithEvents cmdPlayForSeconds As System.Windows.Forms.Button
     Friend WithEvents txtTransectDate As System.Windows.Forms.TextBox
     Friend WithEvents chkRecordEachSecond As System.Windows.Forms.CheckBox
     Friend WithEvents txtProjectName As System.Windows.Forms.TextBox
@@ -1215,7 +1213,6 @@ Partial Class VideoMiner
     Friend WithEvents lblVideoRate As System.Windows.Forms.Label
     Friend WithEvents cmdNext As System.Windows.Forms.Button
     Friend WithEvents cmdPrevious As System.Windows.Forms.Button
-    Friend WithEvents chkResumeVideo As System.Windows.Forms.CheckBox
     Friend WithEvents DataCodeAssignmentsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents svDlgFileDialogSession As System.Windows.Forms.SaveFileDialog
     Friend WithEvents DeviceToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
@@ -1223,7 +1220,6 @@ Partial Class VideoMiner
     Friend WithEvents RelayConfigurationToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents txtNMEA As System.Windows.Forms.TextBox
     Friend WithEvents cmdScreenCapture As System.Windows.Forms.Button
-    Friend WithEvents chkDefineAll As System.Windows.Forms.CheckBox
     Friend WithEvents lblGPSPort As System.Windows.Forms.Label
     Friend WithEvents lblZValue As System.Windows.Forms.Label
     Friend WithEvents lblYValue As System.Windows.Forms.Label
@@ -1247,4 +1243,8 @@ Partial Class VideoMiner
     Friend WithEvents mnuShowTooltips As ToolStripMenuItem
     Friend WithEvents DataTableColumnsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SpeciesButtonsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents chkDefineAll As CheckBox
+    Friend WithEvents chkResumeVideo As CheckBox
+    Friend WithEvents cmdPlayForSeconds As Button
+    Friend WithEvents txtPlaySeconds As TextBox
 End Class
