@@ -291,6 +291,18 @@ VideoMiner
  See WhichEntryStyleEnum for descriptions.
  </summary>
 </member>
+<member name="P:VideoMiner.DynamicButton.ControlWidth">
+ <summary>
+ Width of the control
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:VideoMiner.DynamicButton.ControlHeight">
+ <summary>
+ Height of the control, including button and textbox
+ </summary>
+ <returns></returns>
+</member>
 <member name="M:VideoMiner.DynamicButton.ShowForm(System.Object,System.EventArgs)">
  <summary>
  Show the correct form based on the WhichTypeEnum value.
@@ -344,6 +356,42 @@ VideoMiner
  A panel which supports loading of dynamic species buttons.
  </summary>
  <remarks></remarks>
+</member>
+<member name="F:VideoMiner.DynamicSpeciesButtonPanel.m_static_button_panel">
+ <summary>
+ Necessary to hold the static controls in a 2 row by 3-column grid
+ </summary>
+</member>
+<member name="F:VideoMiner.DynamicSpeciesButtonPanel.m_radio_panel">
+ <summary>
+ Holds the three radio button choices in a 1-row, 3-col panel
+ This panel will stretch across the three columns in the first row of the static panel.
+ </summary>
+</member>
+<member name="F:VideoMiner.DynamicSpeciesButtonPanel.m_two_button_panel">
+ <summary>
+ Holds the two buttons Rare Species and Edit species in a 1-row, 2-col panel
+ This panel will stretch across the first two columns in the second row of the 
+ static panel
+ </summary>
+</member>
+<member name="F:VideoMiner.DynamicSpeciesButtonPanel.m_quick_entry_txt_panel">
+ <summary>
+ Holds the quick entry label and textbox in a 2-row, 1-col panel
+ This panel will be placed in the bottommost, rightmost cell of the static panel.
+ </summary>
+</member>
+<member name="F:VideoMiner.DynamicSpeciesButtonPanel.m_dynamic_button_panel">
+ <summary>
+ Holds the dynamic buttons in a table layout panel. The number of rows will depend
+ on how many buttons are defined by the user.
+ </summary>
+</member>
+<member name="F:VideoMiner.DynamicSpeciesButtonPanel.m_main_panel">
+ <summary>
+ A two-row, one-column table layout panel which holds the m_static_button_panel on top
+ and the m_dynamic_button_panel on the bottom.
+ </summary>
 </member>
 <member name="F:VideoMiner.DynamicSpeciesButtonPanel.m_num_dynamic_buttons">
  <summary>
@@ -485,7 +533,7 @@ VideoMiner
  </summary>
  <param name="strSpecies"></param>
 </member>
-<member name="M:VideoMiner.DynamicSpeciesButtonPanel.changeQuickEntryNum(System.Int32)">
+<member name="M:VideoMiner.DynamicSpeciesButtonPanel.changeQuickEntryNum(System.String)">
  <summary>
  Change the quick entry number for all DynamicButtons on this panel
  </summary>
@@ -496,6 +544,11 @@ VideoMiner
  </summary>
  <param name="sender"></param>
  <param name="e"></param>
+</member>
+<member name="M:VideoMiner.DynamicSpeciesButtonPanel.m_quick_entry_textbox_TextChanged(System.Object,System.EventArgs)">
+ <summary>
+ When the user changes the quick entry value, set all species buttons to have that value.
+ </summary>
 </member>
 <member name="T:VideoMiner.DynamicTableButton">
  <summary>
@@ -1726,11 +1779,6 @@ VideoMiner
 <member name="M:VideoMiner.VideoMiner.Me_Closing(System.Object,System.Windows.Forms.FormClosingEventArgs)">
  <summary>
  When the user clicks the X to close the application, this handles that and closes any open forms and sets them up for garbage collection
- </summary>
-</member>
-<member name="M:VideoMiner.VideoMiner.txtQuickSpeciesCount_TextChanged(System.Object,System.EventArgs)">
- <summary>
- When the user changes the quick entry value, set all species buttons to have that value.
  </summary>
 </member>
 <member name="M:VideoMiner.VideoMiner.dataEntryCanceledHandler(System.Object,System.EventArgs)">

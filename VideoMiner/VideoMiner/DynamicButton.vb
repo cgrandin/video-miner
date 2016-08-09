@@ -249,6 +249,25 @@ Public Class DynamicButton
             m_quick_entry_num = value
         End Set
     End Property
+    ''' <summary>
+    ''' Width of the control
+    ''' </summary>
+    ''' <returns></returns>
+    Public ReadOnly Property ControlWidth As Integer
+        Get
+            Return ClientSize.Width
+        End Get
+    End Property
+    ''' <summary>
+    ''' Height of the control, including button and textbox
+    ''' </summary>
+    ''' <returns></returns>
+    Public ReadOnly Property ControlHeight As Integer
+        Get
+            Return ClientSize.Height
+        End Get
+    End Property
+
 #End Region
 
     ''' <summary>

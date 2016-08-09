@@ -328,6 +328,7 @@ Public Class DynamicTableButtonPanel
             RemoveHandler m_dynamic_buttons(0).DataEntryCanceled, AddressOf dataEntryCanceledHandler
             m_dynamic_button_panel.Controls.RemoveAt(0)
         Loop
+        m_num_dynamic_buttons = 0
         If Not IsNothing(m_main_panel) Then
             m_main_panel.Visible = False
         End If

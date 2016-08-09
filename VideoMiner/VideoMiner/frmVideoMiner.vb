@@ -670,7 +670,6 @@ Public Class VideoMiner
 
         'lblDirtyData.Visible = False
 
-        Me.txtQuickSpeciesCount.Text = DEFAULT_QUICK_ENTRY_COUNT
 
         Me.SelectNextControl(Me.SplitContainer4.Panel2, False, True, True, True)
 
@@ -735,7 +734,7 @@ Public Class VideoMiner
         m_pnlSpeciesData.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         m_pnlSpeciesData.Dock = DockStyle.Fill
         'AddHandler m_pnlSpeciesData.NewSpeciesEntryEvent, AddressOf new_species_entry_handler
-        SplitContainer8.Panel2.Controls.Add(m_pnlSpeciesData)
+        SplitContainer6.Panel2.Controls.Add(m_pnlSpeciesData)
 
         ' Create this form once, since it loads comboboxes with large amounts of data.
         m_frmRareSpeciesLookup = New frmRareSpeciesLookup
@@ -1282,12 +1281,6 @@ Public Class VideoMiner
         cmdTransectStart.Enabled = False
         cmdOffBottom.Enabled = False
         'ResumeVideo.Enabled = True
-        Me.radQuickEntry.Visible = False
-        Me.radDetailedEntry.Visible = False
-        Me.radDetailedEntry.Checked = True
-        Me.radAbundanceEntry.Visible = False
-        Me.cmdEdit.Visible = False
-        Me.cmdRareSpeciesLookup.Visible = False
         'Me.lblQuickSpeciesCount.Visible = False
         'Me.txtQuickSpeciesCount.Visible = False
         Me.txtPlaySeconds.Enabled = False
@@ -1577,7 +1570,7 @@ Public Class VideoMiner
     ''' Brings up the edit species dialog (m_frmSpeciesList) which allows the user to change the order of the species buttons
     ''' and to delete them, edit them, or add new ones.
     ''' </summary>
-    Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdEdit.Click
+    Private Sub cmdEdit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         dataEntryStarted()
         m_frmSpeciesList.Show()
     End Sub
@@ -2498,11 +2491,6 @@ Public Class VideoMiner
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub database_is_open_toggle_visibility()
-        radQuickEntry.Visible = True
-        radDetailedEntry.Visible = True
-        radAbundanceEntry.Visible = True
-        cmdEdit.Visible = True
-        cmdRareSpeciesLookup.Visible = True
         DataTableColumnsToolStripMenuItem.Enabled = True
         'ConfigureSpeciesEventToolStripMenuItem.Enabled = True
         ConfigureHabitatButtonToolStripMenuItem.Enabled = True
@@ -2530,11 +2518,6 @@ Public Class VideoMiner
         cmdTransectStart.Enabled = True
         cmdOffBottom.Enabled = True
         'ResumeVideo.Enabled = True
-        radQuickEntry.Visible = True
-        radDetailedEntry.Visible = True
-        radAbundanceEntry.Visible = True
-        cmdEdit.Visible = True
-        cmdRareSpeciesLookup.Visible = True
 
         txtTransectDate.Enabled = True
         txtProjectName.Enabled = True
@@ -3166,22 +3149,8 @@ Public Class VideoMiner
         modGlobals.numericTextboxValidation(e)
     End Sub
 
-    Private Sub txtQuickSpeciesCount_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtQuickSpeciesCount.KeyPress
+    Private Sub txtQuickSpeciesCount_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyPressEventArgs)
         modGlobals.numericTextboxValidation(e)
-    End Sub
-
-    Private Sub radQuickEntry_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles radQuickEntry.CheckedChanged
-        If radQuickEntry.Checked = True Then
-            lblQuickSpeciesCount.Visible = True
-            txtQuickSpeciesCount.Visible = True
-        Else
-            lblQuickSpeciesCount.Visible = False
-            txtQuickSpeciesCount.Visible = False
-        End If
-        ' Tell the species panel that the buttons should all be quick entry type
-        If Not IsNothing(m_pnlSpeciesData) Then
-            m_pnlSpeciesData.WhichEntryStyle = DynamicButton.WhichEntryStyleEnum.Quick
-        End If
     End Sub
 
     ''' <summary>
@@ -3210,7 +3179,7 @@ Public Class VideoMiner
     ''' <summary>
     ''' For looking up and saving to the database a rare species (one not on the species buttons).
     ''' </summary>
-    Private Sub cmdRareSpeciesLookup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdRareSpeciesLookup.Click
+    Private Sub cmdRareSpeciesLookup_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         If IsNothing(m_data_table) Then
             Exit Sub
         End If
@@ -3849,26 +3818,17 @@ Public Class VideoMiner
         Throw New NotImplementedException
     End Function
 
-    Private Sub radDetailedEntry_CheckedChanged(sender As Object, e As EventArgs) Handles radDetailedEntry.CheckedChanged
+    Private Sub radDetailedEntry_CheckedChanged(sender As Object, e As EventArgs)
         ' Tell the species panel that the buttons should all be detailed entry type
         If Not IsNothing(m_pnlSpeciesData) Then
             m_pnlSpeciesData.WhichEntryStyle = DynamicButton.WhichEntryStyleEnum.Detailed
         End If
     End Sub
 
-    Private Sub radAbundanceEntry_CheckedChanged(sender As Object, e As EventArgs) Handles radAbundanceEntry.CheckedChanged
+    Private Sub radAbundanceEntry_CheckedChanged(sender As Object, e As EventArgs)
         ' Tell the species panel that the buttons should all be abundance entry type
         If Not IsNothing(m_pnlSpeciesData) Then
             m_pnlSpeciesData.WhichEntryStyle = DynamicButton.WhichEntryStyleEnum.Abundance
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' When the user changes the quick entry value, set all species buttons to have that value.
-    ''' </summary>
-    Private Sub txtQuickSpeciesCount_TextChanged(sender As Object, e As EventArgs) Handles txtQuickSpeciesCount.TextChanged
-        If Not IsNothing(m_pnlSpeciesData) Then
-            m_pnlSpeciesData.changeQuickEntryNum(CInt(txtQuickSpeciesCount.Text))
         End If
     End Sub
 

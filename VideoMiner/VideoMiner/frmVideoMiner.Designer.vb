@@ -115,15 +115,6 @@ Partial Class VideoMiner
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer6 = New System.Windows.Forms.SplitContainer()
         Me.SplitContainer7 = New System.Windows.Forms.SplitContainer()
-        Me.SplitContainer8 = New System.Windows.Forms.SplitContainer()
-        Me.pnlSpeciesEntryControls = New System.Windows.Forms.Panel()
-        Me.cmdRareSpeciesLookup = New System.Windows.Forms.Button()
-        Me.radQuickEntry = New System.Windows.Forms.RadioButton()
-        Me.cmdEdit = New System.Windows.Forms.Button()
-        Me.radAbundanceEntry = New System.Windows.Forms.RadioButton()
-        Me.radDetailedEntry = New System.Windows.Forms.RadioButton()
-        Me.lblQuickSpeciesCount = New System.Windows.Forms.Label()
-        Me.txtQuickSpeciesCount = New System.Windows.Forms.TextBox()
         Me.cmdAddComment = New System.Windows.Forms.Button()
         Me.cmdNothingInPhoto = New System.Windows.Forms.Button()
         Me.fldlgOpenFD = New System.Windows.Forms.OpenFileDialog()
@@ -156,14 +147,9 @@ Partial Class VideoMiner
         Me.SplitContainer2.SuspendLayout()
         CType(Me.SplitContainer6, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer6.Panel1.SuspendLayout()
-        Me.SplitContainer6.Panel2.SuspendLayout()
         Me.SplitContainer6.SuspendLayout()
         CType(Me.SplitContainer7, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer7.SuspendLayout()
-        CType(Me.SplitContainer8, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SplitContainer8.Panel1.SuspendLayout()
-        Me.SplitContainer8.SuspendLayout()
-        Me.pnlSpeciesEntryControls.SuspendLayout()
         Me.SuspendLayout()
         '
         'mnStrVideoMinerMenu
@@ -1061,7 +1047,6 @@ Partial Class VideoMiner
         'SplitContainer6.Panel2
         '
         Me.SplitContainer6.Panel2.AutoScroll = True
-        Me.SplitContainer6.Panel2.Controls.Add(Me.SplitContainer8)
         Me.SplitContainer6.Size = New System.Drawing.Size(886, 423)
         Me.SplitContainer6.SplitterDistance = 394
         Me.SplitContainer6.TabIndex = 44
@@ -1074,119 +1059,6 @@ Partial Class VideoMiner
         Me.SplitContainer7.Size = New System.Drawing.Size(394, 423)
         Me.SplitContainer7.SplitterDistance = 197
         Me.SplitContainer7.TabIndex = 0
-        '
-        'SplitContainer8
-        '
-        Me.SplitContainer8.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitContainer8.Location = New System.Drawing.Point(0, 0)
-        Me.SplitContainer8.Margin = New System.Windows.Forms.Padding(0)
-        Me.SplitContainer8.Name = "SplitContainer8"
-        Me.SplitContainer8.Orientation = System.Windows.Forms.Orientation.Horizontal
-        '
-        'SplitContainer8.Panel1
-        '
-        Me.SplitContainer8.Panel1.Controls.Add(Me.pnlSpeciesEntryControls)
-        Me.SplitContainer8.Size = New System.Drawing.Size(488, 423)
-        Me.SplitContainer8.SplitterDistance = 79
-        Me.SplitContainer8.SplitterWidth = 1
-        Me.SplitContainer8.TabIndex = 0
-        '
-        'pnlSpeciesEntryControls
-        '
-        Me.pnlSpeciesEntryControls.AutoScroll = True
-        Me.pnlSpeciesEntryControls.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.pnlSpeciesEntryControls.Controls.Add(Me.cmdRareSpeciesLookup)
-        Me.pnlSpeciesEntryControls.Controls.Add(Me.radQuickEntry)
-        Me.pnlSpeciesEntryControls.Controls.Add(Me.cmdEdit)
-        Me.pnlSpeciesEntryControls.Controls.Add(Me.radAbundanceEntry)
-        Me.pnlSpeciesEntryControls.Controls.Add(Me.radDetailedEntry)
-        Me.pnlSpeciesEntryControls.Controls.Add(Me.lblQuickSpeciesCount)
-        Me.pnlSpeciesEntryControls.Controls.Add(Me.txtQuickSpeciesCount)
-        Me.pnlSpeciesEntryControls.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.pnlSpeciesEntryControls.Location = New System.Drawing.Point(0, 0)
-        Me.pnlSpeciesEntryControls.Name = "pnlSpeciesEntryControls"
-        Me.pnlSpeciesEntryControls.Size = New System.Drawing.Size(488, 79)
-        Me.pnlSpeciesEntryControls.TabIndex = 38
-        '
-        'cmdRareSpeciesLookup
-        '
-        Me.cmdRareSpeciesLookup.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdRareSpeciesLookup.Location = New System.Drawing.Point(6, 29)
-        Me.cmdRareSpeciesLookup.Name = "cmdRareSpeciesLookup"
-        Me.cmdRareSpeciesLookup.Size = New System.Drawing.Size(140, 44)
-        Me.cmdRareSpeciesLookup.TabIndex = 59
-        Me.cmdRareSpeciesLookup.Text = "Rare Species Lookup"
-        Me.cmdRareSpeciesLookup.UseVisualStyleBackColor = True
-        Me.cmdRareSpeciesLookup.Visible = False
-        '
-        'radQuickEntry
-        '
-        Me.radQuickEntry.AutoSize = True
-        Me.radQuickEntry.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.radQuickEntry.Location = New System.Drawing.Point(5, 3)
-        Me.radQuickEntry.Name = "radQuickEntry"
-        Me.radQuickEntry.Size = New System.Drawing.Size(99, 20)
-        Me.radQuickEntry.TabIndex = 44
-        Me.radQuickEntry.Text = "Quick Entry"
-        Me.radQuickEntry.UseVisualStyleBackColor = True
-        Me.radQuickEntry.Visible = False
-        '
-        'cmdEdit
-        '
-        Me.cmdEdit.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmdEdit.Location = New System.Drawing.Point(152, 29)
-        Me.cmdEdit.Name = "cmdEdit"
-        Me.cmdEdit.Size = New System.Drawing.Size(140, 44)
-        Me.cmdEdit.TabIndex = 45
-        Me.cmdEdit.Text = "Edit Species List"
-        Me.cmdEdit.UseVisualStyleBackColor = True
-        Me.cmdEdit.Visible = False
-        '
-        'radAbundanceEntry
-        '
-        Me.radAbundanceEntry.AutoSize = True
-        Me.radAbundanceEntry.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.radAbundanceEntry.Location = New System.Drawing.Point(232, 3)
-        Me.radAbundanceEntry.Name = "radAbundanceEntry"
-        Me.radAbundanceEntry.Size = New System.Drawing.Size(138, 20)
-        Me.radAbundanceEntry.TabIndex = 43
-        Me.radAbundanceEntry.Text = "Abundance Entry"
-        Me.radAbundanceEntry.UseVisualStyleBackColor = True
-        Me.radAbundanceEntry.Visible = False
-        '
-        'radDetailedEntry
-        '
-        Me.radDetailedEntry.AutoSize = True
-        Me.radDetailedEntry.Checked = True
-        Me.radDetailedEntry.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.radDetailedEntry.Location = New System.Drawing.Point(108, 3)
-        Me.radDetailedEntry.Name = "radDetailedEntry"
-        Me.radDetailedEntry.Size = New System.Drawing.Size(118, 20)
-        Me.radDetailedEntry.TabIndex = 43
-        Me.radDetailedEntry.TabStop = True
-        Me.radDetailedEntry.Text = "Detailed Entry"
-        Me.radDetailedEntry.UseVisualStyleBackColor = True
-        Me.radDetailedEntry.Visible = False
-        '
-        'lblQuickSpeciesCount
-        '
-        Me.lblQuickSpeciesCount.AutoSize = True
-        Me.lblQuickSpeciesCount.Location = New System.Drawing.Point(298, 32)
-        Me.lblQuickSpeciesCount.Name = "lblQuickSpeciesCount"
-        Me.lblQuickSpeciesCount.Size = New System.Drawing.Size(62, 26)
-        Me.lblQuickSpeciesCount.TabIndex = 45
-        Me.lblQuickSpeciesCount.Text = "Quick Entry" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Count"
-        Me.lblQuickSpeciesCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.lblQuickSpeciesCount.Visible = False
-        '
-        'txtQuickSpeciesCount
-        '
-        Me.txtQuickSpeciesCount.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtQuickSpeciesCount.Location = New System.Drawing.Point(366, 32)
-        Me.txtQuickSpeciesCount.Name = "txtQuickSpeciesCount"
-        Me.txtQuickSpeciesCount.Size = New System.Drawing.Size(38, 23)
-        Me.txtQuickSpeciesCount.TabIndex = 39
-        Me.txtQuickSpeciesCount.Visible = False
         '
         'cmdAddComment
         '
@@ -1264,16 +1136,10 @@ Partial Class VideoMiner
         CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer2.ResumeLayout(False)
         Me.SplitContainer6.Panel1.ResumeLayout(False)
-        Me.SplitContainer6.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer6, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer6.ResumeLayout(False)
         CType(Me.SplitContainer7, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer7.ResumeLayout(False)
-        Me.SplitContainer8.Panel1.ResumeLayout(False)
-        CType(Me.SplitContainer8, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.SplitContainer8.ResumeLayout(False)
-        Me.pnlSpeciesEntryControls.ResumeLayout(False)
-        Me.pnlSpeciesEntryControls.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1311,9 +1177,6 @@ Partial Class VideoMiner
     Friend WithEvents mnuNameOption_8 As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuNameOption_9 As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents SplitContainer4 As System.Windows.Forms.SplitContainer
-    Friend WithEvents cmdEdit As System.Windows.Forms.Button
-    Friend WithEvents radQuickEntry As System.Windows.Forms.RadioButton
-    Friend WithEvents radDetailedEntry As System.Windows.Forms.RadioButton
     Friend WithEvents SplitContainer1 As System.Windows.Forms.SplitContainer
     Friend WithEvents SplitContainer3 As System.Windows.Forms.SplitContainer
     Friend WithEvents lblVideoControls As System.Windows.Forms.Label
@@ -1336,9 +1199,6 @@ Partial Class VideoMiner
     Friend WithEvents mnthCalendar As System.Windows.Forms.MonthCalendar
     Friend WithEvents cmdCloseCalendar As System.Windows.Forms.Button
     Friend WithEvents mnuConfigureTools As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents txtQuickSpeciesCount As System.Windows.Forms.TextBox
-    Friend WithEvents lblQuickSpeciesCount As System.Windows.Forms.Label
-    Friend WithEvents cmdRareSpeciesLookup As System.Windows.Forms.Button
     Friend WithEvents KeyboardShortcutsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ConfigureHabitatButtonToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ConfigureTransectButtonsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
@@ -1357,7 +1217,6 @@ Partial Class VideoMiner
     Friend WithEvents cmdPrevious As System.Windows.Forms.Button
     Friend WithEvents chkResumeVideo As System.Windows.Forms.CheckBox
     Friend WithEvents DataCodeAssignmentsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents radAbundanceEntry As System.Windows.Forms.RadioButton
     Friend WithEvents svDlgFileDialogSession As System.Windows.Forms.SaveFileDialog
     Friend WithEvents DeviceToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents DeviceControl As System.Windows.Forms.ToolStripMenuItem
@@ -1381,11 +1240,9 @@ Partial Class VideoMiner
     Friend WithEvents lblGPSLocation As System.Windows.Forms.Label
     Friend WithEvents tmrComputerTime As System.Windows.Forms.Timer
     Friend WithEvents EditLookupTableToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents pnlSpeciesEntryControls As System.Windows.Forms.Panel
     Friend WithEvents InformationToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents txtFramesToSkip As System.Windows.Forms.TextBox
     Friend WithEvents cmdAddComment As System.Windows.Forms.Button
-    Friend WithEvents SplitContainer8 As System.Windows.Forms.SplitContainer
     Friend WithEvents cmdOffBottom As Button
     Friend WithEvents mnuShowTooltips As ToolStripMenuItem
     Friend WithEvents DataTableColumnsToolStripMenuItem As ToolStripMenuItem
