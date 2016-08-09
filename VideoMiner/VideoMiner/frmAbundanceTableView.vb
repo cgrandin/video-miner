@@ -6,7 +6,7 @@
     Private m_data_value As String
 
     Private m_Multiple As Boolean
-    Private strSelectedButtonName As String = ""
+    Private strSelectedButtonName As String = NULL_STRING
 
     Private prevWidth As Integer
     Private prevWindowState As FormWindowState
@@ -119,7 +119,7 @@
     Private Sub grdAbundance_SelectionChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles grdAbundance.SelectionChanged
         If grdAbundance.SelectedRows.Count = 1 Then
             If txtCommentBox.Text = "Comment" Then
-                txtCommentBox.Text = ""
+                txtCommentBox.Text = NULL_STRING
             End If
             RaiseEvent DataChanged(Me, e)
             Hide()

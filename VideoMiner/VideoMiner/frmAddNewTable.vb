@@ -65,7 +65,7 @@ Public Class frmAddNewTable
             Me.txtTableName.Select(sel_s - 1, 0)
         End If
 
-        If Me.txtTableName.Text <> "" Then
+        If Me.txtTableName.Text <> NULL_STRING Then
             cmdCreate.Enabled = True
         Else
             cmdCreate.Enabled = False
@@ -94,7 +94,7 @@ Public Class frmAddNewTable
                 If strTableName = Me.txtTableName.Text Then
 
                     MessageBox.Show("The table name specified already exists, please change the name and try again", "Existing Table Name", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                    Me.txtTableName.Text = ""
+                    Me.txtTableName.Text = NULL_STRING
                     Exit Sub
 
                 End If

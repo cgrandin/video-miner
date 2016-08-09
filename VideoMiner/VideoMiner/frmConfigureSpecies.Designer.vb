@@ -223,7 +223,7 @@ Partial Class frmConfigureSpecies
         Me.txtComments.Name = "txtComments"
         Me.txtComments.Size = New System.Drawing.Size(170, 79)
         Me.txtComments.TabIndex = 9
-        Me.txtComments.Text = ""
+        Me.txtComments.Text = NULL_STRING
         '
         'cmdOK
         '

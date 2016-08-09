@@ -110,16 +110,16 @@
     ''' Clears out all controls of their current values and resets member variables to a freshly loaded default state.
     ''' </summary>
     Public Sub ClearControls()
-        m_speciesName = ""
-        m_speciesScienceName = ""
-        m_speciesCode = ""
+        m_speciesName = NULL_STRING
+        m_speciesScienceName = NULL_STRING
+        m_speciesCode = NULL_STRING
 
         cboCommonName.SelectedIndex = -1
-        cboCommonName.Text = "" ' In case the last thing in the box was "No common name available" which is at position -1.
+        cboCommonName.Text = NULL_STRING ' In case the last thing in the box was "No common name available" which is at position -1.
         cboScientificName.SelectedIndex = -1
 
-        txtSpeciesCode.Text = ""
-        txtTaxonomicLevel.Text = ""
+        txtSpeciesCode.Text = NULL_STRING
+        txtTaxonomicLevel.Text = NULL_STRING
     End Sub
 
     ''' <summary>
@@ -159,7 +159,7 @@
 
             ' Set the scientific name, species code, and taxonomic name to match the selected common name
             If IsDBNull(selected_table.Rows(0)("CommonName")) Then
-                m_speciesName = ""
+                m_speciesName = NULL_STRING
                 m_speciesCode = CType(selected_table.Rows(0)("SpeciesCode"), String)
                 m_speciesTaxCode = CType(selected_table.Rows(0)("TaxonomyClassLevelCode"), String)
                 txtSpeciesCode.Text = m_speciesCode
@@ -184,7 +184,7 @@
     ''' If the user has selected a species, this will fire an event telling the main form to record a record in the data table in the database.
     ''' </summary>
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOk.Click
-        If SpeciesName = "" Then
+        If SpeciesName = NULL_STRING Then
             frmSpeciesEvent = New frmSpeciesEvent(SpeciesScienceName, SpeciesCode)
         Else
             frmSpeciesEvent = New frmSpeciesEvent(SpeciesName, SpeciesCode)

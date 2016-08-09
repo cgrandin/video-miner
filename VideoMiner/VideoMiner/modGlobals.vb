@@ -75,7 +75,7 @@ Module modGlobals
     Public booUseGPSTimeCodes As Boolean = False
     Public strHabitatButtonNames() As String
     Public strTransectButtonNames() As String
-    Public strRareSpeciesCode As String = ""
+    Public strRareSpeciesCode As String = NULL_STRING
     Public blButtonEdit As Boolean = False
 
     Public strVideoFilePath As String

@@ -74,7 +74,7 @@ Public Class frmEditLookupTable
     Private Sub cboLookupTable_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cboLookupTable.SelectedIndexChanged
         Dim strCharactersAllowed As String = "abcdefghijklmnopqrstuvwxyz_"
         Dim txtName As String = cboLookupTable.SelectedItem.ToString()
-        If txtName <> "" Then
+        If txtName <> NULL_STRING Then
             cmdEdit.Enabled = True
         Else
             cmdEdit.Enabled = False

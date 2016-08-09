@@ -18,14 +18,14 @@
 
     Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
         Me.strValue = Me.txtValue.Text
-        If Me.strValue = "" Then
+        If Me.strValue = NULL_STRING Then
             Me.strValue = "-9999"
         End If
         Me.Hide()
     End Sub
 
     Private Sub cmdCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCancel.Click
-        If Me.strValue = "" Then
+        If Me.strValue = NULL_STRING Then
             Me.strValue = "-9999"
         End If
         Me.Hide()
@@ -38,7 +38,7 @@
 
         ' Add any initialization after the InitializeComponent() call.
         If strUserValue = "-9999" Then
-            strUserValue = ""
+            strUserValue = NULL_STRING
         End If
         Me.txtValue.Text = strUserValue
         Me.strValue = strUserValue

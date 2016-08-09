@@ -260,7 +260,7 @@ Public Class frmImage
         ' The return value from the exif tool is one long string. Here we split it up based
         ' on newlines, and then clean out those newlines from the resulting list of strings.
         Dim strEXIFOutputRaw As List(Of String) = New List(Of String)(sOutput.Split(vbCrLf))
-        Dim strEXIFOutput As List(Of String) = strEXIFOutputRaw.Select(Function(str) str.Replace(vbLf, "")).ToList()
+        Dim strEXIFOutput As List(Of String) = strEXIFOutputRaw.Select(Function(str) str.Replace(vbLf, NULL_STRING)).ToList()
         ' The next line removes any extraneous list items that are either null or the String.Empty
         strEXIFOutput.RemoveAll(Function(str) String.IsNullOrEmpty(str))
         ' Now a dictionary is created with the keys being the string before the colon

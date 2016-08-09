@@ -13,7 +13,7 @@
             .HeaderStyle = ColumnHeaderStyle.Nonclickable
             .HideSelection = False
             .Focus()
-            .Columns.Add("", 0, HorizontalAlignment.Left)
+            .Columns.Add(NULL_STRING, 0, HorizontalAlignment.Left)
             .Columns.Add("Button Text", 160, HorizontalAlignment.Left)
             .Columns.Add("Keyboard Shortcut", 160, HorizontalAlignment.Left)
         End With
@@ -33,7 +33,7 @@
         Dim itm As ListViewItem
         For Each r As DataRow In d.Rows
             itm = New ListViewItem
-            itm.Text = ""
+            itm.Text = NULL_STRING
             itm.SubItems.Add(r.Item(BUTTON_TEXT).ToString())
             itm.SubItems.Add(r.Item(KEYBOARD_SHORTCUT).ToString())
             Me.lstSpecies.Items.Add(itm)

@@ -507,7 +507,7 @@ Public Class frmGpsSettings
         m_dblGPSY = 0.0
         m_dblGPSZ = 0.0
         m_dblGPSTime = 0.0
-        m_strCurrData = ""
+        m_strCurrData = NULL_STRING
         m_blDataGood = False
         m_blSendChosenStringsOnly = True
 
@@ -863,9 +863,9 @@ Public Class frmGpsSettings
                 '(10)	"M"
                 '(11)	"-17.9"
                 '(12)	"M"
-                '(13)	""
+                '(13)	NULL_STRING
                 '(14)	"*43 "
-                If s(1) = "" Or s(2) = "" Or s(3) = "" Or s(4) = "" Or s(5) = "" Or s(9) = "" Then
+                If s(1) = NULL_STRING Or s(2) = NULL_STRING Or s(3) = NULL_STRING Or s(4) = NULL_STRING Or s(5) = NULL_STRING Or s(9) = NULL_STRING Then
                     m_blConnected = False
                     m_blFirstTimeConnected = False
                     InvokeAction(AddressOf GPSDisconnected, New EventArgs())
@@ -908,7 +908,7 @@ Public Class frmGpsSettings
                 '(10)	"18.8"
                 '(11)	"E"
                 '(12)	"S*38 "
-                If s(1) = "" Or s(3) = "" Or s(5) = "" Or s(6) = "" Then
+                If s(1) = NULL_STRING Or s(3) = NULL_STRING Or s(5) = NULL_STRING Or s(6) = NULL_STRING Then
                     m_blConnected = False
                     m_blFirstTimeConnected = False
                     InvokeAction(AddressOf GPSDisconnected, New EventArgs())
@@ -995,7 +995,7 @@ Public Class frmGpsSettings
     ''' <remarks>The serial port launches this event on another thread, which is why there are all the marshalled BeginInvokes in this function,
     ''' all UI updating must be marshalled in this way or there will be unspecified behaviour (freezing/deadlocks)</remarks>
     Private Sub SerialPort_DataReceived(sender As Object, e As SerialDataReceivedEventArgs) Handles m_spSerialPort.DataReceived
-        Dim strData As String = ""
+        Dim strData As String = NULL_STRING
         Try
             strData = m_spSerialPort.ReadLine
             'Me.BeginInvoke(marshalAppendString, New Object() {strData})
@@ -1135,9 +1135,9 @@ Public Class frmGpsSettings
         lblCurrentZValue.Enabled = False
         lblDateTime.Enabled = False
         lblGPSConnection.Enabled = False
-        lblGPSMessage.Text = ""
+        lblGPSMessage.Text = NULL_STRING
         lblGPSMessage.Enabled = False
-        lblGPSPort.Text = ""
+        lblGPSPort.Text = NULL_STRING
         lblGPSPort.Enabled = False
         lblGPSPortMessage.Enabled = False
         lblTimeout.Enabled = False

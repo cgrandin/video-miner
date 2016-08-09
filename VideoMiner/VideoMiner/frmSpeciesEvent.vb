@@ -190,7 +190,7 @@ Public Class frmSpeciesEvent
 
 #End Region
 
-    Public Sub New(species_name As String, Optional species_code As String = "")
+    Public Sub New(species_name As String, Optional species_code As String = NULL_STRING)
         InitializeComponent()
         SpeciesName = species_name
         SpeciesCode = species_code
@@ -258,7 +258,7 @@ Public Class frmSpeciesEvent
             .SelectedIndex = 0
         End With
         ' Set the count to a default of 1
-        txtCount.Text = 1
+        txtCount.Text = "1"
         ' Disable range box for the default "On center"
         txtRange.Enabled = False
         selectSpeciesInCombobox()
@@ -289,11 +289,13 @@ Public Class frmSpeciesEvent
     ''' <param name="speciesCount">The species count to enter for this quick species entry.</param>
     ''' <param name="speciesAbundance">The abundance to enter for this quick species entry.</param>
     ''' <param name="ackComment">Optional comment sent for the abundance case only.</param>
-    Public Sub Acknowledge(Optional speciesCount As String = NULL_STRING, Optional speciesAbundance As String = NULL_STRING, Optional ackComment As String = NULL_STRING)
+    Public Sub Acknowledge(Optional speciesCount As String = NULL_STRING,
+                           Optional speciesAbundance As String = NULL_STRING,
+                           Optional ackComment As String = NULL_STRING)
         ' The codes 1 and 2 below reflect Port and Starboard. The commented out if statement shows what is really going on here.
         'If cboSide.SelectedItem.ToString() = "Port" Or cboSide.SelectedItem.ToString() = "Starboard" Then
         If CInt(cboSide.SelectedValue) = 1 Or CInt(cboSide.SelectedValue) = 2 Then
-            If txtRange.Text = "" Then
+            If txtRange.Text = NULL_STRING Then
                 MessageBox.Show("You must enter a value In the Range textbox When you choose 'Port' or 'Starboard' for 'Side'.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
                 Exit Sub
             ElseIf CType(txtRange.Text, Integer) = 0 Then
@@ -326,22 +328,22 @@ Public Class frmSpeciesEvent
         Else
             Comments = rtxtComments.Text
         End If
-        If Side = "" Then Side = UNINITIALIZED_DATA_VALUE
-        If IDConfidence = "" Then IDConfidence = UNINITIALIZED_DATA_VALUE
-        If Abundance = "" Then Abundance = UNINITIALIZED_DATA_VALUE
-        If Count = "" Then Count = UNINITIALIZED_DATA_VALUE
+        If Side = NULL_STRING Then Side = UNINITIALIZED_DATA_VALUE
+        If IDConfidence = NULL_STRING Then IDConfidence = UNINITIALIZED_DATA_VALUE
+        If Abundance = NULL_STRING Then Abundance = UNINITIALIZED_DATA_VALUE
+        If Count = NULL_STRING Then Count = UNINITIALIZED_DATA_VALUE
 
         Range = txtRange.Text
-        If Range = "" Then Range = UNINITIALIZED_DATA_VALUE
+        If Range = NULL_STRING Then Range = UNINITIALIZED_DATA_VALUE
         SpeciesHeight = txtHeight.Text
-        If SpeciesHeight = "" Then SpeciesHeight = UNINITIALIZED_DATA_VALUE
+        If SpeciesHeight = NULL_STRING Then SpeciesHeight = UNINITIALIZED_DATA_VALUE
         SpeciesWidth = txtWidth.Text
-        If SpeciesWidth = "" Then SpeciesWidth = UNINITIALIZED_DATA_VALUE
+        If SpeciesWidth = NULL_STRING Then SpeciesWidth = UNINITIALIZED_DATA_VALUE
         SpeciesLength = txtLength.Text
-        If SpeciesLength = "" Then SpeciesLength = UNINITIALIZED_DATA_VALUE
-        If Comments = "" Then
-            ' This one is a bit different, this needs to be "" instead of NULL.
-            Comments = ""
+        If SpeciesLength = NULL_STRING Then SpeciesLength = UNINITIALIZED_DATA_VALUE
+        If Comments = NULL_STRING Then
+            ' This one is a bit different, this needs to be NULL_STRING instead of NULL.
+            Comments = NULL_STRING
         End If
         buildDictionary()
         RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
@@ -466,9 +468,9 @@ Public Class frmSpeciesEvent
     Private Sub cboSide_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles cboSide.SelectionChangeCommitted
         Dim cbo As ComboBox = CType(sender, ComboBox)
         ' 0 is the value for "On Center"
-        If cbo.SelectedValue = 0 Then
-            m_range = ""
-            txtRange.Text = ""
+        If CInt(cbo.SelectedValue) = 0 Then
+            m_range = NULL_STRING
+            txtRange.Text = NULL_STRING
             txtRange.Enabled = False
         Else
             txtRange.Enabled = True

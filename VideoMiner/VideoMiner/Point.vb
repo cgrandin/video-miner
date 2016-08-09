@@ -7,9 +7,9 @@ Public Class Point
     Private m_X As Double = 0.0
     Private m_Y As Double = 0.0
     Private m_Z As Double = 0.0
-    Private m_GpsTime As String = ""
-    Private m_GpsUserTime As String = ""
-    Private m_GpsDate As String = ""
+    Private m_GpsTime As String = NULL_STRING
+    Private m_GpsUserTime As String = NULL_STRING
+    Private m_GpsDate As String = NULL_STRING
     Private m_NMEA As String
 #End Region
 
@@ -99,9 +99,9 @@ Public Class Point
 
         Dim regKey As RegistryKey
         regKey = Registry.CurrentUser.CreateSubKey("Software\VideoMiner")
-        Dim strGPSStringType As String = ""
+        Dim strGPSStringType As String = NULL_STRING
         strGPSStringType = regKey.GetValue("GPSStringType")
-        If NMEA <> "" Then
+        If NMEA <> NULL_STRING Then
             ' Split the NMEA string into readable segments
             Dim arrSentence() As String
             arrSentence = Split(NMEA, "$")
@@ -123,7 +123,7 @@ Public Class Point
                 If Trim(UCase(arrValues(0).ToString)) = "GPGGA" Then
 
                     ' If there is no locational data then make the point equal to zero
-                    If Trim(arrValues(2).ToString = "" Or Trim(arrValues(4).ToString = "")) Then
+                    If Trim(arrValues(2).ToString = NULL_STRING Or Trim(arrValues(4).ToString = NULL_STRING)) Then
                         X = 0.0
                         Y = 0.0
                     Else    ' Pull out all raw locational data
@@ -195,11 +195,11 @@ Public Class Point
                 End If
                 If Trim(UCase(arrValues(0).ToString)) = "GPRMC" Then
                     Dim intDays As Integer = 0
-                    Dim strDays As String = ""
+                    Dim strDays As String = NULL_STRING
                     Dim intMonths As Integer = 0
-                    Dim strMonths As String = ""
+                    Dim strMonths As String = NULL_STRING
                     Dim intYears As Integer = 0
-                    Dim strYears As String = ""
+                    Dim strYears As String = NULL_STRING
                     Try
 
                         intDays = CType(Mid(arrValues(9), 1, 2), Integer)
@@ -235,7 +235,7 @@ Public Class Point
 
                     Catch
                     End Try
-                    If strDays <> "" And strMonths <> "" And strYears <> "" Then
+                    If strDays <> NULL_STRING And strMonths <> NULL_STRING And strYears <> NULL_STRING Then
                         GpsDate = strDays & "/" & strMonths & "/" & strYears
                     End If
                 End If
@@ -247,9 +247,9 @@ Public Class Point
 
         '    Dim regKey As RegistryKey
         '    regKey = Registry.CurrentUser.CreateSubKey("Software\VideoMiner")
-        '    Dim strGPSStringType As String = ""
+        '    Dim strGPSStringType As String = NULL_STRING
         '    strGPSStringType = regKey.GetValue("GPSStringType")
-        '    If NMEA = "" Then
+        '    If NMEA = NULL_STRING Then
         '        X = 0.0
         '        Y = 0.0
         '        Return booAquiredFix
@@ -277,7 +277,7 @@ Public Class Point
         '            If Trim(UCase(arrValues(0).ToString)) = "GPGGA" Then
 
         '                ' If there is no locational data then make the point equal to zero
-        '                If Trim(arrValues(2).ToString = "" Or Trim(arrValues(4).ToString = "")) Then
+        '                If Trim(arrValues(2).ToString = NULL_STRING Or Trim(arrValues(4).ToString = NULL_STRING)) Then
         '                    X = 0.0
         '                    Y = 0.0
         '                Else    ' Pull out all raw locational data
@@ -348,11 +348,11 @@ Public Class Point
 
         '            If Trim(UCase(arrValues(0).ToString)) = "GPRMC" Then
         '                Dim intDays As Integer = 0
-        '                Dim strDays As String = ""
+        '                Dim strDays As String = NULL_STRING
         '                Dim intMonths As Integer = 0
-        '                Dim strMonths As String = ""
+        '                Dim strMonths As String = NULL_STRING
         '                Dim intYears As Integer = 0
-        '                Dim strYears As String = ""
+        '                Dim strYears As String = NULL_STRING
         '                Try
 
         '                    intDays = CType(Mid(arrValues(9), 1, 2), Integer)

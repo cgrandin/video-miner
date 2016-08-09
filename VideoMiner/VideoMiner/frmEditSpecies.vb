@@ -135,7 +135,7 @@ Public Class frmEditSpecies
         ' Initialize member variables and controls to default state.
         ClearControls()
 
-        ' The WHERE <> """" in the following three queries remove any null string species names from the lists
+        ' The WHERE <> NULL_STRING"" in the following three queries remove any null string species names from the lists
         Dim strQuery As String = "SELECT DISTINCT ScientificName FROM " & DB_SPECIES_CODE_TABLE & " WHERE ScientificName <> """" ORDER BY 1;"
         m_species_table = Database.GetDataTable(strQuery, DB_SPECIES_CODE_TABLE)
         PopulateComboBox(Me.cboScientificName, m_species_table)
@@ -272,7 +272,7 @@ Public Class frmEditSpecies
 
             ' Set the scientific name, species code, and taxonomic name to match the selected common name
             If IsDBNull(selected_table.Rows(0)("CommonName")) Then
-                m_speciesName = ""
+                m_speciesName = NULL_STRING
                 m_button_text = m_speciesScienceName
                 m_speciesCode = selected_table.Rows(0)("SpeciesCode")
                 m_speciesTaxCode = selected_table.Rows(0)("TaxonomyClassLevelCode")
@@ -317,14 +317,14 @@ Public Class frmEditSpecies
     ''' </summary>
     Public Sub FillControlsUsingSpeciesCode()
         Dim index As Integer
-        If SpeciesCode <> "" Then
+        If SpeciesCode <> NULL_STRING Then
             ' Get the current button setup variables for this species
-            Dim strQuery As String = "SELECT DISTINCT ButtonText, ButtonCode, ButtonColor, KeyboardShortcut FROM " & DB_SPECIES_BUTTONS_TABLE & _
+            Dim strQuery As String = "SELECT DISTINCT ButtonText, ButtonCode, ButtonColor, KeyboardShortcut FROM " & DB_SPECIES_BUTTONS_TABLE &
                                      " WHERE ButtonCode = " & DoubleQuote(SpeciesCode) & ";"
             Dim selected_table As DataTable = Database.GetDataTable(strQuery, DB_SPECIES_BUTTONS_TABLE)
 
             ' Get the other data from the species code table for this species.
-            Dim strQueryExtra As String = "SELECT DISTINCT CommonName, ScientificName, TaxonomyClassLevelCode FROM " & DB_SPECIES_CODE_TABLE & _
+            Dim strQueryExtra As String = "SELECT DISTINCT CommonName, ScientificName, TaxonomyClassLevelCode FROM " & DB_SPECIES_CODE_TABLE &
                                           " WHERE SpeciesCode = " & DoubleQuote(SpeciesCode) & ";"
             Dim selected_table_extra As DataTable = Database.GetDataTable(strQueryExtra, DB_SPECIES_CODE_TABLE)
 
@@ -333,7 +333,7 @@ Public Class frmEditSpecies
 
             ' Set the keyboard shortcut, if one exists
             If IsDBNull(selected_table.Rows(0)(KEYBOARD_SHORTCUT)) Then
-                m_keyboard_shortcut = ""
+                m_keyboard_shortcut = NULL_STRING
             Else
                 m_keyboard_shortcut = selected_table.Rows(0)(KEYBOARD_SHORTCUT)
             End If
@@ -343,7 +343,7 @@ Public Class frmEditSpecies
 
             ' Set the Common name combobox. If no common name, then display 'No common name available' instead
             If IsDBNull(selected_table_extra.Rows(0)("CommonName")) Then
-                m_speciesName = ""
+                m_speciesName = NULL_STRING
                 cboCommonName.Text = "No common name available"
             Else
                 m_speciesName = selected_table_extra.Rows(0)("CommonName")
@@ -371,22 +371,22 @@ Public Class frmEditSpecies
     ''' Clears out all controls of their current values and resets member variables to a freshly loaded default state.
     ''' </summary>
     Public Sub ClearControls()
-        m_speciesName = ""
-        m_speciesScienceName = ""
-        m_speciesCode = ""
-        m_speciesTaxCode = ""
+        m_speciesName = NULL_STRING
+        m_speciesScienceName = NULL_STRING
+        m_speciesCode = NULL_STRING
+        m_speciesTaxCode = NULL_STRING
         m_buttonColor = "DarkSlateGray"
-        m_keyboard_shortcut = ""
+        m_keyboard_shortcut = NULL_STRING
 
         cboCommonName.SelectedIndex = -1
-        cboCommonName.Text = "" ' In case the last thing in the box was "No common name available" which is at position -1.
+        cboCommonName.Text = NULL_STRING ' In case the last thing in the box was "No common name available" which is at position -1.
         cboScientificName.SelectedIndex = -1
         cboButtonColors.SelectedIndex = -1
 
-        txtSpeciesBtnTxt.Text = ""
-        txtKeyboardShortcut.Text = ""
-        txtSpeciesCode.Text = ""
-        txtTaxonomicLevel.Text = ""
+        txtSpeciesBtnTxt.Text = NULL_STRING
+        txtKeyboardShortcut.Text = NULL_STRING
+        txtSpeciesCode.Text = NULL_STRING
+        txtTaxonomicLevel.Text = NULL_STRING
     End Sub
 
     Private Sub cmdChange_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdChange.Click

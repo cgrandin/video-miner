@@ -130,7 +130,7 @@ Public Class frmSetTime
         If m_enumWhichTime = WhichTimeEnum.Manual Then
             m_tsUserTime = Zero
             txtSetTime.Enabled = True
-            txtSetTime.Text = ""
+            txtSetTime.Text = NULL_STRING
             txtSetTime.WaterMarkText = "HHMMSSmm"
         End If
         If m_enumWhichTime = WhichTimeEnum.Video Then

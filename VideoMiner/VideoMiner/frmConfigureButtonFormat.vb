@@ -156,13 +156,13 @@ Public Class frmConfigureButtonFormat
     End Sub
 
     Private Sub txtButtonWidth_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtButtonWidth.TextChanged
-        If Me.txtButtonWidth.Text <> "" Then
+        If Me.txtButtonWidth.Text <> NULL_STRING Then
             Me.cmdPreviewButton.Width = Me.txtButtonWidth.Text
         End If
     End Sub
 
     Private Sub txtButtonHeight_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtButtonHeight.TextChanged
-        If Me.txtButtonHeight.Text <> "" Then
+        If Me.txtButtonHeight.Text <> NULL_STRING Then
             Me.cmdPreviewButton.Height = Me.txtButtonHeight.Text
         End If
     End Sub

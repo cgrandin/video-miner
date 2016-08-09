@@ -134,7 +134,7 @@ Partial Class frmSpeciesEvent
         Me.rtxtComments.Name = "rtxtComments"
         Me.rtxtComments.Size = New System.Drawing.Size(278, 132)
         Me.rtxtComments.TabIndex = 16
-        Me.rtxtComments.Text = ""
+        Me.rtxtComments.Text = NULL_STRING
         '
         'txtLength
         '

@@ -1323,7 +1323,7 @@ Public Class VideoMiner
             mnuOpenFile.Enabled = False
         Else
             ' Return everything to no-loaded status
-            VideoFileName = ""
+            VideoFileName = NULL_STRING
             mnuOpenImg.Enabled = True
             mnuOpenFile.Enabled = True
         End If
@@ -3104,17 +3104,17 @@ Public Class VideoMiner
             values = values & SingleQuote(tmp.ToString("dd\.hh\:mm\:ss\.fff")) & ","
         End If
 
-        If m_GPS_X <> "" Then
+        If m_GPS_X <> NULL_STRING Then
             names = names & "X,"
             values = values & SingleQuote(m_GPS_X) & ","
         End If
 
-        If m_GPS_Y <> "" Then
+        If m_GPS_Y <> NULL_STRING Then
             names = names & "Y,"
             values = values & SingleQuote(m_GPS_Y) & ","
         End If
 
-        If m_GPS_Z <> "" Then
+        If m_GPS_Z <> NULL_STRING Then
             names = names & "Z,"
             values = values & SingleQuote(m_GPS_Z) & ","
         End If

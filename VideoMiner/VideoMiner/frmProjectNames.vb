@@ -129,7 +129,7 @@ Public Class frmProjectNames
         'deleteProjectName(strConfigFile, VMCD & "/PreviousProjects", Me.lstProjects.SelectedItem)
         m_ProjectNameToDelete = lstProjects.SelectedItem
         Me.lstProjects.Items.Remove(lstProjects.SelectedItem)
-        Me.txtProject.Text = ""
+        Me.txtProject.Text = NULL_STRING
         RaiseEvent DeleteProjectNameEvent()
     End Sub
 
