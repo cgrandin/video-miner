@@ -949,6 +949,11 @@ VideoMiner
  panel buttons, if not movable it is the species data panel buttons.
  </summary>
 </member>
+<member name="E:VideoMiner.frmConfigureButtons.EndDataEntryEvent">
+ <summary>
+ Fires when the OK button is pressed.
+ </summary>
+</member>
 <member name="M:VideoMiner.frmConfigureButtons.#ctor(System.String,System.String,System.String,System.Boolean)">
  <summary>
  Initialize the query, and extract the data that query defines into a DataSet with corresponding DataTable.

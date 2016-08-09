@@ -1510,7 +1510,8 @@ Public Class VideoMiner
     Private Sub dataButtonEntryFinished() Handles m_pnlSpeciesData.EndDataEntryEvent,
                                                   m_pnlTransectData.EndDataEntryEvent,
                                                   m_pnlHabitatData.EndDataEntryEvent,
-                                                  m_frmRareSpeciesLookup.EndDataEntryEvent
+                                                  m_frmRareSpeciesLookup.EndDataEntryEvent,
+                                                  m_frmConfigureButtons.EndDataEntryEvent
         dataEntryEnded()
     End Sub
     ''' <summary>
@@ -3201,16 +3202,19 @@ Public Class VideoMiner
     End Sub
 
     Private Sub ConfigureHabitatButtonToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureHabitatButtonToolStripMenuItem.Click
+        dataEntryStarted()
         m_frmConfigureButtons = New frmConfigureButtons(DB_HABITAT_BUTTONS_TABLE, PANEL_NAME_HABITAT, PANEL_NAME_TRANSECT)
         m_frmConfigureButtons.ShowDialog()
     End Sub
 
     Private Sub ConfigureTransectButtonsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ConfigureTransectButtonsToolStripMenuItem.Click
+        dataEntryStarted()
         m_frmConfigureButtons = New frmConfigureButtons(DB_TRANSECT_BUTTONS_TABLE, PANEL_NAME_TRANSECT, PANEL_NAME_HABITAT)
         m_frmConfigureButtons.ShowDialog()
     End Sub
 
     Private Sub SpeciesButtonsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SpeciesButtonsToolStripMenuItem.Click
+        dataEntryStarted()
         m_frmConfigureButtons = New frmConfigureButtons(DB_SPECIES_BUTTONS_TABLE, PANEL_NAME_SPECIES, PANEL_NAME_SPECIES, False)
         m_frmConfigureButtons.ShowDialog()
     End Sub

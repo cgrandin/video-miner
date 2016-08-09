@@ -35,6 +35,11 @@
 
 #Region "Events"
     Public Event DatabaseModifiedEvent()
+    ''' <summary>
+    ''' Fires when the OK button is pressed.
+    ''' </summary>
+    Public Event EndDataEntryEvent(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
 #End Region
 
     ''' <summary>
@@ -144,6 +149,7 @@
             RaiseEvent DatabaseModifiedEvent()
         End If
         ' Tell the VideoMinerDataGridView that the form is closing, so it can close any child forms as well.
+        RaiseEvent EndDataEntryEvent(sender, e)
         m_grd.parentHiding()
         Hide()
     End Sub

@@ -503,7 +503,8 @@ Public Class DynamicButton
     ''' <summary>
     ''' Bubbles the EndDataEntryEvent up.
     ''' </summary>
-    Private Sub endDataEntryEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles m_frmSpeciesEvent.EndDataEntryEvent, m_frmTableView.EndDataEntryEvent ', m_frmAbundanceTableView.EndDataEntryEvent
+    Private Sub endDataEntryEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles m_frmSpeciesEvent.EndDataEntryEvent,
+                                                                                                             m_frmTableView.EndDataEntryEvent ', m_frmAbundanceTableView.EndDataEntryEvent
         m_dict = sender.Dictionary
         RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
     End Sub
