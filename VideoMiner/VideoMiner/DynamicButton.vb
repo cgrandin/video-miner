@@ -475,7 +475,7 @@ Public Class DynamicButton
     End Sub
 
     ''' <summary>
-    ''' Handle the changing by the user of the lookup table code found in frmTableView, and fire an event to the parent.
+    ''' Handle the changing by the user of the abundance data found in frmAbundanceTableView
     ''' </summary>
     Private Sub abundanceDataChanged(sender As System.Object, e As System.EventArgs) Handles m_frmAbundanceTableView.DataChanged
         If m_which_entry_style = WhichEntryStyleEnum.Abundance Then
@@ -483,8 +483,8 @@ Public Class DynamicButton
             'm_data_code_description = m_frmAbundanceTableView.SelectedCodeName
             m_current_comment = m_frmAbundanceTableView.Comment
             m_data_code_name = DATA_CODE
-            m_data_code = 4
-            m_frmSpeciesEvent.Acknowledge(String.Empty, m_frmAbundanceTableView.SelectedCode, m_frmAbundanceTableView.Comment)
+            m_data_code = "4"
+            m_frmSpeciesEvent.Acknowledge(NULL_STRING, m_frmAbundanceTableView.SelectedCode, m_frmAbundanceTableView.Comment)
         End If
     End Sub
 

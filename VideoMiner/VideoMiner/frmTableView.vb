@@ -221,6 +221,8 @@ Public Class frmTableView
         m_data_description = DataGridView1.SelectedRows(0).Cells(1).Value.ToString()
         m_tuple = New Tuple(Of String, String, Boolean)(m_data_code, m_data_value, True)
         m_dict.Add(m_data_code_name, m_tuple)
+        m_tuple = New Tuple(Of String, String, Boolean)("4", DoubleQuote(Comment), False)
+        m_dict.Add("Comment", m_tuple)
     End Sub
 
     Private Sub btnSkipSpatial_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSkipSpatial.Click

@@ -330,7 +330,7 @@ VideoMiner
 </member>
 <member name="M:VideoMiner.DynamicButton.abundanceDataChanged(System.Object,System.EventArgs)">
  <summary>
- Handle the changing by the user of the lookup table code found in frmTableView, and fire an event to the parent.
+ Handle the changing by the user of the abundance data found in frmAbundanceTableView
  </summary>
 </member>
 <member name="M:VideoMiner.DynamicButton.clearData">
