@@ -521,6 +521,12 @@ Public Class VideoMinerDataGridView
         Catch ex As Exception
             ' This empty try/catch is required because the CellLeave sub is called many times during the building of the
             ' grid and we only want to deal with it when the used actually does something.
+        Finally
+            ' If the cell contains a combobox, remove it leaving only the text behind in the cell
+            If TypeOf sender(e.ColumnIndex, e.RowIndex) Is DataGridViewComboBoxCell Then
+                Dim cell As DataGridViewComboBoxCell = DirectCast(grd(e.ColumnIndex, e.RowIndex), DataGridViewComboBoxCell)
+                cell.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing
+            End If
         End Try
 
     End Sub
