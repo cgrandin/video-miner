@@ -412,4 +412,8 @@ Public Class frmEditSpecies
     Private Sub txtSpeciesBtnTxt_TextChanged(sender As Object, e As EventArgs) Handles txtSpeciesBtnTxt.TextChanged
         m_button_text = txtSpeciesBtnTxt.Text
     End Sub
+
+    Private Sub cboButtonColors_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboButtonColors.SelectedIndexChanged
+
+    End Sub
 End Class

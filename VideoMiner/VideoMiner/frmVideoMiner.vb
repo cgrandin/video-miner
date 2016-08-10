@@ -1147,6 +1147,7 @@ Public Class VideoMiner
     ''' </summary>
     ''' <param name="e">The key that was pressed</param>
     Public Sub VideoMiner_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
+        If Not Database.IsOpen Then Exit Sub
         ' If delete or shift were pressed, it could be to select or delete something from the data grid.
         If e.KeyValue = Keys.Delete Or e.KeyValue = Keys.ShiftKey Then Exit Sub
         ' If control key was pressed, it could be to clear a habitat type.
@@ -1168,10 +1169,7 @@ Public Class VideoMiner
         Dim d As DataTable = Database.GetDataTable("select DrawingOrder, ButtonText, ButtonCode, ButtonCodeName, DataCode, ButtonColor, KeyboardShortcut from " &
                                                    DB_SPECIES_BUTTONS_TABLE & " WHERE KeyboardShortcut = " & DoubleQuote(strKeyboardShortcut) &
                                                    " ORDER BY DrawingOrder;", DB_SPECIES_BUTTONS_TABLE)
-        If d.Rows.Count <= 0 Then
-            'MessageBox.Show("You pressed " & strKeyboardShortcut & " but it is not a valid keyboard shortcut. No data were entered.",
-            '                "Unknown keyboard shortcut", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        Else
+        If d.Rows.Count > 0 Then
             ' The idea here is to cause a click of the button that corresponds to the shortcut, because the
             ' code to build the query is complex and already implemented in buttonDataChanged()
             'If Not grdVideoMinerDatabase.Focused Then

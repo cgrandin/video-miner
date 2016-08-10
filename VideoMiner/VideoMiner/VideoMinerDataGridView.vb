@@ -1,5 +1,8 @@
 ﻿Imports System.ComponentModel
 
+''' <summary>
+''' 
+''' </summary>
 Public Class VideoMinerDataGridView
 
 #Region "Constants and Pseudo-Constants"
@@ -76,6 +79,11 @@ Public Class VideoMinerDataGridView
     ''' A form showing the data code table so user can see all the currently-assigned data codes
     ''' </summary>
     Private WithEvents m_frmViewDataTable As frmViewDataTable
+    ''' <summary>
+    ''' When the user clicks on a cell in the column which is called KeyboardShortcuts, a form will appear
+    ''' allowing them to set it up.
+    ''' </summary>
+    Private WithEvents m_frmCreateKeyboardShortcut As frmCreateKeyboardShortcut
     ''' <summary>
     ''' Enumeration describing which way to move the button definition in the list
     ''' </summary>
@@ -348,6 +356,7 @@ Public Class VideoMinerDataGridView
     ''' </summary>
     Private Sub grd_DataError(sender As Object, e As System.Windows.Forms.DataGridViewDataErrorEventArgs) Handles grd.DataError
         Dim strFieldName As String = grd.Columns(e.ColumnIndex).HeaderText
+        If strFieldName = BUTTON_FONT Or strFieldName = BUTTON_COLOR Then Exit Sub
         ' Set the cell to be clean because the DataError will noit allow you to leave the cell until you put in a good value
         setCell(e.RowIndex, e.ColumnIndex, CellStatus.Clean)
         ' Get Primary Key value and use that as row since the user can see it labelled on the row headers
@@ -575,6 +584,7 @@ Public Class VideoMinerDataGridView
     ''' Allow keys to be captured while the editor is focussed on an individual cell
     ''' </summary>
     Private Sub grdVideoMinerDatabase_EditingControlShowing(ByVal sender As Object, ByVal e As DataGridViewEditingControlShowingEventArgs) Handles grd.EditingControlShowing
+        If Not TypeOf sender Is TextBox Then Exit Sub
         Dim tb As TextBox = CType(e.Control, TextBox)
         AddHandler tb.PreviewKeyDown, AddressOf TextBox_PreviewKeyDown
     End Sub
@@ -818,5 +828,131 @@ Public Class VideoMinerDataGridView
     Private Sub grd_SelectionChanged(sender As Object, e As EventArgs) Handles grd.SelectionChanged
         setButtonDisabledEnabled()
         RaiseEvent SelectionChanged()
+    End Sub
+
+    ''' <summary>
+    ''' Check which column the cell belongs to, if KeyboardShortcuts, launch the form to accept the new shortcut.
+    ''' If Button color or button font, add a combobox for those and handle the drawing of them
+    ''' in the cb_DataGridViewComboBoxCell_DrawItem subroutine.
+    ''' </summary>
+    Private Sub grd_CellBeginEditSpecialCells(sender As Object, e As DataGridViewCellCancelEventArgs) Handles grd.CellBeginEdit
+        If grd.SelectedCells.Count <> 1 Then Exit Sub
+        ' Get the name of the column which has the selected cell
+        Dim strColname As String = grd.Columns(grd.SelectedCells(0).ColumnIndex).Name
+        If strColname = KEYBOARD_SHORTCUT Then
+            recordKeyboardShortcut()
+        ElseIf strColname = BUTTON_COLOR Then
+            recordButtonColor()
+        ElseIf strColname = BUTTON_FONT Then
+            recordButtonFont()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Add a combobox to the currently selected cell, and add the installed font items to the combobox.
+    ''' </summary>
+    Private Sub recordButtonFont()
+        Dim colIndex As Integer = grd.SelectedCells(0).ColumnIndex
+        Dim rowIndex As Integer = grd.SelectedCells(0).RowIndex
+        Dim cb As DataGridViewComboBoxCell = New DataGridViewComboBoxCell()
+        Dim objFontFamily As FontFamily
+        Dim objFontCollection As Text.FontCollection = New System.Drawing.Text.InstalledFontCollection()
+        For Each objFontFamily In objFontCollection.Families
+            cb.Items.Add(objFontFamily.Name)
+        Next
+        grd(colIndex, rowIndex) = cb
+    End Sub
+
+    ''' <summary>
+    ''' This is required to properly cast the DataGridViewComboBoxCell into a ComboBox.
+    ''' The cb_DataGridViewComboBoxCell_DrawItem sub will handle the drawing of the
+    ''' comboboxes.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub grd_EditingControlShowing(sender As Object, e As DataGridViewEditingControlShowingEventArgs) Handles grd.EditingControlShowing
+        If TypeOf e.Control Is ComboBox Then
+            Dim cb As ComboBox = TryCast(e.Control, ComboBox)
+            cb.DrawMode = DrawMode.OwnerDrawFixed
+            RemoveHandler cb.DrawItem, AddressOf cb_DataGridViewComboBoxCell_DrawItem
+            AddHandler cb.DrawItem, AddressOf cb_DataGridViewComboBoxCell_DrawItem
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Draw each item of the combobox. For the BUTTON_FONT type, the font listed will be applied.
+    ''' For the BUTTON_COLOR type, the color listed will be applied.
+    ''' </summary>
+    Private Sub cb_DataGridViewComboBoxCell_DrawItem(ByVal sender As Object, ByVal e As DrawItemEventArgs)
+        If e.Index = -1 Then Exit Sub
+        Dim strColname As String = grd.Columns(grd.SelectedCells(0).ColumnIndex).Name
+        e.DrawBackground()
+        If (e.State And DrawItemState.Focus) <> 0 Then
+            e.DrawFocusRectangle()
+        End If
+        Dim cb As ComboBox = TryCast(sender, ComboBox)
+        If IsNothing(cb) Then Exit Sub
+        Dim objBrush As Brush = Nothing
+        Try
+            If strColname = BUTTON_FONT Then
+                objBrush = New SolidBrush(e.ForeColor)
+                Dim strFontName As String = cb.Items(e.Index).ToString()
+                Dim fntFont As Font
+                Dim fntFamily As FontFamily
+                fntFamily = New FontFamily(strFontName)
+                If fntFamily.IsStyleAvailable(FontStyle.Regular) Then
+                    fntFont = New Font(fntFamily, 8, FontStyle.Regular)
+                ElseIf fntFamily.IsStyleAvailable(FontStyle.Bold) Then
+                    fntFont = New Font(fntFamily, 8, FontStyle.Bold)
+                ElseIf fntFamily.IsStyleAvailable(FontStyle.Italic) Then
+                    fntFont = New Font(fntFamily, 8, FontStyle.Italic)
+                End If
+                e.Graphics.DrawString(strFontName, fntFont, objBrush, e.Bounds)
+            ElseIf strColname = BUTTON_COLOR Then
+                Dim dt As DataTable = DirectCast(cb.DataSource, DataTable)
+                e.Graphics.DrawString(dt.Rows(e.Index).Item("Color").ToString(), e.Font,
+                                      New SolidBrush(Color.FromName(dt.Rows(e.Index).Item("Color").ToString())), e.Bounds)
+            End If
+        Catch
+
+        Finally
+            If Not IsNothing(objBrush) Then
+                objBrush = Nothing
+            End If
+        End Try
+    End Sub
+
+    ''' <summary>
+    ''' Add a combobox to the currently selected cell, and add the colors listed in the lu_button_colors
+    ''' database table to the combobox.
+    ''' </summary>
+    Private Sub recordButtonColor()
+        Dim colIndex As Integer = grd.SelectedCells(0).ColumnIndex
+        Dim rowIndex As Integer = grd.SelectedCells(0).RowIndex
+        Dim cb As DataGridViewComboBoxCell = New DataGridViewComboBoxCell()
+        With cb
+            Dim strQuery As String = "select * from " & DB_BUTTON_COLORS_TABLE & " order by 1"
+            Dim dt As DataTable = Database.GetDataTable(strQuery, DB_BUTTON_COLORS_TABLE)
+            .DataSource = dt
+            .DisplayMember = "Color"
+            .ValueMember = "Color"
+        End With
+        grd(colIndex, rowIndex) = cb
+    End Sub
+
+    ''' <summary>
+    ''' Launch a form to capture a keyboard shortcut combination and record the new value in the cell.
+    ''' </summary>
+    Private Sub recordKeyboardShortcut()
+        ' Get the primary key for that row
+        Dim strKey As String = Database.GetPrimaryKeyFieldName(m_table_name)
+        Dim rowIndex As Integer = grd.SelectedCells(0).RowIndex
+        Dim intKey As Integer = CInt(grd.Rows(rowIndex).Cells(strKey).Value.ToString())
+        Dim dr As DataRow = Database.GetDataRow(intKey, m_table_name)
+        m_frmCreateKeyboardShortcut = New frmCreateKeyboardShortcut()
+        m_frmCreateKeyboardShortcut.ButtonText = m_table_name
+        m_frmCreateKeyboardShortcut.KeyboardShortcut = dr(KEYBOARD_SHORTCUT).ToString()
+        m_frmCreateKeyboardShortcut.ShowDialog()
+        grd.Rows(rowIndex).Cells(KEYBOARD_SHORTCUT).Value = m_frmCreateKeyboardShortcut.KeyboardShortcut
     End Sub
 End Class

@@ -3486,6 +3486,11 @@ VideoMiner
  so that mouse click events can be captured On the video itself.
  </summary>
 </member>
+<member name="T:VideoMiner.VideoMinerDataGridView">
+ <summary>
+ 
+ </summary>
+</member>
 <member name="F:VideoMiner.VideoMinerDataGridView.m_synced">
  <summary>
  Whether or not the grid is synced with the database
@@ -3539,6 +3544,12 @@ VideoMiner
 <member name="F:VideoMiner.VideoMinerDataGridView._m_frmViewDataTable">
  <summary>
  A form showing the data code table so user can see all the currently-assigned data codes
+ </summary>
+</member>
+<member name="F:VideoMiner.VideoMinerDataGridView._m_frmCreateKeyboardShortcut">
+ <summary>
+ When the user clicks on a cell in the column which is called KeyboardShortcuts, a form will appear
+ allowing them to set it up.
  </summary>
 </member>
 <member name="T:VideoMiner.VideoMinerDataGridView.MoveDirection">
@@ -3719,6 +3730,44 @@ VideoMiner
 <member name="M:VideoMiner.VideoMinerDataGridView.parentHiding">
  <summary>
  If the parent is being hidden, this will close the child datacodes form.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.grd_CellBeginEditSpecialCells(System.Object,System.Windows.Forms.DataGridViewCellCancelEventArgs)">
+ <summary>
+ Check which column the cell belongs to, if KeyboardShortcuts, launch the form to accept the new shortcut.
+ If Button color or button font, add a combobox for those and handle the drawing of them
+ in the cb_DataGridViewComboBoxCell_DrawItem subroutine.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.recordButtonFont">
+ <summary>
+ Add a combobox to the currently selected cell, and add the installed font items to the combobox.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.grd_EditingControlShowing(System.Object,System.Windows.Forms.DataGridViewEditingControlShowingEventArgs)">
+ <summary>
+ This is required to properly cast the DataGridViewComboBoxCell into a ComboBox.
+ The cb_DataGridViewComboBoxCell_DrawItem sub will handle the drawing of the
+ comboboxes.
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.cb_DataGridViewComboBoxCell_DrawItem(System.Object,System.Windows.Forms.DrawItemEventArgs)">
+ <summary>
+ Draw each item of the combobox. For the BUTTON_FONT type, the font listed will be applied.
+ For the BUTTON_COLOR type, the color listed will be applied.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.recordButtonColor">
+ <summary>
+ Add a combobox to the currently selected cell, and add the colors listed in the lu_button_colors
+ database table to the combobox.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMinerDataGridView.recordKeyboardShortcut">
+ <summary>
+ Launch a form to capture a keyboard shortcut combination and record the new value in the cell.
  </summary>
 </member>
 </members>

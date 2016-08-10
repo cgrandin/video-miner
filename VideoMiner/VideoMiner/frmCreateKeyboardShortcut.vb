@@ -97,8 +97,9 @@
         If dt.Rows.Count <> 0 Then
             MessageBox.Show("That keyboard shortcut is already in use, please try again.",
                             "Shortcut already used", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            txtCurrentShortcut.Text = String.Empty
+            txtCurrentShortcut.Text = NULL_STRING
         Else
+            m_KeyboardShortcut = txtCurrentShortcut.Text
             strQuery = "UPDATE " & DB_SPECIES_BUTTONS_TABLE &
                        " SET KeyboardShortCut = " & DoubleQuote(txtCurrentShortcut.Text) &
                        " WHERE ButtonText = " & DoubleQuote(ButtonText)
