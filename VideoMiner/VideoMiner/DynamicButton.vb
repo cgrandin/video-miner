@@ -210,7 +210,11 @@ Public Class DynamicButton
     End Property
     Public ReadOnly Property DataDescription As String
         Get
-            Return m_frmTableView.DataDescription
+            If m_table_name = USER_ENTERED Then
+                Return m_button_text
+            Else
+                Return m_frmTableView.DataDescription
+            End If
         End Get
     End Property
 
@@ -384,11 +388,11 @@ Public Class DynamicButton
                 Dim d As DataTable
                 If m_table_name = USER_ENTERED Then
                     ' In the database, the name 'UserEntered' is in place of the tablename, so we must ask user here for the code value
-                    d = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE & " where Description = '" & m_button_text & "';", DB_DATA_CODES_TABLE)
+                    d = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE & " where Description = '" & m_button_text & "'", DB_DATA_CODES_TABLE)
                     m_data_code = d.Rows(0).Item(0).ToString()
                 Else
-                    m_data_table = Database.GetDataTable("select * from " & m_table_name & " order by 1;", m_table_name)
-                    d = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE & " where LookupTable = '" & m_table_name & "';", DB_DATA_CODES_TABLE)
+                    m_data_table = Database.GetDataTable("select * from " & m_table_name & " order by 1", m_table_name)
+                    d = Database.GetDataTable("select * from " & DB_DATA_CODES_TABLE & " where LookupTable = '" & m_table_name & "'", DB_DATA_CODES_TABLE)
                     m_data_code = d.Rows(0).Item(0).ToString()
                     ' Create new Table view form, but don't show it yet.
                     m_frmTableView = New frmTableView(Me.Text, m_data_table)
@@ -408,7 +412,10 @@ Public Class DynamicButton
                 End If
 
             Catch ex As Exception
-                MessageBox.Show("There was an error creating a button. Make sure to check all button tables in the database and make sure they contain valid rows." & vbCrLf & vbCrLf &
+                MessageBox.Show("There was an error creating the button '" & m_button_text &
+                                "'. Make sure to check all button tables in the database and make sure they contain valid rows. Also check the '" &
+                                DB_DATA_CODES_TABLE & "' and make sure it contains a row with the name '" & m_button_text & "' in the Description column." &
+                                vbCrLf & vbCrLf &
                                 "Exception message:" & vbCrLf & ex.Message,
                                 "Error loading button", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -432,7 +439,9 @@ Public Class DynamicButton
             RecordAbundance()
         ElseIf m_which_entry_style = WhichEntryStyleEnum.Table Then
             If My.Computer.Keyboard.CtrlKeyDown Then
-                m_frmTableView.clearData()
+                If Not m_table_name = USER_ENTERED Then
+                    m_frmTableView.clearData()
+                End If
                 Exit Sub
             End If
             RecordTable()
@@ -470,8 +479,35 @@ Public Class DynamicButton
     ''' </summary>
     Public Sub RecordTable()
         If Not IsNothing(m_frmTableView) Then
+            ' It is a lookup-table based button
             m_frmTableView.Show()
+        Else
+            ' It is a UserEntered type of button
+            userEnteredData()
         End If
+    End Sub
+
+    ''' <summary>
+    ''' Launches an inputbox asking the user for the value (integer) for the desired variable.
+    ''' </summary>
+    Private Sub userEnteredData()
+        Dim intInput As Integer
+        Dim blValid As Boolean = False
+        While Not blValid
+            m_data_value = InputBox("Enter integer value for the selected variable", "Enter value...")
+            If m_data_value = NULL_STRING Then
+                Exit Sub
+            End If
+            blValid = Integer.TryParse(m_data_value, intInput)
+        End While
+        If IsNothing(m_dict) Then
+            m_dict = New Dictionary(Of String, Tuple(Of String, String, Boolean))
+        Else
+            m_dict.Clear()
+        End If
+        Dim tuple As Tuple(Of String, String, Boolean) = New Tuple(Of String, String, Boolean)(m_data_code, m_data_value, True)
+        m_dict.Add(m_data_code_name, tuple)
+        RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
     End Sub
 
     ''' <summary>
@@ -504,7 +540,7 @@ Public Class DynamicButton
     ''' Bubbles the EndDataEntryEvent up.
     ''' </summary>
     Private Sub endDataEntryEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles m_frmSpeciesEvent.EndDataEntryEvent,
-                                                                                                             m_frmTableView.EndDataEntryEvent ', m_frmAbundanceTableView.EndDataEntryEvent
+                                                                                                             m_frmTableView.EndDataEntryEvent
         m_dict = sender.Dictionary
         RaiseEvent EndDataEntryEvent(Me, EventArgs.Empty)
     End Sub

@@ -328,6 +328,11 @@ VideoMiner
  Record an data table row selection event.
  </summary>
 </member>
+<member name="M:VideoMiner.DynamicButton.userEnteredData">
+ <summary>
+ Launches an inputbox asking the user for the value (integer) for the desired variable.
+ </summary>
+</member>
 <member name="M:VideoMiner.DynamicButton.abundanceDataChanged(System.Object,System.EventArgs)">
  <summary>
  Handle the changing by the user of the abundance data found in frmAbundanceTableView
