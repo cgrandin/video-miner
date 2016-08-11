@@ -275,7 +275,7 @@ Public Class DynamicTableButtonPanel
 
         m_dynamic_button_panel.ColumnCount = 2
         m_dynamic_button_panel.RowCount = getRowCount()
-        'm_dynamic_button_panel.CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset
+        m_dynamic_button_panel.CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset
         m_dynamic_button_panel.Dock = DockStyle.Fill
 
         m_dynamic_button_panel.RowStyles.Clear()
@@ -295,7 +295,7 @@ Public Class DynamicTableButtonPanel
         m_dynamic_button_panel.AutoScroll = True
 
         For i As Integer = 0 To m_num_dynamic_buttons - 1
-            m_dynamic_buttons(i).Dock = DockStyle.Top
+            m_dynamic_buttons(i).Dock = DockStyle.Fill
             m_dynamic_button_panel.Controls.Add(m_dynamic_buttons(i), intCol, intRow)
             If i = m_dynamic_button_panel.RowCount - 1 Then
                 intRow = 0
@@ -304,7 +304,6 @@ Public Class DynamicTableButtonPanel
                 intRow += 1
             End If
         Next
-
 
         m_main_panel.Controls.Add(m_dynamic_button_panel)
         Controls.Add(m_main_panel)

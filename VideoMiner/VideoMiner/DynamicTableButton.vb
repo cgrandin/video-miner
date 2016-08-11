@@ -9,6 +9,11 @@
 Public Class DynamicTableButton
     Inherits TableLayoutPanel
 
+    ''' <summary>
+    ''' This is the multiplier for the button height, to make sure it fits the text on it.
+    ''' </summary>
+    Private Const BUTTON_SCALE As Double = 1.3
+
 #Region "Member variables"
     ''' <summary>
     ''' The button used to issue a data changed event for the variable the button represents.
@@ -86,7 +91,7 @@ Public Class DynamicTableButton
     ''' <returns></returns>
     Public ReadOnly Property ControlHeight As Integer
         Get
-            Return ClientSize.Height
+            Return CInt(m_btnButton.Height * BUTTON_SCALE + m_txtStatus.Height)
         End Get
     End Property
 
@@ -124,17 +129,29 @@ Public Class DynamicTableButton
         m_textbox_text_size = CInt(row.Item(TEXTBOX_TEXT_SIZE))
         RowCount = 2
         ColumnCount = 1
+        AutoScroll = False
+        AutoSize = True
+        AutoSizeMode = AutoSizeMode.GrowAndShrink
 
         m_btnButton = New DynamicButton(row, intHeight, intWidth, DynamicButton.WhichEntryStyleEnum.Table)
         AddHandler m_btnButton.StartDataEntryEvent, AddressOf startDataEntryEventHandler
         AddHandler m_btnButton.EndDataEntryEvent, AddressOf endDataEntryEventHandler
         m_btnButton.Dock = DockStyle.Fill
-        Controls.Add(m_btnButton)
 
         m_txtStatus = New DynamicTextbox(m_btnButton.ButtonFont, CStr(m_textbox_text_size))
         m_txtStatus.Dock = DockStyle.Fill
+
+        RowStyles.Clear()
+        Dim rs As RowStyle = New RowStyle(SizeType.Absolute, CInt(m_btnButton.Height * BUTTON_SCALE))
+        RowStyles.Add(rs)
+        rs = New RowStyle(SizeType.Absolute, m_txtStatus.Height)
+        RowStyles.Add(rs)
+
+        Controls.Add(m_btnButton)
         Controls.Add(m_txtStatus)
         m_txtStatus.setNoData(m_btnButton.ButtonText)
+        Dock = DockStyle.Fill
+        'CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset
     End Sub
 
     Private Sub clearEventHandler(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles m_btnButton.ClearEvent

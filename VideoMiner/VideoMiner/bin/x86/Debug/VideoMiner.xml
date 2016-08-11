@@ -565,6 +565,11 @@ VideoMiner
  </summary>
  <remarks></remarks>
 </member>
+<member name="F:VideoMiner.DynamicTableButton.BUTTON_SCALE">
+ <summary>
+ This is the multiplier for the button height, to make sure it fits the text on it.
+ </summary>
+</member>
 <member name="F:VideoMiner.DynamicTableButton._m_btnButton">
  <summary>
  The button used to issue a data changed event for the variable the button represents.
