@@ -362,6 +362,11 @@ VideoMiner
  </summary>
  <remarks></remarks>
 </member>
+<member name="F:VideoMiner.DynamicSpeciesButtonPanel.m_grid_lines_enabled">
+ <summary>
+ Whether or not the grid lines are shown
+ </summary>
+</member>
 <member name="F:VideoMiner.DynamicSpeciesButtonPanel.m_static_button_panel">
  <summary>
  Necessary to hold the static controls in a 2 row by 3-column grid
@@ -408,14 +413,9 @@ VideoMiner
  Array of Dynamic buttons. This will be redimensioned at runtime
  </summary>
 </member>
-<member name="F:VideoMiner.DynamicSpeciesButtonPanel.m_y_offset">
+<member name="F:VideoMiner.DynamicSpeciesButtonPanel.m_table_name">
  <summary>
- Lets the fillPanel function know at what vertical level to start placing dynamic buttons
- </summary>
-</member>
-<member name="F:VideoMiner.DynamicSpeciesButtonPanel.m_gap">
- <summary>
- Gap between dynamic buttons.
+ Name of the button description table used to fill this panel.
  </summary>
 </member>
 <member name="F:VideoMiner.DynamicSpeciesButtonPanel.m_tuple">
@@ -661,6 +661,11 @@ VideoMiner
  in the top cell of the main panel.
  </summary>
 </member>
+<member name="F:VideoMiner.DynamicTableButtonPanel.m_grid_lines_enabled">
+ <summary>
+ Whether or not the grid lines are shown
+ </summary>
+</member>
 <member name="F:VideoMiner.DynamicTableButtonPanel.m_repeat_for_every_record">
  <summary>
  If checked, the data will be recorded for every insert
@@ -690,6 +695,11 @@ VideoMiner
  <summary>
  A two-row, one-column table layout panel which holds the m_static_button_panel on top
  and the m_dynamic_button_panel on the bottom.
+ </summary>
+</member>
+<member name="F:VideoMiner.DynamicTableButtonPanel.m_table_name">
+ <summary>
+ Name of the button description table used to fill this panel.
  </summary>
 </member>
 <member name="F:VideoMiner.DynamicTableButtonPanel.m_num_dynamic_buttons">
@@ -1824,6 +1834,11 @@ VideoMiner
  <summary>
  Change the visibility of the datbase table columns for the main data table.
  Also, save the configuration so it doesn't have to be done every time the app is opened.
+ </summary>
+</member>
+<member name="M:VideoMiner.VideoMiner.ShowGridLinesToolStripMenuItem_Click(System.Object,System.EventArgs)">
+ <summary>
+ Show or hide the grid lines in the three panels
  </summary>
 </member>
 <member name="T:VideoMiner.frmEditSpecies">

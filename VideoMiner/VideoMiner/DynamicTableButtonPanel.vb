@@ -16,6 +16,10 @@ Public Class DynamicTableButtonPanel
     Private Const MAX_NUM_ROWS As Integer = 6
 #Region "Member variables"
     ''' <summary>
+    ''' Whether or not the grid lines are shown
+    ''' </summary>
+    Private m_grid_lines_enabled As Boolean
+    ''' <summary>
     ''' If checked, the data will be recorded for every insert
     ''' </summary>
     ''' <remarks>This may or may not be shown in the panel</remarks>
@@ -46,6 +50,10 @@ Public Class DynamicTableButtonPanel
     Private m_button_height As Integer
     Private m_button_font As String
 
+    ''' <summary>
+    ''' Name of the button description table used to fill this panel.
+    ''' </summary>
+    Private m_table_name As String
     ''' <summary>
     ''' The number of dynamic buttons currently on the panel
     ''' </summary>
@@ -108,6 +116,17 @@ Public Class DynamicTableButtonPanel
         Get
             Return m_repeat_for_every_record.Checked
         End Get
+    End Property
+
+    Public Property ShowGridLines As Boolean
+        Get
+            Return m_grid_lines_enabled
+        End Get
+        Set(value As Boolean)
+            m_grid_lines_enabled = value
+            removeAllDynamicControls()
+            fillPanel(m_table_name)
+        End Set
     End Property
 #End Region
 
@@ -227,11 +246,12 @@ Public Class DynamicTableButtonPanel
     ''' </summary>
     ''' <param name="strTableName">Name of the button description table in the MS Access database</param>
     Public Sub fillPanel(strTableName As String)
+        m_table_name = strTableName
         If Not IsNothing(m_static_button_panel) Then
             m_static_button_panel.Visible = True
         End If
-        Dim strKey As String = Database.GetPrimaryKeyFieldName(strTableName)
-        Dim d As DataTable = Database.GetDataTable("select * from " & strTableName & " order by " & strKey, strTableName)
+        Dim strKey As String = Database.GetPrimaryKeyFieldName(m_table_name)
+        Dim d As DataTable = Database.GetDataTable("select * from " & m_table_name & " order by " & strKey, m_table_name)
         m_num_dynamic_buttons = d.Rows.Count
         ReDim Preserve m_dynamic_buttons(m_num_dynamic_buttons)
         Dim i As Integer = 0
@@ -275,7 +295,9 @@ Public Class DynamicTableButtonPanel
 
         m_dynamic_button_panel.ColumnCount = 2
         m_dynamic_button_panel.RowCount = getRowCount()
-        m_dynamic_button_panel.CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset
+        If m_grid_lines_enabled Then
+            m_dynamic_button_panel.CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset
+        End If
         m_dynamic_button_panel.Dock = DockStyle.Fill
 
         m_dynamic_button_panel.RowStyles.Clear()
@@ -331,6 +353,7 @@ Public Class DynamicTableButtonPanel
         If Not IsNothing(m_main_panel) Then
             m_main_panel.Visible = False
         End If
+        m_dynamic_button_panel.CellBorderStyle = TableLayoutPanelCellBorderStyle.None
     End Sub
 
     ''' <summary>

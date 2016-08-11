@@ -3886,4 +3886,19 @@ Public Class VideoMiner
         Next
     End Sub
 
+    ''' <summary>
+    ''' Show or hide the grid lines in the three panels
+    ''' </summary>
+    Private Sub ShowGridLinesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ShowGridLinesToolStripMenuItem.Click
+        ShowGridLinesToolStripMenuItem.Checked = Not ShowGridLinesToolStripMenuItem.Checked
+        If ShowGridLinesToolStripMenuItem.Checked Then
+            m_pnlTransectData.ShowGridLines = True
+            m_pnlHabitatData.ShowGridLines = True
+            m_pnlSpeciesData.ShowGridLines = True
+        Else
+            m_pnlTransectData.ShowGridLines = False
+            m_pnlHabitatData.ShowGridLines = False
+            m_pnlSpeciesData.ShowGridLines = False
+        End If
+    End Sub
 End Class

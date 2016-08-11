@@ -17,6 +17,10 @@ Public Class DynamicSpeciesButtonPanel
     Private m_quick_entry_label As Label
     Private WithEvents m_quick_entry_textbox As TextBox
     ''' <summary>
+    ''' Whether or not the grid lines are shown
+    ''' </summary>
+    Private m_grid_lines_enabled As Boolean
+    ''' <summary>
     ''' Necessary to hold the static controls in a 2 row by 3-column grid
     ''' </summary>
     Private m_static_button_panel As TableLayoutPanel
@@ -59,13 +63,9 @@ Public Class DynamicSpeciesButtonPanel
     ''' </summary>
     Private m_dynamic_buttons As DynamicButton()
     ''' <summary>
-    ''' Lets the fillPanel function know at what vertical level to start placing dynamic buttons
+    ''' Name of the button description table used to fill this panel.
     ''' </summary>
-    Private m_y_offset As Integer
-    ''' <summary>
-    ''' Gap between dynamic buttons.
-    ''' </summary>
-    Private m_gap As Integer
+    Private m_table_name As String
     ''' <summary>
     ''' A tuple for the Dictionary object, m_dict.
     ''' </summary>
@@ -136,6 +136,17 @@ Public Class DynamicSpeciesButtonPanel
             Next
         End Set
     End Property
+    Public Property ShowGridLines As Boolean
+        Get
+            Return m_grid_lines_enabled
+        End Get
+        Set(value As Boolean)
+            m_grid_lines_enabled = value
+            removeAllDynamicControls()
+            fillPanel(m_table_name)
+        End Set
+    End Property
+
 #End Region
 
     ''' <summary>
@@ -159,8 +170,6 @@ Public Class DynamicSpeciesButtonPanel
         m_quick_entry_textbox = Nothing
 
         Name = strname
-        m_y_offset = 0
-        m_gap = 2
         m_tuple = New Tuple(Of String, String, Boolean)(Nothing, Nothing, False)
         m_dict = New Dictionary(Of String, Tuple(Of String, String, Boolean))
 
@@ -316,11 +325,12 @@ Public Class DynamicSpeciesButtonPanel
     ''' </summary>
     ''' <param name="strTableName">Name of the button description table in the MS Access database</param>
     Public Sub fillPanel(strTableName As String)
+        m_table_name = strTableName
         If Not IsNothing(m_static_button_panel) Then
             m_static_button_panel.Visible = True
         End If
-        Dim strKey As String = Database.GetPrimaryKeyFieldName(strTableName)
-        Dim d As DataTable = Database.GetDataTable("select * from " & strTableName & " order by " & strKey, strTableName)
+        Dim strKey As String = Database.GetPrimaryKeyFieldName(m_table_name)
+        Dim d As DataTable = Database.GetDataTable("select * from " & m_table_name & " order by " & strKey, m_table_name)
         m_num_dynamic_buttons = d.Rows.Count
         ReDim Preserve m_dynamic_buttons(m_num_dynamic_buttons)
         Dim i As Integer = 0
@@ -348,7 +358,9 @@ Public Class DynamicSpeciesButtonPanel
 
         m_dynamic_button_panel.ColumnCount = NUM_COLS
         m_dynamic_button_panel.RowCount = NUM_ROWS
-        m_dynamic_button_panel.CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset
+        If m_grid_lines_enabled Then
+            m_dynamic_button_panel.CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset
+        End If
         m_dynamic_button_panel.Dock = DockStyle.Fill
 
         m_dynamic_button_panel.RowStyles.Clear()
@@ -397,6 +409,7 @@ Public Class DynamicSpeciesButtonPanel
         If Not IsNothing(m_main_panel) Then
             m_main_panel.Visible = False
         End If
+        m_dynamic_button_panel.CellBorderStyle = TableLayoutPanelCellBorderStyle.None
     End Sub
 
     ''' <summary>

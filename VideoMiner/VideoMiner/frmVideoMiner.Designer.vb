@@ -86,6 +86,8 @@ Partial Class VideoMiner
         Me.cmdCloseCalendar = New System.Windows.Forms.Button()
         Me.pnlVideoControls = New System.Windows.Forms.Panel()
         Me.txtFramesToSkip = New System.Windows.Forms.TextBox()
+        Me.chkDefineAll = New System.Windows.Forms.CheckBox()
+        Me.chkResumeVideo = New System.Windows.Forms.CheckBox()
         Me.cmdScreenCapture = New System.Windows.Forms.Button()
         Me.cmdNext = New System.Windows.Forms.Button()
         Me.cmdPrevious = New System.Windows.Forms.Button()
@@ -96,6 +98,8 @@ Partial Class VideoMiner
         Me.cmdPlayPause = New System.Windows.Forms.Button()
         Me.cmdIncreaseRate = New System.Windows.Forms.Button()
         Me.cmdDecreaseRate = New System.Windows.Forms.Button()
+        Me.cmdPlayForSeconds = New System.Windows.Forms.Button()
+        Me.txtPlaySeconds = New System.Windows.Forms.TextBox()
         Me.txtTransectDate = New System.Windows.Forms.TextBox()
         Me.chkRecordEachSecond = New System.Windows.Forms.CheckBox()
         Me.txtProjectName = New System.Windows.Forms.TextBox()
@@ -119,10 +123,7 @@ Partial Class VideoMiner
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
-        Me.txtPlaySeconds = New System.Windows.Forms.TextBox()
-        Me.cmdPlayForSeconds = New System.Windows.Forms.Button()
-        Me.chkDefineAll = New System.Windows.Forms.CheckBox()
-        Me.chkResumeVideo = New System.Windows.Forms.CheckBox()
+        Me.ShowGridLinesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -322,7 +323,7 @@ Partial Class VideoMiner
         '
         'mnuConfigureTools
         '
-        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DataTableColumnsToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.SpeciesButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem, Me.mnuShowTooltips})
+        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DataTableColumnsToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.SpeciesButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem, Me.ShowGridLinesToolStripMenuItem, Me.mnuShowTooltips})
         Me.mnuConfigureTools.Name = "mnuConfigureTools"
         Me.mnuConfigureTools.Size = New System.Drawing.Size(72, 20)
         Me.mnuConfigureTools.Text = "Configure"
@@ -337,25 +338,25 @@ Partial Class VideoMiner
         '
         Me.ConfigureTransectButtonsToolStripMenuItem.Name = "ConfigureTransectButtonsToolStripMenuItem"
         Me.ConfigureTransectButtonsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
-        Me.ConfigureTransectButtonsToolStripMenuItem.Text = "Transect Buttons"
+        Me.ConfigureTransectButtonsToolStripMenuItem.Text = "Transect buttons"
         '
         'ConfigureHabitatButtonToolStripMenuItem
         '
         Me.ConfigureHabitatButtonToolStripMenuItem.Name = "ConfigureHabitatButtonToolStripMenuItem"
         Me.ConfigureHabitatButtonToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
-        Me.ConfigureHabitatButtonToolStripMenuItem.Text = "Habitat Buttons"
+        Me.ConfigureHabitatButtonToolStripMenuItem.Text = "Habitat buttons"
         '
         'SpeciesButtonsToolStripMenuItem
         '
         Me.SpeciesButtonsToolStripMenuItem.Name = "SpeciesButtonsToolStripMenuItem"
         Me.SpeciesButtonsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
-        Me.SpeciesButtonsToolStripMenuItem.Text = "Species Buttons"
+        Me.SpeciesButtonsToolStripMenuItem.Text = "Species buttons"
         '
         'EditLookupTableToolStripMenuItem
         '
         Me.EditLookupTableToolStripMenuItem.Name = "EditLookupTableToolStripMenuItem"
         Me.EditLookupTableToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
-        Me.EditLookupTableToolStripMenuItem.Text = "Edit Lookup Tables"
+        Me.EditLookupTableToolStripMenuItem.Text = "Edit lookup tables"
         '
         'mnuShowTooltips
         '
@@ -363,7 +364,7 @@ Partial Class VideoMiner
         Me.mnuShowTooltips.CheckState = System.Windows.Forms.CheckState.Checked
         Me.mnuShowTooltips.Name = "mnuShowTooltips"
         Me.mnuShowTooltips.Size = New System.Drawing.Size(188, 22)
-        Me.mnuShowTooltips.Text = "Show Tooltips"
+        Me.mnuShowTooltips.Text = "Show tooltips"
         '
         'GPSToolStripMenuItem
         '
@@ -741,6 +742,27 @@ Partial Class VideoMiner
         Me.txtFramesToSkip.TabIndex = 60
         Me.txtFramesToSkip.Text = "500"
         '
+        'chkDefineAll
+        '
+        Me.chkDefineAll.AutoSize = True
+        Me.chkDefineAll.Location = New System.Drawing.Point(3, 112)
+        Me.chkDefineAll.Name = "chkDefineAll"
+        Me.chkDefineAll.Size = New System.Drawing.Size(164, 17)
+        Me.chkDefineAll.TabIndex = 59
+        Me.chkDefineAll.Text = "Define All After Play Seconds"
+        Me.chkDefineAll.UseVisualStyleBackColor = True
+        '
+        'chkResumeVideo
+        '
+        Me.chkResumeVideo.AutoSize = True
+        Me.chkResumeVideo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.chkResumeVideo.Location = New System.Drawing.Point(3, 128)
+        Me.chkResumeVideo.Name = "chkResumeVideo"
+        Me.chkResumeVideo.Size = New System.Drawing.Size(116, 30)
+        Me.chkResumeVideo.TabIndex = 58
+        Me.chkResumeVideo.Text = "Resume Video" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "After Species Entry"
+        Me.chkResumeVideo.UseVisualStyleBackColor = True
+        '
         'cmdScreenCapture
         '
         Me.cmdScreenCapture.BackgroundImage = CType(resources.GetObject("cmdScreenCapture.BackgroundImage"), System.Drawing.Image)
@@ -846,6 +868,22 @@ Partial Class VideoMiner
         Me.cmdDecreaseRate.Size = New System.Drawing.Size(33, 26)
         Me.cmdDecreaseRate.TabIndex = 38
         Me.cmdDecreaseRate.UseVisualStyleBackColor = True
+        '
+        'cmdPlayForSeconds
+        '
+        Me.cmdPlayForSeconds.Location = New System.Drawing.Point(6, 89)
+        Me.cmdPlayForSeconds.Name = "cmdPlayForSeconds"
+        Me.cmdPlayForSeconds.Size = New System.Drawing.Size(80, 21)
+        Me.cmdPlayForSeconds.TabIndex = 40
+        Me.cmdPlayForSeconds.Text = "Play Seconds"
+        Me.cmdPlayForSeconds.UseVisualStyleBackColor = True
+        '
+        'txtPlaySeconds
+        '
+        Me.txtPlaySeconds.Location = New System.Drawing.Point(91, 89)
+        Me.txtPlaySeconds.Name = "txtPlaySeconds"
+        Me.txtPlaySeconds.Size = New System.Drawing.Size(86, 20)
+        Me.txtPlaySeconds.TabIndex = 41
         '
         'txtTransectDate
         '
@@ -1055,42 +1093,11 @@ Partial Class VideoMiner
         '
         Me.tmrComputerTime.Interval = 500
         '
-        'txtPlaySeconds
+        'ShowGridLinesToolStripMenuItem
         '
-        Me.txtPlaySeconds.Location = New System.Drawing.Point(91, 89)
-        Me.txtPlaySeconds.Name = "txtPlaySeconds"
-        Me.txtPlaySeconds.Size = New System.Drawing.Size(86, 20)
-        Me.txtPlaySeconds.TabIndex = 41
-        '
-        'cmdPlayForSeconds
-        '
-        Me.cmdPlayForSeconds.Location = New System.Drawing.Point(6, 89)
-        Me.cmdPlayForSeconds.Name = "cmdPlayForSeconds"
-        Me.cmdPlayForSeconds.Size = New System.Drawing.Size(80, 21)
-        Me.cmdPlayForSeconds.TabIndex = 40
-        Me.cmdPlayForSeconds.Text = "Play Seconds"
-        Me.cmdPlayForSeconds.UseVisualStyleBackColor = True
-        '
-        'chkDefineAll
-        '
-        Me.chkDefineAll.AutoSize = True
-        Me.chkDefineAll.Location = New System.Drawing.Point(3, 112)
-        Me.chkDefineAll.Name = "chkDefineAll"
-        Me.chkDefineAll.Size = New System.Drawing.Size(164, 17)
-        Me.chkDefineAll.TabIndex = 59
-        Me.chkDefineAll.Text = "Define All After Play Seconds"
-        Me.chkDefineAll.UseVisualStyleBackColor = True
-        '
-        'chkResumeVideo
-        '
-        Me.chkResumeVideo.AutoSize = True
-        Me.chkResumeVideo.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkResumeVideo.Location = New System.Drawing.Point(3, 128)
-        Me.chkResumeVideo.Name = "chkResumeVideo"
-        Me.chkResumeVideo.Size = New System.Drawing.Size(116, 30)
-        Me.chkResumeVideo.TabIndex = 58
-        Me.chkResumeVideo.Text = "Resume Video" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "After Species Entry"
-        Me.chkResumeVideo.UseVisualStyleBackColor = True
+        Me.ShowGridLinesToolStripMenuItem.Name = "ShowGridLinesToolStripMenuItem"
+        Me.ShowGridLinesToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.ShowGridLinesToolStripMenuItem.Text = "Show grid lines"
         '
         'VideoMiner
         '
@@ -1247,4 +1254,5 @@ Partial Class VideoMiner
     Friend WithEvents chkResumeVideo As CheckBox
     Friend WithEvents cmdPlayForSeconds As Button
     Friend WithEvents txtPlaySeconds As TextBox
+    Friend WithEvents ShowGridLinesToolStripMenuItem As ToolStripMenuItem
 End Class
