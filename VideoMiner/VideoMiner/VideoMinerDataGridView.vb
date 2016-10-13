@@ -493,7 +493,13 @@ Public Class VideoMinerDataGridView
     ''' Apply coloring to the grid whenever formatting takes place.
     ''' </summary>
     Private Sub grd_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) Handles grd.CellFormatting
-        applyColoring()
+        Try
+            applyColoring()
+        Catch ex As Exception
+            ' An exception can be thrown on non-development machines due to the order in which the
+            ' CellFormatting event is fired. It is fired multiple times, and on some machines
+            ' it is fired before the grid is actually populated. This ignores those instances.
+        End Try
     End Sub
 
     ''' <summary>

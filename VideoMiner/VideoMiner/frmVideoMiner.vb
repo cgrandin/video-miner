@@ -1,6 +1,5 @@
 Option Explicit On
 Option Strict On
-' The following 3 imports are necessary for using ADO.NET, which permits database access.
 ' All times are stored as TimeSpan objects
 Imports System.TimeSpan
 Imports System.IO
@@ -2491,7 +2490,7 @@ Public Class VideoMiner
     ''' <remarks></remarks>
     Private Sub database_is_open_toggle_visibility()
         DataTableColumnsToolStripMenuItem.Enabled = True
-        'ConfigureSpeciesEventToolStripMenuItem.Enabled = True
+        SpeciesButtonsToolStripMenuItem.Enabled = True
         ConfigureHabitatButtonToolStripMenuItem.Enabled = True
         ConfigureTransectButtonsToolStripMenuItem.Enabled = True
         EditLookupTableToolStripMenuItem.Enabled = True
