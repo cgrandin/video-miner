@@ -180,13 +180,13 @@ Public Class DynamicSpeciesButtonPanel
         m_which_entry_style = whichEntryStyle
         m_quick_entry_num = 1
 
-        m_static_button_panel = New TableLayoutPanel()
+        m_static_button_panel = New ExTableLayoutPanel()
         m_static_button_panel.ColumnCount = 3
         m_static_button_panel.RowCount = 2
         m_static_button_panel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 33.33F))
         m_static_button_panel.RowStyles.Add(New RowStyle(SizeType.Percent, 50.0F))
 
-        m_radio_panel = New TableLayoutPanel()
+        m_radio_panel = New ExTableLayoutPanel()
         m_radio_panel.ColumnCount = 3
         m_radio_panel.RowCount = 1
         m_radio_panel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 33.33F))
@@ -226,7 +226,7 @@ Public Class DynamicSpeciesButtonPanel
         m_static_button_panel.Controls.Add(m_radio_panel, 0, 0)
         m_static_button_panel.SetColumnSpan(m_radio_panel, 2)
 
-        m_two_button_panel = New TableLayoutPanel()
+        m_two_button_panel = New ExTableLayoutPanel()
         m_two_button_panel.ColumnCount = 2
         m_two_button_panel.RowCount = 1
         m_two_button_panel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0F))
@@ -255,7 +255,7 @@ Public Class DynamicSpeciesButtonPanel
         m_static_button_panel.Controls.Add(m_two_button_panel, 1, 0)
         m_static_button_panel.SetColumnSpan(m_two_button_panel, 2)
 
-        m_quick_entry_txt_panel = New TableLayoutPanel()
+        m_quick_entry_txt_panel = New ExTableLayoutPanel()
         m_quick_entry_txt_panel.ColumnCount = 2
         m_quick_entry_txt_panel.RowCount = 1
 
@@ -300,7 +300,7 @@ Public Class DynamicSpeciesButtonPanel
             m_static_button_panel.RowStyles.Add(rs)
         Next
 
-        m_main_panel = New TableLayoutPanel()
+        m_main_panel = New ExTableLayoutPanel()
         m_main_panel.GrowStyle = TableLayoutPanelGrowStyle.AddRows
         m_main_panel.AutoSizeMode = AutoSizeMode.GrowAndShrink
         m_main_panel.Dock = DockStyle.Fill
@@ -351,7 +351,7 @@ Public Class DynamicSpeciesButtonPanel
         If m_num_dynamic_buttons = 0 Then Exit Sub
         Dim intCol, intRow As Integer
         If IsNothing(m_dynamic_button_panel) Then
-            m_dynamic_button_panel = New TableLayoutPanel()
+            m_dynamic_button_panel = New ExTableLayoutPanel()
         End If
         intRow = 0
         intCol = 0

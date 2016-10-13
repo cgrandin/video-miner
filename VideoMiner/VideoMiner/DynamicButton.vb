@@ -546,7 +546,7 @@ Public Class DynamicButton
     End Sub
 
     ''' <summary>
-    ''' Bubbles the DataEntrytCanceledEvent up so that video can be set to play again when the user decides to cancel data entry.
+    ''' Bubbles the DataEntryCanceledEvent up so that video can be set to play again when the user decides to cancel data entry.
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>

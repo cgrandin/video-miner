@@ -498,7 +498,8 @@ Public Class VideoMinerDataGridView
         Catch ex As Exception
             ' An exception can be thrown on non-development machines due to the order in which the
             ' CellFormatting event is fired. It is fired multiple times, and on some machines
-            ' it is fired before the grid is actually populated. This ignores those instances.
+            ' it is fired before the grid is actually populated which causes the applyColoring()
+            ' sub to fail due to the number of rows and columns being zero. This Try/Catch ignores those instances.
         End Try
     End Sub
 

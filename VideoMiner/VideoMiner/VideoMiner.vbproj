@@ -206,6 +206,9 @@
     <Compile Include="DynamicTextbox.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ExTableLayoutPanel.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="FieldOfView.Designer.vb">
       <DependentUpon>FieldOfView.vb</DependentUpon>
     </Compile>

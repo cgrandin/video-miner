@@ -162,7 +162,7 @@ Public Class DynamicTableButtonPanel
         m_button_width = intButtonWidth
         m_button_font = strButtonFont
 
-        m_static_button_panel = New TableLayoutPanel()
+        m_static_button_panel = New ExTableLayoutPanel()
         m_static_button_panel.ColumnCount = 2
         m_static_button_panel.RowCount = 2
 
@@ -226,7 +226,7 @@ Public Class DynamicTableButtonPanel
         m_static_button_panel.RowStyles.Add(New RowStyle(SizeType.Percent, 70))
         m_static_button_panel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50))
 
-        m_main_panel = New TableLayoutPanel()
+        m_main_panel = New ExTableLayoutPanel()
         m_main_panel.GrowStyle = TableLayoutPanelGrowStyle.AddRows
         m_main_panel.AutoSizeMode = AutoSizeMode.GrowAndShrink
         m_main_panel.Dock = DockStyle.Fill
@@ -288,7 +288,7 @@ Public Class DynamicTableButtonPanel
         If m_num_dynamic_buttons = 0 Then Exit Sub
         Dim intCol, intRow As Integer
         If IsNothing(m_dynamic_button_panel) Then
-            m_dynamic_button_panel = New TableLayoutPanel()
+            m_dynamic_button_panel = New ExTableLayoutPanel()
         End If
         intRow = 0
         intCol = 0
@@ -306,8 +306,9 @@ Public Class DynamicTableButtonPanel
             m_dynamic_button_panel.RowStyles.Add(rs)
         Next
         m_dynamic_button_panel.ColumnStyles.Clear()
+        Dim cs As ColumnStyle
         For i As Integer = 0 To m_dynamic_button_panel.ColumnCount - 1
-            Dim cs As ColumnStyle = New ColumnStyle(SizeType.Percent, 50.0F)
+            cs = New ColumnStyle(SizeType.Percent, 50)
             'Dim cs As ColumnStyle = New ColumnStyle(SizeType.Absolute, m_dynamic_buttons(0).ControlWidth)
             m_dynamic_button_panel.ColumnStyles.Add(cs)
         Next
@@ -317,7 +318,7 @@ Public Class DynamicTableButtonPanel
         m_dynamic_button_panel.AutoScroll = True
 
         For i As Integer = 0 To m_num_dynamic_buttons - 1
-            m_dynamic_buttons(i).Dock = DockStyle.Fill
+            m_dynamic_buttons(i).Dock = DockStyle.Top
             m_dynamic_button_panel.Controls.Add(m_dynamic_buttons(i), intCol, intRow)
             If i = m_dynamic_button_panel.RowCount - 1 Then
                 intRow = 0

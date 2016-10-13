@@ -7,7 +7,7 @@
 ''' </summary>
 ''' <remarks></remarks>
 Public Class DynamicTableButton
-    Inherits TableLayoutPanel
+    Inherits ExTableLayoutPanel
 
     ''' <summary>
     ''' This is the multiplier for the button height, to make sure it fits the text on it.
@@ -150,7 +150,6 @@ Public Class DynamicTableButton
         Controls.Add(m_btnButton)
         Controls.Add(m_txtStatus)
         m_txtStatus.setNoData(m_btnButton.ButtonText)
-        Dock = DockStyle.Fill
         'CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset
     End Sub
 
