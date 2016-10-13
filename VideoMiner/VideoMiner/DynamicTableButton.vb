@@ -141,11 +141,10 @@ Public Class DynamicTableButton
         m_txtStatus = New DynamicTextbox(m_btnButton.ButtonFont, CStr(m_textbox_text_size))
         m_txtStatus.Dock = DockStyle.Fill
 
-        RowStyles.Clear()
-        Dim rs As RowStyle = New RowStyle(SizeType.Absolute, CInt(m_btnButton.Height * BUTTON_SCALE))
-        RowStyles.Add(rs)
-        rs = New RowStyle(SizeType.Absolute, m_txtStatus.Height)
-        RowStyles.Add(rs)
+        For i As Integer = 0 To ColumnCount - 1
+            Dim cs As ColumnStyle = New ColumnStyle(SizeType.Percent, 100)
+            ColumnStyles.Add(cs)
+        Next
 
         Controls.Add(m_btnButton)
         Controls.Add(m_txtStatus)

@@ -413,7 +413,6 @@
     <Compile Include="frmTableView.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SuspendResumeDrawing.vb" />
     <Compile Include="TransparentPanel.vb">
       <SubType>Component</SubType>
     </Compile>
