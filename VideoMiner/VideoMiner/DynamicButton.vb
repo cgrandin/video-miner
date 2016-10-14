@@ -133,10 +133,15 @@ Public Class DynamicButton
 #Region "Properties"
     Public Property DataFormVisible As Boolean
         Set(value As Boolean)
-            m_frmTableView.Visible = True
+            If Not IsNothing(m_frmTableView) Then
+                m_frmTableView.Visible = True
+            End If
         End Set
         Get
-            Return m_frmTableView.Visible
+            If Not IsNothing(m_frmTableView) Then
+                Return m_frmTableView.Visible
+            End If
+            Return False
         End Get
     End Property
 
