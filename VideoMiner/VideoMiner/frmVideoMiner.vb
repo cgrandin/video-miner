@@ -152,6 +152,7 @@ Public Class VideoMiner
     Private WithEvents m_frmImage As frmImage
     Private WithEvents m_frmGpsSettings As frmGpsSettings
     'Private WithEvents m_frmEditSpecies As frmEditSpecies
+    Private WithEvents m_frmViewDataTable As frmViewDataTable
     Private WithEvents m_frmConfigureSpecies As frmConfigureSpecies
     Private WithEvents m_frmSpeciesEvent As frmSpeciesEvent
     'Private WithEvents m_frmTableView As frmTableView
@@ -3253,11 +3254,6 @@ Public Class VideoMiner
         m_tool_tip.Hide(Me)
     End Sub
 
-    Private Sub DataCodeAssignmentsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DataCodeAssignmentsToolStripMenuItem.Click
-        m_frmDataCodes = New frmDataCodes
-        m_frmDataCodes.ShowDialog()
-    End Sub
-
     Private Sub DeviceControlToolStripMenuItem1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DeviceControl.Click
         m_frmDeviceControl = New frmDeviceControl
         m_frmDeviceControl.ShowDialog()
@@ -3895,4 +3891,10 @@ Public Class VideoMiner
         End If
     End Sub
 
+    Private Sub DataCodesTableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DataCodeAssignmentsToolStripMenuItem.Click
+        If IsNothing(m_frmViewDataTable) Then
+            m_frmViewDataTable = New frmViewDataTable(DB_DATA_CODES_TABLE)
+        End If
+        m_frmViewDataTable.Show()
+    End Sub
 End Class

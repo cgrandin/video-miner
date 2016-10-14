@@ -57,7 +57,6 @@ Partial Class VideoMiner
         Me.DeviceControl = New System.Windows.Forms.ToolStripMenuItem()
         Me.RelayConfigurationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuHelp = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DataCodeAssignmentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.InformationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.lblDatabase = New System.Windows.Forms.ToolStripStatusLabel()
@@ -121,6 +120,7 @@ Partial Class VideoMiner
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
+        Me.DataCodeAssignmentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -308,7 +308,7 @@ Partial Class VideoMiner
         '
         'mnuConfigureTools
         '
-        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DataTableColumnsToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.SpeciesButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem, Me.ShowGridLinesToolStripMenuItem, Me.mnuShowTooltips})
+        Me.mnuConfigureTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DataTableColumnsToolStripMenuItem, Me.DataCodeAssignmentsToolStripMenuItem, Me.ConfigureTransectButtonsToolStripMenuItem, Me.ConfigureHabitatButtonToolStripMenuItem, Me.SpeciesButtonsToolStripMenuItem, Me.EditLookupTableToolStripMenuItem, Me.ShowGridLinesToolStripMenuItem, Me.mnuShowTooltips})
         Me.mnuConfigureTools.Name = "mnuConfigureTools"
         Me.mnuConfigureTools.Size = New System.Drawing.Size(72, 20)
         Me.mnuConfigureTools.Text = "Configure"
@@ -392,22 +392,15 @@ Partial Class VideoMiner
         '
         'mnuHelp
         '
-        Me.mnuHelp.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DataCodeAssignmentsToolStripMenuItem, Me.InformationToolStripMenuItem})
+        Me.mnuHelp.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.InformationToolStripMenuItem})
         Me.mnuHelp.Name = "mnuHelp"
         Me.mnuHelp.Size = New System.Drawing.Size(44, 20)
         Me.mnuHelp.Text = "Help"
         '
-        'DataCodeAssignmentsToolStripMenuItem
-        '
-        Me.DataCodeAssignmentsToolStripMenuItem.Enabled = False
-        Me.DataCodeAssignmentsToolStripMenuItem.Name = "DataCodeAssignmentsToolStripMenuItem"
-        Me.DataCodeAssignmentsToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
-        Me.DataCodeAssignmentsToolStripMenuItem.Text = "Data Code Assignments"
-        '
         'InformationToolStripMenuItem
         '
         Me.InformationToolStripMenuItem.Name = "InformationToolStripMenuItem"
-        Me.InformationToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
+        Me.InformationToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.InformationToolStripMenuItem.Text = "About"
         '
         'StatusStrip1
@@ -1077,6 +1070,12 @@ Partial Class VideoMiner
         '
         Me.tmrComputerTime.Interval = 500
         '
+        'DataCodeAssignmentsToolStripMenuItem
+        '
+        Me.DataCodeAssignmentsToolStripMenuItem.Name = "DataCodeAssignmentsToolStripMenuItem"
+        Me.DataCodeAssignmentsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.DataCodeAssignmentsToolStripMenuItem.Text = "Data codes table"
+        '
         'VideoMiner
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1195,7 +1194,6 @@ Partial Class VideoMiner
     Friend WithEvents lblVideoRate As System.Windows.Forms.Label
     Friend WithEvents cmdNext As System.Windows.Forms.Button
     Friend WithEvents cmdPrevious As System.Windows.Forms.Button
-    Friend WithEvents DataCodeAssignmentsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents svDlgFileDialogSession As System.Windows.Forms.SaveFileDialog
     Friend WithEvents DeviceToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents DeviceControl As System.Windows.Forms.ToolStripMenuItem
@@ -1230,4 +1228,5 @@ Partial Class VideoMiner
     Friend WithEvents cmdPlayForSeconds As Button
     Friend WithEvents txtPlaySeconds As TextBox
     Friend WithEvents ShowGridLinesToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents DataCodeAssignmentsToolStripMenuItem As ToolStripMenuItem
 End Class

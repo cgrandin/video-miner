@@ -44,7 +44,7 @@ Partial Class frmProjectNames
         '
         'txtProject
         '
-        Me.txtProject.Location = New System.Drawing.Point(12, 230)
+        Me.txtProject.Location = New System.Drawing.Point(12, 216)
         Me.txtProject.Name = "txtProject"
         Me.txtProject.Size = New System.Drawing.Size(268, 20)
         Me.txtProject.TabIndex = 1
@@ -70,7 +70,7 @@ Partial Class frmProjectNames
         'lblProjectName
         '
         Me.lblProjectName.AutoSize = True
-        Me.lblProjectName.Location = New System.Drawing.Point(9, 214)
+        Me.lblProjectName.Location = New System.Drawing.Point(9, 200)
         Me.lblProjectName.Name = "lblProjectName"
         Me.lblProjectName.Size = New System.Drawing.Size(74, 13)
         Me.lblProjectName.TabIndex = 3
@@ -79,7 +79,7 @@ Partial Class frmProjectNames
         'cmdOK
         '
         Me.cmdOK.Enabled = False
-        Me.cmdOK.Location = New System.Drawing.Point(56, 277)
+        Me.cmdOK.Location = New System.Drawing.Point(47, 242)
         Me.cmdOK.Name = "cmdOK"
         Me.cmdOK.Size = New System.Drawing.Size(75, 23)
         Me.cmdOK.TabIndex = 4
@@ -88,7 +88,7 @@ Partial Class frmProjectNames
         '
         'cmdCancel
         '
-        Me.cmdCancel.Location = New System.Drawing.Point(137, 277)
+        Me.cmdCancel.Location = New System.Drawing.Point(150, 242)
         Me.cmdCancel.Name = "cmdCancel"
         Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
         Me.cmdCancel.TabIndex = 4
@@ -110,7 +110,7 @@ Partial Class frmProjectNames
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(292, 310)
+        Me.ClientSize = New System.Drawing.Size(292, 271)
         Me.Controls.Add(Me.cmdDelete)
         Me.Controls.Add(Me.cmdCancel)
         Me.Controls.Add(Me.cmdOK)
@@ -119,6 +119,7 @@ Partial Class frmProjectNames
         Me.Controls.Add(Me.lblSelect)
         Me.Controls.Add(Me.txtProject)
         Me.Controls.Add(Me.lstProjects)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.MinimizeBox = False

@@ -22,6 +22,7 @@ Partial Class frmViewDataTable
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmViewDataTable))
         Me.grdDataTable = New System.Windows.Forms.DataGridView()
         CType(Me.grdDataTable, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -45,6 +46,7 @@ Partial Class frmViewDataTable
         Me.AutoSize = True
         Me.ClientSize = New System.Drawing.Size(377, 482)
         Me.Controls.Add(Me.grdDataTable)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "frmViewDataTable"
