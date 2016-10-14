@@ -230,7 +230,6 @@ Partial Class VideoMiner
         'mnuNameOptionRoot
         '
         Me.mnuNameOptionRoot.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuNameOption_1, Me.mnuNameOption_2, Me.mnuNameOption_3, Me.mnuNameOption_4, Me.mnuNameOption_5, Me.mnuNameOption_6, Me.mnuNameOption_7, Me.mnuNameOption_8, Me.MnuNameOption_9})
-        Me.mnuNameOptionRoot.Enabled = False
         Me.mnuNameOptionRoot.Name = "mnuNameOptionRoot"
         Me.mnuNameOptionRoot.Size = New System.Drawing.Size(230, 22)
         Me.mnuNameOptionRoot.Text = "Capture Screen Default Name"
@@ -310,7 +309,7 @@ Partial Class VideoMiner
         'mnuOpenImg
         '
         Me.mnuOpenImg.Name = "mnuOpenImg"
-        Me.mnuOpenImg.Size = New System.Drawing.Size(152, 22)
+        Me.mnuOpenImg.Size = New System.Drawing.Size(139, 22)
         Me.mnuOpenImg.Text = "Open Image"
         '
         'mnuConfigureTools

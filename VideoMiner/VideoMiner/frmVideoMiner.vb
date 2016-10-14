@@ -1493,8 +1493,10 @@ Public Class VideoMiner
         ' Add the filename information for a screenshot event
         tuple = New Tuple(Of String, String, Boolean)(DoubleQuote(filename), DoubleQuote(filename), False)
         dict.Add("ScreenCaptureName", tuple)
-        runInsertQuery(dict)
-        m_grdDatabase.fetchData()
+        If Database.IsOpen Then
+            runInsertQuery(dict)
+            m_grdDatabase.fetchData()
+        End If
     End Sub
 
     Private Sub dataButtonNewEntry() Handles m_pnlSpeciesData.StartDataEntryEvent,
@@ -1600,30 +1602,34 @@ Public Class VideoMiner
         ' Convert slashes in date to underscores, and colons in time to underscores
         Dim strDate As String = m_transect_date.ToString("d").Replace("/", "_")
         Dim strTime As String = (m_tsUserTime + m_frmVideoPlayer.CurrentVideoTime).ToString().Replace(":", "_")
-        Dim strDefaultFilename As String = "Capture_" & Me.txtProjectName.Text & "_" & strDate & "_" & strTime
-        Dim strFileName As String = m_frmVideoPlayer.captureScreen(strDate, strTime, strDefaultFilename)
+        Dim strTodaysDate As String = Date.Today.ToString("d").Replace("/", "_")
+        Dim strTodaysTime As String = TimeOfDay.ToString("h:mm:ss").Replace(":", "_")
+        Dim strDefaultFilename As String
+        If mnuNameOption_1.Checked Then
+            strDefaultFilename = "Capture_" & Me.txtProjectName.Text & "_" & strDate & "_" & strTime
+        ElseIf mnuNameOption_2.Checked Then
+            strDefaultFilename = "Capture_" & Me.txtProjectName.Text & "_" & strTodaysDate & "_" & strTodaysTime
+        ElseIf mnuNameOption_3.Checked Then
+            strDefaultFilename = "Capture_" & strDate & "_" & strTime
+        ElseIf mnuNameOption_4.Checked Then
+            strDefaultFilename = "Capture_" & strTodaysDate & "_" & strTodaysTime
+        ElseIf mnuNameOption_5.Checked Then
+            strDefaultFilename = Me.txtProjectName.Text & "_" & strDate & "_" & strTime
+        ElseIf mnuNameOption_6.Checked Then
+            strDefaultFilename = Me.txtProjectName.Text & "_" & strTodaysDate & "_" & strTodaysTime
+        ElseIf mnuNameOption_7.Checked Then
+            strDefaultFilename = strDate & "_" & strTime
+        ElseIf mnuNameOption_8.Checked Then
+            strDefaultFilename = strTodaysDate & "_" & strTodaysTime
+        Else
+            strDefaultFilename = String.Empty
+        End If
         ' Enter record into the database
-        If Database.IsOpen And strFileName <> String.Empty Then
+        'If Database.IsOpen And strFileName <> String.Empty Then
+        Dim strFileName As String = m_frmVideoPlayer.captureScreen(strDate, strTime, strDefaultFilename)
+        If strFileName <> String.Empty Then
+            ' Add a record to the database and save the file.
             runInsertQueryScreenshot(strFileName)
-            '    If mnuNameOption_1.Checked Then
-            '        strDefaultName = "Capture_" & Me.txtProjectName.Text & "_" & strTransectDate & "_" & strTransectTime
-            '    ElseIf mnuNameOption_2.Checked Then
-            '        strDefaultName = "Capture_" & Me.txtProjectName.Text & "_" & strTodaysDate & "_" & strTodaysTime
-            '    ElseIf mnuNameOption_3.Checked Then
-            '        strDefaultName = "Capture_" & strTransectDate & "_" & strTransectTime
-            '    ElseIf mnuNameOption_4.Checked Then
-            '        strDefaultName = "Capture_" & strTodaysDate & "_" & strTodaysTime
-            '    ElseIf mnuNameOption_5.Checked Then
-            '        strDefaultName = Me.txtProjectName.Text & "_" & strTransectDate & "_" & strTransectTime
-            '    ElseIf mnuNameOption_6.Checked Then
-            '        strDefaultName = Me.txtProjectName.Text & "_" & strTodaysDate & "_" & strTodaysTime
-            '    ElseIf mnuNameOption_7.Checked Then
-            '        strDefaultName = strTransectDate & "_" & strTransectTime
-            '    ElseIf mnuNameOption_8.Checked Then
-            '        strDefaultName = strTodaysDate & "_" & strTodaysTime
-            '    ElseIf MnuNameOption_9.Checked Then
-            '        strDefaultName = String.Empty
-            '    End If
         End If
     End Sub
 
@@ -3900,4 +3906,6 @@ Public Class VideoMiner
             m_pnlSpeciesData.ShowGridLines = False
         End If
     End Sub
+
+
 End Class
