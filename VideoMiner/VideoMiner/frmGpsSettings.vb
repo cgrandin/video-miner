@@ -729,14 +729,13 @@ Public Class frmGpsSettings
     End Sub
 
     ''' <summary>
-    ''' Clicking the OK button just hides the form so the connection, if working, will remain for the caller to access
+    ''' Clicking the X button just hides the form so the connection, if working, will remain for the caller to access
     ''' </summary>
-    Private Sub cmdOK_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdOK.Click
+    Private Sub frmImage_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         If InvokeRequired Then
             Me.BeginInvoke(marshalHide)
         Else
             Me.Hide()
-
         End If
     End Sub
 
@@ -1106,7 +1105,6 @@ Public Class frmGpsSettings
     ''' </summary>
     Private Sub DisableAll()
         cmdConnection.Enabled = False
-        cmdOK.Enabled = False
         cmdViewPortData.Enabled = False
         cboBaudRate.Enabled = False
         cboComPort.Enabled = False
@@ -1144,24 +1142,25 @@ Public Class frmGpsSettings
 
     End Sub
 
-    ' The function 'UnHandledHandler'. I have kept just in case I need to debug crossthread errors in the future.
-    ' To use it in a class, add these  3 lines to the beginning of the form_load function:
-    'Dim currentDomain As AppDomain = AppDomain.CurrentDomain
-    'AddHandler currentDomain.UnhandledException, AddressOf UnHandledHandler
-    'Windows.Forms.Control.CheckForIllegalCrossThreadCalls = True
+    ''' <summary>
+    ''' This has been kept just in case we need to debug crossthread errors in the future.
+    ''' To use it in a class, add these  3 lines to the beginning of the Form_Load function
+    ''' Dim currentDomain As AppDomain = AppDomain.CurrentDomain
+    ''' AddHandler() currentDomain.UnhandledException, AddressOf UnHandledHandler
+    ''' Windows.Forms.Control.CheckForIllegalCrossThreadCalls = True
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="args"></param>
     Sub UnHandledHandler(ByVal sender As Object, ByVal args As UnhandledExceptionEventArgs)
         Dim e As Exception = DirectCast(args.ExceptionObject, Exception)
-
         Console.WriteLine("MyHandler caught : " + e.Message)
         Console.WriteLine("Runtime terminating: {0}", args.IsTerminating)
-
         Dim st As New StackTrace(e, True)
         Dim frame As StackFrame
         frame = st.GetFrame(0)
         Dim line As Integer
         line = frame.GetFileLineNumber
         MsgBox("At line " & line & " " & e.Message & ". The stack trace is as folows: " & e.StackTrace)
-
     End Sub
 
 End Class

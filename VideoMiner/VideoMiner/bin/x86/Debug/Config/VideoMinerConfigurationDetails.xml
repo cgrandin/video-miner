@@ -51,6 +51,7 @@
   </Database>
   <PreviousProjects>
     <ProjectName>test1</ProjectName>
+    <ProjectName>test2</ProjectName>
     <ProjectName>test3</ProjectName>
   </PreviousProjects>
   <DeviceControl>
@@ -131,9 +132,9 @@
     <IDConfidence>True</IDConfidence>
     <Comment>True</Comment>
     <DataCode>True</DataCode>
-    <X>False</X>
-    <Y>False</Y>
-    <Z>False</Z>
+    <X>True</X>
+    <Y>True</Y>
+    <Z>True</Z>
     <FileName>True</FileName>
     <ScreenCaptureName>False</ScreenCaptureName>
     <ElapsedTime>False</ElapsedTime>

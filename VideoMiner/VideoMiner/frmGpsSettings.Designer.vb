@@ -31,7 +31,6 @@ Partial Class frmGpsSettings
         Me.txtDataBits = New System.Windows.Forms.TextBox()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.cboStopBits = New System.Windows.Forms.ComboBox()
-        Me.cmdOK = New System.Windows.Forms.Button()
         Me.lblGPSPortMessage = New System.Windows.Forms.Label()
         Me.cmdConnection = New System.Windows.Forms.Button()
         Me.Label7 = New System.Windows.Forms.Label()
@@ -151,15 +150,6 @@ Partial Class frmGpsSettings
         Me.cboStopBits.Name = "cboStopBits"
         Me.cboStopBits.Size = New System.Drawing.Size(121, 21)
         Me.cboStopBits.TabIndex = 9
-        '
-        'cmdOK
-        '
-        Me.cmdOK.Location = New System.Drawing.Point(65, 366)
-        Me.cmdOK.Name = "cmdOK"
-        Me.cmdOK.Size = New System.Drawing.Size(171, 32)
-        Me.cmdOK.TabIndex = 10
-        Me.cmdOK.Text = "OK"
-        Me.cmdOK.UseVisualStyleBackColor = True
         '
         'lblGPSPortMessage
         '
@@ -417,15 +407,13 @@ Partial Class frmGpsSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(304, 407)
-        Me.ControlBox = False
+        Me.ClientSize = New System.Drawing.Size(304, 366)
         Me.Controls.Add(Me.txtTimeout)
         Me.Controls.Add(Me.lblTimeout)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.radGPRMC)
         Me.Controls.Add(Me.radGPGGA)
         Me.Controls.Add(Me.Label7)
-        Me.Controls.Add(Me.cmdOK)
         Me.Controls.Add(Me.cboStopBits)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.txtDataBits)
@@ -460,7 +448,6 @@ Partial Class frmGpsSettings
     Friend WithEvents txtDataBits As System.Windows.Forms.TextBox
     Friend WithEvents Label5 As System.Windows.Forms.Label
     Friend WithEvents cboStopBits As System.Windows.Forms.ComboBox
-    Friend WithEvents cmdOK As System.Windows.Forms.Button
     Friend WithEvents lblGPSPortMessage As System.Windows.Forms.Label
     Friend WithEvents cmdConnection As System.Windows.Forms.Button
     Friend WithEvents Label7 As System.Windows.Forms.Label
