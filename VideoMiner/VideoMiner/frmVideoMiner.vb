@@ -1581,7 +1581,7 @@ Public Class VideoMiner
         m_pnlSpeciesData.fillPanel(DB_SPECIES_BUTTONS_TABLE)
     End Sub
 
-    Public Sub mnuCapScr_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuCapScr.Click
+    Public Sub mnuCapScr_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         capture_screen_image()
     End Sub
 

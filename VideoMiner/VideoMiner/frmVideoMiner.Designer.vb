@@ -32,7 +32,6 @@ Partial Class VideoMiner
         Me.mnuVideoTools = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuOpenFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuUseExternalVideo = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuCapScr = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuNameOptionRoot = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuNameOption_1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuNameOption_2 = New System.Windows.Forms.ToolStripMenuItem()
@@ -51,6 +50,7 @@ Partial Class VideoMiner
         Me.ConfigureHabitatButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SpeciesButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EditLookupTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ShowGridLinesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuShowTooltips = New System.Windows.Forms.ToolStripMenuItem()
         Me.GPSToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuGPSSettings = New System.Windows.Forms.ToolStripMenuItem()
@@ -123,7 +123,6 @@ Partial Class VideoMiner
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
-        Me.ShowGridLinesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -210,7 +209,7 @@ Partial Class VideoMiner
         '
         'mnuVideoTools
         '
-        Me.mnuVideoTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuOpenFile, Me.mnuUseExternalVideo, Me.mnuCapScr, Me.mnuNameOptionRoot})
+        Me.mnuVideoTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuOpenFile, Me.mnuUseExternalVideo, Me.mnuNameOptionRoot})
         Me.mnuVideoTools.Name = "mnuVideoTools"
         Me.mnuVideoTools.Size = New System.Drawing.Size(49, 20)
         Me.mnuVideoTools.Text = "Video"
@@ -227,13 +226,6 @@ Partial Class VideoMiner
         Me.mnuUseExternalVideo.Name = "mnuUseExternalVideo"
         Me.mnuUseExternalVideo.Size = New System.Drawing.Size(230, 22)
         Me.mnuUseExternalVideo.Text = "Use External Video"
-        '
-        'mnuCapScr
-        '
-        Me.mnuCapScr.Enabled = False
-        Me.mnuCapScr.Name = "mnuCapScr"
-        Me.mnuCapScr.Size = New System.Drawing.Size(230, 22)
-        Me.mnuCapScr.Text = "Capture Screen"
         '
         'mnuNameOptionRoot
         '
@@ -318,7 +310,7 @@ Partial Class VideoMiner
         'mnuOpenImg
         '
         Me.mnuOpenImg.Name = "mnuOpenImg"
-        Me.mnuOpenImg.Size = New System.Drawing.Size(139, 22)
+        Me.mnuOpenImg.Size = New System.Drawing.Size(152, 22)
         Me.mnuOpenImg.Text = "Open Image"
         '
         'mnuConfigureTools
@@ -357,6 +349,12 @@ Partial Class VideoMiner
         Me.EditLookupTableToolStripMenuItem.Name = "EditLookupTableToolStripMenuItem"
         Me.EditLookupTableToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
         Me.EditLookupTableToolStripMenuItem.Text = "Edit lookup tables"
+        '
+        'ShowGridLinesToolStripMenuItem
+        '
+        Me.ShowGridLinesToolStripMenuItem.Name = "ShowGridLinesToolStripMenuItem"
+        Me.ShowGridLinesToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.ShowGridLinesToolStripMenuItem.Text = "Show grid lines"
         '
         'mnuShowTooltips
         '
@@ -1093,12 +1091,6 @@ Partial Class VideoMiner
         '
         Me.tmrComputerTime.Interval = 500
         '
-        'ShowGridLinesToolStripMenuItem
-        '
-        Me.ShowGridLinesToolStripMenuItem.Name = "ShowGridLinesToolStripMenuItem"
-        Me.ShowGridLinesToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
-        Me.ShowGridLinesToolStripMenuItem.Text = "Show grid lines"
-        '
         'VideoMiner
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -1168,7 +1160,6 @@ Partial Class VideoMiner
     Friend WithEvents lblVideo As System.Windows.Forms.ToolStripStatusLabel
     Friend WithEvents ToolStripStatusLabel1 As System.Windows.Forms.ToolStripStatusLabel
     Friend WithEvents SplitContainer5 As System.Windows.Forms.SplitContainer
-    Friend WithEvents mnuCapScr As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents fldlgOpenFD As System.Windows.Forms.OpenFileDialog
     Friend WithEvents tmrRecordPerSecond As System.Windows.Forms.Timer
     Friend WithEvents tmrPlayForSeconds As System.Windows.Forms.Timer

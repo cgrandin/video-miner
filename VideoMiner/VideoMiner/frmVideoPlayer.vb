@@ -5,7 +5,7 @@ Imports System.IO.Path
 
 ''' <summary>
 ''' The frmVideoPlayer class provides a form with an instance of the axWindowsMediaPlayer cvontrol,
-''' a trackbar to show the position of the video, a label for the current position,
+''' a trackbar to show the position of th   e video, a label for the current position,
 ''' a label for the duration of the video clip, and a picturebox which shows what is currently
 ''' happening with the video (playing, stopped, paused).
 ''' </summary>
@@ -333,19 +333,13 @@ Public Class frmVideoPlayer
     End Function
 
     ''' <summary>
-    ''' Cause a frame grab to occur if user presses the F10 key while the player is in fullscreen mode
-    ''' </summary>
-    Private Sub player_KeyDownEvent(ByVal sender As Object, ByVal e As AxWMPLib._WMPOCXEvents_KeyDownEvent) Handles plyrVideoPlayer.KeyDownEvent
-        RaiseEvent CaptureScreenEvent()
-    End Sub
-
-    ''' <summary>
     ''' Takes a frame grab of the current frame in the video player's window.
     ''' A Save Dialog will be opened and the user can choose where to save the file.
     ''' The controls of the windows media player will appear in the image unless the shot is taken
     ''' when the player is in full screen mode.
     ''' </summary>
     Public Function captureScreen(ByVal strDate As String, ByVal strTime As String, ByVal strDefaultFilename As String) As String
+        pauseVideo()
         Dim bitmap As New Bitmap(plyrVideoPlayer.Width, plyrVideoPlayer.Height)
         Dim g As Graphics = Graphics.FromImage(bitmap)
         Dim gg As Graphics = plyrVideoPlayer.CreateGraphics()
@@ -413,7 +407,7 @@ Public Class frmVideoPlayer
 
     Private Sub frmVideoPlayer_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles Me.DoubleClick
         ' Do nothing because we want the media player double click handler to deal with it.
-        MsgBox("the form was double clicked")
+        'MsgBox("the form was double clicked")
     End Sub
 
     ''' <summary>
@@ -496,9 +490,28 @@ Public Class frmVideoPlayer
     ''' Update the trackbar position and the timer text to reflect changes
     ''' </summary>
     Private Sub updateUI()
+        ' None of my attempts to fetch SMPTE timecode have worked, despite many attempts.
+        ' Searches online reveled nothing about how to do this.
+        'Try
+        'https://msdn.microsoft.com/en-us/library/windows/desktop/dd564733%28v=vs.85%29.aspx?f=255&MSPPError=-2147217396
+        ' Cast the interface returned by player.Ctlcontrols to an IWMPControls3 interface
+        ' so that you can use the currentPositionTimecode property.
+        'Dim controls As WMPLib.IWMPControls3 = plyrVideoPlayer.Ctlcontrols
+        'Try
+        '    Debug.WriteLine(CType(controls.currentPositionTimecode, Object))
+
+        'Catch ex As Exception
+        '    Debug.WriteLine("Exception thrown.. Message: " & ex.Message)
+
+        'End Try
+        'm_tsCurrentVideoTime = TimeSpan.Parse(controls.currentPositionTimecode)
+        ' Seek to a frame using SMPTE time code.
+        'Controls.currentPositionTimecode = "[00000]01:00:30.05"
+
+        'm_tsCurrentVideoTime = plyrVideoPlayer.Controls.currentpositiontimecode
+        'Catch ex As Exception
         m_tsCurrentVideoTime = TimeSpan.FromSeconds(plyrVideoPlayer.Ctlcontrols.currentPosition)
-        'trkCurrentPosition.Value = CInt(plyrVideoPlayer.Ctlcontrols.currentPosition / (m_tsDurationTime.Ticks / 10000000.0) * 100.0)
-        'lblCurrentTime.Text = getFormattedCurrentVideoTimeString()
+        'End Try
     End Sub
 
     ''' <summary>
@@ -535,6 +548,7 @@ Public Class frmVideoPlayer
                 endOfVideo()
                 Exit Sub
             End If
+            ' Update the current video time based on the SMPTE timecode when present, or the position if it isn't.
             updateUI()
             RaiseEvent TimerTickEvent()
         End If
