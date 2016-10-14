@@ -97,6 +97,7 @@ Partial Class frmProjectNames
         '
         'cmdDelete
         '
+        Me.cmdDelete.Enabled = False
         Me.cmdDelete.Location = New System.Drawing.Point(196, 188)
         Me.cmdDelete.Name = "cmdDelete"
         Me.cmdDelete.Size = New System.Drawing.Size(84, 22)

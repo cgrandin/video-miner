@@ -10,8 +10,12 @@ Public Class frmProjectNames
     Event NewProjectNameEvent()
     Event DeleteProjectNameEvent()
 
+    Private Sub frmProjectNames_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        cmdDelete.Enabled = False
+    End Sub
+
     ''' <summary>
-    ''' Return the name of the currently chosen project name
+    ''' Return the name of the currently chosen project
     ''' </summary>
     Public Function getProjectName() As String
         Return m_ProjectName
@@ -62,13 +66,12 @@ Public Class frmProjectNames
             parentNode = nodeList.Item(0)
             Dim childNode As XmlNode
 
-
             childNode = xmlDoc.CreateElement("ProjectName")
             childNode.InnerText = strItem
 
             parentNode.AppendChild(childNode)
 
-            xmlDoc.Save(strConfigFile)      ' Save the config file
+            xmlDoc.Save(strConfigFile)
             Return True
         Else
             Return False
@@ -107,10 +110,10 @@ Public Class frmProjectNames
         m_ProjectName = txtProject.Text
         RaiseEvent ProjectNameChangedEvent()
 
-        Dim inList As Boolean = vbFalse
+        Dim inList As Boolean = False
         For Each item As Object In lstProjects.Items
             If txtProject.Text = item.ToString Then
-                inList = vbTrue
+                inList = True
             End If
         Next
         If Not inList Then
@@ -130,6 +133,7 @@ Public Class frmProjectNames
         m_ProjectNameToDelete = lstProjects.SelectedItem
         Me.lstProjects.Items.Remove(lstProjects.SelectedItem)
         Me.txtProject.Text = NULL_STRING
+        cmdDelete.Enabled = False
         RaiseEvent DeleteProjectNameEvent()
     End Sub
 
@@ -160,12 +164,11 @@ Public Class frmProjectNames
                                 parentNode.RemoveChild(childNode)
                                 Exit For
                             End If
-                            ' Set the XML value
                         End If
                     Next
                 End If
             Next
-            xmlDoc.Save(strConfigFile)      ' Save the config file
+            xmlDoc.Save(strConfigFile)
             Return True
         Else
             Return False

@@ -3895,5 +3895,4 @@ Public Class VideoMiner
         End If
     End Sub
 
-
 End Class
