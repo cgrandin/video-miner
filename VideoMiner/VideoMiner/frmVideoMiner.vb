@@ -651,11 +651,11 @@ Public Class VideoMiner
         m_db_file_open = False
         ' Disable all configuration menu items pertaining to the database
         DataCodeAssignmentsToolStripMenuItem.Enabled = False
-        KeyboardShortcutsToolStripMenuItem.Enabled = False
         DataTableColumnsToolStripMenuItem.Enabled = False
-        'ConfigureSpeciesEventToolStripMenuItem.Enabled = False
+        SpeciesButtonsToolStripMenuItem.Enabled = False
         ConfigureHabitatButtonToolStripMenuItem.Enabled = False
         ConfigureTransectButtonsToolStripMenuItem.Enabled = False
+        ShowGridLinesToolStripMenuItem.Enabled = False
         EditLookupTableToolStripMenuItem.Enabled = False
 
         m_video_file_open = False
@@ -1284,8 +1284,6 @@ Public Class VideoMiner
         Me.txtProjectName.Enabled = False
         Me.chkRecordEachSecond.Enabled = False
         'mnuConfigureTools.Enabled = False
-        mnuRefreshForm.Enabled = False
-        KeyboardShortcutsToolStripMenuItem.Enabled = False
         DataCodeAssignmentsToolStripMenuItem.Enabled = False
         dictHabitatFieldValues = Nothing
         dictTempHabitatFieldValues = Nothing
@@ -1624,8 +1622,6 @@ Public Class VideoMiner
         Else
             strDefaultFilename = String.Empty
         End If
-        ' Enter record into the database
-        'If Database.IsOpen And strFileName <> String.Empty Then
         Dim strFileName As String = m_frmVideoPlayer.captureScreen(strDate, strTime, strDefaultFilename)
         If strFileName <> String.Empty Then
             ' Add a record to the database and save the file.
@@ -2500,13 +2496,12 @@ Public Class VideoMiner
         ConfigureHabitatButtonToolStripMenuItem.Enabled = True
         ConfigureTransectButtonsToolStripMenuItem.Enabled = True
         EditLookupTableToolStripMenuItem.Enabled = True
+        ShowGridLinesToolStripMenuItem.Enabled = True
         If m_video_file_open Then
             txtTransectDate.Enabled = True
             txtProjectName.Enabled = True
             chkRecordEachSecond.Enabled = True
             mnuConfigureTools.Enabled = True
-            mnuRefreshForm.Enabled = True
-            KeyboardShortcutsToolStripMenuItem.Enabled = True
             DataCodeAssignmentsToolStripMenuItem.Enabled = True
             cmdShowSetTimecode.Enabled = True
             cmdTransectStart.Enabled = True
@@ -2527,8 +2522,6 @@ Public Class VideoMiner
         txtProjectName.Enabled = True
         chkRecordEachSecond.Enabled = True
         mnuConfigureTools.Enabled = True
-        mnuRefreshForm.Enabled = True
-        KeyboardShortcutsToolStripMenuItem.Enabled = True
         DataCodeAssignmentsToolStripMenuItem.Enabled = True
     End Sub
 
@@ -2789,8 +2782,6 @@ Public Class VideoMiner
             Me.txtProjectName.Enabled = True
             Me.chkRecordEachSecond.Enabled = True
             Me.mnuConfigureTools.Enabled = True
-            Me.mnuRefreshForm.Enabled = True
-            Me.KeyboardShortcutsToolStripMenuItem.Enabled = True
             Me.DataCodeAssignmentsToolStripMenuItem.Enabled = True
             If Database.IsOpen Then
                 Me.cmdTransectStart.Enabled = True
@@ -2872,8 +2863,6 @@ Public Class VideoMiner
         Me.txtProjectName.Enabled = False
         Me.chkRecordEachSecond.Enabled = False
         'Me.mnuConfigureTools.Enabled = False
-        Me.mnuRefreshForm.Enabled = False
-        Me.KeyboardShortcutsToolStripMenuItem.Enabled = False
         Me.DataCodeAssignmentsToolStripMenuItem.Enabled = False
         If Database.IsOpen Then
             Me.cmdTransectStart.Enabled = False
@@ -3011,12 +3000,12 @@ Public Class VideoMiner
         lblDatabase.Text = DB_FILE_STATUS_UNLOADED
         mnuOpenDatabase.Enabled = True
         DataCodeAssignmentsToolStripMenuItem.Enabled = False
-        KeyboardShortcutsToolStripMenuItem.Enabled = False
         DataTableColumnsToolStripMenuItem.Enabled = False
-        'ConfigureSpeciesEventToolStripMenuItem.Enabled = False
+        SpeciesButtonsToolStripMenuItem.Enabled = False
         ConfigureHabitatButtonToolStripMenuItem.Enabled = False
         ConfigureTransectButtonsToolStripMenuItem.Enabled = False
         EditLookupTableToolStripMenuItem.Enabled = False
+        ShowGridLinesToolStripMenuItem.Enabled = False
 
         m_pnlTransectData.removeAllDynamicControls()
         m_pnlHabitatData.removeAllDynamicControls()
@@ -3039,7 +3028,6 @@ Public Class VideoMiner
             mnuOpenDatabase.Enabled = False
             mnuCloseDatabase.Enabled = True
             DataCodeAssignmentsToolStripMenuItem.Enabled = True
-            KeyboardShortcutsToolStripMenuItem.Enabled = True
             m_grdDatabase = New VideoMinerDataGridView(DB_DATA_TABLE,
                                                        True,
                                                        VideoMinerDataGridView.RowOrderEnum.Descending,
@@ -3198,7 +3186,7 @@ Public Class VideoMiner
         End If
     End Sub
 
-    Private Sub KeyboardShortcutsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles KeyboardShortcutsToolStripMenuItem.Click
+    Private Sub KeyboardShortcutsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         m_frmKeyboardCommands = New frmKeyboardCommands
         m_frmKeyboardCommands.ShowDialog()
     End Sub

@@ -28,7 +28,6 @@ Partial Class VideoMiner
         Me.mnuOpenSession = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuSaveSession = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuSaveSessionAs = New System.Windows.Forms.ToolStripMenuItem()
-        Me.mnuRefreshForm = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuVideoTools = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuOpenFile = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuUseExternalVideo = New System.Windows.Forms.ToolStripMenuItem()
@@ -58,7 +57,6 @@ Partial Class VideoMiner
         Me.DeviceControl = New System.Windows.Forms.ToolStripMenuItem()
         Me.RelayConfigurationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuHelp = New System.Windows.Forms.ToolStripMenuItem()
-        Me.KeyboardShortcutsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DataCodeAssignmentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.InformationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
@@ -163,7 +161,7 @@ Partial Class VideoMiner
         '
         'FileToolStripMenuItem
         '
-        Me.FileToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuOpenDatabase, Me.mnuCloseDatabase, Me.mnuOpenSession, Me.mnuSaveSession, Me.mnuSaveSessionAs, Me.mnuRefreshForm})
+        Me.FileToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuOpenDatabase, Me.mnuCloseDatabase, Me.mnuOpenSession, Me.mnuSaveSession, Me.mnuSaveSessionAs})
         Me.FileToolStripMenuItem.Name = "FileToolStripMenuItem"
         Me.FileToolStripMenuItem.Size = New System.Drawing.Size(37, 20)
         Me.FileToolStripMenuItem.Text = "File"
@@ -186,6 +184,7 @@ Partial Class VideoMiner
         Me.mnuOpenSession.Name = "mnuOpenSession"
         Me.mnuOpenSession.Size = New System.Drawing.Size(156, 22)
         Me.mnuOpenSession.Text = "Open Session"
+        Me.mnuOpenSession.Visible = False
         '
         'mnuSaveSession
         '
@@ -193,19 +192,14 @@ Partial Class VideoMiner
         Me.mnuSaveSession.Name = "mnuSaveSession"
         Me.mnuSaveSession.Size = New System.Drawing.Size(156, 22)
         Me.mnuSaveSession.Text = "Save Session"
+        Me.mnuSaveSession.Visible = False
         '
         'mnuSaveSessionAs
         '
         Me.mnuSaveSessionAs.Name = "mnuSaveSessionAs"
         Me.mnuSaveSessionAs.Size = New System.Drawing.Size(156, 22)
         Me.mnuSaveSessionAs.Text = "Save Session As"
-        '
-        'mnuRefreshForm
-        '
-        Me.mnuRefreshForm.Enabled = False
-        Me.mnuRefreshForm.Name = "mnuRefreshForm"
-        Me.mnuRefreshForm.Size = New System.Drawing.Size(156, 22)
-        Me.mnuRefreshForm.Text = "Refresh Data"
+        Me.mnuSaveSessionAs.Visible = False
         '
         'mnuVideoTools
         '
@@ -398,17 +392,10 @@ Partial Class VideoMiner
         '
         'mnuHelp
         '
-        Me.mnuHelp.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.KeyboardShortcutsToolStripMenuItem, Me.DataCodeAssignmentsToolStripMenuItem, Me.InformationToolStripMenuItem})
+        Me.mnuHelp.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DataCodeAssignmentsToolStripMenuItem, Me.InformationToolStripMenuItem})
         Me.mnuHelp.Name = "mnuHelp"
         Me.mnuHelp.Size = New System.Drawing.Size(44, 20)
         Me.mnuHelp.Text = "Help"
-        '
-        'KeyboardShortcutsToolStripMenuItem
-        '
-        Me.KeyboardShortcutsToolStripMenuItem.Enabled = False
-        Me.KeyboardShortcutsToolStripMenuItem.Name = "KeyboardShortcutsToolStripMenuItem"
-        Me.KeyboardShortcutsToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
-        Me.KeyboardShortcutsToolStripMenuItem.Text = "Keyboard Shortcuts"
         '
         'DataCodeAssignmentsToolStripMenuItem
         '
@@ -1152,7 +1139,6 @@ Partial Class VideoMiner
     Friend WithEvents mnuCloseDatabase As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuVideoTools As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuHelp As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents mnuRefreshForm As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuUseExternalVideo As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents StatusStrip1 As System.Windows.Forms.StatusStrip
     Friend WithEvents lblDatabase As System.Windows.Forms.ToolStripStatusLabel
@@ -1194,7 +1180,6 @@ Partial Class VideoMiner
     Friend WithEvents mnthCalendar As System.Windows.Forms.MonthCalendar
     Friend WithEvents cmdCloseCalendar As System.Windows.Forms.Button
     Friend WithEvents mnuConfigureTools As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents KeyboardShortcutsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ConfigureHabitatButtonToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ConfigureTransectButtonsToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents cmdDecreaseRate As System.Windows.Forms.Button
