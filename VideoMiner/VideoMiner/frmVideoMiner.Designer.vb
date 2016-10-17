@@ -83,7 +83,6 @@ Partial Class VideoMiner
         Me.cmdOffBottom = New System.Windows.Forms.Button()
         Me.cmdCloseCalendar = New System.Windows.Forms.Button()
         Me.pnlVideoControls = New System.Windows.Forms.Panel()
-        Me.txtFramesToSkip = New System.Windows.Forms.TextBox()
         Me.chkDefineAll = New System.Windows.Forms.CheckBox()
         Me.chkResumeVideo = New System.Windows.Forms.CheckBox()
         Me.cmdScreenCapture = New System.Windows.Forms.Button()
@@ -361,6 +360,7 @@ Partial Class VideoMiner
         Me.mnuShowTooltips.Name = "mnuShowTooltips"
         Me.mnuShowTooltips.Size = New System.Drawing.Size(188, 22)
         Me.mnuShowTooltips.Text = "Show tooltips"
+        Me.mnuShowTooltips.Visible = False
         '
         'GPSToolStripMenuItem
         '
@@ -694,7 +694,6 @@ Partial Class VideoMiner
         '
         'pnlVideoControls
         '
-        Me.pnlVideoControls.Controls.Add(Me.txtFramesToSkip)
         Me.pnlVideoControls.Controls.Add(Me.chkDefineAll)
         Me.pnlVideoControls.Controls.Add(Me.chkResumeVideo)
         Me.pnlVideoControls.Controls.Add(Me.cmdScreenCapture)
@@ -714,15 +713,6 @@ Partial Class VideoMiner
         Me.pnlVideoControls.Size = New System.Drawing.Size(195, 162)
         Me.pnlVideoControls.TabIndex = 38
         Me.pnlVideoControls.Visible = False
-        '
-        'txtFramesToSkip
-        '
-        Me.txtFramesToSkip.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtFramesToSkip.Location = New System.Drawing.Point(111, 3)
-        Me.txtFramesToSkip.Name = "txtFramesToSkip"
-        Me.txtFramesToSkip.Size = New System.Drawing.Size(29, 18)
-        Me.txtFramesToSkip.TabIndex = 60
-        Me.txtFramesToSkip.Text = "500"
         '
         'chkDefineAll
         '
@@ -769,7 +759,6 @@ Partial Class VideoMiner
         '
         Me.cmdPrevious.BackgroundImage = CType(resources.GetObject("cmdPrevious.BackgroundImage"), System.Drawing.Image)
         Me.cmdPrevious.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.cmdPrevious.Enabled = False
         Me.cmdPrevious.Location = New System.Drawing.Point(74, 22)
         Me.cmdPrevious.Name = "cmdPrevious"
         Me.cmdPrevious.Size = New System.Drawing.Size(33, 26)
@@ -1211,7 +1200,6 @@ Partial Class VideoMiner
     Friend WithEvents tmrComputerTime As System.Windows.Forms.Timer
     Friend WithEvents EditLookupTableToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents InformationToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents txtFramesToSkip As System.Windows.Forms.TextBox
     Friend WithEvents cmdAddComment As System.Windows.Forms.Button
     Friend WithEvents cmdOffBottom As Button
     Friend WithEvents mnuShowTooltips As ToolStripMenuItem

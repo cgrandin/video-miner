@@ -2579,8 +2579,6 @@ Public Class VideoMiner
     ''' <param name="e"></param>
     Private Sub mnuOpenFile_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles mnuOpenFile.Click
         If openVideo() Then
-            playVideo()
-            pauseVideo()
             cmdShowSetTimecode.Enabled = True
         End If
     End Sub
@@ -2635,14 +2633,14 @@ Public Class VideoMiner
                 m_frmVideoPlayer.WindowState = FormWindowState.Normal
                 m_frmVideoPlayer.TopMost = True
             Else
-                'aPoint.X = intX + priMon.Bounds.Width
-                'aPoint.Y = intY / 2
+                aPoint.X = intX + priMon.Bounds.Width
+                aPoint.Y = CInt(Math.Floor(intY / 2.0))
                 ' Use these settings when debugging, and comment out the windowstate and topmost lines below
-                aPoint.X = CInt(intX + priMon.Bounds.Width / 3)
-                aPoint.Y = CInt(intY / 4)
+                'aPoint.X = CInt(intX + priMon.Bounds.Width / 3)
+                'aPoint.Y = CInt(intY / 4)
                 m_frmVideoPlayer.Location = aPoint
-                'm_frmVideoPlayer.WindowState = FormWindowState.Maximized
-                'm_frmVideoPlayer.TopMost = True
+                m_frmVideoPlayer.WindowState = FormWindowState.Maximized
+                m_frmVideoPlayer.TopMost = True
             End If
             Me.VideoTime = Zero
             m_frmVideoPlayer.Show()
@@ -2666,6 +2664,7 @@ Public Class VideoMiner
             mnuOpenImg.Enabled = False
             mnuOpenFile.Enabled = False
             mnuUseExternalVideo.Enabled = False
+            pauseVideo()
             Return True
         Else
             'm_frmVideoPlayer.frmVideoPlayer_Load(Me, New System.EventArgs)
@@ -2868,14 +2867,6 @@ Public Class VideoMiner
         Catch ex As Exception
             MessageBox.Show(ex.Message)
         End Try
-    End Sub
-
-    Private Sub Stepforward()
-        If txtFramesToSkip.Text = String.Empty Then
-            m_frmVideoPlayer.stepForward(VIDEO_FRAME_STEP_DEFAULT)
-        Else
-            m_frmVideoPlayer.stepForward(CInt(txtFramesToSkip.Text))
-        End If
     End Sub
 
 #End Region
@@ -3132,8 +3123,12 @@ Public Class VideoMiner
         'cmdPreviousImage_Click(sender, e)
     End Sub
 
+    Private Sub cmdPrevious_Click(sender As Object, e As EventArgs) Handles cmdPrevious.Click
+        m_frmVideoPlayer.stepBackward()
+    End Sub
+
     Public Sub cmdNext_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdNext.Click
-        Stepforward()
+        m_frmVideoPlayer.stepForward()
     End Sub
 
     Public Sub cmdPrevious_MouseHover(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdPrevious.MouseHover
@@ -3526,7 +3521,7 @@ Public Class VideoMiner
         If m_frmVideoPlayer.IsPlaying Then
             pauseVideo()
         ElseIf m_frmVideoPlayer.IsPaused Then
-            Stepforward()
+            m_frmVideoPlayer.stepForward()
         End If
     End Sub
 
@@ -3538,7 +3533,7 @@ Public Class VideoMiner
                 If m_frmVideoPlayer.IsPlaying Then
                     pauseVideo()
                 ElseIf m_frmVideoPlayer.IsPaused Then
-                    Stepforward()
+                    m_frmVideoPlayer.stepForward()
                 End If
                 e.Handled = True
             Case Keys.Space
@@ -3553,11 +3548,11 @@ Public Class VideoMiner
         End Select
     End Sub
 
-    Private Sub txtFramesToSkip_MouseHover(sender As Object, e As EventArgs) Handles txtFramesToSkip.MouseHover
+    Private Sub txtFramesToSkip_MouseHover(sender As Object, e As EventArgs)
         m_tool_tip.Show("Number of frames to skip for frame stepping", Me)
     End Sub
 
-    Private Sub txtFramesToSkip_MouseLeave(sender As Object, e As EventArgs) Handles txtFramesToSkip.MouseLeave
+    Private Sub txtFramesToSkip_MouseLeave(sender As Object, e As EventArgs)
         m_tool_tip.Hide(Me)
     End Sub
 
@@ -3787,4 +3782,5 @@ Public Class VideoMiner
         End If
         m_frmViewDataTable.Show()
     End Sub
+
 End Class

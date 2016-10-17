@@ -5,6 +5,10 @@
     Private m_button_text_size As String
 
     Public Sub New(buttonFont As String, buttonTextSize As String)
+        If CInt(buttonTextSize) < 1 Then
+            MessageBox.Show("The text size must be a positive integer greater than zero. Setting to a default of 10.", "Text size error", MessageBoxButtons.OK)
+            buttonTextSize = "10"
+        End If
         m_button_font = buttonFont
         m_button_text_size = buttonTextSize
 

@@ -60,9 +60,10 @@ Public Class frmVideoPlayer
     ''' </summary>
     Private m_sngFPS As Single
     ''' <summary>
-    ''' The number of frames to skip when incrementally stepping forward through frames
+    ''' If the video has just been opened, this will be true. False after the first time PlayStateChanged event
+    ''' is handled.
     ''' </summary>
-    Private m_intFramesToSkip As Integer
+    Private m_video_just_opened As Boolean
     ''' <summary>
     ''' Member variable to hold the transparent panel used to overlay the Vlc.DotNet control so that the user
     ''' can click on the video to toggle play/pause
@@ -229,7 +230,7 @@ Public Class frmVideoPlayer
         m_strVideoTimeFormat = VIDEO_TIME_FORMAT
         m_tsCurrentVideoTime = Zero
         m_tsDurationTime = Zero
-        m_intFramesToSkip = intFramesToSkip
+        m_video_just_opened = False
     End Sub
 
     ''' <summary>
@@ -246,7 +247,6 @@ Public Class frmVideoPlayer
         m_strVideoTimeFormat = videoTimeFormat
         m_tsCurrentVideoTime = Zero
         m_tsDurationTime = Zero
-        m_intFramesToSkip = intFramesToSkip
         ' Add transparent panel to grab mouse events when user clicks video directly
         m_pnlTransparentPanel = New TransparentPanel
         plyrVideoPlayer.Controls.Add(m_pnlTransparentPanel)
@@ -277,6 +277,7 @@ Public Class frmVideoPlayer
             Exit Sub
         End Try
         tmrVideo.Start()
+        m_video_just_opened = True
     End Sub
 
     ''' <summary>
@@ -411,7 +412,28 @@ Public Class frmVideoPlayer
     End Sub
 
     ''' <summary>
-    ''' Handles things once the video is fully loaded. This is needed to accurately get the dureation
+    ''' Necessary to make fullscreen when 
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub plyrVideoPlayer_PlayStateChange(ByVal sender As Object, ByVal e As AxWMPLib._WMPOCXEvents_PlayStateChangeEvent) Handles plyrVideoPlayer.PlayStateChange
+        If sender.playState = WMPLib.WMPPlayState.wmppsMediaEnded Then
+            'put whatever you want here when current play ended
+        ElseIf sender.PlayState = WMPLib.WMPPlayState.wmppsPlaying Then
+            If m_video_just_opened Then
+                plyrVideoPlayer.fullScreen = True
+                plyrVideoPlayer.Ctlcontrols.pause()
+                m_video_just_opened = False
+            End If
+        ElseIf sender.PlayState = WMPLib.WMPPlayState.wmppsStopped Then
+
+        Else
+
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Handles things once the video is fully loaded. This is needed to accurately get the duration
     ''' of the video because some are larger than others and will take longer to load.
     ''' </summary>
     ''' <param name="sender"></param>
@@ -555,21 +577,38 @@ Public Class frmVideoPlayer
     End Sub
 
     ''' <summary>
-    ''' Step forward a number of frames in the video and adjust player controls accordingly
+    ''' Step forward a frame in the video and adjust player controls accordingly
     ''' </summary>
-    ''' <param name="intFramesToSkip">Number of frames to skip, typically between 50 and 1000</param>
     ''' <returns>Boolean if the stepping succeeded</returns>
-    Public Function stepForward(intFramesToSkip As Integer) As Boolean
-        m_intFramesToSkip = intFramesToSkip
+    Public Function stepBackward() As Boolean
         pauseVideo()
         If IsStopped Then Return False
-        For i As Integer = 0 To m_intFramesToSkip
-            Dim ctlcontrols As WMPLib.IWMPControls = plyrVideoPlayer.Ctlcontrols
-            Dim ctlcontrols2 As WMPLib.IWMPControls2 = DirectCast(ctlcontrols, WMPLib.IWMPControls2)
-            ctlcontrols2.step(1)
-            updateUI()
-            RaiseEvent TimerTickEvent()
-        Next
+
+        Dim delta As Double = 1.0# / CType(plyrVideoPlayer.network.encodedFrameRate, Double)
+        DirectCast(plyrVideoPlayer.Ctlcontrols, WMPLib.IWMPControls2).currentPosition -= delta
+
+        updateUI()
+        RaiseEvent TimerTickEvent()
+        Return True
+    End Function
+
+    ''' <summary>
+    ''' Step forward a frame in the video and adjust player controls accordingly
+    ''' </summary>
+    ''' <returns>Boolean if the stepping succeeded</returns>
+    Public Function stepForward() As Boolean
+        pauseVideo()
+        If IsStopped Then Return False
+
+        Dim delta As Double = 1.0# / CType(plyrVideoPlayer.network.encodedFrameRate, Double)
+        DirectCast(plyrVideoPlayer.Ctlcontrols, WMPLib.IWMPControls2).currentPosition += delta
+
+        'Dim ctlcontrols As WMPLib.IWMPControls = plyrVideoPlayer.Ctlcontrols
+        'Dim ctlcontrols2 As WMPLib.IWMPControls2 = DirectCast(ctlcontrols, WMPLib.IWMPControls2)
+        'ctlcontrols2.step(1)
+
+        updateUI()
+        RaiseEvent TimerTickEvent()
         Return True
     End Function
 
