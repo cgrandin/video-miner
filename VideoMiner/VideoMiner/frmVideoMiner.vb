@@ -1378,15 +1378,6 @@ Public Class VideoMiner
             runInsertQuery(dict)
             m_grdDatabase.fetchData()
             m_grdDatabase.fetchData()
-            ' Set ON BOTTOM for transect start
-            txtOnOffBottomTextbox.Text = ON_BOTTOM_STRING
-            txtOnOffBottomTextbox.Font = New Font(String.Empty, STATUS_FONT_SIZE, FontStyle.Bold)
-            txtOnOffBottomTextbox.BackColor = Color.LightGray
-            txtOnOffBottomTextbox.ForeColor = Color.LimeGreen
-            txtOnOffBottomTextbox.TextAlign = HorizontalAlignment.Center
-            cmdOffBottom.Text = OFF_BOTTOM_STRING
-            cmdOffBottom.Refresh()
-            m_is_on_bottom = 1
         Else
             ' Currently in a transect, so we end it here
             txtTransectTextbox.Text = NO_TRANSECT
@@ -1402,27 +1393,11 @@ Public Class VideoMiner
             m_transect_name = String.Empty
             runInsertQuery(dict)
             m_grdDatabase.fetchData()
-            ' Set OFF BOTTOM for transect end
-            txtOnOffBottomTextbox.Text = OFF_BOTTOM_STRING
-            txtOnOffBottomTextbox.Font = New Font(String.Empty, STATUS_FONT_SIZE, FontStyle.Bold)
-            txtOnOffBottomTextbox.BackColor = Color.LightGray
-            txtOnOffBottomTextbox.ForeColor = Color.Red
-            txtOnOffBottomTextbox.TextAlign = HorizontalAlignment.Center
-            cmdOffBottom.Text = ON_BOTTOM_STRING
-            cmdOffBottom.Refresh()
-            m_is_on_bottom = 0
         End If
 
         If dict.ContainsKey(DATA_CODE) Then
             dict.Remove(DATA_CODE)
         End If
-
-        tuple = New Tuple(Of String, String, Boolean)("3", CType(m_is_on_bottom, String), True)
-        dict.Add("OnBottom", tuple)
-        tuple = New Tuple(Of String, String, Boolean)("3", "3", False)
-        dict.Add(DATA_CODE, tuple)
-        runInsertQuery(dict)
-        m_grdDatabase.fetchData()
 
         ' Need to remove the keys from the dictionary because the union operation is by reference and they will appear in
         ' pnlHabitat.Dictionary as well. Removing them from dict removes them from pnlHabitat.Dictionary as well.
