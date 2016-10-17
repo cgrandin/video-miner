@@ -329,6 +329,20 @@ Public Class VideoMiner
 
     Private m_gps_user_time As TimeSpan
 
+    ''' <summary>
+    ''' When the Record every second checkbox is checked, this will be set to true.
+    ''' After the first timer tick, it will be set to False.
+    ''' This is used so that the previous time can be stored and used in subsequent records.
+    ''' The reason is that the timer ticks faster that every second and we need to make sure
+    ''' the records are added only every second.
+    ''' </summary>
+    Private m_record_every_second_checked_first_time As Boolean = False
+    ''' <summary>
+    ''' This will be set to the current user time if m_record_every_second_checked_first_time is true
+    ''' and used as a comparison to make sure a second has passed for the record entry when chkRecordEverySecond is checked.
+    ''' </summary>
+    Private m_previous_time As TimeSpan
+
     Private m_button_width As Integer
     Private m_button_height As Integer
     Private m_button_font As String
@@ -1664,93 +1678,6 @@ Public Class VideoMiner
         Me.cmdCloseCalendar.Visible = False
     End Sub
 
-    Private Sub tmrRecordPerSecond_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrRecordPerSecond.Tick
-        'Insert A record into the database every second that video is played.
-        ' This will include all continuous variables.
-
-        Dim tc As TimeSpan = New TimeSpan(CLng(VIDEO_TIME_LABEL))
-
-        Dim strVideoTime As String = VIDEO_TIME_LABEL
-        Dim strVideoTextTime As String = VIDEO_TIME_LABEL
-        Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
-        Dim strX As String = NULL_STRING
-        Dim strY As String = NULL_STRING
-        Dim strZ As String = NULL_STRING
-
-        Dim query As String = String.Empty
-        Try
-            If m_video_file_open Then
-                'pauseVideo()
-                tc = m_tsUserTime
-                strVideoTime = m_frmVideoPlayer.CurrentVideoTimeFormatted
-                strVideoTextTime = strVideoTime
-
-                ' Create a variable intCurrVideoSeconds to store the current video times second value.
-                ' Another global vaiable stores the second value at which the last record was created
-                ' Since we only want to create a record if a second has past, and the timer and thus
-                ' this procedure is called every .45 seconds, intCurrVideoSeconds is compared to 
-                ' the global variable to see if a second has passed. if not, exit and check again
-                ' next timer tick
-                ' 00:00:00
-
-                m_video_seconds = CInt(Mid(strVideoTime, 7, 2))
-
-                If m_first_time Then
-                    m_previous_video_seconds = m_video_seconds
-                    m_first_time = False
-                End If
-
-                If m_video_seconds = m_previous_video_seconds Then
-                    'intVideoStopCounter += 1
-                    'If intVideoStopCounter = 15 Then
-                    ' tmrRecordPerSecond.Stop()
-                    ' intVideoStopCounter = 0
-                    ' End If
-                    Exit Sub
-                Else
-
-                    '    intVideoStopCounter = 0
-                    m_previous_video_seconds = m_video_seconds
-
-                    'query = createInsertQuery(NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING)
-                    'Database.ExecuteNonQuery(query)
-                    m_grdDatabase.fetchData()
-                    Exit Sub
-                End If
-            End If
-            If booUseGPSTimeCodes Then
-                'Otherwise get the time from the NMEA string. 
-
-                ' The GPRMC NMEA String does not contain elevation values. Enter null into database
-                ' if GPRMC is the chosen string type.
-                getGPSData(strVideoTime, strVideoDecimalTime, strX, strY, strZ)
-
-                'm_gps_seconds = CInt(Mid(tc, 7, 2))
-
-                If m_gps_first_time Then
-                    m_previous_gps_seconds = m_gps_seconds
-                    m_gps_first_time = False
-                End If
-
-                If m_gps_seconds = m_previous_gps_seconds Then
-                    Exit Sub
-                Else
-                    m_previous_gps_seconds = m_gps_seconds
-                    'query = createInsertQuery(NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING)
-                    ' Database.ExecuteNonQuery(query)
-                    m_grdDatabase.fetchData()
-                End If
-            End If
-        Catch ex As Exception
-            If ex.Message.StartsWith("Syntax") Then
-                MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-            Else
-                MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-            End If
-        End Try
-
-    End Sub
-
     Private Sub mnuNameOption_1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuNameOption_1.Click
         For Each item As ToolStripMenuItem In Me.mnuNameOptionRoot.DropDownItems
             item.Checked = False
@@ -1804,39 +1731,6 @@ Public Class VideoMiner
             item.Checked = False
         Next item
         Me.MnuNameOption_9.Checked = True
-    End Sub
-
-    Private Sub chkRecordEachSecond_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkRecordEachSecond.CheckedChanged
-        If Me.chkRecordEachSecond.Checked = False Then
-            Me.tmrRecordPerSecond.Stop()
-        Else
-            Dim tc As TimeSpan = New TimeSpan(CLng(VIDEO_TIME_LABEL))
-
-            Dim strVideoTime As String = VIDEO_TIME_LABEL
-            Dim strVideoTextTime As String = VIDEO_TIME_LABEL
-            Dim strVideoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
-            Dim strX As String = String.Empty
-            Dim strY As String = String.Empty
-            Dim strZ As String = String.Empty
-
-            If Not m_frmVideoPlayer Is Nothing Then
-                'If m_frmVideoPlayer.blIsPlaying Then
-
-                tc = m_tsUserTime
-                strVideoTime = m_frmVideoPlayer.CurrentVideoTimeFormatted
-                strVideoTextTime = strVideoTime
-                m_previous_video_seconds = CInt(Mid(strVideoTime, 7, 2))
-                If m_frmVideoPlayer.IsPlaying Then
-                    Me.tmrRecordPerSecond.Start()
-                End If
-                'End If
-            Else
-                Me.tmrRecordPerSecond.Start()
-                'getGPSData(tc, strVideoTime, strX, strY, strZ)
-
-            End If
-
-        End If
     End Sub
 
     Private Sub cmdAddComment_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdAddComment.Click
@@ -2904,14 +2798,35 @@ Public Class VideoMiner
         setTimes()
     End Sub
 
+    Private Sub recordEverySecond_CheckedChanged(sender As Object, e As EventArgs) Handles chkRecordEachSecond.CheckedChanged
+        m_record_every_second_checked_first_time = Not m_record_every_second_checked_first_time
+    End Sub
+
     ''' <summary>
-    ''' Updates the time text on the form everytime the timer tick event is issued by the frmVideoPlayer form
+    ''' Updates the time text on the form everytime the timer tick event is issued by the frmVideoPlayer form.
+    ''' If the checkbox is set to store a record for every second of video, this does that also.
     ''' </summary>
     Public Sub timerTick() Handles m_frmVideoPlayer.TimerTickEvent
+        Dim tsNewTime As TimeSpan
         Me.txtTimeSource.Text = m_frmVideoPlayer.CurrentVideoTimeFormatted
         If m_frmVideoPlayer.IsPlaying Or m_frmVideoPlayer.IsPaused Then
-            Dim tsNewTime As TimeSpan = m_tsUserTime + m_frmVideoPlayer.CurrentVideoTime
+            tsNewTime = m_tsUserTime + m_frmVideoPlayer.CurrentVideoTime
             txtTime.Text = String.Format(VIDEO_TIME_FORMAT, tsNewTime.Hours, tsNewTime.Minutes, tsNewTime.Seconds, tsNewTime.Milliseconds)
+        End If
+        If m_frmVideoPlayer.IsPlaying And chkRecordEachSecond.Checked Then
+            ' Check to see if one second has passed, and if so, store a record with the currently set values
+            If m_record_every_second_checked_first_time Then
+                m_previous_time = tsNewTime
+                m_record_every_second_checked_first_time = False
+            Else
+                If tsNewTime.Subtract(m_previous_time).Seconds >= 1.0 Then
+                    Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = New Dictionary(Of String, Tuple(Of String, String, Boolean))
+                    dict = dict.Union(m_pnlHabitatData.Dictionary).Union(m_pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+                    runInsertQuery(dict)
+                    m_grdDatabase.fetchData()
+                    m_previous_time = tsNewTime
+                End If
+            End If
         End If
     End Sub
 

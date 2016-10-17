@@ -45,6 +45,7 @@ Partial Class VideoMiner
         Me.mnuOpenImg = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuConfigureTools = New System.Windows.Forms.ToolStripMenuItem()
         Me.DataTableColumnsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DataCodeAssignmentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureTransectButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConfigureHabitatButtonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SpeciesButtonsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -115,12 +116,10 @@ Partial Class VideoMiner
         Me.cmdAddComment = New System.Windows.Forms.Button()
         Me.cmdNothingInPhoto = New System.Windows.Forms.Button()
         Me.fldlgOpenFD = New System.Windows.Forms.OpenFileDialog()
-        Me.tmrRecordPerSecond = New System.Windows.Forms.Timer(Me.components)
         Me.tmrPlayForSeconds = New System.Windows.Forms.Timer(Me.components)
         Me.svDlgFileDialogScrCap = New System.Windows.Forms.SaveFileDialog()
         Me.svDlgFileDialogSession = New System.Windows.Forms.SaveFileDialog()
         Me.tmrComputerTime = New System.Windows.Forms.Timer(Me.components)
-        Me.DataCodeAssignmentsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnStrVideoMinerMenu.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.SplitContainer5, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -319,6 +318,12 @@ Partial Class VideoMiner
         Me.DataTableColumnsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
         Me.DataTableColumnsToolStripMenuItem.Text = "Data column visibility"
         '
+        'DataCodeAssignmentsToolStripMenuItem
+        '
+        Me.DataCodeAssignmentsToolStripMenuItem.Name = "DataCodeAssignmentsToolStripMenuItem"
+        Me.DataCodeAssignmentsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.DataCodeAssignmentsToolStripMenuItem.Text = "Data codes table"
+        '
         'ConfigureTransectButtonsToolStripMenuItem
         '
         Me.ConfigureTransectButtonsToolStripMenuItem.Name = "ConfigureTransectButtonsToolStripMenuItem"
@@ -400,7 +405,7 @@ Partial Class VideoMiner
         'InformationToolStripMenuItem
         '
         Me.InformationToolStripMenuItem.Name = "InformationToolStripMenuItem"
-        Me.InformationToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.InformationToolStripMenuItem.Size = New System.Drawing.Size(107, 22)
         Me.InformationToolStripMenuItem.Text = "About"
         '
         'StatusStrip1
@@ -1058,10 +1063,6 @@ Partial Class VideoMiner
         Me.cmdNothingInPhoto.UseVisualStyleBackColor = True
         Me.cmdNothingInPhoto.Visible = False
         '
-        'tmrRecordPerSecond
-        '
-        Me.tmrRecordPerSecond.Interval = 200
-        '
         'tmrPlayForSeconds
         '
         Me.tmrPlayForSeconds.Interval = 10
@@ -1069,12 +1070,6 @@ Partial Class VideoMiner
         'tmrComputerTime
         '
         Me.tmrComputerTime.Interval = 500
-        '
-        'DataCodeAssignmentsToolStripMenuItem
-        '
-        Me.DataCodeAssignmentsToolStripMenuItem.Name = "DataCodeAssignmentsToolStripMenuItem"
-        Me.DataCodeAssignmentsToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
-        Me.DataCodeAssignmentsToolStripMenuItem.Text = "Data codes table"
         '
         'VideoMiner
         '
@@ -1145,7 +1140,6 @@ Partial Class VideoMiner
     Friend WithEvents ToolStripStatusLabel1 As System.Windows.Forms.ToolStripStatusLabel
     Friend WithEvents SplitContainer5 As System.Windows.Forms.SplitContainer
     Friend WithEvents fldlgOpenFD As System.Windows.Forms.OpenFileDialog
-    Friend WithEvents tmrRecordPerSecond As System.Windows.Forms.Timer
     Friend WithEvents tmrPlayForSeconds As System.Windows.Forms.Timer
     Friend WithEvents svDlgFileDialogScrCap As System.Windows.Forms.SaveFileDialog
     Friend WithEvents mnuNameOptionRoot As System.Windows.Forms.ToolStripMenuItem
