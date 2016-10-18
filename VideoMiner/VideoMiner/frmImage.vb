@@ -9,7 +9,11 @@ Public Class frmImage
     ''' <remarks></remarks>
     Private m_strImagePath As String
     ''' <summary>
-    ''' Hold the currently loaded image's filename with full path information.
+    ''' The name of the currently loaded image's file without path.
+    ''' </summary>
+    Private m_strImageFileNoPath As String
+    ''' <summary>
+    ''' The name of the currently loaded image's file with full path.
     ''' </summary>
     ''' <remarks></remarks>
     Private m_strImageFile As String
@@ -49,7 +53,14 @@ Public Class frmImage
             Return m_dictEXIF
         End Get
     End Property
-
+    ''' <summary>
+    ''' The filename of the image file. No path information is included.
+    ''' </summary>
+    Public ReadOnly Property Filename As String
+        Get
+            Return m_strImageFileNoPath
+        End Get
+    End Property
     Public ReadOnly Property ImageDirectoryEmpty As Boolean
         Get
             Return m_imageDirectoryEmpty
@@ -67,8 +78,9 @@ Public Class frmImage
         InitializeComponent()
 
         m_imageDirectoryEmpty = False
+        m_strImageFileNoPath = strFileName
         m_strImagePath = strFilePath
-        m_strImageFile = Combine(m_strImagePath, strFileName)
+        m_strImageFile = Combine(m_strImagePath, m_strImageFileNoPath)
         Dim allFiles As String() = Directory.GetFiles(m_strImagePath)
         m_lstImageFiles = New List(Of String)
         Dim imageFileDirectory As FileInfo() = New DirectoryInfo(m_strImagePath).GetFiles()

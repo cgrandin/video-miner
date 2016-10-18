@@ -1734,6 +1734,30 @@ Public Class VideoMiner
         Me.MnuNameOption_9.Checked = True
     End Sub
 
+    ''' <summary>
+    ''' Add a record to the database with the comment "Nothing In Photo", the datacode for it, and the filename for
+    ''' the picture file which is currently open.
+    ''' </summary>
+    Private Sub cmdNothingInPhoto_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdNothingInPhoto.Click
+        Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = New Dictionary(Of String, Tuple(Of String, String, Boolean))
+        dict = dict.Union(m_pnlHabitatData.Dictionary).Union(m_pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+        ' Add the datacode information for a comment event
+        Dim Tuple As Tuple(Of String, String, Boolean) = New Tuple(Of String, String, Boolean)("777", "777", True)
+        dict.Add(DATA_CODE, Tuple)
+        If dict.ContainsKey("Comment") Then
+            dict.Remove("Comment")
+        End If
+        Tuple = New Tuple(Of String, String, Boolean)(DoubleQuote("Nothing In Photo"), DoubleQuote("Nothing In Photo"), False)
+        dict.Add("Comment", Tuple)
+        Tuple = New Tuple(Of String, String, Boolean)(DoubleQuote(m_frmImage.Filename), DoubleQuote(m_frmImage.Filename), False)
+        dict.Add("FileName", Tuple)
+        runInsertQuery(dict)
+        m_grdDatabase.fetchData()
+    End Sub
+
+    ''' <summary>
+    ''' Add a custom comment along with any defined continuous variables from the transect and habitat panels as a new record in the database.
+    ''' </summary>
     Private Sub cmdAddComment_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdAddComment.Click
         m_comment = InputBox("Enter a comment to be inserted as a record", "Enter Comment")
         If m_comment = String.Empty Then
@@ -1747,8 +1771,13 @@ Public Class VideoMiner
         End If
         Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = New Dictionary(Of String, Tuple(Of String, String, Boolean))
         dict = dict.Union(m_pnlHabitatData.Dictionary).Union(m_pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
-        ' Add the comment information for a screenshot event
-        Dim Tuple As Tuple(Of String, String, Boolean) = New Tuple(Of String, String, Boolean)(DoubleQuote(m_comment), DoubleQuote(m_comment), False)
+        ' Add the datacode information for a comment event
+        Dim Tuple As Tuple(Of String, String, Boolean) = New Tuple(Of String, String, Boolean)("666", "666", True)
+        dict.Add(DATA_CODE, Tuple)
+        If dict.ContainsKey("Comment") Then
+            dict.Remove("Comment")
+        End If
+        Tuple = New Tuple(Of String, String, Boolean)(DoubleQuote(m_comment), DoubleQuote(m_comment), False)
         dict.Add("Comment", Tuple)
         runInsertQuery(dict)
         m_grdDatabase.fetchData()
@@ -1756,82 +1785,9 @@ Public Class VideoMiner
             playVideo()
         End If
         ' If the image is open and the video is closed then get the picture information from the EXIF file
-        'If m_image_open And m_video_file_open = False Then
+        'If m_image_open And not m_video_file_open Then
         '    'getEXIFData()
-        '    strVideoTextTime = strVideoTime
         'End If
-    End Sub
-
-    Private Sub cmdNothingInPhoto_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdNothingInPhoto.Click
-
-        If m_db_file_open = True Then
-            Dim tc As String = VIDEO_TIME_LABEL
-
-            Dim strX As String = NULL_STRING
-            Dim strY As String = NULL_STRING
-            Dim strZ As String = NULL_STRING
-            Dim query As String = String.Empty
-            Dim blAquiredFix As Boolean = False
-
-            m_comment = "Nothing in photo"
-
-            'If they are using the video control then get the time from there.
-            ' The time code is set to be VIDEO_TIME_LABEL initially.
-            Dim strPhotoTime As String = VIDEO_TIME_LABEL
-            Dim strPhotoTextTime As String = VIDEO_TIME_LABEL
-            Dim strPhotoDecimalTime As String = VIDEO_TIME_DECIMAL_LABEL
-
-            ' ======================================Code by Xida Chen (end)===========================================
-            Dim j As Integer
-
-            Try
-
-
-                ' For j = 0 To intNumHabitatButtons - 1
-                'dictHabitatFieldValues(strHabitatButtonCodeNames(j).ToString) = "-9999"
-                'Next
-                If booUseGPSTimeCodes Then
-
-                    'Otherwise get the time from the NMEA string.
-
-                    ' The GPRMC NMEA String does not contain elevation values. Enter null into database
-                    ' if GPRMC is the chosen string type.
-                    blAquiredFix = getGPSData(strPhotoTime, strPhotoDecimalTime, strX, strY, strZ)
-                    If Not blAquiredFix Then
-                        Exit Sub
-                    End If
-                End If
-                strPhotoTextTime = strPhotoTime
-                Dim strCode As String = String.Empty
-                Dim strName As String = String.Empty
-
-                If m_image_open And m_video_file_open = False Then
-
-                    'getEXIFData()
-                    strPhotoTextTime = strPhotoTime
-
-                End If
-
-                If tc <> String.Empty Then
-
-                    ' Insert new record in database
-                    Dim numrows As Integer
-
-                    'query = createInsertQuery(NOTHING_IN_PHOTO, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING, NULL_STRING)
-                    'Database.ExecuteNonQuery(query)
-                    m_grdDatabase.fetchData()
-                Else
-                    MessageBox.Show("There is no GPS data being recieved at this time, therefore the record was not entered into the database", "No GPS Data Recieved", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                End If
-            Catch ex As Exception
-                If ex.Message.StartsWith("Syntax") Then
-                    MsgBox(ex.Message & vbCrLf & ex.StackTrace & " " & query)
-                Else
-                    MsgBox(ex.Message & vbCrLf & ex.StackTrace)
-                End If
-            End Try
-        End If
-
     End Sub
 
     Private Sub ConfigureSpeciesEventToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
