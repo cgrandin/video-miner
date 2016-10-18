@@ -79,6 +79,15 @@ Public Class frmVideoPlayer
         End Set
     End Property
     ''' <summary>
+    ''' The frame rate of the loaded video
+    ''' </summary>
+    ''' <returns></returns>
+    Public ReadOnly Property Framerate As Integer
+        Get
+            Return plyrVideoPlayer.network.encodedFrameRate
+        End Get
+    End Property
+    ''' <summary>
     ''' This property is readonly and contains a boolean which is True if
     ''' the video is currently playing and False otherwise.
     ''' </summary>

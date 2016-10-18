@@ -89,7 +89,7 @@
   <DatabasePath>C:\github\video-miner\VideoMiner\VideoMiner\bin\x86\Debug</DatabasePath>
   <VideoPath>G:\video-clips</VideoPath>
   <SessionPath>C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug</SessionPath>
-  <ImagePath>G:\STUFF\Software\UnHypack</ImagePath>
+  <ImagePath>G:\STUFF\Telegraph Cove Rockfish June 2007\PICS\June14-22</ImagePath>
   <GPS>
     <ComPort>COM1</ComPort>
     <NMEA>GPGGA</NMEA>

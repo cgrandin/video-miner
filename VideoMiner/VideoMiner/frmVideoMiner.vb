@@ -1300,10 +1300,10 @@ Public Class VideoMiner
         Me.txtProjectName.Enabled = False
         Me.chkRecordEachSecond.Enabled = False
         'mnuConfigureTools.Enabled = False
-        DataCodeAssignmentsToolStripMenuItem.Enabled = False
         dictHabitatFieldValues = Nothing
         dictTempHabitatFieldValues = Nothing
         dictTransectFieldValues = Nothing
+        mnuCloseDatabase.Enabled = False
     End Sub
 
     ''' <summary>
@@ -2362,6 +2362,7 @@ Public Class VideoMiner
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub database_is_open_toggle_visibility()
+        DataCodeAssignmentsToolStripMenuItem.Enabled = True
         DataTableColumnsToolStripMenuItem.Enabled = True
         SpeciesButtonsToolStripMenuItem.Enabled = True
         ConfigureHabitatButtonToolStripMenuItem.Enabled = True
@@ -2373,7 +2374,6 @@ Public Class VideoMiner
             txtProjectName.Enabled = True
             chkRecordEachSecond.Enabled = True
             mnuConfigureTools.Enabled = True
-            DataCodeAssignmentsToolStripMenuItem.Enabled = True
             cmdShowSetTimecode.Enabled = True
             cmdTransectStart.Enabled = True
             cmdOffBottom.Enabled = True
@@ -2393,7 +2393,6 @@ Public Class VideoMiner
         txtProjectName.Enabled = True
         chkRecordEachSecond.Enabled = True
         mnuConfigureTools.Enabled = True
-        DataCodeAssignmentsToolStripMenuItem.Enabled = True
     End Sub
 
     ''' <summary>
@@ -2651,7 +2650,6 @@ Public Class VideoMiner
             Me.txtProjectName.Enabled = True
             Me.chkRecordEachSecond.Enabled = True
             Me.mnuConfigureTools.Enabled = True
-            Me.DataCodeAssignmentsToolStripMenuItem.Enabled = True
             If Database.IsOpen Then
                 Me.cmdTransectStart.Enabled = True
                 Me.cmdOffBottom.Enabled = True
@@ -2659,17 +2657,14 @@ Public Class VideoMiner
             End If
 
             ' In the future if the frames per second are returned properly, this will show that in the status bar..
-            'Me.lblVideo.Text = "Video File '" & VideoFileName & "' is open (" & m_frmVideoPlayer.FPS & " frames per second)"
-            Me.lblVideo.Text = "Video File '" & VideoFileName & "' is open"
+            'lblVideo.Text = "Video File '" & VideoFileName & "' is open (" & m_frmVideoPlayer.Framerate & " frames per second)"
+            lblVideo.Text = "Video File '" & VideoFileName & "' is open"
             m_video_file_open = True
             mnuOpenImg.Enabled = False
             mnuOpenFile.Enabled = False
             mnuUseExternalVideo.Enabled = False
-            pauseVideo()
             Return True
         Else
-            'm_frmVideoPlayer.frmVideoPlayer_Load(Me, New System.EventArgs)
-            'Me.VideoTime = m_frmVideoPlayer.CurrentVideoTime
             Return False
         End If
     End Function
@@ -2733,7 +2728,6 @@ Public Class VideoMiner
         Me.txtProjectName.Enabled = False
         Me.chkRecordEachSecond.Enabled = False
         'Me.mnuConfigureTools.Enabled = False
-        Me.DataCodeAssignmentsToolStripMenuItem.Enabled = False
         If Database.IsOpen Then
             Me.cmdTransectStart.Enabled = False
             Me.cmdOffBottom.Enabled = False
