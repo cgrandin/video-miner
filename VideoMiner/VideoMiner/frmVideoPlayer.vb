@@ -22,11 +22,6 @@ Public Class frmVideoPlayer
     ''' <remarks></remarks>
     Private Shadows Const VIDEO_TIME_FORMAT As String = "{0:D2}:{1:D2}:{2:D2}.{3:D4}"
     ''' <summary>
-    ''' Default number of frames to skip when incrementally stepping through the frames
-    ''' </summary>
-    ''' <remarks></remarks>
-    Private Const FRAMES_TO_SKIP As Integer = 1000
-    ''' <summary>
     ''' Member variable to hold the time format to show on the video labels and in
     ''' CurrentVideoTimeFormatted property
     ''' </summary>
@@ -222,7 +217,7 @@ Public Class frmVideoPlayer
     ''' Default constructor. The label time format will be the default. Current time and Duration are set to zero.
     ''' </summary>
     ''' <remarks></remarks>
-    Sub New(strFilename As String, Optional intFramesToSkip As Integer = FRAMES_TO_SKIP)
+    Sub New(strFilename As String)
         InitializeComponent()
         'plyrVideoPlayer.uiMode = "none"
         'plyrVideoPlayer.windowlessVideo = True
@@ -239,7 +234,7 @@ Public Class frmVideoPlayer
     ''' </summary>
     ''' <param name="videoTimeFormat"></param>
     ''' <remarks></remarks>
-    Sub New(strFilename As String, ByVal videoTimeFormat As String, Optional intFramesToSkip As Integer = FRAMES_TO_SKIP)
+    Sub New(strFilename As String, ByVal videoTimeFormat As String)
         InitializeComponent()
         'plyrVideoPlayer.uiMode = "none"
         'plyrVideoPlayer.windowlessVideo = True
@@ -251,6 +246,7 @@ Public Class frmVideoPlayer
         m_pnlTransparentPanel = New TransparentPanel
         plyrVideoPlayer.Controls.Add(m_pnlTransparentPanel)
         m_pnlTransparentPanel.Dock = System.Windows.Forms.DockStyle.Fill
+
     End Sub
 
     ''' <summary>
@@ -581,8 +577,8 @@ Public Class frmVideoPlayer
     ''' </summary>
     ''' <returns>Boolean if the stepping succeeded</returns>
     Public Function stepBackward() As Boolean
-        pauseVideo()
         If IsStopped Then Return False
+        pauseVideo()
 
         Dim delta As Double = 1.0# / CType(plyrVideoPlayer.network.encodedFrameRate, Double)
         DirectCast(plyrVideoPlayer.Ctlcontrols, WMPLib.IWMPControls2).currentPosition -= delta
@@ -597,15 +593,15 @@ Public Class frmVideoPlayer
     ''' </summary>
     ''' <returns>Boolean if the stepping succeeded</returns>
     Public Function stepForward() As Boolean
-        pauseVideo()
         If IsStopped Then Return False
+        pauseVideo()
 
-        Dim delta As Double = 1.0# / CType(plyrVideoPlayer.network.encodedFrameRate, Double)
-        DirectCast(plyrVideoPlayer.Ctlcontrols, WMPLib.IWMPControls2).currentPosition += delta
+        'Dim delta As Double = 1.0# / CType(plyrVideoPlayer.network.encodedFrameRate, Double)
+        'DirectCast(plyrVideoPlayer.Ctlcontrols, WMPLib.IWMPControls2).currentPosition += delta
 
-        'Dim ctlcontrols As WMPLib.IWMPControls = plyrVideoPlayer.Ctlcontrols
-        'Dim ctlcontrols2 As WMPLib.IWMPControls2 = DirectCast(ctlcontrols, WMPLib.IWMPControls2)
-        'ctlcontrols2.step(1)
+        Dim ctlcontrols As WMPLib.IWMPControls = plyrVideoPlayer.Ctlcontrols
+        Dim ctlcontrols2 As WMPLib.IWMPControls2 = DirectCast(ctlcontrols, WMPLib.IWMPControls2)
+        ctlcontrols2.step(1)
 
         updateUI()
         RaiseEvent TimerTickEvent()

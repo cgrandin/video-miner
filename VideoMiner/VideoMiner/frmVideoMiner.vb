@@ -675,6 +675,7 @@ Public Class VideoMiner
 
         m_video_file_open = False
         video_file_unload()
+        lblDatabase.Text = DB_FILE_STATUS_UNLOADED
         no_files_loaded()
         m_transect_name = UNNAMED_TRANSECT
         m_curr_code = CStr(BAD_ID)
