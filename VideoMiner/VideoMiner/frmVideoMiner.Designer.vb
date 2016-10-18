@@ -1044,7 +1044,7 @@ Partial Class VideoMiner
         '
         'cmdNothingInPhoto
         '
-        Me.cmdNothingInPhoto.Location = New System.Drawing.Point(163, 3)
+        Me.cmdNothingInPhoto.Location = New System.Drawing.Point(3, 36)
         Me.cmdNothingInPhoto.Name = "cmdNothingInPhoto"
         Me.cmdNothingInPhoto.Size = New System.Drawing.Size(154, 30)
         Me.cmdNothingInPhoto.TabIndex = 55
