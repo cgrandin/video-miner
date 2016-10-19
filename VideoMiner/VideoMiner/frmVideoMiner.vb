@@ -1389,9 +1389,9 @@ Public Class VideoMiner
             txtTransectTextbox.ForeColor = Color.LimeGreen
             txtTransectTextbox.TextAlign = HorizontalAlignment.Center
             cmdTransectStart.Text = "Transect End"
-            start_or_end = TRANSECT_START
+            start_or_end = TRANSECT_END
             m_blInTransect = True
-            tuple = New Tuple(Of String, String, Boolean)("1", "1", False)
+            tuple = New Tuple(Of String, String, Boolean)(TRANSECT_START, TRANSECT_START, False)
             dict.Add(DATA_CODE, tuple)
             runInsertQuery(dict)
             m_grdDatabase.fetchData()
@@ -1404,9 +1404,9 @@ Public Class VideoMiner
             txtTransectTextbox.ForeColor = Color.Red
             txtTransectTextbox.TextAlign = HorizontalAlignment.Center
             cmdTransectStart.Text = "Transect Start"
-            start_or_end = TRANSECT_END
+            start_or_end = TRANSECT_START
             m_blInTransect = False
-            tuple = New Tuple(Of String, String, Boolean)("2", "2", False)
+            tuple = New Tuple(Of String, String, Boolean)(TRANSECT_END, TRANSECT_END, False)
             dict.Add(DATA_CODE, tuple)
             m_transect_name = String.Empty
             runInsertQuery(dict)
@@ -2333,9 +2333,9 @@ Public Class VideoMiner
         Dim tuple As Tuple(Of String, String, Boolean)
         dict = dict.Union(m_pnlHabitatData.Dictionary).Union(m_pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
 
-        tuple = New Tuple(Of String, String, Boolean)("3", CType(m_is_on_bottom, String), True)
+        tuple = New Tuple(Of String, String, Boolean)(ON_OFF_BOTTOM, CType(m_is_on_bottom, String), True)
         dict.Add("OnBottom", tuple)
-        tuple = New Tuple(Of String, String, Boolean)("3", "3", False)
+        tuple = New Tuple(Of String, String, Boolean)(ON_OFF_BOTTOM, ON_OFF_BOTTOM, False)
         dict.Add(DATA_CODE, tuple)
 
         runInsertQuery(dict)
