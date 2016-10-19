@@ -129,8 +129,11 @@ Public Class VideoMiner
     Public Const COMPLEXITY As String = "15"
     Public Const FOV As String = "16"
     Public Const SCREEN_CAPTURE As String = "555"
+    Public Const SCREEN_CAPTURE_COMMENT As String = "Screen Capture"
     Public Const COMMENT_ADDED As String = "666"
+    Public Const COMMENT_ADDED_FIELD_NAME As String = "Comment"
     Public Const NOTHING_IN_PHOTO As String = "777"
+    Public Const NOTHING_IN_PHOTO_COMMENT As String = "Nothing In Photo"
     Public Const INDIVIDUAL_HABITAT_VARIABLE_CLEARED As String = "888"
     Public Const ALL_HABITAT_VARIABLES_CLEARED As String = "999"
 
@@ -1474,11 +1477,11 @@ Public Class VideoMiner
             dict.Remove(DATA_CODE)
         End If
         ' Add the datacode information for a screenshot event
-        tuple = New Tuple(Of String, String, Boolean)("555", "555", True)
+        tuple = New Tuple(Of String, String, Boolean)(SCREEN_CAPTURE, SCREEN_CAPTURE, True)
         dict.Add(DATA_CODE, tuple)
         ' Add the comment information for a screenshot event
-        tuple = New Tuple(Of String, String, Boolean)(DoubleQuote("Screen Capture"), DoubleQuote("Screen Capture"), False)
-        dict.Add("Comment", tuple)
+        tuple = New Tuple(Of String, String, Boolean)(DoubleQuote(SCREEN_CAPTURE_COMMENT), DoubleQuote(SCREEN_CAPTURE_COMMENT), False)
+        dict.Add(COMMENT_ADDED_FIELD_NAME, tuple)
         ' Add the filename information for a screenshot event
         tuple = New Tuple(Of String, String, Boolean)(DoubleQuote(filename), DoubleQuote(filename), False)
         dict.Add("ScreenCaptureName", tuple)
@@ -1742,13 +1745,13 @@ Public Class VideoMiner
         Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = New Dictionary(Of String, Tuple(Of String, String, Boolean))
         dict = dict.Union(m_pnlHabitatData.Dictionary).Union(m_pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
         ' Add the datacode information for a comment event
-        Dim Tuple As Tuple(Of String, String, Boolean) = New Tuple(Of String, String, Boolean)("777", "777", True)
+        Dim Tuple As Tuple(Of String, String, Boolean) = New Tuple(Of String, String, Boolean)(NOTHING_IN_PHOTO, NOTHING_IN_PHOTO, True)
         dict.Add(DATA_CODE, Tuple)
-        If dict.ContainsKey("Comment") Then
-            dict.Remove("Comment")
+        If dict.ContainsKey(COMMENT_ADDED_FIELD_NAME) Then
+            dict.Remove(COMMENT_ADDED_FIELD_NAME)
         End If
-        Tuple = New Tuple(Of String, String, Boolean)(DoubleQuote("Nothing In Photo"), DoubleQuote("Nothing In Photo"), False)
-        dict.Add("Comment", Tuple)
+        Tuple = New Tuple(Of String, String, Boolean)(DoubleQuote(NOTHING_IN_PHOTO_COMMENT), DoubleQuote(NOTHING_IN_PHOTO_COMMENT), False)
+        dict.Add(COMMENT_ADDED_FIELD_NAME, Tuple)
         Tuple = New Tuple(Of String, String, Boolean)(DoubleQuote(m_frmImage.Filename), DoubleQuote(m_frmImage.Filename), False)
         dict.Add("FileName", Tuple)
         runInsertQuery(dict)
@@ -1772,13 +1775,13 @@ Public Class VideoMiner
         Dim dict As Dictionary(Of String, Tuple(Of String, String, Boolean)) = New Dictionary(Of String, Tuple(Of String, String, Boolean))
         dict = dict.Union(m_pnlHabitatData.Dictionary).Union(m_pnlTransectData.Dictionary).ToDictionary(Function(x) x.Key, Function(y) y.Value)
         ' Add the datacode information for a comment event
-        Dim Tuple As Tuple(Of String, String, Boolean) = New Tuple(Of String, String, Boolean)("666", "666", True)
+        Dim Tuple As Tuple(Of String, String, Boolean) = New Tuple(Of String, String, Boolean)(COMMENT_ADDED, COMMENT_ADDED, True)
         dict.Add(DATA_CODE, Tuple)
-        If dict.ContainsKey("Comment") Then
-            dict.Remove("Comment")
+        If dict.ContainsKey(COMMENT_ADDED_FIELD_NAME) Then
+            dict.Remove(COMMENT_ADDED_FIELD_NAME)
         End If
         Tuple = New Tuple(Of String, String, Boolean)(DoubleQuote(m_comment), DoubleQuote(m_comment), False)
-        dict.Add("Comment", Tuple)
+        dict.Add(COMMENT_ADDED_FIELD_NAME, Tuple)
         runInsertQuery(dict)
         m_grdDatabase.fetchData()
         If m_video_file_open Then
