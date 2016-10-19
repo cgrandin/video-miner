@@ -63,6 +63,130 @@ Module modGlobals
     Public Const DEFAULT_BUTTON_TEXT_SIZE As String = "10"
     Public Const DEFAULT_TEXTBOX_TEXT_SIZE As String = "10"
 
+    Public Const XPATH_PREVIOUS_PROJECTS As String = "/PreviousProjects"
+
+    Public Const XPATH_DATABASE_PATH As String = "/DatabasePath"
+    Public Const XPATH_SESSION_PATH As String = "/SessionPath"
+    Public Const XPATH_VIDEO_PATH As String = "/VideoPath"
+    Public Const XPATH_IMAGE_PATH As String = "/ImagePath"
+
+    Public Const XPATH_GPS_COM_PORT As String = "/GPS/ComPort"
+    Public Const XPATH_GPS_NMEA_STRING As String = "/GPS/NMEA"
+    Public Const XPATH_GPS_BAUD_RATE As String = "/GPS/BaudRate"
+    Public Const XPATH_GPS_PARITY As String = "/GPS/Parity"
+    Public Const XPATH_GPS_STOP_BITS As String = "/GPS/StopBits"
+    Public Const XPATH_GPS_DATA_BITS As String = "/GPS/DataBits"
+    Public Const XPATH_GPS_TIMEOUT As String = "/GPS/Timeout"
+
+    Public Const XPATH_BUTTON_HEIGHT As String = "/ButtonFormat/ButtonSize/Height"
+    Public Const XPATH_BUTTON_WIDTH As String = "/ButtonFormat/ButtonSize/Width"
+    Public Const XPATH_BUTTON_FONT As String = "/ButtonFormat/ButtonText/Font"
+
+    Public Const XPATH_DATABASE_NAME As String = "/Database/Configuration/DatabaseName"
+    Public Const XPATH_DATABASE_COLUMNS As String = "/Database/Configuration/Columns"
+
+    Public Const XPATH_DEVICE_CONFIGURATION_SET As String = "/DeviceControl/ConfigurationSet"
+    Public Const XPATH_DEVICE_SETUP As String = "/DeviceControl/Setup"
+    Public Const XPATH_DEVICE_PARALLEL_COM_PORT As String = "/DeviceControl/Parallel/ComPort"
+    Public Const XPATH_DEVICE_PARALLEL_BAUD_RATE As String = "/DeviceControl/Parallel/BaudRate"
+    Public Const XPATH_DEVICE_TWOPORTS_DEVICE1_COM_PORT As String = "/DeviceControl/TwoPorts/Device1/ComPort"
+    Public Const XPATH_DEVICE_TWOPORTS_DEVICE1_BAUD_RATE As String = "/DeviceControl/TwoPorts/Device1/BaudRate"
+    Public Const XPATH_DEVICE_TWOPORTS_DEVICE2_COM_PORT As String = "/DeviceControl/TwoPorts/Device2/ComPort"
+    Public Const XPATH_DEVICE_TWOPORTS_DEVICE2_BAUD_RATE As String = "/DeviceControl/TwoPorts/Device2/BaudRate"
+    Public Const XPATH_DEVICE_RELAY_DEVICE1_RELAY1 As String = "/DeviceControl/RelayNames/Device1/Relay1"
+    Public Const XPATH_DEVICE_RELAY_DEVICE1_RELAY2 As String = "/DeviceControl/RelayNames/Device1/Relay2"
+    Public Const XPATH_DEVICE_RELAY_DEVICE1_RELAY3 As String = "/DeviceControl/RelayNames/Device1/Relay3"
+    Public Const XPATH_DEVICE_RELAY_DEVICE1_RELAY4 As String = "/DeviceControl/RelayNames/Device1/Relay4"
+    Public Const XPATH_DEVICE_RELAY_DEVICE2_RELAY1 As String = "/DeviceControl/RelayNames/Device2/Relay1"
+    Public Const XPATH_DEVICE_RELAY_DEVICE2_RELAY2 As String = "/DeviceControl/RelayNames/Device2/Relay2"
+    Public Const XPATH_DEVICE_RELAY_DEVICE2_RELAY3 As String = "/DeviceControl/RelayNames/Device2/Relay3"
+    Public Const XPATH_DEVICE_RELAY_DEVICE2_RELAY4 As String = "/DeviceControl/RelayNames/Device2/Relay4"
+
+    Public Const XPATH_RANGE_DISPLAY As String = "/DetailedSpeciesEventConfiguration/Range/Displayed"
+    Public Const XPATH_IDCONFIDENCE_DISPLAY As String = "/DetailedSpeciesEventConfiguration/IDConfidence/Displayed"
+    Public Const XPATH_ABUNDANCE_DISPLAY As String = "/DetailedSpeciesEventConfiguration/Abundance/Displayed"
+    Public Const XPATH_COUNT_DISPLAY As String = "/DetailedSpeciesEventConfiguration/Count/Displayed"
+    Public Const XPATH_HEIGHT_DISPLAY As String = "/DetailedSpeciesEventConfiguration/Height/Displayed"
+    Public Const XPATH_WIDTH_DISPLAY As String = "/DetailedSpeciesEventConfiguration/Width/Displayed"
+    Public Const XPATH_LENGTH_DISPLAY As String = "/DetailedSpeciesEventConfiguration/Length/Displayed"
+    Public Const XPATH_COMMENTS_DISPLAY As String = "/DetailedSpeciesEventConfiguration/Comments/Displayed"
+
+    Public Const XPATH_RANGE_DEFAULT_VALUE As String = "/DetailedSpeciesEventConfiguration/Range/DefaultValue"
+    Public Const XPATH_IDCONFIDENCE_DEFAULT_VALUE As String = "/DetailedSpeciesEventConfiguration/IDConfidence/DefaultValue"
+    Public Const XPATH_ABUNDANCE_DEFAULT_VALUE As String = "/DetailedSpeciesEventConfiguration/Abundance/DefaultValue"
+    Public Const XPATH_COUNT_DEFAULT_VALUE As String = "/DetailedSpeciesEventConfiguration/Count/DefaultValue"
+    Public Const XPATH_HEIGHT_DEFAULT_VALUE As String = "/DetailedSpeciesEventConfiguration/Height/DefaultValue"
+    Public Const XPATH_WIDTH_DEFAULT_VALUE As String = "/DetailedSpeciesEventConfiguration/Width/DefaultValue"
+    Public Const XPATH_LENGTH_DEFAULT_VALUE As String = "/DetailedSpeciesEventConfiguration/Length/DefaultValue"
+    Public Const XPATH_COMMENTS_DEFAULT_VALUE As String = "/DetailedSpeciesEventConfiguration/Comments/DefaultValue"
+
+    Public Const GPS_COM_PORT_DEFAULT As String = "COM10"
+    Public Const GPS_NMEA_DEFAULT As String = "GPGGA"
+    Public Const GPS_BAUD_RATE_DEFAULT As Integer = 4800
+    Public Const GPS_PARITY_DEFAULT As String = "NONE"
+    Public Const GPS_STOP_BITS_DEFAULT As Integer = 1
+    Public Const GPS_DATA_BITS_DEFAULT As Integer = 8
+    Public Const GPS_TIMEOUT_DEFAULT As Integer = 5
+
+    Public Const PANEL_NAME_SPECIES As String = "SPECIES DATA"
+    Public Const PANEL_NAME_HABITAT As String = "HABITAT DATA"
+    Public Const PANEL_NAME_TRANSECT As String = "TRANSECT DATA"
+
+    Public DEFAULT_QUICK_ENTRY_COUNT As String = "1"
+
+    Public Const VIDEO_FRAME_STEP_DEFAULT As Integer = 500
+    Public Const DB_ADO_CONN_STRING_1 As String = "Data Source="
+    Public Const DB_ADO_CONN_STRING_2 As String = ";Initial Catalog=data"
+    Public Const BAD_ID As Long = -1
+    Public Const OPEN_DB_TITLE As String = "Open Database"
+    Public Const OPEN_VID_TITLE As String = "Open Video"
+    Public Const OPEN_IMAGE_TITLE As String = "Open Image"
+    Public Const OPEN_EXT_VID As String = "Use External Video"
+    Public Const DB_FILE_FILTER As String = "MS Access files (*.mdb)|*.mdb"
+    Public Const DB_FILE_STATUS_LOADED As String = "Database '"
+    Public Const VIDEO_FILE_STATUS_LOADED As String = "Video file is open"
+    Public Const DB_FILE_STATUS_UNLOADED As String = "No database open"
+    Public Const VIDEO_FILE_STATUS_UNLOADED As String = "No video file open"
+    Public Const STATUS_FONT_SIZE As Integer = 10
+    Public Const DIR_SEP As Char = "\"c
+    Public Const UNNAMED_TRANSECT As String = "Unnamed Transect"
+    Public Const NO_TRANSECT As String = "No Transect"
+    Public Const NO_SUBSTRATE As String = "No Substrate"
+    Public Const NO_BIOCOVER As String = "No Biocover"
+    Public Const NO_RELIEF As String = "No Relief"
+    Public Const NO_COMPLEXITY As String = "No Complexity"
+    Public Const OFF_BOTTOM_STRING As String = "Off bottom"
+    Public Const ON_BOTTOM_STRING As String = "On bottom"
+
+    Public Const TRANSECT_START As String = "1"
+    Public Const TRANSECT_END As String = "2"
+    Public Const ON_OFF_BOTTOM As String = "3"
+    Public Const SPECIES_EVENT As String = "4"
+    Public Const DOMINANT_SUBSTRATE As String = "5"
+    Public Const DOMINANT_SUBSTRATE_PERCENT As String = "6"
+    Public Const SUBDOMINANT_SUBSTRATE As String = "7"
+    Public Const SUBDOMINANT_SUBSTRATE_PERCENT As String = "8"
+    Public Const SURVEY_MODE As String = "9"
+    Public Const VIDEO_OR_IMAGE_QUALITY As String = "11"
+    Public Const RELIEF As String = "12"
+    Public Const DISTURBANCE As String = "13"
+    Public Const PROTOCOL As String = "14"
+    Public Const COMPLEXITY As String = "15"
+    Public Const FOV As String = "16"
+    Public Const SCREEN_CAPTURE As String = "555"
+    Public Const SCREEN_CAPTURE_COMMENT As String = "Screen Capture"
+    Public Const COMMENT_ADDED As String = "666"
+    Public Const COMMENT_ADDED_FIELD_NAME As String = "Comment"
+    Public Const NOTHING_IN_PHOTO As String = "777"
+    Public Const NOTHING_IN_PHOTO_COMMENT As String = "Nothing In Photo"
+    Public Const INDIVIDUAL_HABITAT_VARIABLE_CLEARED As String = "888"
+    Public Const ALL_HABITAT_VARIABLES_CLEARED As String = "999"
+
+    Public Const ON_OFF_BOTTOM_NOT_ASSIGNED As Integer = -1
+    Public Const SPECIES_ID_NOT_ASSIGNED As Integer = -1
+    Public Const SPECIES_NAME_NOT_ASSIGNED As String = NULL_STRING
+    Public Const SPECIES_COUNT_NOT_ASSIGNED As Integer = -1
+
     Public blRareSpecies As Boolean = False
 
     Public dictHabitatFieldValues As Dictionary(Of String, String)
