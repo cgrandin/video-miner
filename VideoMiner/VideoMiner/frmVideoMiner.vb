@@ -170,7 +170,16 @@ Public Class VideoMiner
     ''' <summary>
     ''' Used to store the state of the video when a data entry button is clicked.
     ''' </summary>
+    ''' 
     Private m_was_playing As Boolean
+
+    ''' <summary>
+    ''' Structure to hold the data code, data value, and  that will be used to create a query for insertion into the database
+    ''' </summary>
+    Structure stcQueryDictionary
+        Public dict As Dictionary(Of String, Tuple(Of String, String, Boolean))
+    End Structure
+
 
     ' GPS connection settings to initialize m_frmGpsSettings form with
     Private m_com_port As String
@@ -506,6 +515,16 @@ Public Class VideoMiner
     End Sub
 
     ''' <summary>
+    ''' Necessary to avoid unhandled exceptions on machines with differend Region and Language settings
+    ''' </summary>
+    Protected Sub InitializeCulture()
+        Dim CI As Globalization.CultureInfo = New Globalization.CultureInfo("pt-PT")
+        CI.DateTimeFormat.ShortDatePattern = "dd-MM-yyyy"
+        Thread.CurrentThread.CurrentCulture = CI
+        Thread.CurrentThread.CurrentUICulture = CI
+    End Sub
+
+    ''' <summary>
     ''' Get version name from assembly, read and process the Config file, and setup the form controls for an unloaded state.
     ''' </summary>
     ''' <param name="sender">System.Object</param>
@@ -598,6 +617,7 @@ Public Class VideoMiner
             strDate = strDate & "/0" & CStr(Now.Year)
         End If
         Me.txtTransectDate.Text = strDate
+        InitializeCulture()
         m_transect_date = DateTime.ParseExact(strDate, "dd/MM/yyyy", Nothing)
         m_tsUserTime = Zero
 

@@ -486,6 +486,15 @@ Public Class VideoMinerDataGridView
         Else
             setCell(e.RowIndex, e.ColumnIndex, CellStatus.Dirty)
         End If
+        ' If the species code was changed, update the name to be shown on the button
+        Dim strColname As String = grd.Columns(e.ColumnIndex).Name
+        Dim cb As ComboBox = TryCast(sender, ComboBox)
+        If strColname = BUTTON_CODE Then
+            Dim dt As DataTable = Database.GetDataTable("SELECT CommonName FROM " & DB_SPECIES_CODE_TABLE &
+                                                        " WHERE SpeciesCode = " & SingleQuote(grd.Rows(e.RowIndex).Cells(strColname).Value.ToString()), DB_SPECIES_CODE_TABLE)
+
+            grd.Rows(e.RowIndex).Cells(BUTTON_TEXT).Value = dt.Rows(0).Item(0).ToString()
+        End If
         setUnsynced()
     End Sub
 
@@ -858,7 +867,23 @@ Public Class VideoMinerDataGridView
             recordButtonColor()
         ElseIf strColname = BUTTON_FONT Then
             recordButtonFont()
+        ElseIf strColname = BUTTON_CODE Then
+            recordButtonCode()
         End If
+    End Sub
+
+    ''' <summary>
+    ''' Add a combiobox to the currently selected cell, for the species names
+    ''' </summary>
+    Private Sub recordButtonCode()
+        Dim colIndex As Integer = grd.SelectedCells(0).ColumnIndex
+        Dim rowIndex As Integer = grd.SelectedCells(0).RowIndex
+        Dim cb As DataGridViewComboBoxCell = New DataGridViewComboBoxCell()
+        Dim dt As DataTable = Database.GetDataTable("SELECT DISTINCT SpeciesCode FROM " & DB_SPECIES_CODE_TABLE & " WHERE SpeciesCode <> """" ORDER BY SpeciesCode", DB_SPECIES_CODE_TABLE)
+        cb.DataSource = dt
+        cb.DisplayMember = "SpeciesCode"
+        cb.ValueMember = "SpeciesCode"
+        grd(colIndex, rowIndex) = cb
     End Sub
 
     ''' <summary>
@@ -925,13 +950,17 @@ Public Class VideoMinerDataGridView
                 Dim dt As DataTable = DirectCast(cb.DataSource, DataTable)
                 e.Graphics.DrawString(dt.Rows(e.Index).Item("Color").ToString(), e.Font,
                                       New SolidBrush(Color.FromName(dt.Rows(e.Index).Item("Color").ToString())), e.Bounds)
+            ElseIf strColname = BUTTON_CODE Then
+                ' This is a species code combobox
+                Dim dt As DataTable = DirectCast(cb.DataSource, DataTable)
+                e.Graphics.DrawString(dt.Rows(e.Index).Item("SpeciesCode").ToString(), e.Font,
+                                      New SolidBrush(Color.Black), e.Bounds)
             End If
-        Catch
-
+        Catch ex As Exception
         Finally
             If Not IsNothing(objBrush) Then
-                objBrush = Nothing
-            End If
+            objBrush = Nothing
+        End If
         End Try
     End Sub
 
