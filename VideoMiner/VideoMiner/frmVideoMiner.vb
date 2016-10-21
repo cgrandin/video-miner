@@ -166,22 +166,14 @@ Public Class VideoMiner
     Private m_data_codes_table As DataTable
     Private m_db_file_open As Boolean
     Private m_db_filename As String
-    Private m_db_id_num As Long
     ''' <summary>
     ''' Used to store the state of the video when a data entry button is clicked.
     ''' </summary>
-    ''' 
     Private m_was_playing As Boolean
 
     ''' <summary>
-    ''' Structure to hold the data code, data value, and  that will be used to create a query for insertion into the database
+    ''' GPS connection settings To initialize m_frmGpsSettings form With
     ''' </summary>
-    Structure stcQueryDictionary
-        Public dict As Dictionary(Of String, Tuple(Of String, String, Boolean))
-    End Structure
-
-
-    ' GPS connection settings to initialize m_frmGpsSettings form with
     Private m_com_port As String
     Private m_nmea_string_type As String
     Private m_parity As String
@@ -218,8 +210,6 @@ Public Class VideoMiner
     'Public blupdateColumns As Boolean = True
 
     Private m_version As String
-
-
     Private m_gps_user_time As TimeSpan
 
     ''' <summary>
@@ -1108,12 +1098,6 @@ Public Class VideoMiner
         End Select
     End Function
 
-    'Private Sub frmVideoMiner_Keypress(sender As Object, e As KeyPressEventArgs) Handles Me.KeyPress
-    ' If grdVideoMinerDatabase.Focused Then
-    '         e.Handled = True
-    'End If
-    'End Sub
-
     ''' <summary>
     ''' When user selects "Open Session" from the file menu, sub openSession() and open a dialogue
     ''' where the user can restore a previous session that was being run in the program via a VideoMiner Session file.
@@ -1219,9 +1203,6 @@ Public Class VideoMiner
     End Sub
 
     Private Sub GPSSettingsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles mnuGPSSettings.Click
-        'If m_frmGpsSettings Is Nothing Then
-        '    m_frmGpsSettings = New frmGpsSettings(m_com_port, m_nmea_string_type, m_baud_rate, m_parity, m_stop_bits, m_data_bits, m_timeout)
-        'End If
         m_frmGpsSettings.ShowDialog()
     End Sub
 
@@ -1464,8 +1445,6 @@ Public Class VideoMiner
     ''' </summary>
     Private Sub cmdEdit_Click() Handles m_pnlSpeciesData.EditSpeciesButtonPressed
         SpeciesButtonsToolStripMenuItem_Click(Me, EventArgs.Empty)
-        'dataEntryStarted()
-        'm_frmSpeciesList.Show()
     End Sub
 
     ''' <summary>
@@ -2265,14 +2244,6 @@ Public Class VideoMiner
 
     End Function
 
-    'Private Sub EnableMiddleRow(ByVal booEnable As Boolean)
-    '    Me.txtProjectName.Enabled = booEnable
-    '    Me.txtTransectDate.Enabled = booEnable
-    '    Me.cmdPlayForSeconds.Enabled = booEnable
-    '    Me.txtPlaySeconds.Enabled = booEnable
-    '    Me.chkRepeatVariables.Enabled = booEnable
-    'End Sub
-
     Private Function getGPSData(ByRef strVideoTime As String, ByRef strVideoDecimalTime As String, ByRef strX As String, ByRef strY As String, ByRef strZ As String) As Boolean
         strX = Me.lblXValue.Text
         strY = Me.lblYValue.Text
@@ -2533,7 +2504,6 @@ Public Class VideoMiner
         Me.txtTransectDate.Enabled = False
         Me.txtProjectName.Enabled = False
         Me.chkRecordEachSecond.Enabled = False
-        'Me.mnuConfigureTools.Enabled = False
         If Database.IsOpen Then
             Me.cmdTransectStart.Enabled = False
             Me.cmdOffBottom.Enabled = False
@@ -2978,170 +2948,12 @@ Public Class VideoMiner
         m_frmRelayConfiguration.ShowDialog()
     End Sub
 
-    ' Handles updating the NMEA text box
-    Public Sub updateTextBox()
-        'Try
-        '    strTimeDateSource = "GPS"
-        '    m_time_source = 4
-        '    Dim blAquiredFix As Boolean = False
-        '    Dim m_CurrentPoint As Point
-        '    'If Me.txtNMEA.InvokeRequired Then
-        '    'Dim d As New updateTextBoxCallback(AddressOf updateTextBox)
-        '    'Me.BeginInvoke(d)
-        '    'Else
-        '    ' Read the data from the serial port
-        '    'MsgBox(Me.txtNMEA.InvokeRequired)
-
-        '    With txtNMEA
-        '        .Text &= aSerialPort.ReadExisting
-        '        .WordWrap = False
-        '        .ScrollToCaret()
-        '    End With
-        '    'CJG
-        '    'searchingCounter = 0
-        '    'MsgBox(frmVideoMiner.txtNMEA.Text)
-        '    'aSerialPort.DiscardInBuffer()
-
-        '    'If Not m_frmGpsSettings Is Nothing Then
-        '    If Not m_frmGpsSettings Is Nothing Then
-        '        m_frmGpsSettings.cmdConnection.Enabled = True
-        '        m_frmGpsSettings.cmdConnection.Text = "Close GPS Connection"
-        '    End If
-        '    ' Create a new point object and populate it with the location from the NMEA string
-
-        '    m_CurrentPoint = New Point
-        '    With m_CurrentPoint
-        '        .NMEA = txtNMEA.Text
-        '        blAquiredFix = .GetPoint     ' Returns true if there is a valid location
-        '        If blAquiredFix Then
-        '            GPS_X = .X
-        '            GPS_Y = .Y
-        '            GPS_Z = .Z
-        '            GPSUserTime = m_CurrentPoint.GpsUserTime
-        '            GPSDateTime = m_CurrentPoint.GpsDateTime
-        '            GPSDate = m_CurrentPoint.GpsDate
-        '        End If
-        '    End With
-        '    tryCount += 1       ' Increment the try counter
-        '    Dim strCaption As String = String.Empty
-
-        '    ' If there is not a GPS fix then exit the sub routine
-        '    If Not blAquiredFix Then
-        '        If Not m_frmGpsSettings Is Nothing Then
-        '            m_frmGpsSettings.lblGPSMessage.Text = "SEARCHING. . ."
-        '            m_frmGpsSettings.lblGPSMessage.ForeColor = Color.Blue
-        '        End If
-        '        Me.lblGPSConnectionValue.Text = "SEARCHING. . ."
-        '        Me.lblGPSConnectionValue.ForeColor = Color.Blue
-        '        Exit Sub
-        '    End If
-        '    Me.txtTimeSource.ForeColor = Color.LimeGreen
-        '    Me.txtTime.ForeColor = Color.LimeGreen
-        '    Me.txtDateSource.ForeColor = Color.LimeGreen
-        '    Me.tmrGPSExpiry.Stop()
-        '    Me.dblGPSExpiry = 0
-        '    Me.tmrGPSExpiry.Start()
-        '    aquiredTryCount = 0
-        '    strCaption = "GPS FIX"
-        '    If Not m_frmGpsSettings Is Nothing Then
-        '        m_frmGpsSettings.lblGPSMessage.Text = strCaption
-        '        m_frmGpsSettings.lblGPSMessage.ForeColor = Color.LimeGreen
-        '    End If
-        '    Me.lblGPSConnectionValue.Text = strCaption
-        '    Me.lblGPSConnectionValue.ForeColor = Color.LimeGreen
-        '    Me.lblYValue.ForeColor = Color.LimeGreen
-        '    Me.lblXValue.ForeColor = Color.LimeGreen
-        '    Me.lblZValue.ForeColor = Color.LimeGreen
-
-        '    ' Change the value of X from positive to negative if necessary
-        '    If Me.GPS_X > 0 Then
-        '        Me.GPS_X *= -1
-        '    End If
-
-        '    ' Format the values to include 5 decimal places
-        '    If Not m_frmGpsSettings Is Nothing Then
-        '        m_frmGpsSettings.lblCurrentYValue.Text = FormatNumber(Me.GPS_Y, 5)
-        '        m_frmGpsSettings.lblCurrentXValue.Text = FormatNumber(Me.GPS_X, 5)
-        '        m_frmGpsSettings.lblCurrentZValue.Text = FormatNumber(Me.GPS_Z, 2)
-        '        m_frmGpsSettings.lblCurrentDateValue.Text = Me.GPSDate
-        '        m_frmGpsSettings.lblCurrentTimeValue.Text = Me.GPSDateTime
-        '    End If
-        '    If Not m_frmSetTime Is Nothing Then
-        '        m_frmSetTime.txtSetTime.Text = Me.GPSDateTime
-        '    End If
-        '    Me.lblYValue.Text = FormatNumber(Me.GPS_Y, 5)
-        '    Me.lblXValue.Text = FormatNumber(Me.GPS_X, 5)
-        '    Me.lblZValue.Text = FormatNumber(Me.GPS_Z, 2)
-
-        '    Me.txtTimeSource.Text = strTimeDateSource
-        '    Me.txtTimeSource.Font = New Font(String.Empty, STATUS_FONT_SIZE, FontStyle.Bold)
-        '    Me.txtTimeSource.BackColor = Color.LightGray
-
-        '    Me.txtTimeSource.TextAlign = HorizontalAlignment.Center
-        '    Me.txtTime.Font = New Font(String.Empty, STATUS_FONT_SIZE, FontStyle.Bold)
-        '    Me.txtTime.BackColor = Color.LightGray
-
-        '    Me.txtTime.TextAlign = HorizontalAlignment.Center
-        '    Me.txtTime.Text = Me.GPSDateTime
-
-        '    Me.txtTransectDate.Text = Me.GPSDate
-        '    Me.txtDateSource.Text = strTimeDateSource
-        '    Me.txtDateSource.Font = New Font(String.Empty, STATUS_FONT_SIZE, FontStyle.Bold)
-        '    Me.txtDateSource.BackColor = Color.LightGray
-        '    '
-        '    Me.txtDateSource.TextAlign = HorizontalAlignment.Center
-        '    'If dblGPSExpiry < 1 Then
-        '    '    Me.txtTimeSource.ForeColor = Color.LimeGreen
-        '    '    Me.txtTime.ForeColor = Color.LimeGreen
-        '    '    Me.txtTime.Text = Me.GPSDateTime
-        '    '    Me.txtDateSource.ForeColor = Color.LimeGreen
-        '    'Else
-        '    '    Me.txtTimeSource.ForeColor = Color.Red
-        '    '    Me.txtTime.ForeColor = Color.Red
-        '    '    Me.txtTime.Text = Me.GPSDateTime
-        '    '    Me.txtDateSource.ForeColor = Color.Red
-        '    'End If
-        '    'm_frmGpsSettings.lblCurrentTimeValue.Text = Me.GPSDateTime
-        '    'End If
-        '    '     End If
-        'Catch ex As Exception
-        '    'Dim st As New StackTrace(ex, True)
-        '    'Dim frame As StackFrame
-        '    'frame = st.GetFrame(0)
-        '    'Dim line As Integer
-        '    'line = frame.GetFileLineNumber
-        '    'MsgBox("At line " & line & " " & ex.Message & " Stack trace: " & st.ToString)
-        'End Try
-
-    End Sub
-
-    Private Sub DisableHabitatButtonsToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
-        'If DisableHabitatButtonsToolStripMenuItem.Text = "Disable Habitat Buttons" Then
-        '    DisableHabitatButtonsToolStripMenuItem.Text = "Enable Habitat Buttons"
-        '    Dim item As Button
-        '    For Each item In buttons
-        '        If Not item Is Nothing Then
-        '            item.Enabled = False
-        '        End If
-        '    Next
-        'Else
-        '    DisableHabitatButtonsToolStripMenuItem.Text = "Disable Habitat Buttons"
-        '    Dim item As Button
-        '    For Each item In buttons
-        '        If Not item Is Nothing Then
-        '            item.Enabled = True
-        '        End If
-        '    Next
-        'End If
-    End Sub
-
     Private Sub m_pnlSpeciesData_SizeChanged(ByVal sender As Object, ByVal e As System.EventArgs)
         If m_db_file_open Then
 
             Me.m_pnlSpeciesData.Controls.Clear()
         End If
     End Sub
-
 
     Private Sub txtTime_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtTime.TextChanged
         If Me.txtTimeSource.Text = "VIDEO" Then
@@ -3177,38 +2989,6 @@ Public Class VideoMiner
         m_frmEditLookupTable = New frmEditLookupTable
         m_frmEditLookupTable.ShowDialog()
     End Sub
-
-    'Private Sub grdVideoMinerDatabase_ColumnDisplayIndexChanged(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewColumnEventArgs)
-    '    If blupdateColumns Then
-    '        If Not blOpenDatabase And Not blCloseDatabase Then
-    '            Dim strColumns As String = String.Empty
-    '            dataColumns = New Collection
-    '            Dim dgColumn As DataGridViewColumn
-    '            For Each dgColumn In grdVideoMinerDatabase.Columns
-    '                dataColumns.Add(dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width)
-    '                strColumns = strColumns & dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width & ","
-    '            Next
-    '            SaveConfiguration(XPATH_DATABASE_NAME, m_db_filename)
-    '            SaveConfiguration(XPATH_DATABASE_COLUMNS, strColumns.Substring(0, strColumns.Length - 1))
-    '        End If
-    '    End If
-    'End Sub
-
-    'Private Sub grdVideoMinerDatabase_ColumnWidthChanged(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewColumnEventArgs)
-    '    If blupdateColumns Then
-    '        If Not blOpenDatabase And Not blCloseDatabase Then
-    '            Dim strColumns As String = String.Empty
-    '            dataColumns = New Collection
-    '            Dim dgColumn As DataGridViewColumn
-    '            For Each dgColumn In grdVideoMinerDatabase.Columns
-    '                dataColumns.Add(dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width)
-    '                strColumns = strColumns & dgColumn.Name & ":" & dgColumn.DisplayIndex & ":" & dgColumn.Width & ","
-    '            Next
-    '            SaveConfiguration(XPATH_DATABASE_NAME, m_db_filename)
-    '            SaveConfiguration(XPATH_DATABASE_COLUMNS, strColumns.Substring(0, strColumns.Length - 1))
-    '        End If
-    '    End If
-    'End Sub
 
     ''' <summary>
     ''' Set the User time (txtTime) textbox and source time (txtTimeSource) to show
