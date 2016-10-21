@@ -1,6 +1,4 @@
-﻿Imports System.ComponentModel
-
-''' <summary>
+﻿''' <summary>
 ''' 
 ''' </summary>
 Public Class VideoMinerDataGridView
@@ -240,6 +238,12 @@ Public Class VideoMinerDataGridView
         End If
         m_data_table = Database.GetDataTable(strQuery, m_table_name)
         grd.DataSource = m_data_table
+        If m_table_name = DB_SPECIES_BUTTONS_TABLE Then
+            grd.Columns("ButtonCodeName").ReadOnly = True
+            grd.Columns("DataCode").ReadOnly = True
+            'grd.Columns("ButtonCodeName").Visible = False
+            'grd.Columns("DataCode").Visible = False
+        End If
         disableColumnSorting()
         m_curr_row = 0
         m_curr_col = 0
