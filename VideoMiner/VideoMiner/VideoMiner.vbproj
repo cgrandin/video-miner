@@ -18,7 +18,6 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetZone>LocalIntranet</TargetZone>
-    <GenerateManifests>true</GenerateManifests>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFrameworkProfile />
@@ -44,7 +43,7 @@
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\x86\Debug\</OutputPath>
     <DocumentationFile>VideoMiner.xml</DocumentationFile>
     <NoWarn>42020,42021,42022</NoWarn>
     <RegisterForComInterop>true</RegisterForComInterop>
@@ -117,15 +116,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>529899D79C5BA2F126C2DA8AC27B359B3AD8B42D</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>VideoMiner_TemporaryKey.pfx</ManifestKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignManifests>true</SignManifests>
-  </PropertyGroup>
-  <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
@@ -147,25 +137,9 @@
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Vlc.DotNet.Core, Version=1.2.0.0, Culture=neutral, PublicKeyToken=84529da31f4eb963, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Release\Vlc.DotNet.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Vlc.DotNet.Core.Interops, Version=1.2.0.0, Culture=neutral, PublicKeyToken=84529da31f4eb963, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Release\Vlc.DotNet.Core.Interops.dll</HintPath>
-    </Reference>
-    <Reference Include="Vlc.DotNet.Forms, Version=1.2.0.0, Culture=neutral, PublicKeyToken=84529da31f4eb963, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Release\Vlc.DotNet.Forms.dll</HintPath>
-    </Reference>
-    <Reference Include="Vlc.DotNet.Wpf, Version=1.2.0.0, Culture=neutral, PublicKeyToken=84529da31f4eb963, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Release\Vlc.DotNet.Wpf.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="ZPBlib">
-      <HintPath>..\..\..\..\Users\grandinc\Desktop\ZoomPictureBox+TestForm+Demo\ZPBlib\bin\Release\ZPBlib.dll</HintPath>
+      <HintPath>..\..\..\..\VS-dlls\ZPBlib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -410,7 +384,6 @@
     <Compile Include="frmTableView.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SuspendResumeDrawing.vb" />
     <Compile Include="TransparentPanel.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -570,7 +543,6 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="VideoMiner.exe.manifest" />
-    <None Include="VideoMiner_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
