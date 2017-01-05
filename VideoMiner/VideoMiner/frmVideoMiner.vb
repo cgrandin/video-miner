@@ -608,6 +608,49 @@ Public Class VideoMiner
         MyBase.Finalize()
     End Sub
 
+    '' Save the current scale value
+    '' ScaleControl() is called during the Form's constructor
+    'Private scale As SizeF = New SizeF(1.0F, 1.0F)
+
+    'Protected Overrides Sub ScaleControl(factor As SizeF, specified As BoundsSpecified)
+    '    scale = New SizeF(scale.Width * factor.Width, scale.Height * factor.Height)
+    '    MyBase.ScaleControl(factor, specified)
+    'End Sub
+
+    '' Recursively search for SplitContainer controls
+    'Private Sub Fix(c As Control)
+    '    For Each child As Control In c.Controls
+    '        If TypeOf child Is SplitContainer Then
+    '            Dim sp As SplitContainer = DirectCast(child, SplitContainer)
+    '            Fix(sp)
+    '            Fix(sp.Panel1)
+    '            Fix(sp.Panel2)
+    '        Else
+    '            Fix(child)
+    '        End If
+    '    Next
+    'End Sub
+
+    'Private Sub Fix(sp As SplitContainer)
+    '    ' Scale factor depends on orientation
+    '    Dim sc As Single = If((sp.Orientation = Orientation.Vertical), scale.Width, scale.Height)
+    '    If sp.FixedPanel = FixedPanel.Panel1 Then
+    '        sp.SplitterDistance = CInt(Math.Round(CSng(sp.SplitterDistance) * sc))
+    '    ElseIf sp.FixedPanel = FixedPanel.Panel2 Then
+    '        Dim cs As Integer = If((sp.Orientation = Orientation.Vertical), sp.Panel2.ClientSize.Width, sp.Panel2.ClientSize.Height)
+    '        Dim newcs As Integer = CInt(CSng(cs) * sc)
+    '        sp.SplitterDistance -= (newcs - cs)
+    '    Else
+    '        ' Wow! this line makes the whole GUI reverse!
+    '        'sp.RightToLeft = RightToLeft.Yes
+    '        sp.SplitterDistance = CInt(Math.Round(CSng(sp.SplitterDistance) * sc))
+    '    End If
+    'End Sub
+
+    'Private Sub frmVideoMiner_Shown(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Shown
+    '    Fix(Me)
+    'End Sub
+
     ''' <summary>
     ''' Get version name from assembly, read and process the Config file, and setup the form controls for an unloaded state.
     ''' </summary>
@@ -622,6 +665,29 @@ Public Class VideoMiner
         Dim currentDomain As AppDomain = AppDomain.CurrentDomain
         AddHandler currentDomain.UnhandledException, AddressOf UnHandledHandler
         Windows.Forms.Control.CheckForIllegalCrossThreadCalls = True
+
+
+        'SplitContainer1.PerformAutoScale()
+        'SplitContainer2.PerformAutoScale()
+        'SplitContainer3.PerformAutoScale()
+        'SplitContainer4.PerformAutoScale()
+        'SplitContainer5.PerformAutoScale()
+        'SplitContainer6.PerformAutoScale()
+        'SplitContainer7.PerformAutoScale()
+        'SplitContainer8.PerformAutoScale()
+
+        'Using g As System.Drawing.Graphics = CreateGraphics()
+        '    Dim sngScaleFactor As Single = 1
+        '    Dim sngFontFactor As Single = 1
+        '    If g.DpiX > 96 Then
+        '        sngScaleFactor = g.DpiX / 96
+        '        'sngFontFactor = 96 / g.DpiY
+        '    End If
+        '    If AutoScaleDimensions = CurrentAutoScaleDimensions Then
+        '        'ucWindowsFormHost.ScaleControl(WindowsForm, sngFontFactor)
+        '        Scale(sngScaleFactor)
+        '    End If
+        'End Using
 
         Dim asType As Type = MyBase.GetType
         Dim assembly As System.Reflection.Assembly = System.Reflection.Assembly.GetAssembly(asType)

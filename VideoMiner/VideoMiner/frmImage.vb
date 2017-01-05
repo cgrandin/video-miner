@@ -243,6 +243,9 @@ Public Class frmImage
         ' Set up and run the EXIF tool for the file selected
         Dim strExeDirname As String = GetDirectoryName(System.Windows.Forms.Application.ExecutablePath.ToString())
         Dim strCommand As String = Combine(strExeDirname, EXIF_FILE_NAME)
+        If Not File.Exists(strCommand) Then
+            Exit Sub
+        End If
         Dim strArguments As String = String.Concat(EXIF_ARGS, m_strImageFile)
         Dim oProcess As New Process()
         Dim oStartInfo As New ProcessStartInfo(strCommand)

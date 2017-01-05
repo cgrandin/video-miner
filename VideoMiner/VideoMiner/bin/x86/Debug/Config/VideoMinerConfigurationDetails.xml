@@ -87,9 +87,9 @@
     </RelayNames>
   </DeviceControl>
   <DatabasePath>C:\github\video-miner\VideoMiner\VideoMiner\bin\x86\Debug</DatabasePath>
-  <VideoPath>D:\Videos</VideoPath>
+  <VideoPath>D:\video-clips</VideoPath>
   <SessionPath>C:\github\video-miner\VideoMiner\VideoMiner\bin\Debug</SessionPath>
-  <ImagePath>D:\Pictures\2010SurveyKateRICKER3</ImagePath>
+  <ImagePath>D:\Pictures\Sealife</ImagePath>
   <GPS>
     <ComPort>COM1</ComPort>
     <NMEA>GPGGA</NMEA>
